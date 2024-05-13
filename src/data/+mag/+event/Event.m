@@ -10,7 +10,7 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
         CompleteTimestamp (1, 1) datetime = NaT(TimeZone = "UTC")
         % TYPE Packet type.
         Type (1, 1) double
-        % SUBTYPE Packet subtype.
+        % SUBTYPE Packet sub-type.
         SubType (1, 1) double
     end
 
