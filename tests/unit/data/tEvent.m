@@ -121,6 +121,21 @@ classdef tEvent < matlab.unittest.TestCase
             testCase.verifyEqual(events(end), originalEvents(end), "Event after time range should be unaffected.");
         end
 
+        % Test that crop method returns empty when endpoints are NaT.
+        function crop_missing(testCase)
+
+            % Set up.
+            events = testCase.createCroppableEvents();
+            nat = NaT(TimeZone = "UTC");
+
+            % Exercise.
+            croppedEvents = events.crop(timerange(nat, nat, "closed"));
+
+            % Verify.
+            testCase.assertClass(croppedEvents, "mag.event.Event", "Cropped events should be event class.");
+            testCase.assertEmpty(croppedEvents, "Cropped events should be empty.");
+        end
+
         % Test that "ModeChange" events are converted to "timetable"
         % correctly.
         function timetable_modeChange(testCase)

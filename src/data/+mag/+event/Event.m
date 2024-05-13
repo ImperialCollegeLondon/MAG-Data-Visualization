@@ -34,6 +34,12 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
             timestamps = this.getTimestamps();
             [startTime, endTime] = this.convertToStartEndTime(timeFilter, timestamps);
 
+            if ismissing(startTime) || ismissing(endTime) || (startTime >= endTime)
+
+                this = mag.event.Event.empty();
+                return;
+            end
+
             % Find the earliest previous mode change.
             originalEventTable = this.eventtable();
 

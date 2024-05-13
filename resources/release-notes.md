@@ -10,3 +10,4 @@
 - Update `mag.spectrogram` to compute spectrogram for all different time periods separately
 - Allow cropping with `datetime` pair denoting start and end times
 - Do not improve event time estimates for Config mode
+- Do not crop events if endpoints do not include any data

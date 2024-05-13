@@ -439,7 +439,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
 
             result.crop(primaryPeriod, secondaryPeriod);
 
-            if isempty(result.Primary.Data) || isempty(result.Secondary.Data)
+            if ~result.Primary.HasData || ~result.Secondary.HasData
                 result = mag.Instrument.empty();
             elseif options.EnforceSizeMatch
 
