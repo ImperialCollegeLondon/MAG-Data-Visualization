@@ -7,4 +7,5 @@
 - Improve algorithm for detecting mode and range cycling
 - Rename `mag.computeSpectrogram` to `mag.spectrogram`
 - Update `mag.spectrogram` to compute spectrogram for all different time periods separately
+- Allow cropping with `datetime` pair denoting start and end times
 - Do not improve event time estimates for Config mode
