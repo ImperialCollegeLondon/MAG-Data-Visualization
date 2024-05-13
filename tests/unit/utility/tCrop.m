@@ -1,5 +1,5 @@
-classdef tCroppable < matlab.mock.TestCase
-% TCROPPABLE Unit tests for "mag.mixin.Crop" class.
+classdef tCrop < matlab.mock.TestCase
+% TCROP Unit tests for "mag.mixin.Crop" class.
 
     properties (Constant, Access = private)
         Time (1, :) datetime = datetime(2024, 3, 14, 15, 9, 27:36, TimeZone = "UTC")
@@ -16,7 +16,7 @@ classdef tCroppable < matlab.mock.TestCase
 
         function SubscriptTime = initializeSubscriptTime()
 
-            time = tCroppable.Time;
+            time = tCrop.Time;
 
             SubscriptTime = {struct(Filter = timerange(time(2), time(6), "openleft"), Period = timerange(time(2), time(6), "openleft")), ...
                 struct(Filter = withtol(time(5), seconds(2)), Period = withtol(time(5), seconds(2))), ...
@@ -27,7 +27,7 @@ classdef tCroppable < matlab.mock.TestCase
 
         function StartEndTime = initializeStartEndTime()
 
-            time = tCroppable.Time;
+            time = tCrop.Time;
 
             StartEndTime = {struct(Filter = timerange(time(2), time(6), "openleft"), Start = time(2), End = time(6)), ...
                 struct(Filter = withtol(time(5), seconds(2)), Start = time(3), End = time(7)), ...
