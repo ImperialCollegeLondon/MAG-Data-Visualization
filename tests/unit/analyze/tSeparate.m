@@ -27,7 +27,7 @@ classdef tSeparate < MAGAnalysisTestCase
         end
 
         % Test that adding separation row with all variables only
-        % applies to variables that support .
+        % applies to variables that support "missing" values.
         function allVariables(testCase)
 
             % Set up.
@@ -47,6 +47,23 @@ classdef tSeparate < MAGAnalysisTestCase
             testCase.verifyFalse(any(ismissing(processedData(end, nonMissingVariables))), "Other variables should not be missing.");
 
             testCase.verifyGreaterThanOrEqual(data{end, "Discriminator"}, processedData{end, "Discriminator"}, "Discrimination variable should be increased.");
+        end
+
+        % Test that a "datetime" or "duration" discriminator is increased
+        % with seconds.
+        function timeDiscriminator(testCase)
+
+            % Set up.
+            data = testCase.createTestData();
+            data.Discriminator = seconds(data.Discriminator);
+
+            % Exercise.
+            separateStep = mag.process.Separate(DiscriminationVariable = "Discriminator", Variables = "*");
+            processedData = separateStep.apply(data);
+
+            % Verify.
+            testCase.assertSize(processedData, [height(data) + 1, width(data)], "Separation row should have been added.");
+            testCase.verifyEqual(processedData{end, "Discriminator"} - data{end, "Discriminator"}, mag.time.Constant.Eps, "Discrimination variable should be increased.", AbsTol = milliseconds(1e-9));
         end
 
         % Test that quality flag is set to "Artificial" if quality variable
