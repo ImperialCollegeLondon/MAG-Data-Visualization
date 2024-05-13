@@ -218,11 +218,11 @@ function events = findModeChanges(data, events, name)
         events(find(diff(events.DataFrequency) == 0) + 1, :) = [];
     else
 
-        searchWindow = seconds(5);
+        searchWindow = seconds(15);
         data = sortrows(data);
 
         % Update timestamps for mode changes.
-        idxMode = find([true; diff(events.DataFrequency) ~= 0] & ~ismissing(events.DataFrequency));
+        idxMode = find([true; diff(events.DataFrequency) ~= 0] & ~ismissing(events.DataFrequency) & ~ismissing(events.Duration));
 
         for i = idxMode'
 
@@ -230,10 +230,20 @@ function events = findModeChanges(data, events, name)
             t = events.Time(i);
             eventWindow = data(withtol(t, searchWindow), :);
 
-            dt = seconds(diff(eventWindow.t));
-            [~, idxChange] = max(diff(dt), [], ComparisonMethod = "abs");
+            if isempty(eventWindow)
+                continue;
+            end
 
-            if ~isempty(eventWindow)
+            dt = seconds(diff(eventWindow.t));
+            ddt = diff(dt);
+
+            if all(ddt < 1e-3)
+
+                [~, idxMin] = min(abs(t - eventWindow.t));
+                events.Time(i) = eventWindow.t(idxMin);
+            else
+
+                [~, idxChange] = max(diff(dt), [], ComparisonMethod = "abs");
                 events.Time(i) = eventWindow.t(idxChange + 1);
             end
         end
