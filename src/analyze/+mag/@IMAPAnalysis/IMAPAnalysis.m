@@ -258,13 +258,12 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
 
             function period = findModeCyclingPeriod(events, pattern)
 
-                modeEvents = events((events.Reason == "Command") & ~ismissing(events.Duration), :);
-                idxMode = strfind(modeEvents.DataFrequency', pattern);
+                idxMode = strfind(events.DataFrequency', pattern);
 
                 if isempty(idxMode)
                     period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
                 else
-                    period = timerange(modeEvents.Time(idxMode), modeEvents.Time(idxMode + numel(pattern)), "closedleft");
+                    period = timerange(events.Time(idxMode), events.Time(idxMode + numel(pattern)), "closedleft");
                 end
             end
 
@@ -273,32 +272,32 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
                 findModeCyclingPeriod(this.Results.Secondary.Events, options.SecondaryCycle));
         end
 
-        function rangeCycling = getRangeCycling(this)
+        function rangeCycling = getRangeCycling(this, options)
         % GETRANGECYCLING Get range cycling data.
 
             arguments (Input)
                 this (1, 1) mag.IMAPAnalysis
+                options.Pattern (1, :) double = [3, 2, 1, 0]
             end
 
             arguments (Output)
                 rangeCycling mag.Instrument {mustBeScalarOrEmpty}
             end
 
-            function period = findRangeCyclingPeriod(events)
+            function period = findRangeCyclingPeriod(events, pattern)
 
-                pattern = [3, 2, 1, 0];
                 idxRange = strfind(events.Range', pattern);
 
                 if isempty(idxRange)
                     period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
                 else
-                    period = timerange(events.Time(idxRange), events.Time(idxRange + 4), "closedleft");
+                    period = timerange(events.Time(idxRange), events.Time(idxRange + numel(pattern)), "closedleft");
                 end
             end
 
             rangeCycling = this.applyTimeRangeToInstrument( ...
-                findRangeCyclingPeriod(this.Results.Primary.Events), ...
-                findRangeCyclingPeriod(this.Results.Secondary.Events), ...
+                findRangeCyclingPeriod(this.Results.Primary.Events, options.Pattern), ...
+                findRangeCyclingPeriod(this.Results.Secondary.Events, options.Pattern), ...
                 EnforceSizeMatch = true);
         end
 
