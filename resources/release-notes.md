@@ -4,6 +4,7 @@
 
 - Add separate figure in `mag.graphics.view.Frequency` to show field and spectrogram
 - Add `FrequencyPoints` option to specify number of frequency steps in `mag.graphics.chart.Spectrogram`
+- Allow specifying mode and range cycling patterns when plotting CPT figures (`mag.graphics.cptPlots`)
 - Do not use events for range event plotting in `mag.graphics.view.Field`
 - Do not reshape compute PSD in `mag.graphics.view.PSD`, if sizes do not match
 
