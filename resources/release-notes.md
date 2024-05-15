@@ -1,5 +1,7 @@
 # Software
 
+- Add `mag.Spectrum` data class to capture spectrogram results
+- Add `mag.transform.Spectrogram` for computing spectrograms of science data
 - Add separate figure in `mag.graphics.view.Frequency` to show field and spectrogram
 - Add `mag.time.Constant.Eps` for consistent definition of `eps` in seconds
 - Add `FrequencyPoints` option to specify number of frequency steps in `mag.graphics.chart.Spectrogram`

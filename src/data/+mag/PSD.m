@@ -22,11 +22,6 @@ classdef PSD < mag.Data
     methods
 
         function this = PSD(psdData)
-
-            arguments
-                psdData
-            end
-
             this.Data = psdData;
         end
 
