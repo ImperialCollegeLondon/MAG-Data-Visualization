@@ -14,3 +14,4 @@
 - Do not improve event time estimates for Config mode
 - Do not crop events if endpoints do not include any data
 - Do not use events for range event plotting in `mag.graphics.view.Field`
+- Do not reshape compute PSD in `mag.graphics.view.PSD`, if sizes do not match
