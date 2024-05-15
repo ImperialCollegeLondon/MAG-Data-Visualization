@@ -248,8 +248,8 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
 
             arguments (Input)
                 this (1, 1) mag.IMAPAnalysis
-                options.PrimaryCycle (1, :) double = [2, 64, 4, 64, 4, 128]
-                options.SecondaryCycle (1, :) double = [2, 8, 1, 64, 4, 128]
+                options.PrimaryPattern (1, :) double = [2, 64, 4, 64, 4, 128]
+                options.SecondaryPattern (1, :) double = [2, 8, 1, 64, 4, 128]
             end
 
             arguments (Output)
@@ -268,8 +268,8 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
             end
 
             modeCycling = this.applyTimeRangeToInstrument( ...
-                findModeCyclingPeriod(this.Results.Primary.Events, options.PrimaryCycle), ...
-                findModeCyclingPeriod(this.Results.Secondary.Events, options.SecondaryCycle));
+                findModeCyclingPeriod(this.Results.Primary.Events, options.PrimaryPattern), ...
+                findModeCyclingPeriod(this.Results.Secondary.Events, options.SecondaryPattern));
         end
 
         function rangeCycling = getRangeCycling(this, options)
