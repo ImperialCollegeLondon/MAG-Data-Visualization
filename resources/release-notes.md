@@ -14,6 +14,7 @@
 - Rename `mag.computeSpectrogram` to `mag.spectrogram`
 - Update `mag.spectrogram` as a wrapper of `mag.transform.Spectrogram`
 - `mag.graphics.chart.Spectrogram` does not compute spectrogram, it just plots it
+- `mag.graphics.view.Frequency` computes spectrogram with `mag.spectrogram`
 
 ## Other
 
