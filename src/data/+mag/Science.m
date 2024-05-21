@@ -138,7 +138,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
 
                     lastEvents = [lastModeChange; lastRangeChange];
                     lastEvents.Time = repmat(min(this.Time), height(lastEvents), 1) + ...
-                        1e6 * cumsum(repmat(seconds(eps()), height(lastEvents), 1)); % add "eps" seconds so that they are not all the same
+                        cumsum(repmat(mag.time.Constant.Eps, height(lastEvents), 1)); % add "eps" seconds so that they are not all the same
 
                     % Re-add events.
                     this.Data.Properties.Events = [lastEvents; this.Events];

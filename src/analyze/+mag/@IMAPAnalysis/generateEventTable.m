@@ -35,7 +35,7 @@ function eventTable = generateEventTable(~, data, sensorEvents)
     sensorEvents = updateRampModeTimestamps(sensorEvents, data.Data);
 
     % Improve estimates of mode changes.
-    sensorEvents = findModeChanges(data.Data, sensorEvents);
+    sensorEvents = findModeChanges(data.Data, sensorEvents, sensorName);
 
     % Basic structure for events table.
     eventTable = mag.Science.generateEmptyEventtable();
@@ -64,12 +64,16 @@ function eventTable = generateEventTable(~, data, sensorEvents)
     end
 
     % Add sensor shutdown.
-    shutDownTable = array2timetable(NaN(1, numel(eventTable.Properties.VariableNames)), RowTimes = max(data.Time) + eps(), VariableNames = eventTable.Properties.VariableNames);
+    shutDownTable = array2timetable(NaN(1, numel(eventTable.Properties.VariableNames)), RowTimes = max(data.Time) + mag.time.Constant.Eps, VariableNames = eventTable.Properties.VariableNames);
     shutDownTable.Mode = categorical(shutDownTable.Mode);
     shutDownTable.Label = sensorName + " Shutdown";
     shutDownTable.Reason = categorical("Command");
 
     eventTable = [eventTable; shutDownTable];
+
+    % Ensure no duplicate times.
+    locDuplicate = diff(eventTable.Time) == 0;
+    eventTable.Time(locDuplicate) = eventTable.Time(locDuplicate) - mag.time.Constant.Eps;
 
     % Process variables.
     fillVariables = ["Mode", "DataFrequency", "PacketFrequency", "Range"];
@@ -156,25 +160,92 @@ function events = updateRampModeTimestamps(events, data)
     end
 end
 
-function events = findModeChanges(data, events)
+function events = findModeChanges(data, events, name)
 
-    searchWindow = seconds(5);
-    data = sortrows(data);
+    % If there no events were detected, find mode changes by looking at
+    % timestamp cadence.
+    if isempty(events)
 
-    % Update timestamps for mode changes.
-    idxMode = find(diff(events.DataFrequency) ~= 0) + 1;
+        data = sortrows(data);
 
-    for i = idxMode'
+        % Find changes in timestamp cadence.
+        t = data.t;
+        dt = milliseconds(diff(t));
 
-        % Find window around event and compute actual timestamp difference.
-        t = events.Time(i);
-        eventWindow = data(withtol(t, searchWindow), :);
+        idxRemove = find(ismissing(dt) | (dt < 1) | (dt > 1000)) + 1;
+        idxRemove(idxRemove > height(data)) = height(data);
+        
+        t(idxRemove) = [];
+        dt = milliseconds(diff(t));
 
-        dt = seconds(diff(eventWindow.t));
-        [~, idxChange] = max(diff(dt), [], ComparisonMethod = "abs");
+        idxChange = findchangepts(dt, MinThreshold = 1);
+        idxChange(diff(idxChange) == 1) = [];
 
-        if ~isempty(eventWindow)
-            events.Time(i) = eventWindow.t(idxChange + 1);
+        % Correct for data that was filtered out.
+        for i = idxRemove'
+
+            locUpdate = idxChange >= i;
+            idxChange(locUpdate) = idxChange(locUpdate) + 1;
+        end
+
+        % Create event details.
+        idxChange = [1; idxChange; height(data) + 1];
+
+        for i = 1:(numel(idxChange) - 1)
+
+            d = data(idxChange(i):(idxChange(i+1) - 1), :);
+            f = round(1 / seconds(mode(diff(d.t))));
+
+            if f < 8
+                m = "Normal";
+            else
+                m = "Burst";
+            end
+
+            e = struct2table(struct(Mode = m, ...
+                DataFrequency = f, ...
+                PacketFrequency = NaN, ...
+                Duration = 0, ...
+                Range = NaN, ...
+                Label = compose("%s %s (%d)", name, m, f), ...
+                Reason = "Command"));
+            t = table2timetable(e, RowTimes = d.t(1));
+
+            events = [events; eventtable(t, EventLabelsVariable = "Label")]; %#ok<AGROW>
+        end
+
+        % Remove duplicate events.
+        events(find(diff(events.DataFrequency) == 0) + 1, :) = [];
+    else
+
+        searchWindow = seconds(15);
+        data = sortrows(data);
+
+        % Update timestamps for mode changes.
+        idxMode = find([true; diff(events.DataFrequency) ~= 0] & ~ismissing(events.DataFrequency) & ~ismissing(events.Duration));
+
+        for i = idxMode'
+
+            % Find window around event and compute actual timestamp difference.
+            t = events.Time(i);
+            eventWindow = data(withtol(t, searchWindow), :);
+
+            if isempty(eventWindow)
+                continue;
+            end
+
+            dt = seconds(diff(eventWindow.t));
+            ddt = diff(dt);
+
+            if all(ddt < 1e-3)
+
+                [~, idxMin] = min(abs(t - eventWindow.t));
+                events.Time(i) = eventWindow.t(idxMin);
+            else
+
+                [~, idxChange] = max(diff(dt), [], ComparisonMethod = "abs");
+                events.Time(i) = eventWindow.t(idxChange + 1);
+            end
         end
     end
 end

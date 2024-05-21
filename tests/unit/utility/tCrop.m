@@ -1,5 +1,5 @@
-classdef tCroppable < matlab.mock.TestCase
-% TCROPPABLE Unit tests for "mag.mixin.Crop" class.
+classdef tCrop < matlab.mock.TestCase
+% TCROP Unit tests for "mag.mixin.Crop" class.
 
     properties (Constant, Access = private)
         Time (1, :) datetime = datetime(2024, 3, 14, 15, 9, 27:36, TimeZone = "UTC")
@@ -8,18 +8,19 @@ classdef tCroppable < matlab.mock.TestCase
     properties (TestParameter)
         SubscriptTime
         StartEndTime
-        ValidValue = {timerange(), withtol(), hours(3), -days(14), [seconds(15), minutes(9)]}
-        InvalidValue = {1, {timerange()}, {withtol(), withtol()}, [hours(3), seconds(14), minutes(15)]}
+        ValidValue = {timerange(), withtol(), [datetime(), datetime()], hours(3), -days(14), [seconds(15), minutes(9)]}
+        InvalidValue = {1, {timerange()}, {withtol(), withtol()}, datetime(), [hours(3), seconds(14), minutes(15)]}
     end
 
     methods (Static, TestParameterDefinition)
 
         function SubscriptTime = initializeSubscriptTime()
 
-            time = tCroppable.Time;
+            time = tCrop.Time;
 
             SubscriptTime = {struct(Filter = timerange(time(2), time(6), "openleft"), Period = timerange(time(2), time(6), "openleft")), ...
                 struct(Filter = withtol(time(5), seconds(2)), Period = withtol(time(5), seconds(2))), ...
+                struct(Filter = [time(3), time(6)], Period = timerange(time(3), time(6), "closed")), ...
                 struct(Filter = seconds(1), Period = timerange(time(2), time(end), "closed")), ...
                 struct(Filter = -seconds(2), Period = timerange(time(1), time(8), "closed")), ...
                 struct(Filter = [seconds(3), seconds(8)], Period = timerange(time(4), time(9), "closed"))};
@@ -27,10 +28,11 @@ classdef tCroppable < matlab.mock.TestCase
 
         function StartEndTime = initializeStartEndTime()
 
-            time = tCroppable.Time;
+            time = tCrop.Time;
 
             StartEndTime = {struct(Filter = timerange(time(2), time(6), "openleft"), Start = time(2), End = time(6)), ...
                 struct(Filter = withtol(time(5), seconds(2)), Start = time(3), End = time(7)), ...
+                struct(Filter = [time(3), time(6)], Start = time(3), End = time(6)), ...
                 struct(Filter = seconds(1), Start = time(2), End = time(end)), ...
                 struct(Filter = -seconds(2), Start = time(1), End = time(8)), ...
                 struct(Filter = [seconds(3), seconds(8)], Start = time(4), End = time(9))};

@@ -13,9 +13,14 @@ classdef (Abstract, HandleCompatible) Crop
         % MUSTBETIMEFILTER Validate that input value is of supported type
         % and format for cropping.
 
-            mustBeA(value, ["duration", "timerange", "withtol"]);
+            mustBeA(value, ["datetime", "duration", "timerange", "withtol"]);
 
-            if isduration(value)
+            if isdatetime(value)
+
+                if ~(isvector(value) && isequal(numel(value), 2))
+                    throwAsCaller(MException("", "Time filter of type ""datetime"" must have two elements."));
+                end
+            elseif isduration(value)
 
                 if ~(isscalar(value) || (isvector(value) && isequal(numel(value), 2)))
                     throwAsCaller(MException("", "Time filter of type ""duration"" must have one or two elements."));
@@ -41,7 +46,9 @@ classdef (Abstract, HandleCompatible) Crop
                 timePeriod (1, 1) {mustBeA(timePeriod, ["timerange", "withtol"])}
             end
 
-            if isduration(timeFilter)
+            if isdatetime(timeFilter)
+                timePeriod = timerange(timeFilter(1), timeFilter(2), "closed");
+            elseif isduration(timeFilter)
 
                 if isscalar(timeFilter)
 
@@ -75,7 +82,9 @@ classdef (Abstract, HandleCompatible) Crop
             warningStatus = warning("off", "MATLAB:structOnObject");
             restoreWarning = onCleanup(@() warning(warningStatus));
 
-            if isduration(timeFilter)
+            if isdatetime(timeFilter)
+                [startTime, endTime] = deal(timeFilter(1), timeFilter(2));
+            elseif isduration(timeFilter)
 
                 if isscalar(timeFilter)
 

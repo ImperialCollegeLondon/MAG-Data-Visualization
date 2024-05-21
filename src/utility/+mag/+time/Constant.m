@@ -9,5 +9,7 @@ classdef Constant
         Format (1, 1) string = "dd-MMM-yyyy HH:mm:ss.SSSS"
         % TIMEZONE Time zone of input data.
         TimeZone (1, 1) string = "UTC"
+        % EPS Small time difference.
+        Eps (1, 1) duration = 1e6 * seconds(eps())
     end
 end

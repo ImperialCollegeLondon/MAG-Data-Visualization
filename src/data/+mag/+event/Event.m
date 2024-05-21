@@ -10,7 +10,7 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
         CompleteTimestamp (1, 1) datetime = NaT(TimeZone = "UTC")
         % TYPE Packet type.
         Type (1, 1) double
-        % SUBTYPE Packet subtype.
+        % SUBTYPE Packet sub-type.
         SubType (1, 1) double
     end
 
@@ -33,6 +33,12 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
             % Crop events.
             timestamps = this.getTimestamps();
             [startTime, endTime] = this.convertToStartEndTime(timeFilter, timestamps);
+
+            if ismissing(startTime) || ismissing(endTime) || (startTime >= endTime)
+
+                this = mag.event.Event.empty();
+                return;
+            end
 
             % Find the earliest previous mode change.
             originalEventTable = this.eventtable();
@@ -85,7 +91,7 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
 
                 % Adjust completion time.
                 for i = 1:numel(lastEvents)
-                    lastEvents(i).CompleteTimestamp = startTime + seconds(1e6 * i * eps()); % add "eps" seconds so that they are not all the same
+                    lastEvents(i).CompleteTimestamp = startTime + (i * mag.time.Constant.Eps); % add "eps" seconds so that they are not all the same
                 end
             end
 

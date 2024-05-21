@@ -4,6 +4,9 @@ function figures = cptPlots(analysis, options)
     arguments
         analysis (1, 1) mag.IMAPAnalysis
         options.Filter duration {mustBeScalarOrEmpty} = duration.empty()
+        options.PrimaryModePattern (1, :) double = [2, 64, 4, 64, 4, 128]
+        options.SecondaryModePattern (1, :) double = [2, 8, 1, 64, 4, 128]
+        options.RangePattern (1, :) double = [3, 2, 1, 0]
     end
 
     views = mag.graphics.view.View.empty();
@@ -21,7 +24,7 @@ function figures = cptPlots(analysis, options)
 
     %% Modes
 
-    modeCycling = analysis.getModeCycling();
+    modeCycling = analysis.getModeCycling(PrimaryPattern = options.PrimaryModePattern, SecondaryPattern = options.SecondaryModePattern);
 
     if ~isempty(modeCycling)
 
@@ -31,7 +34,7 @@ function figures = cptPlots(analysis, options)
 
     %% Ranges
 
-    rangeCycling = analysis.getRangeCycling();
+    rangeCycling = analysis.getRangeCycling(Pattern = options.RangePattern);
 
     if ~isempty(rangeCycling) && rangeCycling.HasData
 

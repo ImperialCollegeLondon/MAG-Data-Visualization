@@ -27,9 +27,14 @@ classdef PSD < mag.graphics.view.View
             primaryData = this.computeEventBasedPSD(this.Results.Primary);
             secondaryData = this.computeEventBasedPSD(this.Results.Secondary);
 
-            charts = cell(2, numel(primaryData));
-            charts(:, 1:2:end) = reshape(primaryData, 2, []);
-            charts(:, 2:2:end) = reshape(secondaryData, 2, []);
+            if numel(primaryData) == numel(secondaryData)
+
+                charts = cell(2, numel(primaryData));
+                charts(:, 1:2:end) = reshape(primaryData, 2, []);
+                charts(:, 2:2:end) = reshape(secondaryData, 2, []);
+            else
+                charts = [primaryData, secondaryData];
+            end
 
             this.Figures = this.Factory.assemble( ...
                 charts{:}, ...
@@ -46,7 +51,7 @@ classdef PSD < mag.graphics.view.View
             charts = {};
             yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10pT");
 
-            events = data.Events(data.Events.Reason == "Command", :);
+            events = data.Events;
             interestingEvents = events(ismember(events.(this.Event), unique(events.(this.Event))), :);
 
             for i = 1:size(interestingEvents, 1)
