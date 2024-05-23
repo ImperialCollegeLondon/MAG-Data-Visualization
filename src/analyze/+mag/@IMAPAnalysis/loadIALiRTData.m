@@ -52,8 +52,10 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
 
     if ~isempty(this.PrimaryRamp) && ~isempty(this.SecondaryRamp)
 
-        primary.Data(timerange(this.PrimaryRamp.Time(1), this.PrimaryRamp.Time(end), "closed"), :) = [];
-        secondary.Data(timerange(this.SecondaryRamp.Time(1), this.SecondaryRamp.Time(end), "closed"), :) = [];
+        rampTimeRange = timerange(min(this.PrimaryRamp.Time(1), this.SecondaryRamp.Time(1)), max(this.PrimaryRamp.Time(end), this.SecondaryRamp.Time(end)), "closed");
+
+        primary.Data(rampTimeRange, :) = [];
+        secondary.Data(rampTimeRange, :) = [];
     end
 
     %% Process I-ALiRT Data
