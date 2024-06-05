@@ -4,7 +4,7 @@ classdef Settings < mag.mixin.SetGet
     properties
         Name (1, 1) string = "MAG Plot"
         Title string {mustBeScalarOrEmpty} = string.empty()
-        Arrangement (1, 2) double = zeros(1, 2)
+        Arrangement {mustBeA(Arrangement, ["double", "string"])} = NaN(1, 2)
         GlobalLegend (1, :) string = string.empty()
         LinkXAxes (1, 1) logical = false
         LinkYAxes (1, 1) logical = false

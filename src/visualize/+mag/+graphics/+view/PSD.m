@@ -74,7 +74,7 @@ classdef PSD < mag.graphics.view.View
 
                 duration = endTime - startTime;
 
-                if duration > 0
+                if (duration > 0) && (height(data.Data(timerange(startTime, startTime + duration, "closed"), :)) > 7)
 
                     % Compute PSD.
                     psd = data.computePSD(Start = startTime, Duration = duration);

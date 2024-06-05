@@ -70,13 +70,13 @@ classdef ScienceCDF < mag.io.in.CDF
             details = regexp(fileName, this.FileNamePattern, "names");
             [level, date, version] = deal(details.level, details.date, details.version);
 
-            switch details.sensor
+            switch lower(details.sensor)
                 case "o"
                     sensor = mag.meta.Sensor.FOB;
                 case "i"
                     sensor = mag.meta.Sensor.FIB;
                 otherwise
-                    error("Unsupported sensor ""%s"".");
+                    error("Unsupported sensor ""%s"".", details.sensor);
             end
 
             switch details.mode

@@ -73,12 +73,12 @@ classdef Spectrogram < mag.transform.Transformation
             % Normalize data.
             if this.Normalize
 
-                if height(field) < 500
+                if height(field) < 1000
                     field = normalize(field);
                 else
 
                     k = ceil(height(field) / 100);
-                    field = (field - movmean(field, k)) ./ movstd(field, k);
+                    field = (field - movmean(field, k, "omitmissing")) ./ movstd(field, k, "omitmissing");
                 end
             end
 
