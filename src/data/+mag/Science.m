@@ -292,7 +292,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
 
                 t = (this.Time - options.Start);
 
-                locFilter = t > 0;
+                locFilter = t >= 0;
 
                 if (options.Duration ~= 0)
                     locFilter = locFilter & (t < options.Duration);

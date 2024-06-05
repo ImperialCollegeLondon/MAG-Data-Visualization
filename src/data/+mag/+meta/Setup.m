@@ -3,7 +3,7 @@ classdef Setup < mag.mixin.SetGet & mag.mixin.Struct
 
     properties
         % MODEL Sensor model type and number.
-        Model string {mustBeScalarOrEmpty, mag.validator.mustMatchRegex(Model, "^[LEF]M\d$")}
+        Model string {mustBeScalarOrEmpty, mag.validator.mustMatchRegex(Model, "^\wM\d?$")}
         % FEE FEE id.
         FEE string {mustBeScalarOrEmpty, mag.validator.mustMatchRegex(FEE, "^FEE\d$")}
         % HARNESS Harness connecting sensor to electronics box.

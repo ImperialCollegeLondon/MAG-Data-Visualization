@@ -34,7 +34,7 @@ classdef DefaultFactory < mag.graphics.factory.Factory
             f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, Visible = "off");
             setVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
 
-            if isequal(options.Arrangement, zeros(1, 2))
+            if any(ismissing(options.Arrangement))
                 arrangement = {"flow"};
             else
                 arrangement = num2cell(options.Arrangement);
