@@ -49,7 +49,7 @@ classdef PSD < mag.graphics.view.View
         function charts = computeEventBasedPSD(this, data)
 
             charts = {};
-            yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10pT");
+            yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
 
             events = data.Events;
             interestingEvents = events(ismember(events.(this.Event), unique(events.(this.Event))), :);

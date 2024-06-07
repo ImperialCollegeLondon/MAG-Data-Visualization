@@ -77,7 +77,7 @@ classdef Frequency < mag.graphics.view.View
             psdPrimary = primary.computePSD(Start = psdStart, Duration = psdDuration);
             psdSecondary = secondary.computePSD(Start = psdStart, Duration = psdDuration);
 
-            yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10pT");
+            yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
 
             this.Figures(2) = this.Factory.assemble( ...
                 psdPrimary, mag.graphics.style.Default(Title = compose("%s PSD", primarySensor), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]), ...
