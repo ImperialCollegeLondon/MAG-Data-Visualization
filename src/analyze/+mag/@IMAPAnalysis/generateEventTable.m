@@ -140,7 +140,7 @@ function events = updateRampModeTimestamps(events, data)
             m = strfind(dv', mag.process.Ramp.Pattern);
 
             matches(:, end + 1) = [m(1); m(end)]; %#ok<AGROW>
-            times(:, end + 1) = data.t(matches(:, end)); %#ok<AGROW>
+            times(:, end + 1) = data.(data.Properties.DimensionNames{1})(matches(:, end)); %#ok<AGROW>
         end
 
         if numel(unique(times)) > 2
@@ -162,6 +162,8 @@ end
 
 function events = findModeChanges(data, events, name)
 
+    timeColumn = data.Properties.DimensionNames{1};
+
     % If there no events were detected, find mode changes by looking at
     % timestamp cadence.
     if isempty(events)
@@ -169,7 +171,7 @@ function events = findModeChanges(data, events, name)
         data = sortrows(data);
 
         % Find changes in timestamp cadence.
-        t = data.t;
+        t = data.(timeColumn);
         dt = milliseconds(diff(t));
 
         idxRemove = find(ismissing(dt) | (dt < 1) | (dt > 1000)) + 1;
@@ -194,7 +196,7 @@ function events = findModeChanges(data, events, name)
         for i = 1:(numel(idxChange) - 1)
 
             d = data(idxChange(i):(idxChange(i+1) - 1), :);
-            f = round(1 / seconds(mode(diff(d.t))));
+            f = round(1 / seconds(mode(diff(d.(timeColumn)))));
 
             if f < 8
                 m = "Normal";
@@ -209,7 +211,7 @@ function events = findModeChanges(data, events, name)
                 Range = NaN, ...
                 Label = compose("%s %s (%d)", name, m, f), ...
                 Reason = "Command"));
-            t = table2timetable(e, RowTimes = d.t(1));
+            t = table2timetable(e, RowTimes = d.(timeColumn)(1));
 
             events = [events; eventtable(t, EventLabelsVariable = "Label")]; %#ok<AGROW>
         end
@@ -234,17 +236,17 @@ function events = findModeChanges(data, events, name)
                 continue;
             end
 
-            dt = seconds(diff(eventWindow.t));
+            dt = seconds(diff(eventWindow.(timeColumn)));
             ddt = diff(dt);
 
             if all(ddt < 1e-3)
 
-                [~, idxMin] = min(abs(t - eventWindow.t));
-                events.Time(i) = eventWindow.t(idxMin);
+                [~, idxMin] = min(abs(t - eventWindow.(timeColumn)));
+                events.Time(i) = eventWindow.(timeColumn)(idxMin);
             else
 
                 [~, idxChange] = max(diff(dt), [], ComparisonMethod = "abs");
-                events.Time(i) = eventWindow.t(idxChange + 1);
+                events.Time(i) = eventWindow.(timeColumn)(idxChange + 1);
             end
         end
     end
