@@ -8,7 +8,7 @@ classdef tCrop < matlab.mock.TestCase
     properties (TestParameter)
         SubscriptTime
         StartEndTime
-        ValidValue = {timerange(), withtol(), [datetime(), datetime()], hours(3), -days(14), [seconds(15), minutes(9)]}
+        ValidValue = {timerange(), withtol(), [datetime(), datetime()], hours(3), -days(14), [seconds(15), minutes(9)], [seconds(2), -minutes(3)]}
         InvalidValue = {1, {timerange()}, {withtol(), withtol()}, datetime(), [hours(3), seconds(14), minutes(15)]}
     end
 
@@ -23,7 +23,8 @@ classdef tCrop < matlab.mock.TestCase
                 struct(Filter = [time(3), time(6)], Period = timerange(time(3), time(6), "closed")), ...
                 struct(Filter = seconds(1), Period = timerange(time(2), time(end), "closed")), ...
                 struct(Filter = -seconds(2), Period = timerange(time(1), time(8), "closed")), ...
-                struct(Filter = [seconds(3), seconds(8)], Period = timerange(time(4), time(9), "closed"))};
+                struct(Filter = [seconds(3), seconds(8)], Period = timerange(time(4), time(9), "closed")), ...
+                struct(Filter = [seconds(3), -seconds(3)], Period = timerange(time(4), time(7), "closed"))};
         end
 
         function StartEndTime = initializeStartEndTime()
@@ -35,7 +36,8 @@ classdef tCrop < matlab.mock.TestCase
                 struct(Filter = [time(3), time(6)], Start = time(3), End = time(6)), ...
                 struct(Filter = seconds(1), Start = time(2), End = time(end)), ...
                 struct(Filter = -seconds(2), Start = time(1), End = time(8)), ...
-                struct(Filter = [seconds(3), seconds(8)], Start = time(4), End = time(9))};
+                struct(Filter = [seconds(3), seconds(8)], Start = time(4), End = time(9)), ...
+                struct(Filter = [seconds(3), -seconds(3)], Start = time(4), End = time(7))};
         end
     end
 
