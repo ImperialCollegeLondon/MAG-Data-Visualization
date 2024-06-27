@@ -10,6 +10,8 @@ classdef Compression < mag.process.Step
     properties
         % COMPRESSIONVARIABLE Name of compression variable.
         CompressionVariable (1, 1) string
+        % CORRECTIONFACTOR Compression correction factor.
+        CorrectionFactor (1, 1) double = 1
         % VARIABLES Variables to be corrected using compression
         % information.
         Variables (1, :) string
@@ -41,7 +43,7 @@ classdef Compression < mag.process.Step
         function data = apply(this, data, ~)
 
             locCompressed = logical(data.(this.CompressionVariable));
-            data{locCompressed, this.Variables} = data{locCompressed, this.Variables} / 4;
+            data{locCompressed, this.Variables} = data{locCompressed, this.Variables} / this.CorrectionFactor;
         end
     end
 end
