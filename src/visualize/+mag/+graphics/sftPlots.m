@@ -32,12 +32,19 @@ function figures = sftPlots(analysis, options)
     end
 
     % Show science and frequency.
-    for i = 1:numel(modes)
+    for m = modes
 
-        views(end + 1) = mag.graphics.view.Field(modes(i)); %#ok<AGROW>
+        views(end + 1) = mag.graphics.view.Field(m); %#ok<AGROW>
 
         if ~isempty(options.PSDStart)
-            views(end + 1) = mag.graphics.view.Frequency(modes(i), PSDStart = options.PSDStart, PSDDuration = options.PSDDuration); %#ok<AGROW>
+
+            % Crop the first and last few seconds of the mode, to avoid
+            % plotting wrongful information.
+            if range(m.TimeRange) > minutes(2)
+                m.crop([seconds(30), seconds(-30)]);
+            end
+
+            views(end + 1) = mag.graphics.view.Frequency(m, PSDStart = options.PSDStart, PSDDuration = options.PSDDuration); %#ok<AGROW>
         end
     end
 

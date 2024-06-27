@@ -58,7 +58,12 @@ classdef (Abstract, HandleCompatible) Crop
                         timePeriod = timerange(min(time), max(time) + timeFilter, "closed");
                     end
                 else
-                    timePeriod = timerange(min(time) + timeFilter(1), min(time) + timeFilter(2), "closed");
+
+                    if timeFilter(2) >= 0
+                        timePeriod = timerange(min(time) + timeFilter(1), min(time) + timeFilter(2), "closed");
+                    else
+                        timePeriod = timerange(min(time) + timeFilter(1), max(time) + timeFilter(2), "closed");
+                    end
                 end
             elseif isa(timeFilter, "timerange") || isa(timeFilter, "withtol")
                 timePeriod = timeFilter;
@@ -99,8 +104,15 @@ classdef (Abstract, HandleCompatible) Crop
                     end
                 else
 
-                    startTime = min(time) + timeFilter(1);
-                    endTime = min(time) + timeFilter(2);
+                    if timeFilter(2) >= 0
+
+                        startTime = min(time) + timeFilter(1);
+                        endTime = min(time) + timeFilter(2);
+                    else
+
+                        startTime = min(time) + timeFilter(1);
+                        endTime = max(time) + timeFilter(2);
+                    end
                 end
             elseif isa(timeFilter, "timerange")
 

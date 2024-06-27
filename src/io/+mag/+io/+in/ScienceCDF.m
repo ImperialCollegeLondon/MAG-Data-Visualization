@@ -82,12 +82,12 @@ classdef ScienceCDF < mag.io.in.CDF
             switch details.mode
                 case "burst"
                     mode = mag.meta.Mode.Burst;
-                case "normal"
+                case {"normal", "norm"}
                     mode = mag.meta.Mode.Normal;
                 case "ialirt"
                     mode = mag.meta.Mode.IALiRT;
                 otherwise
-                    error("Unsupported mode ""%s"".");
+                    error("Unsupported mode ""%s"".", details.mode);
             end
         end
 
@@ -96,16 +96,16 @@ classdef ScienceCDF < mag.io.in.CDF
 
             variableNames = cdfInfo.Variables(:, 1);
 
-            rawTimestamps = rawData{matches(variableNames, this.CDFSettings.Timestamp)};
+            rawTimestamps = rawData{matches(variableNames, this.CDFSettings.Timestamp, IgnoreCase = true)};
 
             if isequal(this.CDFSettings.Field, this.CDFSettings.Range)
 
-                rawField = rawData{matches(variableNames, this.CDFSettings.Field)}(:, 1:3);
-                rawRange = rawData{matches(variableNames, this.CDFSettings.Range)}(:, 4);
+                rawField = rawData{matches(variableNames, this.CDFSettings.Field, IgnoreCase = true)}(:, 1:3);
+                rawRange = rawData{matches(variableNames, this.CDFSettings.Range, IgnoreCase = true)}(:, 4);
             else
 
-                rawField = rawData{matches(variableNames, this.CDFSettings.Field)};
-                rawRange = rawData{matches(variableNames, this.CDFSettings.Range)};
+                rawField = rawData{matches(variableNames, this.CDFSettings.Field, IgnoreCase = true)};
+                rawRange = rawData{matches(variableNames, this.CDFSettings.Range, IgnoreCase = true)};
             end
         end
     end

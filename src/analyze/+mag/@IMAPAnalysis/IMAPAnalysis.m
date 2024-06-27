@@ -495,14 +495,18 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
 
             switch extension
                 case mag.io.in.CSV.Extension
+
                     format = "CSV";
+                    args = {};
                 case mag.io.in.CDF.Extension
+
                     format = "CDF";
+                    args = {"CDFSettings", mag.io.CDFSettings(Field = "vectors", Range = "vectors")};
                 otherwise
                     error("Unsupported extension ""%s"" for science data import.", extension);
             end
 
-            importStrategy = feval("mag.io.in." + type + format);
+            importStrategy = feval("mag.io.in." + type + format, args{:});
         end
     end
 end
