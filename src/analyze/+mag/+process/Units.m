@@ -40,10 +40,6 @@ classdef Units < mag.process.Step
             P8VI = -9.5705, ...
             N8VI = -8.3906, ...
             ICU_TEMP = -273.15)
-        % FOBTEMPERATUREFIT FOB temperature fit function.
-        FOBTemperatureFit (1, 1) function_handle = mag.process.Units.fitFOBTemperature()
-        % FIBTEMPERATUREFIT FIB temperature fit function.
-        FIBTemperatureFit (1, 1) function_handle = mag.process.Units.fitFIBTemperature()
     end
 
     methods
@@ -70,10 +66,10 @@ classdef Units < mag.process.Step
 
             switch metaData.Type
                 case "PW"
-                    data = this.convertPowerEngineeringUnits(data);
+                    data = this.convertPowerEngineeringUnits(data, metaData);
                 case "SID15"
 
-                    data = this.convertPowerEngineeringUnits(data);
+                    data = this.convertPowerEngineeringUnits(data, metaData);
 
                     for drt = ["ISV_FOB_DTRDYTM", "ISV_FIB_DTRDYTM"]
                         data{:, drt} = this.convertDataReadyTime(data{:, drt});
@@ -89,7 +85,7 @@ classdef Units < mag.process.Step
 
     methods (Access = private)
 
-        function data = convertPowerEngineeringUnits(this, data)
+        function data = convertPowerEngineeringUnits(this, data, metaData)
         % CONVERTPOWERENGINEERINGUNITS Convert power data from engineering
         % units to scientific units.
 
@@ -102,35 +98,52 @@ classdef Units < mag.process.Step
                 data{:, vn} = (data{:, vn} * this.ScaleFactors(k)) + this.Offsets(k);
             end
 
+            % Temperature calibration based on FEE.
+            if isempty(metaData.OutboardSetup.FEE)
+                fobFEE = "FEE3";
+            else
+                fobFEE = metaData.OutboardSetup.FEE;
+            end
+
+            if isempty(metaData.InboardSetup.FEE)
+                fibFEE = "FEE4";
+            else
+                fibFEE = metaData.InboardSetup.FEE;
+            end
+
             % Convert FOB temperature.
+            fobFit = this.getTemperatureFit(fobFEE);
             locFOB = regexpPattern("(ISV_)?FOB_TEMP");
-            data{:, locFOB} = this.FOBTemperatureFit(data{:, locFOB});
+
+            data{:, locFOB} = fobFit(data{:, locFOB});
 
             % Convert FIB temperature.
+            fibFit = this.getTemperatureFit(fibFEE);
             locFIB = regexpPattern("(ISV_)?FIB_TEMP");
-            data{:, locFIB} = this.FIBTemperatureFit(data{:, locFIB});
+
+            data{:, locFIB} = fibFit(data{:, locFIB});
         end
     end
 
     methods (Static, Access = private)
 
-        function f = fitFOBTemperature()
-        % FITFOBTEMPERATURE Fit FOB temperature with a 3rd degree
-        % polynomial.
+        function f = getTemperatureFit(fee)
+        % GETTEMPERATUREFIT Get FEE temperature 3rd degree polynomial fit.
 
-            x = [1950; 1999; 2044; 2085; 2143; 2193; 2247; 2262; 2354; 2407; 2463; 2510; 2560; 2629; 2677; 2692; 2804; 2856; 2910; 2919; 2975; 3034];
-            y = [-59.1; -54.1; -49.5; -45.2; -39.4; -34.4; -28.8; -27; -17.6; -12; -6.1; -1.3; 4.6; 12; 17.7; 18.7; 32.7; 38.9; 45.6; 46.1; 53.9; 62];
-
-            p = polyfit(x, y, 3);
-            f = @(x) p(1) * x.^3 + p(2) * x.^2 + p(3) * x + p(4);
-        end
-
-        function f = fitFIBTemperature()
-        % FITFIBTEMPERATURE Fit FIB temperature with a 3rd degree
-        % polynomial.
-
-            x = [1949; 1997; 2042; 2083; 2141; 2190; 2243; 2257; 2348; 2400; 2454; 2499; 2548; 2614; 2660; 2675; 2780; 2830; 2879; 2888; 2940; 2994];
-            y = [-59.1; -54.1; -49.5; -45.5; -39.4; -34.4; -28.8; -27; -17.6; -12; -5.9; -1.3; 4.6; 12; 17.4; 18.7; 32.7; 38.9; 45.6; 46.1; 53.9; 62];
+            switch fee
+                case "FEE1"
+                    x = [1944, 1992, 2037, 2077 ,2134, 2184, 2236, 2252, 2342, 2393, 2447, 2492, 2540, 2606, 2664, 2772, 2821, 2871, 2876, 2928, 2984];
+                    y = [-59.1, -54.6, -50, -45.7, -39.9, -34.9, -29.3, -27.5, -18.1, -12.5, -6.6, -1.8, 3.1, 11, 16.9, 30.6, 37.8, 44.3, 45.1, 53.1, 60.9];
+                case "FEE2"
+                    x = [1944, 1992, 2037, 2079, 2136, 2186, 2240, 2255, 2347, 2400, 2456, 2501, 2552, 2621, 2682, 2785, 2847, 2901, 2908, 2964, 3033];
+                    y = [-59.1, -54.8, -50, -45.7, -39.9, -34.6, -29.3, -27.5, -18.4, -12.5, -6.9, -1.8, 4.1, 11.8, 17.2, 30.6, 38.3, 44.3, 45.1, 53.4, 60.9];
+                case "FEE3"
+                    x = [1950; 1999; 2044; 2085; 2143; 2193; 2247; 2262; 2354; 2407; 2463; 2510; 2560; 2629; 2677; 2692; 2804; 2856; 2910; 2919; 2975; 3034];
+                    y = [-59.1; -54.1; -49.5; -45.2; -39.4; -34.4; -28.8; -27; -17.6; -12; -6.1; -1.3; 4.6; 12; 17.7; 18.7; 32.7; 38.9; 45.6; 46.1; 53.9; 62];
+                case "FEE4"
+                    x = [1949; 1997; 2042; 2083; 2141; 2190; 2243; 2257; 2348; 2400; 2454; 2499; 2548; 2614; 2660; 2675; 2780; 2830; 2879; 2888; 2940; 2994];
+                    y = [-59.1; -54.1; -49.5; -45.5; -39.4; -34.4; -28.8; -27; -17.6; -12; -5.9; -1.3; 4.6; 12; 17.4; 18.7; 32.7; 38.9; 45.6; 46.1; 53.9; 62];
+            end
 
             p = polyfit(x, y, 3);
             f = @(x) p(1) * x.^3 + p(2) * x.^2 + p(3) * x + p(4);
