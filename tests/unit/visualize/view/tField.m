@@ -98,6 +98,30 @@ classdef tField < MAGViewTestCase
             % Verify.
             testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
         end
+
+        % Test that if no events are specified, and compression changes in
+        % the data set, compression event is shown.
+        function events_autoCompression(testCase)
+
+            % Set up.
+            instrument = testCase.createTestInstrument(AddHK = false);
+
+            instrument.Primary.Data.compression(7:end) = true;
+            instrument.Secondary.Data.compression(7:end) = true;
+
+            expectedInputs = testCase.generateExpectedInputs(instrument, Event = "Compression");
+            expectedOutput = figure();
+
+            [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
+            when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
+
+            % Exercise.
+            view = mag.graphics.view.Field(instrument, Factory = mockFactory);
+            view.visualize();
+
+            % Verify.
+            testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
+        end
     end
 
     methods (Static, Access = private)
@@ -110,6 +134,7 @@ classdef tField < MAGViewTestCase
                 options.SecondaryTitle (1, 1) string = "FOB (FEE2 - EM4 - None)"
                 options.Title (1, 1) string = "Burst (64, 8)"
                 options.Name (1, 1) string = "Burst (64, 8) Time Series (NaT)"
+                options.Event (1, 1) string = missing()
             end
 
             expectedInputs{1} = instrument.Science(2);
@@ -132,6 +157,26 @@ classdef tField < MAGViewTestCase
                 arrangement = [4, 2];
             else
                 arrangement = [3, 2];
+            end
+
+            switch options.Event
+                case "Compression"
+
+                    arrangement(1) = arrangement(1) + 1;
+                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Compression", YLabel = "compressed [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression")), ...
+                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Compression", YLabel = "compressed [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression"))}];
+
+                case "Mode"
+
+                    arrangement(1) = arrangement(1) + 1;
+                    expectedInputs = [expectedInputs, {instrument.Primary.Events, mag.graphics.style.Default(Title = "FIB Modes", YLabel = "mode [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Primary.Time(end))), ...
+                        instrument.Secondary.Events, mag.graphics.style.Default(Title = "FOB Modes", YLabel = "mode [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Secondary.Time(end)))}];
+
+                case "Range"
+
+                    arrangement(1) = arrangement(1) + 1;
+                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Ranges", YLabel = "range [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25)), ...
+                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Ranges", YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))}];
             end
 
             expectedInputs = [expectedInputs, { ...
