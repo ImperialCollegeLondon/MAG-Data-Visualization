@@ -67,6 +67,14 @@ classdef Field < mag.graphics.view.Science
             numEvents = 0;
             eventData = {};
 
+            if isempty(this.Event) && (any(diff(primary.Compression) ~= 0) || any(diff(secondary.Compression) ~= 0))
+
+                numEvents = 1;
+                eventData = {primary, mag.graphics.style.Default(Title = compose("%s Compression", primarySensor), YLabel = "compressed [-]", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression", EndTime = primary.Time(end))), ...
+                    secondary, mag.graphics.style.Default(Title = compose("%s Compression", secondarySensor), YLabel = "compressed [-]", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression", EndTime = secondary.Time(end)))};
+                return;
+            end
+
             for e = this.Event
 
                 switch e
