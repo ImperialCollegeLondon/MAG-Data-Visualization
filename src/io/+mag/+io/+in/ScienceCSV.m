@@ -20,8 +20,8 @@ classdef ScienceCSV < mag.io.in.CSV
             end
 
             % Separate primary and secondary.
-            rawPrimary = rawData(:, regexpPattern(".*(pri|sequence).*"));
-            rawSecondary = rawData(:, regexpPattern(".*(sec|sequence).*"));
+            rawPrimary = rawData(:, regexpPattern(".*(pri|sequence|compression).*"));
+            rawSecondary = rawData(:, regexpPattern(".*(sec|sequence|compression).*"));
 
             % Extract file meta data.
             [mode, primaryFrequency, secondaryFrequency, packetFrequency, timeStamp] = this.extractFileMetaData(fileName);
@@ -97,7 +97,12 @@ classdef ScienceCSV < mag.io.in.CSV
             rawData = renamevars(rawData, [["x", "y", "z", "rng"] + "_" + sensor, sensor + "_" + ["coarse", "fine"]], newVariableNames);
 
             % Add compression and quality flags.
-            rawData.compression = false(height(rawData), 1);
+            if ismember("compression", rawData.Properties.VariableNames)
+                rawData.compression = logical(rawData.compression);
+            else
+                rawData.compression = false(height(rawData), 1);
+            end
+
             rawData.quality = repmat(mag.meta.Quality.Regular, height(rawData), 1);
 
             % Convert timestamps.

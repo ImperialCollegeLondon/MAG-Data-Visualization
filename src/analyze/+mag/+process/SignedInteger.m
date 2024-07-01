@@ -11,6 +11,8 @@ classdef SignedInteger < mag.process.Step
     properties
         % COMPRESSIONVARIABLE Name of compression variable.
         CompressionVariable (1, 1) string
+        % COMPRESSIONWIDTH Width of compressed data.
+        CompressionWidth (1, 1) double = 16
         % VARIABLES Variables to be converted to signed integer.
         Variables (1, :) string
     end
@@ -46,7 +48,7 @@ classdef SignedInteger < mag.process.Step
             compressed = rf.(this.CompressionVariable) == true;
 
             data{uncompressed, this.Variables} = this.convertToSignedInteger(data{uncompressed, this.Variables}, 16);
-            data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, 18);
+            data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, this.CompressionWidth);
 
             for v = this.Variables
                 data.(v) = cast(data.(v), "double");

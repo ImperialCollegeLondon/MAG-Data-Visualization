@@ -67,7 +67,13 @@ classdef Field < mag.graphics.view.Science
             numEvents = 0;
             eventData = {};
 
-            for e = this.Event
+            selectedEvents = this.Event;
+
+            if isempty(selectedEvents) && (any(diff(primary.Compression) ~= 0) || any(diff(secondary.Compression) ~= 0))
+                selectedEvents = "Compression";
+            end
+
+            for e = selectedEvents
 
                 switch e
                     case "Compression"
@@ -89,7 +95,7 @@ classdef Field < mag.graphics.view.Science
                             secondary, mag.graphics.style.Default(Title = compose("%s Ranges", secondarySensor), YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))};
 
                     otherwise
-                        error("Unrecognized event ""%s"".");
+                        error("Unrecognized event ""%s"".", e);
                 end
 
                 eventData = [eventData, ed]; %#ok<AGROW>

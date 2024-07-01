@@ -5,6 +5,11 @@ classdef HKCSV < mag.io.in.CSV
         FileNamePattern (1, 1) string = "idle_export_\w+.MAG_HSK_(?<type>\w+)_(?<date>\d+)_(?<time>\w+).(?<extension>\w+)"
     end
 
+    properties
+        % SENSORSETUP Setup for MAG sensors.
+        SensorSetup (1, 2) mag.meta.Setup = repmat(mag.meta.Setup(), 1, 2)
+    end
+
     methods
 
         function data = process(this, rawData, fileName)
@@ -39,7 +44,7 @@ classdef HKCSV < mag.io.in.CSV
             rawData = regexp(fileName, this.FileNamePattern, "names");
 
             timestamp = datetime(rawData.date + rawData.time, InputFormat = "yyyyMMddHHmmss", TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format);
-            metaData = mag.meta.HK(Type = rawData.type, Timestamp = timestamp);
+            metaData = mag.meta.HK(Type = rawData.type, OutboardSetup = this.SensorSetup(1), InboardSetup = this.SensorSetup(2), Timestamp = timestamp);
         end
     end
 end

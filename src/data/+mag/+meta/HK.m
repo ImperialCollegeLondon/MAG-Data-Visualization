@@ -4,6 +4,10 @@ classdef HK < mag.meta.Data
     properties
         % TYPE Type of HK data.
         Type string {mustBeScalarOrEmpty, mustBeMember(Type, ["PROCSTAT", "PW", "SID15", "STATUS"])}
+        % OUTBOARDSETUP Outboard sensor setup.
+        OutboardSetup (1, 1) mag.meta.Setup
+        % INBOARDSETUP Outboard sensor setup.
+        InboardSetup (1, 1) mag.meta.Setup
     end
 
     methods
