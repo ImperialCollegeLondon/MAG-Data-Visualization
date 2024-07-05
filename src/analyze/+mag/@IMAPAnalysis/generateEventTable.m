@@ -241,8 +241,13 @@ function events = findModeChanges(data, events, name)
 
             if all(ddt < 1e-3)
 
-                [~, idxMin] = min(abs(t - eventWindow.(timeColumn)));
-                events.Time(i) = eventWindow.(timeColumn)(idxMin);
+                if seconds(t - eventWindow.t(1)) < 1.5
+                    events.Time(i) = eventWindow.t(1);
+                else
+
+                    [~, idxMin] = min(abs(t - eventWindow.(timeColumn)));
+                    events.Time(i) = eventWindow.(timeColumn)(idxMin);
+                end
             else
 
                 [~, idxChange] = max(diff(dt), [], ComparisonMethod = "abs");
