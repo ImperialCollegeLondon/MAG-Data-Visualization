@@ -26,6 +26,22 @@ classdef Science < mag.HK
         FIBB (:, 1) double
         % FIBRANGE Range values of FIB sensor.
         FIBRange (:, 1) double
+        % MODE MAG mode.
+        Mode (1, 1) mag.meta.Mode
+        % NORMALPRIMARYRATE Normal mode primary sensor rate.
+        NormalPrimaryRate (1, 1) double
+        % NORMALSECONDARYRATE Normal mode secondary sensor rate.
+        NormalSecondaryRate (1, 1) double
+        % BURSTPRIMARYRATE Burst mode primary sensor rate.
+        BurstPrimaryRate (1, 1) double
+        % BURSTSECONDARYRATE Burst mode secondary sensor rate.
+        BurstSecondaryRate (1, 1) double
+        % ACTIVEPRIMARYRATE Active mode primary sensor rate.
+        ActivePrimaryRate (1, 1) double
+        % ACTIVESECONDARYRATE Active mode secondary sensor rate.
+        ActiveSecondaryRate (1, 1) double
+        % COMPRESSION Compression flag.
+        Compression (1, 1) logical
     end
 
     methods
@@ -76,6 +92,53 @@ classdef Science < mag.HK
 
         function range = get.FIBRange(this)
             range = double(this.Data.FIB_RNG);
+        end
+
+        function mode = get.Mode(this)
+            mode = mag.meta.Mode(this.Data.MAGMODE);
+        end
+
+        function rate = get.NormalPrimaryRate(this)
+            rate = double(this.Data.NPRI_OUTRATE);
+        end
+
+        function rate = get.NormalSecondaryRate(this)
+            rate = double(this.Data.NSEC_OUTRATE);
+        end
+
+        function rate = get.BurstPrimaryRate(this)
+            rate = double(this.Data.BPRI_OUTRATE);
+        end
+
+        function rate = get.BurstSecondaryRate(this)
+            rate = double(this.Data.BSEC_OUTRATE);
+        end
+
+        function rate = get.ActivePrimaryRate(this)
+            rate = arrayfun(@(i) this.determineRate(this.Mode(i), this.NormalPrimaryRate(i), this.BurstPrimaryRate(i)), 1:numel(this.Mode))';
+        end
+
+        function rate = get.ActiveSecondaryRate(this)
+            rate = arrayfun(@(i) this.determineRate(this.Mode(i), this.NormalSecondaryRate(i), this.BurstSecondaryRate(i)), 1:numel(this.Mode))';
+        end
+
+        function compression = get.Compression(this)
+            compression = double(this.Data.COMPRESSION);
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function rate = determineRate(mode, normalRate, burstRate)
+
+            switch mode
+                case mag.meta.Mode.Normal
+                    rate = normalRate;
+                case mag.meta.Mode.Burst
+                    rate = burstRate;
+                otherwise
+                    rate = 0;
+            end
         end
     end
 end
