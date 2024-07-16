@@ -40,10 +40,11 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.verifySubstring(analysis.ScienceFileNames(4), "MAGScience-normal-(2,2)-8s-20240507-11h34.csv", "Science file names do not match.");
             testCase.verifySubstring(analysis.ScienceFileNames(5), "MAGScience-normal-(2,2)-8s-20240507-11h36.csv", "Science file names do not match.");
 
-            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_pwr.MAG_HSK_PW_20240507_111151.csv", "HK file names do not match.");
-            testCase.verifySubstring(analysis.HKFileNames{2}, "idle_export_stat.MAG_HSK_STATUS_20240507_111151.csv", "HK file names do not match.");
-            testCase.verifySubstring(analysis.HKFileNames{3}, "idle_export_conf.MAG_HSK_SID15_20240507_111151.csv", "HK file names do not match.");
-            testCase.verifySubstring(analysis.HKFileNames{4}, "idle_export_proc.MAG_HSK_PROCSTAT_20240507_111151.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_conf.MAG_HSK_SID15_20240507_111151.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{2}, "idle_export_proc.MAG_HSK_PROCSTAT_20240507_111151.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{3}, "idle_export_pwr.MAG_HSK_PW_20240507_111151.csv", "HK file names do not match.");
+            testCase.verifyEmpty(analysis.HKFileNames{4}, "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20240507_111151.csv", "HK file names do not match.");
 
             % Verify modes.
             results = analysis.getAllModes();
