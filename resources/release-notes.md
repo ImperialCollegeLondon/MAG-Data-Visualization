@@ -2,3 +2,4 @@
 
 - Add support for MAG Science HK (SID5)
 - Force data to be `double`s after processing in `mag.process.Range`
+- Fix [#63](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/issues/63)
