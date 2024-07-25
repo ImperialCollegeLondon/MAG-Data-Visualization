@@ -149,11 +149,15 @@ function loadEventsData(this)
 
         responsePattern = getResponsePattern(completedEvents(1).details);
 
-        completedId = regexp([completedEvents.details], responsePattern, "names", "all");
-        completedId = [completedId{:}];
+        for i = 1:numel(completedEvents)
 
-        for i = string(fieldnames(completedId))'
-            [completedEvents.(i)] = completedId.(i);
+            completedId = regexp(completedEvents(i).details, responsePattern, "names", "once");
+
+            for fn = string(fieldnames(completedId))'
+                if ~isempty(completedId)
+                    completedEvents(i).(fn) = completedId.(fn);
+                end
+            end
         end
 
         for i = 1:numel(completedEvents)
