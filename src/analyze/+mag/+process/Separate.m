@@ -48,6 +48,10 @@ classdef Separate < mag.process.Step
                 ~
             end
 
+            if isempty(data)
+                return;
+            end
+
             if isequal(this.Variables, "*")
 
                 locMissingCompatible = varfun(@mag.internal.isMissingCompatible, data, OutputFormat = "uniform");
