@@ -103,6 +103,12 @@ classdef ScienceCSV < mag.io.in.CSV
                 rawData.compression = false(height(rawData), 1);
             end
 
+            if ismember("compression_width_bits", rawData.Properties.VariableNames)
+                rawData.compression_width = double(rawData.compression_width_bits);
+            else
+                rawData.compression_width = 16 * ones(height(rawData), 1);
+            end
+
             rawData.quality = repmat(mag.meta.Quality.Regular, height(rawData), 1);
 
             % Convert timestamps.
@@ -113,8 +119,9 @@ classdef ScienceCSV < mag.io.in.CSV
             % Add continuity information, for simpler interpolation.
             % Property order:
             %     sequence, x, y, z, range, coarse, fine, compression,
-            %     quality, t
-            rawData.Properties.VariableContinuity = ["step", "continuous", "continuous", "continuous", "step", "continuous", "continuous", "step", "event", "continuous"];
+            %     compression width, quality, t
+            rawData.Properties.VariableContinuity = ["step", "continuous", "continuous", "continuous", "step", ...
+                "continuous", "continuous", "step", "step", "event", "continuous"];
 
             % Convert to mag.Science.
             data = mag.Science(table2timetable(rawData, RowTimes = "t"), metaData);

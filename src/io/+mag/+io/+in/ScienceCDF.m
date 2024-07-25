@@ -47,13 +47,14 @@ classdef ScienceCDF < mag.io.in.CDF
             % Create science timetable.
             timedData = timetable(timestamps, (1:numel(timestamps))', ...
                 rawField(:, 1), rawField(:, 2), rawField(:, 3), rawRange, ...
-                false(height(timestamps), 1), repmat(mag.meta.Quality.Regular, height(timestamps), 1), ...
-                VariableNames = ["sequence", "x", "y", "z", "range", "compression", "quality"]);
+                false(height(timestamps), 1), 16 * ones(height(timestamps), 1), repmat(mag.meta.Quality.Regular, height(timestamps), 1), ...
+                VariableNames = ["sequence", "x", "y", "z", "range", "compression", "compression_width", "quality"]);
 
             % Add continuity information, for simpler interpolation.
             % Property order:
-            %     sequence, x, y, z, range, compression, quality
-            timedData.Properties.VariableContinuity = ["step", "continuous", "continuous", "continuous", "step", "step", "event"];
+            %     sequence, x, y, z, range, compression, compression width,
+            %     quality
+            timedData.Properties.VariableContinuity = ["step", "continuous", "continuous", "continuous", "step", "step", "step", "event"];
 
             % Create mag.Science object with meta data.
             metaData = mag.meta.Science(Mode = mode, Primary = isequal(sensor, mag.meta.Sensor.FOB), Sensor = sensor, ...

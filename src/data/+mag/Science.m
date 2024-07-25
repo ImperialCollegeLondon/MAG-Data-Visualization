@@ -25,6 +25,8 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
         % COMPRESSION Compression flag denoting whether data is compressed.
         % "true" stands for compressed.
         Compression (:, 1) logical
+        % COMPRESSIONWIDTH Compressed data width in bits.
+        CompressionWidth (:, 1) double
         % QUALITY Quality flag denoting whether data is of high quality.
         Quality (:, 1) mag.meta.Quality
         % EVENTS Events detected.
@@ -93,6 +95,10 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
 
         function compression = get.Compression(this)
             compression = logical(this.Data.(this.Settings.Compression));
+        end
+
+        function compressionWidth = get.CompressionWidth(this)
+            compressionWidth = logical(this.Data.(this.Settings.CompressionWidth));
         end
 
         function set.Quality(this, quality)

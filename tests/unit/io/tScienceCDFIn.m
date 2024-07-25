@@ -71,7 +71,7 @@ classdef tScienceCDFIn < MAGIOTestCase
             testCase.verifyEqual(data.MetaData.Mode, ValidFileDetails.Mode, "Mode should be as expected.");
             testCase.verifyEqual(data.MetaData.Timestamp, ValidFileDetails.Timestamp, "Timestamp should be as expected.");
 
-            testCase.verifySize(data.Data, [99, 7], "Science data should be of expected size.");
+            testCase.verifySize(data.Data, [99, 8], "Science data should be of expected size.");
         end
 
         % Test that processing invalid CDF files thorws an error.

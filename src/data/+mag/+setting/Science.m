@@ -14,6 +14,8 @@ classdef Science < mag.mixin.SetGet
         Sequence (1, 1) string = "sequence"
         % COMPRESSION Name of compression flag property.
         Compression (1, 1) string = "compression"
+        % COMPRESSIONWIDTH Name of compression width property.
+        CompressionWidth (1, 1) string = "compression_width"
         % QUALITY Name of quality flag property.
         Quality (1, 1) string = "quality"
     end

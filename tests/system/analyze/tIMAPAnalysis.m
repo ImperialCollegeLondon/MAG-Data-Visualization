@@ -10,6 +10,10 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
         function setUpWorkingDirectory(testCase)
             testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
         end
+
+        function suppressWarnings(testCase)
+            testCase.applyFixture(matlab.unittest.fixtures.SuppressedWarningsFixture("MATLAB:class:EnumerationValueChanged"));
+        end
     end
 
     methods (Test)
