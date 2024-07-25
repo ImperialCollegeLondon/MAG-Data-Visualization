@@ -62,10 +62,12 @@ classdef Calibration < mag.process.Step
 
             if isempty(metaData.Setup) || isempty(metaData.Setup.Model)
                 modelName = string.empty();
+            elseif ismember(metaData.Setup.Model, ["FM4", "FM5"])
+                modelName = metaData.Setup.Model;
             elseif startsWith(metaData.Setup.Model, regexpPattern("E|F"))
                 modelName = "FM5";
             else
-                modelName = metaData.Setup.Model;
+                modelName = string.empty();
             end
 
             for r = ranges'

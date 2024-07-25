@@ -54,7 +54,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData();
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "EM1"));
+            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "UM1"));
 
             % Exercise.
             calibrationStep = mag.process.Calibration(Variables = ["x", "y", "z"]);
