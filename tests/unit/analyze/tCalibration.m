@@ -169,5 +169,26 @@ classdef tCalibration < MAGAnalysisTestCase
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
                 "Calibrated value should match expectation.");
         end
+
+        % Verify that correct calibration is selected for JMAG.
+        function calibration_jmag(testCase)
+
+            % Set up.
+            uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
+            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "JM1"));
+
+            expectedData = uncalibratedData;
+            expectedData{:, "x"} = -2;
+            expectedData{:, "y"} = 1;
+            expectedData{:, "z"} = 3;
+
+            % Exercise.
+            calibrationStep = mag.process.Calibration(Variables = ["x", "y", "z"], Temperature = "Cold");
+            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+
+            % Verify.
+            testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
+                "Calibrated value should match expectation.");
+        end
     end
 end
