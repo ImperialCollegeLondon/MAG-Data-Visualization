@@ -104,7 +104,9 @@ classdef ScienceCSV < mag.io.in.CSV
             end
 
             if ismember("compression_width_bits", rawData.Properties.VariableNames)
+
                 rawData.compression_width = double(rawData.compression_width_bits);
+                rawData = removevars(rawData, "compression_width_bits");
             else
                 rawData.compression_width = 16 * ones(height(rawData), 1);
             end
