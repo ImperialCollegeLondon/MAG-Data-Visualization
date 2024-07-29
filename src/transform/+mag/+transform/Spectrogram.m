@@ -78,9 +78,9 @@ classdef Spectrogram < mag.transform.Transformation
                 else
 
                     k = ceil(height(field) / 100);
+
                     field = (field - movmean(field, k, "omitmissing")) ./ movstd(field, k, "omitmissing");
-                    idx = isnan(field); % ISNAN identifies where 0/0 has occurred above
-                    field(idx) = 0;
+                    field(isnan(field)) = 0; % isnan identifies where 0/0 has occurred above
                 end
             end
 
