@@ -50,8 +50,15 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         function [primarySensor, secondarySensor] = getSensorNames(this)
         % GETSENSORNAMES Get names of primary and secondary sensors.
 
-            primarySensor = string(this.Results.Science.getName("Primary"));
-            secondarySensor = string(this.Results.Science.getName("Secondary"));
+            if numel(this.Results.Science) > 1
+
+                primarySensor = string(this.Results.Science.getName("Primary"));
+                secondarySensor = string(this.Results.Science.getName("Secondary"));
+            else
+
+                primarySensor = "FOB";
+                secondarySensor = "FIB";
+            end
         end
 
         function hkType = getHKType(this, type)
@@ -59,7 +66,7 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
             arguments
                 this
-                type (1, 1) string {mustBeMember(type, ["PROCSTAT", "PW", "SID15", "STATUS"])} = "PW"
+                type (1, 1) string = "PW"
             end
 
             hkType = this.Results.HK.getHKType(type);

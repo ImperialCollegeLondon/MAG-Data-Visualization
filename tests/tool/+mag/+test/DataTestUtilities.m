@@ -11,9 +11,9 @@ classdef DataTestUtilities
         function scienceTT = getScienceTimetable()
         % GETSCIENCETIMETABLE Get timetable of science data.
 
-            scienceTT = timetable(mag.test.DataTestUtilities.Time, (1:10)', (11:20)', (21:30)', 3 * ones(10, 1), (1:10)', false(10, 1), repmat(mag.meta.Quality.Regular, 10, 1), ...
-                VariableNames = ["x", "y", "z", "range", "sequence", "compression", "quality"]);
-            scienceTT.Properties.VariableContinuity = ["continuous", "continuous", "continuous", "step", "step", "step", "event"];
+            scienceTT = timetable(mag.test.DataTestUtilities.Time, (1:10)', (11:20)', (21:30)', 3 * ones(10, 1), (1:10)', false(10, 1), 16 * ones(10, 1), repmat(mag.meta.Quality.Regular, 10, 1), ...
+                VariableNames = ["x", "y", "z", "range", "sequence", "compression", "compression_width_bits", "quality"]);
+            scienceTT.Properties.VariableContinuity = ["continuous", "continuous", "continuous", "step", "step", "step", "step", "event"];
         end
 
         function pwrTT = getPowerTimetable()

@@ -67,6 +67,22 @@ classdef Units < mag.process.Step
             switch metaData.Type
                 case "PW"
                     data = this.convertPowerEngineeringUnits(data, metaData);
+                case "SCI"
+
+                    for fee = ["FOB", "FIB"]
+
+                        steps = [mag.process.AllZero(Variables = fee + ["_COARSETM", "_FINETM", "_XVEC", "_YVEC", "_ZVEC"]), ...
+                            mag.process.SignedInteger(CompressionVariable = "COMPRESSION", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"], AssumedType = "uint16"), ...
+                            mag.process.Range(RangeVariable = fee + "_RNG", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"])];
+
+                        for s = steps
+                            data = s.apply(data, []);
+                        end
+
+                        data.(fee + "_t") = datetime(mag.time.Constant.Epoch + data.(fee + "_COARSETM") + (data.(fee + "_FINETM") / double(intmax("uint16"))), ConvertFrom = "posixtime", ...
+                            Format = mag.time.Constant.Format, TimeZone = mag.time.Constant.TimeZone);
+                    end
+
                 case "SID15"
 
                     data = this.convertPowerEngineeringUnits(data, metaData);

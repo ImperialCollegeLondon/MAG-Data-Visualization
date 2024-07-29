@@ -60,10 +60,14 @@ classdef Calibration < mag.process.Step
 
             ranges = unique(data.range);
 
-            if isempty(metaData.Setup)
+            if isempty(metaData.Setup) || isempty(metaData.Setup.Model)
                 modelName = string.empty();
-            else
+            elseif startsWith(metaData.Setup.Model, ["FM4", "FM5", "LM", "JM"])
                 modelName = metaData.Setup.Model;
+            elseif startsWith(metaData.Setup.Model, regexpPattern("E|F"))
+                modelName = "FM5";
+            else
+                modelName = string.empty();
             end
 
             for r = ranges'
@@ -83,7 +87,7 @@ classdef Calibration < mag.process.Step
             arguments (Input)
                 this
                 uncalibratedData (:, 3) double
-                calibrationFile (1, 1) string {mustBeFile} = this.DefaultCalibrationFile
+                calibrationFile (1, 1) string {mustBeFile}
             end
 
             arguments (Output)
@@ -99,13 +103,19 @@ classdef Calibration < mag.process.Step
 
         function fileName = getFileName(this, range, modelName)
 
+            if isempty(modelName)
+
+                fileName = this.DefaultCalibrationFile;
+                return;
+            end
+
             fileName = fullfile(this.FileLocation, compose("%s_r%d_t%s.txt", lower(modelName), range, lower(this.Temperature)));
 
-            if isempty(fileName) || ~isfile(fileName)
+            if ~isfile(fileName)
 
                 fileName = fullfile(this.FileLocation, compose("%s_tany.txt", lower(extract(modelName, lettersPattern()))));
 
-                if isempty(fileName) || ~isfile(fileName)
+                if ~isfile(fileName)
                     fileName = this.DefaultCalibrationFile;
                 end
             end

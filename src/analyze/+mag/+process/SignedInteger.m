@@ -15,6 +15,8 @@ classdef SignedInteger < mag.process.Step
         CompressionWidth (1, 1) double = 16
         % VARIABLES Variables to be converted to signed integer.
         Variables (1, :) string
+        % ASSUMEDTYPE Assumed type for integer conversion.
+        AssumedType (1, 1) string = "int16"
     end
 
     methods
@@ -58,16 +60,16 @@ classdef SignedInteger < mag.process.Step
 
     methods (Hidden)
 
-        function signedData = convertToSignedInteger(~, unsignedData, signedBit)
+        function signedData = convertToSignedInteger(this, unsignedData, signedBit)
 
             arguments (Input)
-                ~
+                this
                 unsignedData {mustBeNumeric}
                 signedBit (1, 1) double = 16
             end
 
             if isa(unsignedData, "double")
-                assumedType = {"int16"};
+                assumedType = {this.AssumedType};
             else
                 assumedType = {};
             end

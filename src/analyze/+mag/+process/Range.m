@@ -45,6 +45,8 @@ classdef Range < mag.process.Step
         end
 
         function data = apply(this, data, ~)
+
+            data = convertvars(data, this.Variables, "double");
             data{:, this.Variables} = this.applyRange(data{:, this.Variables}, data.(this.RangeVariable));
         end
     end

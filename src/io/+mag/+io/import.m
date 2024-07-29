@@ -13,9 +13,9 @@ function data = import(options)
 
     data = mag.TimeSeries.empty();
 
-    for i = 1:numel(options.FileNames)
+    for fn = options.FileNames
 
-        [rawData, details] = options.Format.load(options.FileNames(i));
+        [rawData, details] = options.Format.load(fn);
 
         if ~isempty(rawData)
             data = [data, options.Format.process(rawData, details)]; %#ok<AGROW>

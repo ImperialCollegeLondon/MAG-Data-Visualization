@@ -139,11 +139,16 @@ function events = updateRampModeTimestamps(events, data)
             dv = diff(data.(v));
             m = strfind(dv', mag.process.Ramp.Pattern);
 
-            matches(:, end + 1) = [m(1); m(end)]; %#ok<AGROW>
-            times(:, end + 1) = data.(data.Properties.DimensionNames{1})(matches(:, end)); %#ok<AGROW>
+            if ~isempty(m)
+
+                matches(:, end + 1) = [m(1); m(end)]; %#ok<AGROW>
+                times(:, end + 1) = data.(data.Properties.DimensionNames{1})(matches(:, end)); %#ok<AGROW>
+            end
         end
 
-        if numel(unique(times)) > 2
+        if isempty(times)
+            return;
+        elseif numel(unique(times)) > 2
 
             warning("Inconsistent ramp mode. Selecting earliest and latest timestamps as beginning and end.");
 

@@ -42,10 +42,10 @@ function loadScienceData(this, primarySetup, secondarySetup)
 
     %% Process Data as a Whole
 
-    for ps = this.WholeDataProcessing
+    for wds = this.WholeDataProcessing
 
-        primary.Data = ps.apply(primary.Data, primary.MetaData);
-        secondary.Data = ps.apply(secondary.Data, secondary.MetaData);
+        primary.Data = wds.apply(primary.Data, primary.MetaData);
+        secondary.Data = wds.apply(secondary.Data, secondary.MetaData);
     end
 
     %% Extract Ramp Mode (If Any)

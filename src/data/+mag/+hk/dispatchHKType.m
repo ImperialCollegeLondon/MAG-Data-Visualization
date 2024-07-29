@@ -15,6 +15,8 @@ function hk = dispatchHKType(hkData, metaData)
             hk = mag.hk.Processor(hkData, metaData);
         case "PW"
             hk = mag.hk.Power(hkData, metaData);
+        case "SCI"
+            hk = mag.hk.Science(hkData, metaData);
         case "SID15"
             hk = mag.hk.SID15(hkData, metaData);
         case "STATUS"
