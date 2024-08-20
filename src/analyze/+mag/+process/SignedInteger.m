@@ -47,10 +47,10 @@ classdef SignedInteger < mag.process.Step
             rf = rowfilter(data);
 
             uncompressed = rf.(this.CompressionVariable) == false;
-            compressed = rf.(this.CompressionVariable) == true;
+            % compressed = rf.(this.CompressionVariable) == true;
 
             data{uncompressed, this.Variables} = this.convertToSignedInteger(data{uncompressed, this.Variables}, 16);
-            data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, this.CompressionWidth);
+            % data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, this.CompressionWidth);
 
             for v = this.Variables
                 data.(v) = cast(data.(v), "double");

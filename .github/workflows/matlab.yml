@@ -46,7 +46,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: test
     env:
-      VERSION: "4.5.0"
+      VERSION: "4.5.1"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -59,7 +59,7 @@ jobs:
         with:
           tasks: package("${{ env.VERSION }}")
       - name: Upload toolbox
-        uses: actions/upload-artifact@v4.3.4
+        uses: actions/upload-artifact@v4.3.6
         with:
           name: 'MAG Data Visualization.mltbx'
           path: artifacts
