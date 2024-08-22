@@ -9,10 +9,15 @@ classdef SignedInteger < mag.process.Step
     end
 
     properties
+        % INGORECOMPRESSEDDATA Flag to ignore compressed data.
+        IgnoreCompressedData (1, 1) logical = true
         % COMPRESSIONVARIABLE Name of compression variable.
         CompressionVariable (1, 1) string
-        % COMPRESSIONWIDTH Width of compressed data.
-        CompressionWidth (1, 1) double = 16
+        % COMPRESSIONWIDTHVARIABLE Name of compression width variable.
+        CompressionWidthVariable (1, 1) string
+        % REFERENCEWIDTH Compression reference width. Overrides
+        % "CompressionWidthVariable".
+        ReferenceWidth (1, 1) double = missing()
         % VARIABLES Variables to be converted to signed integer.
         Variables (1, :) string
         % ASSUMEDTYPE Assumed type for integer conversion.
@@ -47,10 +52,20 @@ classdef SignedInteger < mag.process.Step
             rf = rowfilter(data);
 
             uncompressed = rf.(this.CompressionVariable) == false;
-            % compressed = rf.(this.CompressionVariable) == true;
-
             data{uncompressed, this.Variables} = this.convertToSignedInteger(data{uncompressed, this.Variables}, 16);
-            % data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, this.CompressionWidth);
+
+            if ~this.IgnoreCompressedData
+
+                compressed = rf.(this.CompressionVariable) == true;
+
+                if ismissing(this.ReferenceWidth)
+                    signedBit = data{compressed, this.CompressionWidthVariable};
+                else
+                    signedBit = this.ReferenceWidth;
+                end
+
+                data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, signedBit);
+            end
 
             for v = this.Variables
                 data.(v) = cast(data.(v), "double");
