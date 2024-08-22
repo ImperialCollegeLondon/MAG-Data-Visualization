@@ -97,7 +97,7 @@ classdef (Abstract) Chart < matlab.mixin.Heterogeneous & mag.mixin.SetGet
             if isempty(this.Filter)
                 filteredData = data;
 
-            % Same filtering for each y-axis variable.                
+            % Same filtering for each y-axis variable.
             elseif height(this.Filter) == height(data)
                 filteredData = data(this.Filter, :);
 

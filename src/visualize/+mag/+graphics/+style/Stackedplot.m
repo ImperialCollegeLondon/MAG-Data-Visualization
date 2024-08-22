@@ -78,7 +78,7 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
                 l.Layout.Tile = this.LegendLocation;
             end
 
-            % Prettify axes appareance to match built-in stackedplot.
+            % Prettify axes appearance to match built-in stackedplot.
             xAxes = [axes(1:end-1).XAxis];
             [xAxes.Visible] = deal("off");
 

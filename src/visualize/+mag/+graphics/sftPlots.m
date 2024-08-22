@@ -53,6 +53,9 @@ function figures = sftPlots(analysis, options)
         views(end + 1) = mag.graphics.view.IALiRT(croppedAnalysis.Results);
     end
 
+    % Show science comparison.
+    views(end + 1) = mag.graphics.view.Comparison(croppedAnalysis.Results);
+
     % Show timestamp analysis.
     views(end + 1) = mag.graphics.view.Timestamp(analysis.Results);
 
