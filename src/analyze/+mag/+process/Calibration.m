@@ -19,6 +19,8 @@ classdef Calibration < mag.process.Step
         % DEFAULTCALIBRATIONFILE Default file containing scale factor,
         % misalignment and offset information.
         DefaultCalibrationFile (1, 1) string {mustBeFile} = fullfile(mag.process.Calibration.FileLocation, "default.txt")
+        % RANGEVARIABLE Name of range variable.
+        RangeVariable (1, 1) string
         % VARIABLES Variables to be converted using calibration
         % information.
         Variables (1, :) string
@@ -58,7 +60,7 @@ classdef Calibration < mag.process.Step
                 metaData (1, 1) mag.meta.Science
             end
 
-            ranges = unique(data.range);
+            ranges = unique(data.(this.RangeVariable));
 
             if isempty(metaData.Setup) || isempty(metaData.Setup.Model)
                 modelName = string.empty();
@@ -72,7 +74,7 @@ classdef Calibration < mag.process.Step
 
             for r = ranges'
 
-                locRange = data.range == r;
+                locRange = data.(this.RangeVariable) == r;
 
                 calibrationFile = this.getFileName(r, modelName);
                 data{locRange, this.Variables} = this.applyCalibration(data{locRange, this.Variables}, calibrationFile);
