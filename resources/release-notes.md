@@ -1,5 +1,6 @@
 # Software
 
-- Do not apply signed integer conversion to compressed data
-- Remove compression step for I-ALiRT, as uncompressed
-- Fix compression variable name (from `compression_width_bits` to `compression_width`)
+- Add comparison view `mag.graphics.view.Comparison` for comparing science, I-ALiRT and SID5 data
+- Add `RangeVariable` as option in `mag.process.Calibration`
+- Improve management of compression in `mag.process.SignedInteger`
+- Fix issues with processing of SID5 data (signedness, calibration)

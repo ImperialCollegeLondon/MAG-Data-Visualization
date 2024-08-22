@@ -12,6 +12,7 @@
         "**/*~": true
     },
     "cSpell.words": [
-        "downsample"
+        "downsample",
+        "signedness"
     ]
 }

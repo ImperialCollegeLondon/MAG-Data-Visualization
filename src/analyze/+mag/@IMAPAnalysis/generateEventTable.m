@@ -69,7 +69,7 @@ function eventTable = generateEventTable(~, data, sensorEvents)
     shutDownTable.Label = sensorName + " Shutdown";
     shutDownTable.Reason = categorical("Command");
 
-    eventTable = [eventTable; shutDownTable];
+    eventTable = sortrows([eventTable; shutDownTable]);
 
     % Ensure no duplicate times.
     locDuplicate = diff(eventTable.Time) == 0;
