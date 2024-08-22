@@ -72,11 +72,21 @@ classdef Units < mag.process.Step
                     for fee = ["FOB", "FIB"]
 
                         steps = [mag.process.AllZero(Variables = fee + ["_COARSETM", "_FINETM", "_XVEC", "_YVEC", "_ZVEC"]), ...
-                            mag.process.SignedInteger(CompressionVariable = "COMPRESSION", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"], AssumedType = "uint16"), ...
-                            mag.process.Range(RangeVariable = fee + "_RNG", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"])];
+                            mag.process.SignedInteger(IgnoreCompressedData = false, CompressionVariable = "COMPRESSION", ReferenceWidth = 16, ...
+                                Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"], AssumedType = "uint16"), ...
+                            mag.process.Range(RangeVariable = fee + "_RNG", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"]), ...
+                            mag.process.Calibration(RangeVariable = fee + "_RNG", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"])];
+
+                        if fee == "FOB"
+                            ssu = metaData.OutboardSetup;
+                        else
+                            ssu = metaData.InboardSetup;
+                        end
+
+                        md = mag.meta.Science(Setup = ssu);
 
                         for s = steps
-                            data = s.apply(data, []);
+                            data = s.apply(data, md);
                         end
 
                         data.(fee + "_t") = datetime(mag.time.Constant.Epoch + data.(fee + "_COARSETM") + (data.(fee + "_FINETM") / double(intmax("uint16"))), ConvertFrom = "posixtime", ...
