@@ -22,7 +22,7 @@ jobs:
           release: ${{ matrix.release }}
           products: Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox
       - name: Run tests
-        uses: matlab-actions/run-build@v2.4.1
+        uses: matlab-actions/run-build@v2.5.0
         with:
           tasks: check test
       - name: Report results
@@ -46,7 +46,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: test
     env:
-      VERSION: "4.6.0"
+      VERSION: "4.6.1"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -55,11 +55,11 @@ jobs:
         with:
           release: R2023b
       - name: Package toolbox
-        uses: matlab-actions/run-build@v2.4.1
+        uses: matlab-actions/run-build@v2.5.0
         with:
           tasks: package("${{ env.VERSION }}")
       - name: Upload toolbox
-        uses: actions/upload-artifact@v4.3.6
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: 'MAG Data Visualization.mltbx'
           path: artifacts

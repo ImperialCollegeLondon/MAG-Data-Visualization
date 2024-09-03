@@ -49,8 +49,10 @@ function figures = sftPlots(analysis, options)
     end
 
     % Show I-ALiRT.
-    if ~isempty(croppedAnalysis.Results.IALiRT)
-        views(end + 1) = mag.graphics.view.IALiRT(croppedAnalysis.Results);
+    if ~isempty(croppedAnalysis.Results.IALiRT) && croppedAnalysis.Results.IALiRT.HasData
+
+        tempInstrument = mag.Instrument(Science = croppedAnalysis.Results.IALiRT.Science);
+        views(end + 1) = mag.graphics.view.Field(tempInstrument);
     end
 
     % Show science comparison.
