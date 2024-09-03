@@ -22,7 +22,7 @@ jobs:
           release: ${{ matrix.release }}
           products: Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox
       - name: Run tests
-        uses: matlab-actions/run-build@v2.4.1
+        uses: matlab-actions/run-build@v2.5.0
         with:
           tasks: check test
       - name: Report results
@@ -55,7 +55,7 @@ jobs:
         with:
           release: R2023b
       - name: Package toolbox
-        uses: matlab-actions/run-build@v2.4.1
+        uses: matlab-actions/run-build@v2.5.0
         with:
           tasks: package("${{ env.VERSION }}")
       - name: Upload toolbox
