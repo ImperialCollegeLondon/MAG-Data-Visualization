@@ -1,3 +1,7 @@
+# App
+
+- Add option to select individual figures to plot
+
 # Software
 
 ## Graphics
