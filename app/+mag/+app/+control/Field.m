@@ -1,18 +1,13 @@
-classdef Field < mag.app.control.Control
+classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
 % FIELD View-controller for generating "mag.graphics.view.Field".
 
-    properties (Access = private)
-        % LAYOUT Grid layout of view-controller.
+    properties (Constant, Access = private)
+        % SUPPORTEDEVENTS Events supported by "mag.graphics.view.Field".
+        SupportedEvents (1, 3) string = ["Compression", "Mode", "Range"]
+    end
+
+    properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
-        % STARTDATEPICKER Start date picker for cropping.
-        StartDatePicker matlab.ui.control.DatePicker
-        % STARTTIMEPICKER Start time edit field for cropping.
-        StartTimeField matlab.ui.control.EditField
-        % ENDDATEPICKER End date picker for cropping.
-        EndDatePicker matlab.ui.control.DatePicker
-        % ENDTIMEPICKER End time edit field for cropping.
-        EndTimeField matlab.ui.control.EditField
-        % EVENTSTREE Events checkbox tree.
         EventsTree matlab.ui.container.CheckBoxTree
     end
 
@@ -22,31 +17,8 @@ classdef Field < mag.app.control.Control
 
             this.Layout = uigridlayout(this.Parent, [3, 3], RowHeight = ["1x", "1x", "2x"], ColumnWidth = ["fit", "1x", "1x"]);
 
-            % Start date.
-            startLabel = uilabel(this.Layout, Text = "Start date/time:");
-            startLabel.Layout.Row = 1;
-            startLabel.Layout.Column = 1;
-
-            this.StartDatePicker = uidatepicker(this.Layout);
-            this.StartDatePicker.Layout.Row = 1;
-            this.StartDatePicker.Layout.Column = 2;
-
-            this.StartTimeField = uieditfield(this.Layout, Placeholder = "HH:mm:ss.SSS");
-            this.StartTimeField.Layout.Row = 1;
-            this.StartTimeField.Layout.Column = 3;
-
-            % End date.
-            endLabel = uilabel(this.Layout, Text = "End date/time:");
-            endLabel.Layout.Row = 2;
-            endLabel.Layout.Column = 1;
-
-            this.EndDatePicker = uidatepicker(this.Layout);
-            this.EndDatePicker.Layout.Row = 2;
-            this.EndDatePicker.Layout.Column = 2;
-
-            this.EndTimeField = uieditfield(this.Layout, Placeholder = "HH:mm:ss.SSS");
-            this.EndTimeField.Layout.Row = 2;
-            this.EndTimeField.Layout.Column = 3;
+            % Start and end dates.
+            this.addStartEndDateButtons(this.Layout, 1, 2, 0);
 
             % Events.
             eventsLabel = uilabel(this.Layout, Text = "Events:");
@@ -57,15 +29,14 @@ classdef Field < mag.app.control.Control
             this.EventsTree.Layout.Row = 3;
             this.EventsTree.Layout.Column = [2, 3];
 
-            for e = ["Compression", "Mode", "Range"]
+            for e = this.SupportedEvents
                 uitreenode(this.EventsTree, Text = e);
             end
         end
 
         function figures = visualize(this)
 
-            startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
-            endTime = mag.app.internal.combineDateAndTime(this.EndDatePicker.Value, this.EndTimeField.Value);
+            [startTime, endTime] = this.getStartEndTimes();
 
             if isempty(this.EventsTree.CheckedNodes)
                 events = string.empty();
