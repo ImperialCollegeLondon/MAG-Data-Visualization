@@ -1,3 +1,3 @@
 # Software
 
-- Remove `mag.graphics.view.IALiRT` in favor of `mag.graphics.view.Comparison`
+- Rename `Event` to `Events` in `mag.graphics.view.Field`
