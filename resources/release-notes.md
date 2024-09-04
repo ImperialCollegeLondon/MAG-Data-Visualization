@@ -1,5 +1,6 @@
 # App
 
+- Convert AppDesigner `DataVisualization` app to class
 - Redesign "Visualize" tab to dynamically change plot options based on selected plot type
 - Add individual figures to list of supported plot types
 - Visualization options make now use of view-controllers (inherit from `mag.app.control.Control`)
