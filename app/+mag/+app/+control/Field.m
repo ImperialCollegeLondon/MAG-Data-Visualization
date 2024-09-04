@@ -15,10 +15,10 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
 
         function instantiate(this)
 
-            this.Layout = uigridlayout(this.Parent, [3, 3], RowHeight = ["1x", "1x", "2x"], ColumnWidth = ["fit", "1x", "1x"]);
+            this.Layout = this.createDefaultGridLayout();
 
             % Start and end dates.
-            this.addStartEndDateButtons(this.Layout, 1, 2, 0);
+            this.addStartEndDateButtons(this.Layout, 1, 2);
 
             % Events.
             eventsLabel = uilabel(this.Layout, Text = "Events:");
@@ -26,7 +26,7 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
             eventsLabel.Layout.Column = 1;
 
             this.EventsTree = uitree(this.Layout, "checkbox");
-            this.EventsTree.Layout.Row = 3;
+            this.EventsTree.Layout.Row = [3, 4];
             this.EventsTree.Layout.Column = [2, 3];
 
             for e = this.SupportedEvents
@@ -34,7 +34,12 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
             end
         end
 
-        function figures = visualize(this)
+        function figures = visualize(this, results)
+
+            arguments
+                this
+                results (1, 1) mag.Instrument
+            end
 
             [startTime, endTime] = this.getStartEndTimes();
 
@@ -44,7 +49,7 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
                 events = {this.EventsTree.CheckedNodes.Text};
             end
 
-            results = this.cropResults(startTime, endTime);
+            results = this.cropResults(results, startTime, endTime);
             figures = mag.graphics.view.Field(results, Events = events).visualizeAll();
         end
     end

@@ -1,7 +1,7 @@
 classdef (Abstract, HandleCompatible) StartEndDate
 % STARTENDDATE Add support for start and end date selection.
 
-    properties
+    properties (SetAccess = protected)
         StartDatePicker matlab.ui.control.DatePicker
         StartTimeField matlab.ui.control.EditField
         EndDatePicker matlab.ui.control.DatePicker
@@ -17,7 +17,7 @@ classdef (Abstract, HandleCompatible) StartEndDate
                 parent (1, 1) matlab.ui.container.GridLayout
                 startDateRow (1, 1) double
                 endDateRow (1, 1) double
-                initialColumn (1, 1) double
+                initialColumn (1, 1) double = 0
             end
 
             % Start date.

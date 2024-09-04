@@ -12,7 +12,7 @@ classdef PSD < mag.app.control.Control
 
         function instantiate(this)
 
-            this.Layout = uigridlayout(this.Parent, [4, 3], ColumnWidth = ["fit", "1x", "1x"]);
+            this.Layout = this.createDefaultGridLayout();
 
             % Start date.
             startLabel = uilabel(this.Layout, Text = "Start date/time:");
@@ -27,7 +27,7 @@ classdef PSD < mag.app.control.Control
             this.StartTimeField.Layout.Row = 1;
             this.StartTimeField.Layout.Column = 3;
 
-            % Frequency points spinner.
+            % Duration.
             durationLabel = uilabel(this.Layout, Text = "Duration (hours):");
             durationLabel.Layout.Row = 2;
             durationLabel.Layout.Column = 1;
@@ -38,7 +38,12 @@ classdef PSD < mag.app.control.Control
             this.DurationSpinner.Layout.Column = [2, 3];
         end
 
-        function figures = visualize(this)
+        function figures = visualize(this, results)
+
+            arguments
+                this
+                results (1, 1) mag.Instrument
+            end
 
             startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
             duration = this.DurationSpinner.Value;

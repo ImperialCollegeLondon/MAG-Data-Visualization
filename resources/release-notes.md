@@ -1,10 +1,10 @@
 # App
 
-- Add option to select individual figures to plot
+- Redesign "Visualize" tab to dynamically change plot options based on selected plot type
+- Add individual figures to list of supported plot types
+- Visualization options make now use of view-controllers (inherit from `mag.app.control.Control`)
 
 # Software
-
-## Graphics
 
 - Rename `Event` to `Events` in `mag.graphics.view.Field`
 

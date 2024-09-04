@@ -13,12 +13,12 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
 
         function instantiate(this)
 
-            this.Layout = uigridlayout(this.Parent, [5, 3], ColumnWidth = ["fit", "1x", "1x"]);
+            this.Layout = this.createDefaultGridLayout();
 
             % Start and end dates.
-            this.addStartEndDateButtons(this.Layout, 1, 2, 0);
+            this.addStartEndDateButtons(this.Layout, 1, 2);
 
-            % Frequency points spinner.
+            % Frequency points.
             frequencyPointsLabel = uilabel(this.Layout, Text = "Frequency points:", ...
                 Tooltip = "Number of discrete Fourier transform points.");
             frequencyPointsLabel.Layout.Row = 3;
@@ -29,7 +29,7 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             this.FrequencyPointsSpinner.Layout.Row = 3;
             this.FrequencyPointsSpinner.Layout.Column = [2, 3];
 
-            % Overlap spinner.
+            % Overlap.
             overlapLabel = uilabel(this.Layout, Text = "Overlap:", ...
                 Tooltip = "Overlap between segments.");
             overlapLabel.Layout.Row = 4;
@@ -41,7 +41,7 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             this.OverlapSpinner.Layout.Row = 4;
             this.OverlapSpinner.Layout.Column = [2, 3];
 
-            % Window spinner.
+            % Window.
             windowLabel = uilabel(this.Layout, Text = "Window:", ...
                 Tooltip = "Divide data into segments of this length and window each segment with a Hamming window.");
             windowLabel.Layout.Row = 5;
@@ -53,7 +53,12 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             this.WindowSpinner.Layout.Column = [2, 3];
         end
 
-        function figures = visualize(this)
+        function figures = visualize(this, results)
+
+            arguments
+                this
+                results (1, 1) mag.Instrument
+            end
 
             [startTime, endTime] = this.getStartEndTimes();
             frequencyPoints = this.FrequencyPointsSpinner.Value;
@@ -70,7 +75,7 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
                 window = this.WindowSpinner.Value;
             end
 
-            results = this.cropResults(startTime, endTime);
+            results = this.cropResults(results, startTime, endTime);
             figures = mag.graphics.view.Frequency(results, ...
                 FrequencyPoints = frequencyPoints, Overlap = overlap, Window = window).visualizeAll();
         end
