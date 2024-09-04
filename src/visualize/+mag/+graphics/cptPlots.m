@@ -29,7 +29,7 @@ function figures = cptPlots(analysis, options)
     if ~isempty(modeCycling)
 
         views(end + 1) = mag.graphics.view.Field(modeCycling, Events = "Mode", Name = "Mode Cycling", Title = string.empty());
-        views(end + 1) = mag.graphics.view.PSD(modeCycling, Name = "Mode Cycling PSD Analysis", Event = "DataFrequency");
+        views(end + 1) = mag.graphics.view.EventPSD(modeCycling, Name = "Mode Cycling PSD Analysis", Event = "DataFrequency");
     end
 
     %% Ranges
@@ -40,7 +40,7 @@ function figures = cptPlots(analysis, options)
 
         % Plot all ranges and PSDs.
         views(end + 1) = mag.graphics.view.Field(rangeCycling, Events = "Range", Name = "Range Cycling", Title = string.empty());
-        views(end + 1) = mag.graphics.view.PSD(rangeCycling, Name = "Range Cycling PSD Analysis", Event = "Range");
+        views(end + 1) = mag.graphics.view.EventPSD(rangeCycling, Name = "Range Cycling PSD Analysis", Event = "Range");
 
         % Plot ranges without range 0.
         locNoRangeZero = (rangeCycling.Primary.Range ~= 0) & (rangeCycling.Secondary.Range ~= 0);

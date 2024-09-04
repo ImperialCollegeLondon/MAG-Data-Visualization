@@ -46,10 +46,10 @@ classdef PSD < mag.app.control.Control
             end
 
             startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
-            duration = this.DurationSpinner.Value;
+            duration = hours(this.DurationSpinner.Value);
 
             figures = mag.graphics.view.PSD(results, ...
-                StartTime = startTime, Duration = duration).visualizeAll();
+                Start = startTime, Duration = duration).visualizeAll();
         end
     end
 end

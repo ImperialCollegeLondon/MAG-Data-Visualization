@@ -6,6 +6,10 @@
 
 # Software
 
+- Rename `mag.graphics.view.PSD` to `mag.graphics.view.EventPSD`
+- Split up `mag.graphics.view.Frequency` into:
+    - `mag.graphics.view.Spectrogram` for just spectrogram
+    - `mag.graphics.view.PSD` for just PSD
 - Rename `Event` to `Events` in `mag.graphics.view.Field`
 
 # README

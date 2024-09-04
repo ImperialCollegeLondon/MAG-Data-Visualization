@@ -1,5 +1,6 @@
 function figures = sftPlots(analysis, options)
 % SFTPLOTS Create plots for SFT results.
+%#ok<*AGROW>
 
     arguments (Input)
         analysis (1, 1) mag.IMAPAnalysis
@@ -34,7 +35,8 @@ function figures = sftPlots(analysis, options)
     % Show science and frequency.
     for m = modes
 
-        views(end + 1) = mag.graphics.view.Field(m); %#ok<AGROW>
+        views(end + 1) = mag.graphics.view.Field(m);
+        views(end + 1) = mag.graphics.view.Spectrogram(m);
 
         if ~isempty(options.PSDStart)
 
@@ -44,7 +46,7 @@ function figures = sftPlots(analysis, options)
                 m.crop([seconds(30), seconds(-30)]);
             end
 
-            views(end + 1) = mag.graphics.view.Frequency(m, PSDStart = options.PSDStart, PSDDuration = options.PSDDuration); %#ok<AGROW>
+            views(end + 1) = mag.graphics.view.PSD(m, PSDStart = options.PSDStart, PSDDuration = options.PSDDuration);
         end
     end
 
