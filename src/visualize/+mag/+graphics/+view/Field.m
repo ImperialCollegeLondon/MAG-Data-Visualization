@@ -2,8 +2,8 @@ classdef Field < mag.graphics.view.Science
 % FIELD Show magnetic field and optional HK.
 
     properties
-        % EVENT Event name to show.
-        Event (1, :) string {mustBeMember(Event, ["Compression", "Mode", "Range"])} = string.empty()
+        % EVENTS Event names to show.
+        Events (1, :) string {mustBeMember(Events, ["Compression", "Mode", "Range"])} = string.empty()
     end
 
     methods
@@ -67,7 +67,7 @@ classdef Field < mag.graphics.view.Science
             numEvents = 0;
             eventData = {};
 
-            selectedEvents = this.Event;
+            selectedEvents = this.Events;
 
             if isempty(selectedEvents) && (any(diff(primary.Compression) ~= 0) || any(diff(secondary.Compression) ~= 0))
                 selectedEvents = "Compression";

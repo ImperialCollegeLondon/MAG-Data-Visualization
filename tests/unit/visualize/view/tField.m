@@ -109,7 +109,7 @@ classdef tField < MAGViewTestCase
             instrument.Primary.Data.compression(7:end) = true;
             instrument.Secondary.Data.compression(7:end) = true;
 
-            expectedInputs = testCase.generateExpectedInputs(instrument, Event = "Compression");
+            expectedInputs = testCase.generateExpectedInputs(instrument, Events = "Compression");
             expectedOutput = figure();
 
             [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
@@ -134,7 +134,7 @@ classdef tField < MAGViewTestCase
                 options.SecondaryTitle (1, 1) string = "FOB (FEE2 - EM4 - None)"
                 options.Title (1, 1) string = "Burst (64, 8)"
                 options.Name (1, 1) string = "Burst (64, 8) Time Series (NaT)"
-                options.Event (1, 1) string = missing()
+                options.Events (1, 1) string = missing()
             end
 
             expectedInputs{1} = instrument.Science(2);
@@ -159,7 +159,7 @@ classdef tField < MAGViewTestCase
                 arrangement = [3, 2];
             end
 
-            switch options.Event
+            switch options.Events
                 case "Compression"
 
                     arrangement(1) = arrangement(1) + 1;

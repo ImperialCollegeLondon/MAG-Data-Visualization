@@ -28,8 +28,8 @@ function figures = cptPlots(analysis, options)
 
     if ~isempty(modeCycling)
 
-        views(end + 1) = mag.graphics.view.Field(modeCycling, Event = "Mode", Name = "Mode Cycling", Title = string.empty());
-        views(end + 1) = mag.graphics.view.PSD(modeCycling, Name = "Mode Cycling PSD Analysis", Event = "DataFrequency");
+        views(end + 1) = mag.graphics.view.Field(modeCycling, Events = "Mode", Name = "Mode Cycling", Title = string.empty());
+        views(end + 1) = mag.graphics.view.EventPSD(modeCycling, Name = "Mode Cycling PSD Analysis", Event = "DataFrequency");
     end
 
     %% Ranges
@@ -39,8 +39,8 @@ function figures = cptPlots(analysis, options)
     if ~isempty(rangeCycling) && rangeCycling.HasData
 
         % Plot all ranges and PSDs.
-        views(end + 1) = mag.graphics.view.Field(rangeCycling, Event = "Range", Name = "Range Cycling", Title = string.empty());
-        views(end + 1) = mag.graphics.view.PSD(rangeCycling, Name = "Range Cycling PSD Analysis", Event = "Range");
+        views(end + 1) = mag.graphics.view.Field(rangeCycling, Events = "Range", Name = "Range Cycling", Title = string.empty());
+        views(end + 1) = mag.graphics.view.EventPSD(rangeCycling, Name = "Range Cycling PSD Analysis", Event = "Range");
 
         % Plot ranges without range 0.
         locNoRangeZero = (rangeCycling.Primary.Range ~= 0) & (rangeCycling.Secondary.Range ~= 0);
@@ -51,7 +51,7 @@ function figures = cptPlots(analysis, options)
             noRange0Cycling.crop(timerange(rangeCycling.Primary.Events.Time(1), rangeCycling.Primary.Events.Time(end), "openright"), ...
                 timerange(rangeCycling.Secondary.Events.Time(1), rangeCycling.Secondary.Events.Time(end), "openright"));
 
-            views(end + 1) = mag.graphics.view.Field(noRange0Cycling, Event = "Range", Name = "Range Cycling (No Range 0)", Title = string.empty());
+            views(end + 1) = mag.graphics.view.Field(noRange0Cycling, Events = "Range", Name = "Range Cycling (No Range 0)", Title = string.empty());
         end
     end
 

@@ -21,17 +21,7 @@ In the sections below you can find more information about some of the functional
 
 ## User Manual
 
-### Visualization
-
-TBD
-
-### Data Processing
-
-TBD
-
-### App
-
-The `DataVisualization` app provides an interface to the `mag.IMAPAnalysis` object. It can be used for quick visualization of data collected during an AT, CPT or SFT. 
+See [internal documentation](https://imperialcollege.atlassian.net/wiki/spaces/PMLSD/pages/453279745/Data+Visualization) on Confluence.
 
 ## Development
 
