@@ -1,7 +1,7 @@
-classdef DataVisualization < handle
+classdef (Sealed) DataVisualization < handle
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
-    properties (Access = public)
+    properties (SetAccess = private)
         UIFigure matlab.ui.Figure
         Toolbar matlab.ui.container.Toolbar
         PushTool matlab.ui.container.toolbar.PushTool
@@ -79,10 +79,13 @@ classdef DataVisualization < handle
         ShowFiguresButton matlab.ui.control.Button
     end
 
+    properties (SetAccess = private)
+        SelectedControl mag.app.control.Control {mustBeScalarOrEmpty}
+    end
+
     properties (Access = private)
         PreviousError MException {mustBeScalarOrEmpty}
         DebugStatus struct = dbstatus()
-        SelectedControl mag.app.control.Control {mustBeScalarOrEmpty}
     end
 
     properties (SetObservable, Access = private)
@@ -172,7 +175,7 @@ classdef DataVisualization < handle
 
         function figuresChanged(app, varargin)
 
-            figuresAvailable = ~isempty(app.Figures);
+            figuresAvailable = ~isempty(app.Figures) && any(isvalid(app.Figures));
             [app.SaveFiguresButton.Enable, app.CloseFiguresButton.Enable] = deal(matlab.lang.OnOffSwitchState(figuresAvailable));
         end
 
@@ -503,6 +506,8 @@ classdef DataVisualization < handle
 
                 closeProgressBar = app.overlayProgressBar("Closing figures..."); %#ok<NASGU>
                 close(app.Figures(isValidFigures));
+
+                app.Figures = matlab.ui.Figure.empty();
             end
         end
     end
