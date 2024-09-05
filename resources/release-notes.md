@@ -21,7 +21,7 @@
 # Tests
 
 - Add tests for `mag.app.control.Field` and `mag.app.control.Spectrogram`
-- Add tests for `mag.app.internal.combineDateAndTime`
+- Add tests for `mag.app.Command` and `mag.app.internal.combineDateAndTime`
 
 # Build
 
