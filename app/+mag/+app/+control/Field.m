@@ -34,11 +34,15 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
             end
         end
 
-        function figures = visualize(this, results)
+        function command = getVisualizeCommand(this, results)
 
-            arguments
+            arguments (Input)
                 this
                 results (1, 1) mag.Instrument
+            end
+
+            arguments (Output)
+                command (1, 1) mag.app.Command
             end
 
             [startTime, endTime] = this.getStartEndTimes();
@@ -50,7 +54,10 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
             end
 
             results = mag.app.internal.cropResults(results, startTime, endTime);
-            figures = mag.graphics.view.Field(results, Events = events).visualizeAll();
+
+            command = mag.app.Command(Functional = @(varargin) mag.graphics.view.Field(varargin{:}).visualizaAll(), ...
+                PositionalArguments = {results}, ...
+                NamedArguments = struct(Events = events));
         end
     end
 end

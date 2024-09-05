@@ -9,9 +9,10 @@
 
 ## Refactoring
 
-- Move `cropResults` definition from `mag.app.control.Control` to `mag.app.internal.cropResults`
+- Refactor `mag.app.control.Control/visualize` methods to return command (`mag.app.Command`) to be run for visualization
 - Redesign `mag.app.control.StartEndDate/addStartEndDateButtons` signature to be more flexible
 - Redesign `mag.app.control.Filter/addFilterButtons` signature to be more flexible
+- Move `cropResults` definition from `mag.app.control.Control` to `mag.app.internal.cropResults`
 
 # Software
 

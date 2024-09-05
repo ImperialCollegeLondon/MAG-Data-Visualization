@@ -29,8 +29,8 @@ classdef (Abstract) Control < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         % INSTANTIATE Populate view-control elements.
         instantiate(this)
 
-        % VISUALIZE Plot all figures.
-        figures = visualize(this, results)
+        % GETVISUALIZECOMMAND Retrieve command to plot all figures.
+        command = getVisualizeCommand(this, results)
     end
 
     methods (Access = protected)

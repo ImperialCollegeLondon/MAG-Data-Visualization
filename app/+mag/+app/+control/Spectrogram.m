@@ -55,11 +55,15 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             this.WindowSpinner.Layout.Column = [2, 3];
         end
 
-        function figures = visualize(this, results)
+        function command = getVisualizeCommand(this, results)
 
-            arguments
+            arguments (Input)
                 this
                 results (1, 1) mag.Instrument
+            end
+
+            arguments (Output)
+                command (1, 1) mag.app.Command
             end
 
             [startTime, endTime] = this.getStartEndTimes();
@@ -78,8 +82,10 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             end
 
             results = mag.app.internal.cropResults(results, startTime, endTime);
-            figures = mag.graphics.view.Spectrogram(results, ...
-                FrequencyPoints = frequencyPoints, Overlap = overlap, Window = window).visualizeAll();
+            
+            command = mag.app.Command(Functional = @(varargin) mag.graphics.view.Spectrogram(varargin{:}).visualizaAll(), ...
+                PositionalArguments = {results}, ...
+                NamedArguments = struct(FrequencyPoints = frequencyPoints, Overlap = overlap, Window = window));
         end
     end
 end

@@ -38,18 +38,23 @@ classdef PSD < mag.app.control.Control
             this.DurationSpinner.Layout.Column = [2, 3];
         end
 
-        function figures = visualize(this, results)
+        function command = getVisualizeCommand(this, results)
 
-            arguments
+            arguments (Input)
                 this
                 results (1, 1) mag.Instrument
             end
 
+            arguments (Output)
+                command (1, 1) mag.app.Command
+            end
+
             startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
             duration = hours(this.DurationSpinner.Value);
-
-            figures = mag.graphics.view.PSD(results, ...
-                Start = startTime, Duration = duration).visualizeAll();
+            
+            command = mag.app.Command(Functional = @(varargin) mag.graphics.view.PSD(varargin{:}).visualizaAll(), ...
+                PositionalArguments = {results}, ...
+                NamedArguments = struct(Start = startTime, Duration = duration));
         end
     end
 end

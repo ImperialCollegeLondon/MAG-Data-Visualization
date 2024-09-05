@@ -60,11 +60,15 @@ classdef CPT < mag.app.control.Control & mag.app.mixin.Filter
             this.RangePatternField.Layout.Column = [2, 3];
         end
 
-        function figures = visualize(this, results)
+        function command = getVisualizeCommand(this, results)
 
-            arguments
+            arguments (Input)
                 this
                 results (1, 1) mag.IMAPAnalysis
+            end
+
+            arguments (Output)
+                command (1, 1) mag.app.Command
             end
 
             startFilter = this.getFilters();
@@ -73,9 +77,9 @@ classdef CPT < mag.app.control.Control & mag.app.mixin.Filter
             secondaryModePattern = this.decodeFromEditField(this.SecondaryModePatternField.Value);
             rangePattern = this.decodeFromEditField(this.RangePatternField.Value);
 
-            figures = mag.graphics.cptPlots(results, Filter = startFilter, ...
-                PrimaryModePattern = primaryModePattern, SecondaryModePattern = secondaryModePattern, ...
-                RangePattern = rangePattern);
+            command = mag.app.Command(Functional = @mag.graphics.cptPlots, ...
+                PositionalArguments = {results}, ...
+                NamedArguments = struct(Filter = startFilter, PrimaryModePattern = primaryModePattern, SecondaryModePattern = secondaryModePattern, RangePattern = rangePattern));
         end
     end
 

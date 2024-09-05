@@ -480,7 +480,8 @@ classdef (Sealed) DataVisualization < handle
                     args = {app.Analysis.Results};
                 end
 
-                app.Figures = app.SelectedControl.visualize(args{:});
+                command = app.SelectedControl.getVisualizeCommand(args{:});
+                app.Figures = command.call();
                 return;
             catch exception
                 app.displayAlert(exception);
