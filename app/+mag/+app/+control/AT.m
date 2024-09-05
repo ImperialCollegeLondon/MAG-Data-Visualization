@@ -16,7 +16,7 @@ classdef AT < mag.app.control.Control & mag.app.mixin.Filter
             this.Layout = this.createDefaultGridLayout();
 
             % Filter.
-            this.addFilterButtons(this.Layout, 1);
+            this.addFilterButtons(this.Layout, StartFilterRow = 1);
 
             % PSD.
             psdLabel = uilabel(this.Layout, Text = "Show PSD:");
