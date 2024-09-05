@@ -18,11 +18,11 @@ classdef (Abstract, HandleCompatible) StartEndDate
                 options.StartDateRow (1, 1) double
                 options.StartDateLabelColumn (1, :) double = 1
                 options.StartDatePickerColumn (1, :) double = 2
-                options.StartDateFieldColumn (1, :) double = 3
+                options.StartTimeFieldColumn (1, :) double = 3
                 options.EndDateRow (1, 1) double
                 options.EndDateLabelColumn (1, :) double = 1
                 options.EndDatePickerColumn (1, :) double = 2
-                options.EndDateFieldColumn (1, :) double = 3
+                options.EndTimeFieldColumn (1, :) double = 3
             end
 
             % Start date.
@@ -36,7 +36,7 @@ classdef (Abstract, HandleCompatible) StartEndDate
 
             this.StartTimeField = uieditfield(parent, Placeholder = "HH:mm:ss.SSS");
             this.StartTimeField.Layout.Row = options.StartDateRow;
-            this.StartTimeField.Layout.Column = options.StartDateFieldColumn;
+            this.StartTimeField.Layout.Column = options.StartTimeFieldColumn;
 
             % End date.
             endLabel = uilabel(parent, Text = "End date/time:");
@@ -49,7 +49,7 @@ classdef (Abstract, HandleCompatible) StartEndDate
 
             this.EndTimeField = uieditfield(parent, Placeholder = "HH:mm:ss.SSS");
             this.EndTimeField.Layout.Row = options.EndDateRow;
-            this.EndTimeField.Layout.Column = options.EndDateFieldColumn;
+            this.EndTimeField.Layout.Column = options.EndTimeFieldColumn;
         end
 
         function [startTime, endTime] = getStartEndTimes(this)
