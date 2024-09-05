@@ -30,6 +30,10 @@ classdef Field < mag.graphics.view.Science
             primary = this.Results.Primary;
             secondary = this.Results.Secondary;
 
+            if isempty(primary) || isempty(secondary)
+                return;
+            end
+
             [numEvents, eventData] = this.getEventData(primary, secondary, primarySensor, secondarySensor);
 
             if isempty(pwrHK) || ~pwrHK.HasData

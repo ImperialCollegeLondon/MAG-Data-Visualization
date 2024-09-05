@@ -13,10 +13,15 @@
 - Redesign `mag.app.control.StartEndDate/addStartEndDateButtons` signature to be more flexible
 - Redesign `mag.app.control.Filter/addFilterButtons` signature to be more flexible
 
-## Tests
+# Software
 
+- Add support in `mag.Instrument/crop`, `mag.Science/select` and `mag.graphics.view.Field/visualize` for empty science
+
+# Tests
+
+- Add tests for `mag.app.control.Field`
 - Add tests for `mag.app.internal.combineDateAndTime`
 
-## Build
+# Build
 
 - Include coverage for `app` folder

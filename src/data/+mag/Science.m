@@ -364,12 +364,18 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
         % SELECT Return primary or secondary sensor.
 
             arguments (Input)
-                this mag.Science {mustBeNonempty}
+                this (1, :) mag.Science
                 selected (1, 1) string {mustBeMember(selected, ["Outboard", "Inboard", "Primary", "Secondary"])}
             end
 
             arguments (Output)
                 science mag.Science {mustBeScalarOrEmpty}
+            end
+
+            if isempty(this)
+
+                science = mag.Science.empty();
+                return;
             end
 
             metaData = [this.MetaData];
