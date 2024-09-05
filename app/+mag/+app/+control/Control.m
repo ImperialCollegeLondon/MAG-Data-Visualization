@@ -8,6 +8,11 @@ classdef (Abstract) Control < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         DefaultColumnWidth (1, 3) string = ["fit", "1x", "1x"]
     end
 
+    properties (Constant, Access = protected)
+        % DYNAMICPLACEHOLDER Placeholder text for dynamic defaults.
+        DynamicPlaceholder (1, 1) string = "dynamic (default)"
+    end
+
     properties (SetAccess = immutable)
         Parent (1, 1) matlab.ui.container.Panel
     end

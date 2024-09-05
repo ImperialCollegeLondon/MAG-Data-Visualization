@@ -37,7 +37,8 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
 
             this.OverlapSpinner = uispinner(this.Layout, Value = double.empty(), AllowEmpty = true, ...
                 Step = 0.1, ValueDisplayFormat = "%.2f", ...
-                Limits = [0, 1], LowerLimitInclusive = false);
+                Limits = [0, 1], LowerLimitInclusive = false, ...
+                Placeholder = this.DynamicPlaceholder);
             this.OverlapSpinner.Layout.Row = 4;
             this.OverlapSpinner.Layout.Column = [2, 3];
 
@@ -48,7 +49,8 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             windowLabel.Layout.Column = 1;
 
             this.WindowSpinner = uispinner(this.Layout, Value = double.empty(), AllowEmpty = true, ...
-                Step = 1, Limits = [0, Inf], LowerLimitInclusive = false);
+                Step = 1, Limits = [0, Inf], LowerLimitInclusive = false, ...
+                Placeholder = this.DynamicPlaceholder);
             this.WindowSpinner.Layout.Row = 5;
             this.WindowSpinner.Layout.Column = [2, 3];
         end
