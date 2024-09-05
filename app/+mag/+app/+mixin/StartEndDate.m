@@ -10,41 +10,46 @@ classdef (Abstract, HandleCompatible) StartEndDate
 
     methods (Access = protected)
 
-        function addStartEndDateButtons(this, parent, startDateRow, endDateRow, initialColumn)
+        function addStartEndDateButtons(this, parent, options)
 
             arguments
                 this
                 parent (1, 1) matlab.ui.container.GridLayout
-                startDateRow (1, 1) double
-                endDateRow (1, 1) double
-                initialColumn (1, 1) double = 0
+                options.StartDateRow (1, 1) double
+                options.StartDateLabelColumn (1, :) double = 1
+                options.StartDatePickerColumn (1, :) double = 2
+                options.StartDateFieldColumn (1, :) double = 3
+                options.EndDateRow (1, 1) double
+                options.EndDateLabelColumn (1, :) double = 1
+                options.EndDatePickerColumn (1, :) double = 2
+                options.EndDateFieldColumn (1, :) double = 3
             end
 
             % Start date.
             startLabel = uilabel(parent, Text = "Start date/time:");
-            startLabel.Layout.Row = startDateRow;
-            startLabel.Layout.Column = initialColumn + 1;
+            startLabel.Layout.Row = options.StartDateRow;
+            startLabel.Layout.Column = options.StartDateLabelColumn;
 
             this.StartDatePicker = uidatepicker(parent);
-            this.StartDatePicker.Layout.Row = startDateRow;
-            this.StartDatePicker.Layout.Column = initialColumn + 2;
+            this.StartDatePicker.Layout.Row = options.StartDateRow;
+            this.StartDatePicker.Layout.Column = options.StartDatePickerColumn;
 
             this.StartTimeField = uieditfield(parent, Placeholder = "HH:mm:ss.SSS");
-            this.StartTimeField.Layout.Row = startDateRow;
-            this.StartTimeField.Layout.Column = initialColumn + 3;
+            this.StartTimeField.Layout.Row = options.StartDateRow;
+            this.StartTimeField.Layout.Column = options.StartDateFieldColumn;
 
             % End date.
             endLabel = uilabel(parent, Text = "End date/time:");
-            endLabel.Layout.Row = endDateRow;
-            endLabel.Layout.Column = initialColumn + 1;
+            endLabel.Layout.Row = options.EndDateRow;
+            endLabel.Layout.Column = options.EndDateLabelColumn;
 
             this.EndDatePicker = uidatepicker(parent);
-            this.EndDatePicker.Layout.Row = endDateRow;
-            this.EndDatePicker.Layout.Column = initialColumn + 2;
+            this.EndDatePicker.Layout.Row = options.EndDateRow;
+            this.EndDatePicker.Layout.Column = options.EndDatePickerColumn;
 
             this.EndTimeField = uieditfield(parent, Placeholder = "HH:mm:ss.SSS");
-            this.EndTimeField.Layout.Row = endDateRow;
-            this.EndTimeField.Layout.Column = initialColumn + 3;
+            this.EndTimeField.Layout.Row = options.EndDateRow;
+            this.EndTimeField.Layout.Column = options.EndDateFieldColumn;
         end
 
         function [startTime, endTime] = getStartEndTimes(this)

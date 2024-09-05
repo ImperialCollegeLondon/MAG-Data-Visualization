@@ -9,4 +9,5 @@
 ## Refactoring
 
 - Move `cropResults` definition from `mag.app.control.Control` to `mag.app.internal.cropResults`
+- Redesign `mag.app.control.StartEndDate/addStartEndDateButtons` signature to be more flexible
 - Redesign `mag.app.control.Filter/addFilterButtons` signature to be more flexible
