@@ -4,7 +4,7 @@ function dateTime = combineDateAndTime(date, time)
 
     arguments (Input)
         date (1, 1) datetime
-        time string {mustBeScalarOrEmpty}
+        time string {mustBeScalarOrEmpty} = string.empty()
     end
 
     arguments (Output)
