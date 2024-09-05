@@ -49,7 +49,7 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
                 events = {this.EventsTree.CheckedNodes.Text};
             end
 
-            results = this.cropResults(results, startTime, endTime);
+            results = mag.app.internal.cropResults(results, startTime, endTime);
             figures = mag.graphics.view.Field(results, Events = events).visualizeAll();
         end
     end

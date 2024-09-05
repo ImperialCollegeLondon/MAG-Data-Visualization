@@ -77,7 +77,7 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
                 window = this.WindowSpinner.Value;
             end
 
-            results = this.cropResults(results, startTime, endTime);
+            results = mag.app.internal.cropResults(results, startTime, endTime);
             figures = mag.graphics.view.Spectrogram(results, ...
                 FrequencyPoints = frequencyPoints, Overlap = overlap, Window = window).visualizeAll();
         end

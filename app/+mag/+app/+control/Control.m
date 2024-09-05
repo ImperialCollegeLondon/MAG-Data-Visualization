@@ -39,29 +39,4 @@ classdef (Abstract) Control < matlab.mixin.Heterogeneous & mag.mixin.SetGet
             layout = uigridlayout(this.Parent, this.DefaultSize, ColumnWidth = this.DefaultColumnWidth);
         end
     end
-
-    methods (Static, Access = protected)
-
-        function results = cropResults(results, startTime, endTime)
-
-            arguments
-                results (1, 1) mag.Instrument 
-                startTime (1, 1) datetime
-                endTime (1, 1) datetime
-            end
-
-            if ismissing(startTime)
-                startTime = datetime("-Inf", TimeZone = "UTC");
-            end
-
-            if ismissing(endTime)
-                endTime = datetime("Inf", TimeZone = "UTC");
-            end
-
-            period = timerange(startTime, endTime, "closed");
-
-            results = results.copy();
-            results.crop(period);
-        end
-    end
 end
