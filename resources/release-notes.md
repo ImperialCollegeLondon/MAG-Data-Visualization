@@ -15,3 +15,7 @@
 ## Tests
 
 - Add tests for `mag.app.internal.combineDateAndTime`
+
+## Build
+
+- Include coverage for `app` folder
