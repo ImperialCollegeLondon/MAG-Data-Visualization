@@ -33,7 +33,7 @@ classdef PSD < mag.app.control.Control
             durationLabel.Layout.Column = 1;
 
             this.DurationSpinner = uispinner(this.Layout, Value = 1, ...
-                Limits = [0, Inf], LowerLimitInclusive = true);
+                Limits = [0, Inf]);
             this.DurationSpinner.Layout.Row = 2;
             this.DurationSpinner.Layout.Column = [2, 3];
         end

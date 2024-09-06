@@ -16,11 +16,11 @@
 
 # Software
 
-- Add support in `mag.Instrument/crop`, `mag.Science/select` and `mag.graphics.view.Field/visualize` for empty science
+- Add support in `mag.Instrument/crop`, `mag.Science/select`, and `mag.graphics.view.Field/visualize` for empty science
 
 # Tests
 
-- Add tests for `mag.app.control.Field` and `mag.app.control.Spectrogram`
+- Add tests for `mag.app.control.Field`, `mag.app.control.PSD`, and `mag.app.control.Spectrogram`
 - Add tests for `mag.app.Command` and `mag.app.internal.combineDateAndTime`
 
 # Build
