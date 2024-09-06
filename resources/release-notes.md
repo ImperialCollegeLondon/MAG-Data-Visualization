@@ -22,6 +22,7 @@
 
 - Add tests for `mag.app.control.Field`, `mag.app.control.PSD`, and `mag.app.control.Spectrogram`
 - Add tests for `mag.app.Command` and `mag.app.internal.combineDateAndTime`
+- Add tests for `mag.hk.Science`
 
 # Build
 

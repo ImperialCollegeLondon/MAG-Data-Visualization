@@ -2,11 +2,12 @@ classdef tHK < matlab.unittest.TestCase
 % THK Unit tests for "mag.HK" class.
 
     properties (TestParameter)
-        HKTypes = {"SID15", "Processor", "Power", "Status"}
+        HKTypes = {"SID15", "Processor", "Power", "Status", "Science"}
         Dispatch = {struct(Type = "SID15", Class = "mag.hk.SID15"), ...
             struct(Type = "PROCSTAT", Class = "mag.hk.Processor"), ...
             struct(Type = "PW", Class = "mag.hk.Power"), ...
-            struct(Type = "STATUS", Class = "mag.hk.Status")}
+            struct(Type = "STATUS", Class = "mag.hk.Status"), ...
+            struct(Type = "SCI", Class = "mag.hk.Science")}
     end
 
     methods (Test)
