@@ -100,9 +100,9 @@ classdef Filter < mag.process.Step
                 data = this.cropDataWithRange(data, times', this.OnLongPause);
             end
 
-            % Filter out between config and ramp mode.
-            % Ramp mode is surrounded by two config modes. Remove data from
-            % the first to the last config.
+            % Filter out between Config and ramp mode.
+            % Ramp mode is surrounded by two Config modes. Remove data from
+            % the first to the last Config.
             if isa(events, "eventtable")
 
                 locConfig = contains(events.Label, "Config");
