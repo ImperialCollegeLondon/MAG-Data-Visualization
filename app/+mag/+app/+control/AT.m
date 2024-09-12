@@ -16,7 +16,7 @@ classdef AT < mag.app.control.Control & mag.app.mixin.Filter
             this.Layout = this.createDefaultGridLayout();
 
             % Filter.
-            this.addFilterButtons(this.Layout, 1);
+            this.addFilterButtons(this.Layout, StartFilterRow = 1);
 
             % PSD.
             psdLabel = uilabel(this.Layout, Text = "Show PSD:");
@@ -52,11 +52,15 @@ classdef AT < mag.app.control.Control & mag.app.mixin.Filter
             this.PSDDurationSpinner.Layout.Column = [2, 3];
         end
 
-        function figures = visualize(this, results)
+        function command = getVisualizeCommand(this, results)
 
-            arguments
+            arguments (Input)
                 this
                 results (1, 1) mag.IMAPAnalysis
+            end
+
+            arguments (Output)
+                command (1, 1) mag.app.Command
             end
 
             startFilter = this.getFilters();
@@ -68,8 +72,9 @@ classdef AT < mag.app.control.Control & mag.app.mixin.Filter
                 psdStartTime = datetime.empty();
             end
 
-            figures = mag.graphics.sftPlots(results, Filter = startFilter, ...
-                PSDStart = psdStartTime, PSDDuration = psdDuration);
+            command = mag.app.Command(Functional = @mag.graphics.sftPlots, ...
+                PositionalArguments = {results}, ...
+                NamedArguments = struct(Filter = startFilter, PSDStart = psdStartTime, PSDDuration = psdDuration));
         end
     end
 

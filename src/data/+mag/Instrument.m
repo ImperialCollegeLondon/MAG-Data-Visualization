@@ -138,8 +138,13 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
             end
 
             % Filter science.
-            this.Primary.crop(primaryFilter);
-            this.Secondary.crop(secondaryFilter);
+            if ~isempty(this.Primary)
+                this.Primary.crop(primaryFilter);
+            end
+
+            if ~isempty(this.Secondary)
+                this.Secondary.crop(secondaryFilter);
+            end
 
             % Filter I-ALiRT.
             if this.HasIALiRT
@@ -168,7 +173,9 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
             this.HK.crop(timePeriod);
 
             % Adjust meta data.
-            this.MetaData.Timestamp = startTime;
+            if ~isempty(this.MetaData)
+                this.MetaData.Timestamp = startTime;
+            end
         end
 
         function resample(this, targetFrequency)

@@ -1,18 +1,29 @@
 # App
 
-- Convert AppDesigner `DataVisualization` app to class
-- Redesign "Visualize" tab to dynamically change plot options based on selected plot type
-- Add individual figures to list of supported plot types
-- Visualization options make now use of view-controllers (inherit from `mag.app.control.Control`)
+## Fixes
+
+- Add placeholders for CPT settings with dynamic defaults
+- Disable "Save Figures" and "Close Figures" buttons after using "Close Figures"
+- Fix issues with validation of CPT primary and secondary modes, and range patterns (`mag.app.control.CPT`)
+- Fix AppDesigner app `DataVisualization_AppDesigner.mlapp` class name
+
+## Refactoring
+
+- Refactor `mag.app.control.Control/visualize` methods to return command (`mag.app.Command`) to be run for visualization
+- Redesign `mag.app.control.StartEndDate/addStartEndDateButtons` signature to be more flexible
+- Redesign `mag.app.control.Filter/addFilterButtons` signature to be more flexible
+- Move `cropResults` definition from `mag.app.control.Control` to `mag.app.internal.cropResults`
 
 # Software
 
-- Rename `mag.graphics.view.PSD` to `mag.graphics.view.EventPSD`
-- Split up `mag.graphics.view.Frequency` into:
-    - `mag.graphics.view.Spectrogram` for just spectrogram
-    - `mag.graphics.view.PSD` for just PSD
-- Rename `Event` to `Events` in `mag.graphics.view.Field`
+- Add support in `mag.Instrument/crop`, `mag.Science/select`, and `mag.graphics.view.Field/visualize` for empty science
 
-# README
+# Tests
 
-- Link to Confluence documentation
+- Add tests for `mag.app.control.Field`, `mag.app.control.PSD`, and `mag.app.control.Spectrogram`
+- Add tests for `mag.app.Command` and `mag.app.internal.combineDateAndTime`
+- Add tests for `mag.hk.Science`
+
+# Build
+
+- Include coverage for `app` folder

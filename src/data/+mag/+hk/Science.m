@@ -47,7 +47,9 @@ classdef Science < mag.HK
     methods
 
         function t = get.FOBT(this)
-            t = this.Data.FOB_t;
+
+            t = datetime(mag.time.Constant.Epoch + this.Data.FOB_COARSETM + (this.Data.FOB_FINETM / double(intmax("uint16"))), ConvertFrom = "posixtime", ...
+                Format = mag.time.Constant.Format, TimeZone = mag.time.Constant.TimeZone);
         end
 
         function x = get.FOBX(this)
@@ -71,7 +73,9 @@ classdef Science < mag.HK
         end
 
         function t = get.FIBT(this)
-            t = this.Data.FIB_t;
+
+            t = datetime(mag.time.Constant.Epoch + this.Data.FIB_COARSETM + (this.Data.FIB_FINETM / double(intmax("uint16"))), ConvertFrom = "posixtime", ...
+                Format = mag.time.Constant.Format, TimeZone = mag.time.Constant.TimeZone);
         end
 
         function x = get.FIBX(this)

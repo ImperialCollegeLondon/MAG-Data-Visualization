@@ -16,7 +16,7 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             this.Layout = this.createDefaultGridLayout();
 
             % Start and end dates.
-            this.addStartEndDateButtons(this.Layout, 1, 2);
+            this.addStartEndDateButtons(this.Layout, StartDateRow = 1, EndDateRow = 2);
 
             % Frequency points.
             frequencyPointsLabel = uilabel(this.Layout, Text = "Frequency points:", ...
@@ -37,7 +37,8 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
 
             this.OverlapSpinner = uispinner(this.Layout, Value = double.empty(), AllowEmpty = true, ...
                 Step = 0.1, ValueDisplayFormat = "%.2f", ...
-                Limits = [0, 1], LowerLimitInclusive = false);
+                Limits = [0, 1], LowerLimitInclusive = false, ...
+                Placeholder = this.DynamicPlaceholder);
             this.OverlapSpinner.Layout.Row = 4;
             this.OverlapSpinner.Layout.Column = [2, 3];
 
@@ -48,16 +49,21 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
             windowLabel.Layout.Column = 1;
 
             this.WindowSpinner = uispinner(this.Layout, Value = double.empty(), AllowEmpty = true, ...
-                Step = 1, Limits = [0, Inf], LowerLimitInclusive = false);
+                Step = 1, Limits = [0, Inf], LowerLimitInclusive = false, ...
+                Placeholder = this.DynamicPlaceholder);
             this.WindowSpinner.Layout.Row = 5;
             this.WindowSpinner.Layout.Column = [2, 3];
         end
 
-        function figures = visualize(this, results)
+        function command = getVisualizeCommand(this, results)
 
-            arguments
+            arguments (Input)
                 this
                 results (1, 1) mag.Instrument
+            end
+
+            arguments (Output)
+                command (1, 1) mag.app.Command
             end
 
             [startTime, endTime] = this.getStartEndTimes();
@@ -75,9 +81,11 @@ classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
                 window = this.WindowSpinner.Value;
             end
 
-            results = this.cropResults(results, startTime, endTime);
-            figures = mag.graphics.view.Spectrogram(results, ...
-                FrequencyPoints = frequencyPoints, Overlap = overlap, Window = window).visualizeAll();
+            results = mag.app.internal.cropResults(results, startTime, endTime);
+            
+            command = mag.app.Command(Functional = @(varargin) mag.graphics.view.Spectrogram(varargin{:}).visualizeAll(), ...
+                PositionalArguments = {results}, ...
+                NamedArguments = struct(FrequencyPoints = frequencyPoints, Overlap = overlap, Window = window));
         end
     end
 end

@@ -13,7 +13,7 @@ function plan = buildfile()
     plan = buildplan();
 
     % Add the "check" task to identify code issues.
-    sourceFolders = "src";
+    sourceFolders = ["app", "src"];
 
     plan("check") = matlab.buildtool.tasks.CodeIssuesTask(sourceFolders, ...
         IncludeSubfolders = true);

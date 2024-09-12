@@ -8,6 +8,11 @@ classdef (Abstract) Control < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         DefaultColumnWidth (1, 3) string = ["fit", "1x", "1x"]
     end
 
+    properties (Constant, Access = protected)
+        % DYNAMICPLACEHOLDER Placeholder text for dynamic defaults.
+        DynamicPlaceholder (1, 1) string = "dynamic (default)"
+    end
+
     properties (SetAccess = immutable)
         Parent (1, 1) matlab.ui.container.Panel
     end
@@ -24,39 +29,14 @@ classdef (Abstract) Control < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         % INSTANTIATE Populate view-control elements.
         instantiate(this)
 
-        % VISUALIZE Plot all figures.
-        figures = visualize(this, results)
+        % GETVISUALIZECOMMAND Retrieve command to plot all figures.
+        command = getVisualizeCommand(this, results)
     end
 
     methods (Access = protected)
 
         function layout = createDefaultGridLayout(this)
             layout = uigridlayout(this.Parent, this.DefaultSize, ColumnWidth = this.DefaultColumnWidth);
-        end
-    end
-
-    methods (Static, Access = protected)
-
-        function results = cropResults(results, startTime, endTime)
-
-            arguments
-                results (1, 1) mag.Instrument 
-                startTime (1, 1) datetime
-                endTime (1, 1) datetime
-            end
-
-            if ismissing(startTime)
-                startTime = datetime("-Inf", TimeZone = "UTC");
-            end
-
-            if ismissing(endTime)
-                endTime = datetime("Inf", TimeZone = "UTC");
-            end
-
-            period = timerange(startTime, endTime, "closed");
-
-            results = results.copy();
-            results.crop(period);
         end
     end
 end

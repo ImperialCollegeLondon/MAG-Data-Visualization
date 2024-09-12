@@ -88,9 +88,6 @@ classdef Units < mag.process.Step
                         for s = steps
                             data = s.apply(data, md);
                         end
-
-                        data.(fee + "_t") = datetime(mag.time.Constant.Epoch + data.(fee + "_COARSETM") + (data.(fee + "_FINETM") / double(intmax("uint16"))), ConvertFrom = "posixtime", ...
-                            Format = mag.time.Constant.Format, TimeZone = mag.time.Constant.TimeZone);
                     end
 
                 case "SID15"
