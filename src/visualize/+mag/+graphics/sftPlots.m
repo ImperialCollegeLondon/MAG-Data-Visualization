@@ -46,7 +46,7 @@ function figures = sftPlots(analysis, options)
                 m.crop([seconds(30), seconds(-30)]);
             end
 
-            views(end + 1) = mag.graphics.view.PSD(m, PSDStart = options.PSDStart, PSDDuration = options.PSDDuration);
+            views(end + 1) = mag.graphics.view.PSD(m, Start = options.PSDStart, Duration = options.PSDDuration);
         end
     end
 
