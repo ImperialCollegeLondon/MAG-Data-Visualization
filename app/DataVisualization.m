@@ -1,4 +1,4 @@
-classdef (Sealed) DataVisualization < handle
+classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
     properties (SetAccess = private)
@@ -15,20 +15,6 @@ classdef (Sealed) DataVisualization < handle
         ResetButton matlab.ui.control.Button
         ProcessDataButton matlab.ui.control.Button
         SettingsPanel matlab.ui.container.Panel
-        AnalyzeSettingsLayout matlab.ui.container.GridLayout
-        IALiRTPatternEditField matlab.ui.control.EditField
-        IALiRTPatternEditFieldLabel matlab.ui.control.Label
-        MetaDataPatternEditField matlab.ui.control.EditField
-        MetaDataPatternEditFieldLabel matlab.ui.control.Label
-        EventPatternEditField matlab.ui.control.EditField
-        EventPatternEditFieldLabel matlab.ui.control.Label
-        HKPatternEditField matlab.ui.control.EditField
-        HKPatternEditFieldLabel matlab.ui.control.Label
-        SciencePatternEditField matlab.ui.control.EditField
-        SciencePatternEditFieldLabel matlab.ui.control.Label
-        BrowseButton matlab.ui.control.Button
-        LocationEditField matlab.ui.control.EditField
-        LocationEditFieldLabel matlab.ui.control.Label
         ResultsTab matlab.ui.container.Tab
         ResultsLayout matlab.ui.container.GridLayout
         MetaDataPanel matlab.ui.container.Panel
@@ -80,6 +66,7 @@ classdef (Sealed) DataVisualization < handle
     end
 
     properties (SetAccess = private)
+        AppProvider mag.app.Provider {mustBeScalarOrEmpty}
         SelectedControl mag.app.control.Control {mustBeScalarOrEmpty}
     end
 
@@ -226,20 +213,7 @@ classdef (Sealed) DataVisualization < handle
 
     methods (Access = private)
 
-        function startupFcn(app)
-
-            % Set app version.
-            app.VersionLabel.Text = compose("Version %s", mag.version());
-
-            % Set default patterns.
-            dummyAnalysis = mag.imap.Analysis();
-
-            app.LocationEditField.Value = string.empty();
-            app.EventPatternEditField.Value = join(dummyAnalysis.EventPattern, pathsep());
-            app.MetaDataPatternEditField.Value = join(dummyAnalysis.MetaDataPattern, pathsep());
-            app.SciencePatternEditField.Value = dummyAnalysis.SciencePattern;
-            app.IALiRTPatternEditField.Value = dummyAnalysis.IALiRTPattern;
-            app.HKPatternEditField.Value = join(dummyAnalysis.HKPattern, pathsep());
+        function startup(app)
 
             % Subscribe to properties.
             app.addlistener("Analysis", "PostSet", @app.analysisChanged);
@@ -347,18 +321,9 @@ classdef (Sealed) DataVisualization < handle
             end
         end
 
-        function browseButtonPushed(app)
-
-            location = uigetdir(app.LocationEditField.Value, "Select Data Root");
-
-            if ~isequal(location, 0)
-                app.LocationEditField.Value = location;
-            end
-        end
-
         function resetButtonPushed(app, event)
 
-            app.startupFcn();
+            app.startup();
             app.closeFiguresButtonPushed(event);
 
             app.Analysis = mag.imap.Analysis.empty();
@@ -460,10 +425,8 @@ classdef (Sealed) DataVisualization < handle
 
         function visualizationTypeListBoxValueChanged(app)
 
-            value = app.VisualizationTypeListBox.ItemsData{app.VisualizationTypeListBox.ValueIndex};
-
-            app.SelectedControl = feval(value, app.VisualizationOptionsPanel);
-            app.SelectedControl.instantiate();
+            app.SelectedControl = app.VisualizationTypeListBox.ItemsData{app.VisualizationTypeListBox.ValueIndex};
+            app.SelectedControl.instantiate(app.VisualizationOptionsPanel);
         end
 
         function showFiguresButtonPushed(app)
@@ -520,12 +483,6 @@ classdef (Sealed) DataVisualization < handle
             % Get the file path for locating images.
             pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
 
-            % Create UIFigure and hide until all components are created.
-            app.UIFigure = uifigure("Visible", "off");
-            app.UIFigure.Position = [100 100 694 429];
-            app.UIFigure.Name = "MATLAB App";
-            app.UIFigure.Resize = "off";
-
             % Create Toolbar.
             app.Toolbar = uitoolbar(app.UIFigure);
 
@@ -573,90 +530,10 @@ classdef (Sealed) DataVisualization < handle
             app.SettingsPanel.Layout.Row = 1;
             app.SettingsPanel.Layout.Column = [1 4];
 
-            % Create AnalyzeSettingsLayout.
-            app.AnalyzeSettingsLayout = uigridlayout(app.SettingsPanel);
-            app.AnalyzeSettingsLayout.ColumnWidth = ["fit", "1x", "fit"];
-            app.AnalyzeSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x", "1x", "1x"];
-
-            % Create LocationEditFieldLabel.
-            app.LocationEditFieldLabel = uilabel(app.AnalyzeSettingsLayout);
-            app.LocationEditFieldLabel.HorizontalAlignment = "right";
-            app.LocationEditFieldLabel.Layout.Row = 1;
-            app.LocationEditFieldLabel.Layout.Column = 1;
-            app.LocationEditFieldLabel.Text = "Location:";
-
-            % Create LocationEditField.
-            app.LocationEditField = uieditfield(app.AnalyzeSettingsLayout, "text");
-            app.LocationEditField.Layout.Row = 1;
-            app.LocationEditField.Layout.Column = 2;
-
-            % Create BrowseButton.
-            app.BrowseButton = uibutton(app.AnalyzeSettingsLayout, "push");
-            app.BrowseButton.ButtonPushedFcn = @(~, ~) app.browseButtonPushed();
-            app.BrowseButton.Layout.Row = 1;
-            app.BrowseButton.Layout.Column = 3;
-            app.BrowseButton.Text = "Browse";
-
-            % Create SciencePatternEditFieldLabel.
-            app.SciencePatternEditFieldLabel = uilabel(app.AnalyzeSettingsLayout);
-            app.SciencePatternEditFieldLabel.HorizontalAlignment = "right";
-            app.SciencePatternEditFieldLabel.Layout.Row = 4;
-            app.SciencePatternEditFieldLabel.Layout.Column = 1;
-            app.SciencePatternEditFieldLabel.Text = "Science Pattern:";
-
-            % Create SciencePatternEditField.
-            app.SciencePatternEditField = uieditfield(app.AnalyzeSettingsLayout, "text");
-            app.SciencePatternEditField.Layout.Row = 4;
-            app.SciencePatternEditField.Layout.Column = [2 3];
-
-            % Create HKPatternEditFieldLabel.
-            app.HKPatternEditFieldLabel = uilabel(app.AnalyzeSettingsLayout);
-            app.HKPatternEditFieldLabel.HorizontalAlignment = "right";
-            app.HKPatternEditFieldLabel.Layout.Row = 6;
-            app.HKPatternEditFieldLabel.Layout.Column = 1;
-            app.HKPatternEditFieldLabel.Text = "HK Pattern:";
-
-            % Create HKPatternEditField.
-            app.HKPatternEditField = uieditfield(app.AnalyzeSettingsLayout, "text");
-            app.HKPatternEditField.Layout.Row = 6;
-            app.HKPatternEditField.Layout.Column = [2 3];
-
-            % Create EventPatternEditFieldLabel.
-            app.EventPatternEditFieldLabel = uilabel(app.AnalyzeSettingsLayout);
-            app.EventPatternEditFieldLabel.HorizontalAlignment = "right";
-            app.EventPatternEditFieldLabel.FontColor = [0.1294 0.1294 0.1294];
-            app.EventPatternEditFieldLabel.Layout.Row = 2;
-            app.EventPatternEditFieldLabel.Layout.Column = 1;
-            app.EventPatternEditFieldLabel.Text = "Event Pattern:";
-
-            % Create EventPatternEditField.
-            app.EventPatternEditField = uieditfield(app.AnalyzeSettingsLayout, "text");
-            app.EventPatternEditField.Layout.Row = 2;
-            app.EventPatternEditField.Layout.Column = [2 3];
-
-            % Create MetaDataPatternEditFieldLabel.
-            app.MetaDataPatternEditFieldLabel = uilabel(app.AnalyzeSettingsLayout);
-            app.MetaDataPatternEditFieldLabel.HorizontalAlignment = "right";
-            app.MetaDataPatternEditFieldLabel.Layout.Row = 3;
-            app.MetaDataPatternEditFieldLabel.Layout.Column = 1;
-            app.MetaDataPatternEditFieldLabel.Text = "Meta Data Pattern:";
-
-            % Create MetaDataPatternEditField.
-            app.MetaDataPatternEditField = uieditfield(app.AnalyzeSettingsLayout, "text");
-            app.MetaDataPatternEditField.Layout.Row = 3;
-            app.MetaDataPatternEditField.Layout.Column = [2 3];
-
-            % Create IALiRTPatternEditFieldLabel.
-            app.IALiRTPatternEditFieldLabel = uilabel(app.AnalyzeSettingsLayout);
-            app.IALiRTPatternEditFieldLabel.HorizontalAlignment = "right";
-            app.IALiRTPatternEditFieldLabel.Layout.Row = 5;
-            app.IALiRTPatternEditFieldLabel.Layout.Column = 1;
-            app.IALiRTPatternEditFieldLabel.Text = "I-ALiRT Pattern:";
-
-            % Create IALiRTPatternEditField.
-            app.IALiRTPatternEditField = uieditfield(app.AnalyzeSettingsLayout, "text");
-            app.IALiRTPatternEditField.Layout.Row = 5;
-            app.IALiRTPatternEditField.Layout.Column = [2 3];
+            % Populate "Analyze" tab based on mission.
+            analysisManager = app.AppProvider.getAnalysisManager();
+            analysisManager.instantiate(app.SettingsPanel);
+            analysisManager.reset();
 
             % Create ProcessDataButton.
             app.ProcessDataButton = uibutton(app.AnalyzeLayout, "push");
@@ -677,7 +554,7 @@ classdef (Sealed) DataVisualization < handle
             app.VersionLabel.VerticalAlignment = "bottom";
             app.VersionLabel.Layout.Row = 2;
             app.VersionLabel.Layout.Column = 1;
-            app.VersionLabel.Text = "";
+            app.VersionLabel.Text = compose("v%s", mag.version());
 
             % Create ResultsTab.
             app.ResultsTab = uitab(app.TabGroup);
@@ -978,13 +855,13 @@ classdef (Sealed) DataVisualization < handle
 
             % Create VisualizationTypeListBox.
             app.VisualizationTypeListBox = uilistbox(app.VisualizationOptionsLayout);
-            app.VisualizationTypeListBox.Items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
-            app.VisualizationTypeListBox.ItemsData = ["mag.app.imap.controlAT", "mag.app.imap.controlCPT", "mag.app.imap.controlField", "mag.app.imap.controlSpectrogram", "mag.app.imap.controlPSD"];
             app.VisualizationTypeListBox.ValueChangedFcn = @(~, ~) app.visualizationTypeListBoxValueChanged();
             app.VisualizationTypeListBox.Enable = "off";
             app.VisualizationTypeListBox.Layout.Row = 1;
             app.VisualizationTypeListBox.Layout.Column = 1;
-            app.VisualizationTypeListBox.Value = "mag.app.imap.controlAT";
+            % app.VisualizationTypeListBox.Items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
+            % app.VisualizationTypeListBox.ItemsData = [mag.app.imap.control.AT(), mag.app.imap.control.CPT(), mag.app.imap.control.Field(), mag.app.imap.control.Spectrogram(), mag.app.imap.control.PSD()];
+            % app.VisualizationTypeListBox.Value = mag.app.imap.control.AT();
 
             % Create VisualizationOptionsPanel.
             app.VisualizationOptionsPanel = uipanel(app.VisualizationOptionsLayout);
@@ -992,21 +869,46 @@ classdef (Sealed) DataVisualization < handle
             app.VisualizationOptionsPanel.BorderType = "none";
             app.VisualizationOptionsPanel.Layout.Row = 1;
             app.VisualizationOptionsPanel.Layout.Column = 2;
-
-            % Show the figure after all components are created.
-            app.UIFigure.Visible = "on";
         end
     end
 
     methods (Access = public)
 
-        function app = DataVisualization
+        function app = DataVisualization()
 
+            % Create UIFigure and hide until all components are created.
+            app.UIFigure = uifigure();
+            app.UIFigure.Position = [100 100 694 429];
+            app.UIFigure.Name = "MAG Data Visulization App";
+            app.UIFigure.Resize = "off";
+
+            % Ask which mission to load.
+            selection = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
+                Options = ["HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
+
+            switch selection
+                case "Cancel"
+
+                    delete(app);
+                    return;
+                case "HelioSwarm"
+                    error("HelioSwarm mission not yet supported.");
+                case "IMAP"
+                    app.AppProvider = mag.app.imap.Provider();
+                case "Solar Orbiter"
+                    error("Solar Orbiter mission not yet supported.");
+            end
+
+            % Show the figure after all components are created.
+            app.UIFigure.Visible = "off";
+            restoreVisibility = onCleanup(@() set(app.UIFigure, Visible = "on"));
+
+            % Initialize app.
             app.createComponents();
-            app.startupFcn();
+            app.startup();
 
             if nargout == 0
-                clear app
+                clear("app");
             end
         end
 
