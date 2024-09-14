@@ -506,7 +506,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
                     error("Unsupported extension ""%s"" for science data import.", extension);
             end
 
-            importStrategy = feval("mag.io.in." + type + format, args{:});
+            importStrategy = feval("mag.imap.in." + type + format, args{:});
         end
     end
 end

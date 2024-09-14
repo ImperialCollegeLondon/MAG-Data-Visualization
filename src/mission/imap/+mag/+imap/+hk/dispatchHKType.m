@@ -12,15 +12,15 @@ function hk = dispatchHKType(hkData, metaData)
 
     switch metaData.Type
         case "PROCSTAT"
-            hk = mag.hk.Processor(hkData, metaData);
+            hk = mag.imap.hk.Processor(hkData, metaData);
         case "PW"
-            hk = mag.hk.Power(hkData, metaData);
+            hk = mag.imap.hk.Power(hkData, metaData);
         case "SCI"
-            hk = mag.hk.Science(hkData, metaData);
+            hk = mag.imap.hk.Science(hkData, metaData);
         case "SID15"
-            hk = mag.hk.SID15(hkData, metaData);
+            hk = mag.imap.hk.SID15(hkData, metaData);
         case "STATUS"
-            hk = mag.hk.Status(hkData, metaData);
+            hk = mag.imap.hk.Status(hkData, metaData);
         otherwise
             error("Unsupported HK of type ""%s"".", metaData.Type);
     end
