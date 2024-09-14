@@ -3,11 +3,19 @@ classdef Provider < mag.app.Provider
 
     methods
 
+        function model = getModel(~)
+            model = mag.app.imap.Model();
+        end
+
         function manager = getAnalysisManager(~)
             manager = mag.app.imap.AnalysisManager();
         end
 
-        function getVisualizationManager(~)
+        function manager = getResultsManager(~)
+            manager = mag.app.imap.ResultsManager();
+        end
+
+        function manager = getVisualizationManager(~)
             manager = mag.app.imap.VisualizationManager();
         end
     end

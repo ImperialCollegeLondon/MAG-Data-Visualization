@@ -14,31 +14,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         VersionLabel matlab.ui.control.Label
         ResetButton matlab.ui.control.Button
         ProcessDataButton matlab.ui.control.Button
-        SettingsPanel matlab.ui.container.Panel
+        AnalyzeSettingsPanel matlab.ui.container.Panel
         ResultsTab matlab.ui.container.Tab
-        ResultsLayout matlab.ui.container.GridLayout
-        MetaDataPanel matlab.ui.container.Panel
-        MetaDataLayout matlab.ui.container.GridLayout
-        SecondaryTextArea matlab.ui.control.TextArea
-        PrimaryTextArea matlab.ui.control.TextArea
-        InstrumentTextArea matlab.ui.control.TextArea
-        ProcessingStepsPanel matlab.ui.container.Panel
-        StepsLayout matlab.ui.container.GridLayout
-        RampTextArea matlab.ui.control.TextArea
-        HKTextArea matlab.ui.control.TextArea
-        ScienceTextArea matlab.ui.control.TextArea
-        WholeDataTextArea matlab.ui.control.TextArea
-        RampDropDown matlab.ui.control.DropDown
-        RampModeDropDownLabel matlab.ui.control.Label
-        HKDropDown matlab.ui.control.DropDown
-        HKDropDownLabel matlab.ui.control.Label
-        ScienceDropDown matlab.ui.control.DropDown
-        ScienceDropDownLabel matlab.ui.control.Label
-        WholeDataDropDown matlab.ui.control.DropDown
-        WholeDataDropDownLabel matlab.ui.control.Label
-        PerFileTextArea matlab.ui.control.TextArea
-        PerFileDropDown matlab.ui.control.DropDown
-        PerFileLabel matlab.ui.control.Label
         ExportTab matlab.ui.container.Tab
         ExportLayout matlab.ui.container.GridLayout
         ExportSettingsPanel matlab.ui.container.Panel
@@ -56,9 +33,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         FormatDropDownLabel matlab.ui.control.Label
         VisualizeTab matlab.ui.container.Tab
         VisualizeLayout matlab.ui.container.GridLayout
-        VisualizationOptionsLayout matlab.ui.container.GridLayout
-        VisualizationOptionsPanel matlab.ui.container.Panel
-        VisualizationTypeListBox matlab.ui.control.ListBox
+        VisualizePanel matlab.ui.container.Panel
         VisualizeButtonsLayout matlab.ui.container.GridLayout
         CloseFiguresButton matlab.ui.control.Button
         SaveFiguresButton matlab.ui.control.Button
@@ -66,8 +41,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     end
 
     properties (SetAccess = private)
-        AppProvider mag.app.Provider {mustBeScalarOrEmpty}
-        SelectedControl mag.app.control.Control {mustBeScalarOrEmpty}
+        Model mag.app.Model {mustBeScalarOrEmpty}
+        AnalysisManager mag.app.Manager {mustBeScalarOrEmpty}
+        ResultsManager mag.app.Manager {mustBeScalarOrEmpty}
+        VisualizationManager mag.app.Manager {mustBeScalarOrEmpty}
     end
 
     properties (Access = private)
@@ -137,26 +114,12 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     app.SecondaryTextArea.Value = secondaryMetaData;
                 end
 
-                for i = ["PerFile", "WholeData", "Science", "HK", "Ramp"]
-
-                    app.(i + "DropDown").Items = [app.Analysis.(i + "Processing").Name];
-                    app.(i + "DropDown").ItemsData = app.Analysis.(i + "Processing");
-                    app.(regexprep(i, "(\w{2})(\w+)?", "${lower($1)}$2") + "DropDownValueChanged")();
-                end
-
                 app.visualizationTypeListBoxValueChanged();
             else
 
                 app.InstrumentTextArea.Value = char.empty();
                 app.PrimaryTextArea.Value = char.empty();
                 app.SecondaryTextArea.Value = char.empty();
-
-                for i = ["PerFile", "WholeData", "Science", "HK", "Ramp"]
-
-                    app.(i + "DropDown").Items = "";
-                    app.(i + "DropDown").ItemsData = [];
-                    app.(i + "TextArea").Value = char.empty();
-                end
             end
         end
 
@@ -200,39 +163,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             progressBar = uiprogressdlg(app.UIFigure, Message = message, Icon = "info", Indeterminate = "on");
             closeProgressBar = [onCleanup(@() delete(progressBar)), onCleanup(@() beep())];
         end
-
-        function updateProcessingStepUI(app, name)
-
-            value = app.(name + "DropDown").Value;
-
-            if ~isempty(value)
-                app.(name + "TextArea").Value = value.DetailedDescription;
-            end
-        end
     end
 
     methods (Access = private)
 
-        function startup(app)
-
-            % Subscribe to properties.
-            app.addlistener("Analysis", "PostSet", @app.analysisChanged);
-            app.addlistener("Figures", "PostSet", @app.figuresChanged);
-        end
-
         function processDataButtonPushed(app)
-
-            % Validate location.
-            location = app.LocationEditField.Value;
-            if isempty(location)
-
-                app.displayAlert("Location is empty.", "Invalid Location");
-                return;
-            elseif ~isfolder(location)
-
-                app.displayAlert(compose("Location ""%s"" does not exist.", location), "Invalid Location");
-                return;
-            end
 
             % Show progress bar.
             closeProgressBar = app.overlayProgressBar("Processing data..."); %#ok<NASGU>
@@ -241,38 +176,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             previousWarningState = warning("off", "backtrace");
             restoreWarningState = onCleanup(@() warning(previousWarningState));
 
-            % Retrieve data file patterns.
-            if isempty(app.EventPatternEditField.Value)
-                eventPattern = string.empty();
-            else
-                eventPattern = split(app.EventPatternEditField.Value, pathsep())';
-            end
-
-            if isempty(app.MetaDataPatternEditField.Value)
-                metaDataPattern = string.empty();
-            else
-                metaDataPattern = split(app.MetaDataPatternEditField.Value, pathsep())';
-            end
-
-            if isempty(app.HKPatternEditField.Value)
-                hkPattern = string.empty();
-            else
-                hkPattern = split(app.HKPatternEditField.Value, pathsep())';
-            end
-
             % Start analysis.
             try
-
-                app.Analysis = mag.imap.Analysis.start(Location = app.LocationEditField.Value, ...
-                    EventPattern = eventPattern, ...
-                    MetaDataPattern = metaDataPattern, ...
-                    SciencePattern = app.SciencePatternEditField.Value, ...
-                    IALiRTPattern = app.IALiRTPatternEditField.Value, ...
-                    HKPattern = hkPattern);
+                this.Model.performAnalysis(this.AnalysisManager);
             catch exception
-
                 app.displayAlert(exception);
-                return;
             end
         end
 
@@ -403,32 +311,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
         end
 
-        function perFileDropDownValueChanged(app)
-            app.updateProcessingStepUI("PerFile");
-        end
-
-        function wholeDataDropDownValueChanged(app)
-            app.updateProcessingStepUI("WholeData");
-        end
-
-        function scienceDropDownValueChanged(app)
-            app.updateProcessingStepUI("Science");
-        end
-
-        function hkDropDownValueChanged(app)
-            app.updateProcessingStepUI("HK");
-        end
-
-        function rampDropDownValueChanged(app)
-            app.updateProcessingStepUI("Ramp");
-        end
-
-        function visualizationTypeListBoxValueChanged(app)
-
-            app.SelectedControl = app.VisualizationTypeListBox.ItemsData{app.VisualizationTypeListBox.ValueIndex};
-            app.SelectedControl.instantiate(app.VisualizationOptionsPanel);
-        end
-
         function showFiguresButtonPushed(app)
 
             % Show progress bar.
@@ -436,16 +318,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Select plotting function based on plot types.
             try
-
-                if isa(app.SelectedControl, "mag.app.imap.controlAT") || isa(app.SelectedControl, "mag.app.imap.controlCPT")
-                    args = {app.Analysis};
-                else
-                    args = {app.Analysis.Results};
-                end
-
-                command = app.SelectedControl.getVisualizeCommand(args{:});
-                app.Figures = command.call();
-                return;
+                app.Figures = app.VisualizationManager.visualize(app.Model.Results);
             catch exception
                 app.displayAlert(exception);
             end
@@ -524,16 +397,15 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.AnalyzeLayout.ColumnWidth = ["1x", "3x", "2x", "1x"];
             app.AnalyzeLayout.RowHeight = ["6x", "1x"];
 
-            % Create SettingsPanel.
-            app.SettingsPanel = uipanel(app.AnalyzeLayout);
-            app.SettingsPanel.Title = "Settings";
-            app.SettingsPanel.Layout.Row = 1;
-            app.SettingsPanel.Layout.Column = [1 4];
+            % Create AnalyzeSettingsPanel.
+            app.AnalyzeSettingsPanel = uipanel(app.AnalyzeLayout);
+            app.AnalyzeSettingsPanel.Title = "Settings";
+            app.AnalyzeSettingsPanel.Layout.Row = 1;
+            app.AnalyzeSettingsPanel.Layout.Column = [1, 4];
 
             % Populate "Analyze" tab based on mission.
-            analysisManager = app.AppProvider.getAnalysisManager();
-            analysisManager.instantiate(app.SettingsPanel);
-            analysisManager.reset();
+            app.AnalysisManager.instantiate(app.AnalyzeSettingsPanel);
+            app.AnalysisManager.reset();
 
             % Create ProcessDataButton.
             app.ProcessDataButton = uibutton(app.AnalyzeLayout, "push");
@@ -560,158 +432,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ResultsTab = uitab(app.TabGroup);
             app.ResultsTab.Title = "Results";
 
-            % Create ResultsLayout.
-            app.ResultsLayout = uigridlayout(app.ResultsTab);
-            app.ResultsLayout.ColumnWidth = "1x";
-            app.ResultsLayout.RowHeight = ["1x", "3x"];
-
-            % Create ProcessingStepsPanel.
-            app.ProcessingStepsPanel = uipanel(app.ResultsLayout);
-            app.ProcessingStepsPanel.Enable = "off";
-            app.ProcessingStepsPanel.Title = "Processing Steps";
-            app.ProcessingStepsPanel.Layout.Row = 2;
-            app.ProcessingStepsPanel.Layout.Column = 1;
-
-            % Create StepsLayout.
-            app.StepsLayout = uigridlayout(app.ProcessingStepsPanel);
-            app.StepsLayout.ColumnWidth = ["fit", "1x", "2x"];
-            app.StepsLayout.RowHeight = ["1x", "1x", "1x", "1x", "1x"];
-
-            % Create PerFileLabel.
-            app.PerFileLabel = uilabel(app.StepsLayout);
-            app.PerFileLabel.HorizontalAlignment = "right";
-            app.PerFileLabel.Layout.Row = 1;
-            app.PerFileLabel.Layout.Column = 1;
-            app.PerFileLabel.Text = "Per File:";
-
-            % Create PerFileDropDown.
-            app.PerFileDropDown = uidropdown(app.StepsLayout);
-            app.PerFileDropDown.Items = string.empty();
-            app.PerFileDropDown.ValueChangedFcn = @(~, ~) app.perFileDropDownValueChanged();
-            app.PerFileDropDown.Layout.Row = 1;
-            app.PerFileDropDown.Layout.Column = 2;
-            app.PerFileDropDown.Value = string.empty();
-
-            % Create PerFileTextArea.
-            app.PerFileTextArea = uitextarea(app.StepsLayout);
-            app.PerFileTextArea.Layout.Row = 1;
-            app.PerFileTextArea.Layout.Column = 3;
-
-            % Create WholeDataDropDownLabel.
-            app.WholeDataDropDownLabel = uilabel(app.StepsLayout);
-            app.WholeDataDropDownLabel.HorizontalAlignment = "right";
-            app.WholeDataDropDownLabel.Layout.Row = 2;
-            app.WholeDataDropDownLabel.Layout.Column = 1;
-            app.WholeDataDropDownLabel.Text = "Whole Data:";
-
-            % Create WholeDataDropDown.
-            app.WholeDataDropDown = uidropdown(app.StepsLayout);
-            app.WholeDataDropDown.Items = string.empty();
-            app.WholeDataDropDown.ValueChangedFcn = @(~, ~) app.wholeDataDropDownValueChanged();
-            app.WholeDataDropDown.Layout.Row = 2;
-            app.WholeDataDropDown.Layout.Column = 2;
-            app.WholeDataDropDown.Value = string.empty();
-
-            % Create ScienceDropDownLabel.
-            app.ScienceDropDownLabel = uilabel(app.StepsLayout);
-            app.ScienceDropDownLabel.HorizontalAlignment = "right";
-            app.ScienceDropDownLabel.Layout.Row = 3;
-            app.ScienceDropDownLabel.Layout.Column = 1;
-            app.ScienceDropDownLabel.Text = "Science:";
-
-            % Create ScienceDropDown.
-            app.ScienceDropDown = uidropdown(app.StepsLayout);
-            app.ScienceDropDown.Items = string.empty();
-            app.ScienceDropDown.ValueChangedFcn = @(~, ~) app.scienceDropDownValueChanged();
-            app.ScienceDropDown.Layout.Row = 3;
-            app.ScienceDropDown.Layout.Column = 2;
-            app.ScienceDropDown.Value = string.empty();
-
-            % Create HKDropDownLabel.
-            app.HKDropDownLabel = uilabel(app.StepsLayout);
-            app.HKDropDownLabel.HorizontalAlignment = "right";
-            app.HKDropDownLabel.Layout.Row = 4;
-            app.HKDropDownLabel.Layout.Column = 1;
-            app.HKDropDownLabel.Text = "HK:";
-
-            % Create HKDropDown.
-            app.HKDropDown = uidropdown(app.StepsLayout);
-            app.HKDropDown.Items = string.empty();
-            app.HKDropDown.ValueChangedFcn = @(~, ~) app.hkDropDownValueChanged();
-            app.HKDropDown.Layout.Row = 4;
-            app.HKDropDown.Layout.Column = 2;
-            app.HKDropDown.Value = string.empty();
-
-            % Create RampModeDropDownLabel.
-            app.RampModeDropDownLabel = uilabel(app.StepsLayout);
-            app.RampModeDropDownLabel.HorizontalAlignment = "right";
-            app.RampModeDropDownLabel.Layout.Row = 5;
-            app.RampModeDropDownLabel.Layout.Column = 1;
-            app.RampModeDropDownLabel.Text = "Ramp Mode:";
-
-            % Create RampDropDown.
-            app.RampDropDown = uidropdown(app.StepsLayout);
-            app.RampDropDown.Items = string.empty();
-            app.RampDropDown.ValueChangedFcn = @(~, ~) app.rampDropDownValueChanged();
-            app.RampDropDown.Layout.Row = 5;
-            app.RampDropDown.Layout.Column = 2;
-            app.RampDropDown.Value = string.empty();
-
-            % Create WholeDataTextArea.
-            app.WholeDataTextArea = uitextarea(app.StepsLayout);
-            app.WholeDataTextArea.Layout.Row = 2;
-            app.WholeDataTextArea.Layout.Column = 3;
-
-            % Create ScienceTextArea.
-            app.ScienceTextArea = uitextarea(app.StepsLayout);
-            app.ScienceTextArea.Layout.Row = 3;
-            app.ScienceTextArea.Layout.Column = 3;
-
-            % Create HKTextArea.
-            app.HKTextArea = uitextarea(app.StepsLayout);
-            app.HKTextArea.Layout.Row = 4;
-            app.HKTextArea.Layout.Column = 3;
-
-            % Create RampTextArea.
-            app.RampTextArea = uitextarea(app.StepsLayout);
-            app.RampTextArea.Layout.Row = 5;
-            app.RampTextArea.Layout.Column = 3;
-
-            % Create MetaDataPanel.
-            app.MetaDataPanel = uipanel(app.ResultsLayout);
-            app.MetaDataPanel.Enable = "off";
-            app.MetaDataPanel.Title = "Meta Data";
-            app.MetaDataPanel.Layout.Row = 1;
-            app.MetaDataPanel.Layout.Column = 1;
-
-            % Create MetaDataLayout.
-            app.MetaDataLayout = uigridlayout(app.MetaDataPanel);
-            app.MetaDataLayout.ColumnWidth = ["1x", "1x", "1x"];
-            app.MetaDataLayout.RowHeight = "1x";
-
-            % Create InstrumentTextArea.
-            app.InstrumentTextArea = uitextarea(app.MetaDataLayout);
-            app.InstrumentTextArea.Editable = "off";
-            app.InstrumentTextArea.Tooltip = "Instrument Meta Data";
-            app.InstrumentTextArea.Placeholder = "Instrument...";
-            app.InstrumentTextArea.Layout.Row = 1;
-            app.InstrumentTextArea.Layout.Column = 1;
-
-            % Create PrimaryTextArea.
-            app.PrimaryTextArea = uitextarea(app.MetaDataLayout);
-            app.PrimaryTextArea.Editable = "off";
-            app.PrimaryTextArea.Tooltip = "Primary Sensor Meta Data";
-            app.PrimaryTextArea.Placeholder = "Primary Sensor...";
-            app.PrimaryTextArea.Layout.Row = 1;
-            app.PrimaryTextArea.Layout.Column = 2;
-
-            % Create SecondaryTextArea.
-            app.SecondaryTextArea = uitextarea(app.MetaDataLayout);
-            app.SecondaryTextArea.Editable = "off";
-            app.SecondaryTextArea.Tooltip = "Secondary Sensor Meta Data";
-            app.SecondaryTextArea.Placeholder = "Secondary Sensor...";
-            app.SecondaryTextArea.Layout.Row = 1;
-            app.SecondaryTextArea.Layout.Column = 3;
+            % Populate "Results" tab based on mission.
+            app.ResultsManager.instantiate(app.ResultsTab);
+            app.ResultsManager.reset();
 
             % Create ExportTab.
             app.ExportTab = uitab(app.TabGroup);
@@ -815,6 +538,15 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.VisualizeLayout.ColumnWidth = "1x";
             app.VisualizeLayout.RowHeight = ["4x", "1x"];
 
+            % Create VisualizePanel.
+            app.VisualizePanel = uipanel(app.VisualizeLayout);
+            app.VisualizePanel.Layout.Row = 1;
+            app.VisualizePanel.Layout.Column = 1;
+
+            % Populate "Visualize" tab based on mission.
+            app.VisualizeManager.instantiate(app.VisualizePanel);
+            app.VisualizeManager.reset();
+
             % Create VisualizeButtonsLayout.
             app.VisualizeButtonsLayout = uigridlayout(app.VisualizeLayout);
             app.VisualizeButtonsLayout.ColumnWidth = ["2x", "2x", "1x", "fit"];
@@ -845,30 +577,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.CloseFiguresButton.Layout.Row = 1;
             app.CloseFiguresButton.Layout.Column = 4;
             app.CloseFiguresButton.Text = ["Close"; "Figures"];
-
-            % Create VisualizationOptionsLayout.
-            app.VisualizationOptionsLayout = uigridlayout(app.VisualizeLayout);
-            app.VisualizationOptionsLayout.ColumnWidth = ["1x", "4x"];
-            app.VisualizationOptionsLayout.RowHeight = "1x";
-            app.VisualizationOptionsLayout.Layout.Row = 1;
-            app.VisualizationOptionsLayout.Layout.Column = 1;
-
-            % Create VisualizationTypeListBox.
-            app.VisualizationTypeListBox = uilistbox(app.VisualizationOptionsLayout);
-            app.VisualizationTypeListBox.ValueChangedFcn = @(~, ~) app.visualizationTypeListBoxValueChanged();
-            app.VisualizationTypeListBox.Enable = "off";
-            app.VisualizationTypeListBox.Layout.Row = 1;
-            app.VisualizationTypeListBox.Layout.Column = 1;
-            % app.VisualizationTypeListBox.Items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
-            % app.VisualizationTypeListBox.ItemsData = [mag.app.imap.control.AT(), mag.app.imap.control.CPT(), mag.app.imap.control.Field(), mag.app.imap.control.Spectrogram(), mag.app.imap.control.PSD()];
-            % app.VisualizationTypeListBox.Value = mag.app.imap.control.AT();
-
-            % Create VisualizationOptionsPanel.
-            app.VisualizationOptionsPanel = uipanel(app.VisualizationOptionsLayout);
-            app.VisualizationOptionsPanel.Enable = "off";
-            app.VisualizationOptionsPanel.BorderType = "none";
-            app.VisualizationOptionsPanel.Layout.Row = 1;
-            app.VisualizationOptionsPanel.Layout.Column = 2;
         end
     end
 
@@ -894,7 +602,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 case "HelioSwarm"
                     error("HelioSwarm mission not yet supported.");
                 case "IMAP"
-                    app.AppProvider = mag.app.imap.Provider();
+                    appProvider = mag.app.imap.Provider();
                 case "Solar Orbiter"
                     error("Solar Orbiter mission not yet supported.");
             end
@@ -903,9 +611,16 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.UIFigure.Visible = "off";
             restoreVisibility = onCleanup(@() set(app.UIFigure, Visible = "on"));
 
+            % Set managers.
+            app.Model = appProvider.getModel();
+            app.AnalysisManager = appProvider.getAnalysisManager();
+            app.ResultsManager = appProvider.getResultsManager();
+            app.VisualizationManager = appProvider.getVisualizationManager();
+
             % Initialize app.
             app.createComponents();
-            app.startup();
+            app.addlistener("Analysis", "PostSet", @app.analysisChanged);
+            app.addlistener("Figures", "PostSet", @app.figuresChanged);
 
             if nargout == 0
                 clear("app");

@@ -49,7 +49,6 @@ classdef AnalysisManager < mag.app.Manager
             % Create EventPatternEditFieldLabel.
             this.EventPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.EventPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.EventPatternEditFieldLabel.FontColor = [0.1294 0.1294 0.1294];
             this.EventPatternEditFieldLabel.Layout.Row = 2;
             this.EventPatternEditFieldLabel.Layout.Column = 1;
             this.EventPatternEditFieldLabel.Text = "Event pattern:";
@@ -57,7 +56,7 @@ classdef AnalysisManager < mag.app.Manager
             % Create EventPatternEditField.
             this.EventPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
             this.EventPatternEditField.Layout.Row = 2;
-            this.EventPatternEditField.Layout.Column = [2 3];
+            this.EventPatternEditField.Layout.Column = [2, 3];
 
             % Create MetaDataPatternEditFieldLabel.
             this.MetaDataPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
@@ -69,7 +68,7 @@ classdef AnalysisManager < mag.app.Manager
             % Create MetaDataPatternEditField.
             this.MetaDataPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
             this.MetaDataPatternEditField.Layout.Row = 3;
-            this.MetaDataPatternEditField.Layout.Column = [2 3];
+            this.MetaDataPatternEditField.Layout.Column = [2, 3];
 
             % Create SciencePatternEditFieldLabel.
             this.SciencePatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
@@ -81,7 +80,7 @@ classdef AnalysisManager < mag.app.Manager
             % Create SciencePatternEditField.
             this.SciencePatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
             this.SciencePatternEditField.Layout.Row = 4;
-            this.SciencePatternEditField.Layout.Column = [2 3];
+            this.SciencePatternEditField.Layout.Column = [2, 3];
 
             % Create IALiRTPatternEditFieldLabel.
             this.IALiRTPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
@@ -93,7 +92,7 @@ classdef AnalysisManager < mag.app.Manager
             % Create IALiRTPatternEditField.
             this.IALiRTPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
             this.IALiRTPatternEditField.Layout.Row = 5;
-            this.IALiRTPatternEditField.Layout.Column = [2 3];
+            this.IALiRTPatternEditField.Layout.Column = [2, 3];
 
             % Create HKPatternEditFieldLabel.
             this.HKPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
@@ -105,7 +104,7 @@ classdef AnalysisManager < mag.app.Manager
             % Create HKPatternEditField.
             this.HKPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
             this.HKPatternEditField.Layout.Row = 6;
-            this.HKPatternEditField.Layout.Column = [2 3];
+            this.HKPatternEditField.Layout.Column = [2, 3];
         end
 
         function reset(this)
