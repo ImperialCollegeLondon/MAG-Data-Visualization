@@ -1,11 +1,38 @@
 {
-    "Aliases": {
-        "NewName": "mag.imap.Analysis",
-        "OldNames": [
-            "mag.IMAPAnalysis",
-            "mag.IMAPTestingAnalysis",
-            "mag.AutomatedAnalysis"
-        ],
-        "WarnOnOldName": true
-    }
+    "Aliases": [
+        {
+            "NewName": "mag.imap.Analysis",
+            "OldNames": [
+                "mag.IMAPAnalysis",
+                "mag.IMAPTestingAnalysis",
+                "mag.AutomatedAnalysis"
+            ],
+            "WarnOnOldName": true
+        },
+        {
+            "NewName": "mag.imap.hk.Power",
+            "OldNames": "mag.hk.Power",
+            "WarnOnOldName": true
+        },
+        {
+            "NewName": "mag.imap.hk.Processor",
+            "OldNames": "mag.hk.Processor",
+            "WarnOnOldName": true
+        },
+        {
+            "NewName": "mag.imap.hk.Science",
+            "OldNames": "mag.hk.Science",
+            "WarnOnOldName": true
+        },
+        {
+            "NewName": "mag.imap.hk.SID15",
+            "OldNames": "mag.hk.SID15",
+            "WarnOnOldName": true
+        },
+        {
+            "NewName": "mag.imap.hk.Status",
+            "OldNames": "mag.hk.Status",
+            "WarnOnOldName": true
+        }
+    ]
 }
