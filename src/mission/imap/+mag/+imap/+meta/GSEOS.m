@@ -1,4 +1,4 @@
-classdef GSEOS < mag.meta.log.Type
+classdef GSEOS < mag.imap.meta.Type
 % GSEOS Load meta data from GSEOS log files.
 
     properties (Constant)
@@ -23,7 +23,7 @@ classdef GSEOS < mag.meta.log.Type
         function this = GSEOS(options)
 
             arguments
-                options.?mag.meta.log.GSEOS
+                options.?mag.imap.meta.GSEOS
             end
 
             this.assignProperties(options);
@@ -35,7 +35,7 @@ classdef GSEOS < mag.meta.log.Type
         function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
 
             arguments
-                this (1, 1) mag.meta.log.GSEOS
+                this (1, 1) mag.imap.meta.GSEOS
                 instrumentMetaData (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup

@@ -12,14 +12,14 @@ function [primarySetup, secondarySetup] = loadMetaData(this)
         [~, ~, extension] = fileparts(mdf);
 
         switch extension
-            case cellstr(mag.meta.log.GSEOS.Extensions)
-                loader = mag.meta.log.GSEOS(FileName = mdf);
-            case cellstr(mag.meta.log.Excel.Extensions)
-                loader = mag.meta.log.Excel(FileName = mdf);
-            case cellstr(mag.meta.log.Word.Extensions)
-                loader = mag.meta.log.Word(FileName = mdf);
-            case cellstr(mag.meta.log.SID15.Extensions)
-                loader = mag.meta.log.SID15(FileName = mdf);
+            case cellstr(mag.imap.meta.GSEOS.Extensions)
+                loader = mag.imap.meta.GSEOS(FileName = mdf);
+            case cellstr(mag.imap.meta.Excel.Extensions)
+                loader = mag.imap.meta.Excel(FileName = mdf);
+            case cellstr(mag.imap.meta.Word.Extensions)
+                loader = mag.imap.meta.Word(FileName = mdf);
+            case cellstr(mag.imap.meta.SID15.Extensions)
+                loader = mag.imap.meta.SID15(FileName = mdf);
             otherwise
                 error("Unsupported meta data extension ""%s"".", extension);
         end

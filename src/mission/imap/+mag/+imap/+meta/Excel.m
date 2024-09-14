@@ -1,4 +1,4 @@
-classdef Excel < mag.meta.log.Type
+classdef Excel < mag.imap.meta.Type
 % EXCEL Load meta data from Excel files.
 
     properties (Constant)
@@ -15,7 +15,7 @@ classdef Excel < mag.meta.log.Type
         function this = Excel(options)
 
             arguments
-                options.?mag.meta.log.Excel
+                options.?mag.imap.meta.Excel
             end
 
             this.assignProperties(options);
@@ -27,7 +27,7 @@ classdef Excel < mag.meta.log.Type
         function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
 
             arguments
-                this (1, 1) mag.meta.log.Excel
+                this (1, 1) mag.imap.meta.Excel
                 instrumentMetaData (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup

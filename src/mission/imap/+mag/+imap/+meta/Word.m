@@ -1,4 +1,4 @@
-classdef Word < mag.meta.log.Type
+classdef Word < mag.imap.meta.Type
 % WORD Load meta data from Word files.
 
     properties (Constant)
@@ -10,7 +10,7 @@ classdef Word < mag.meta.log.Type
         function this = Word(options)
 
             arguments
-                options.?mag.meta.log.Word
+                options.?mag.imap.meta.Word
             end
 
             this.assignProperties(options);
@@ -22,7 +22,7 @@ classdef Word < mag.meta.log.Type
         function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
 
             arguments
-                this (1, 1) mag.meta.log.Word
+                this (1, 1) mag.imap.meta.Word
                 instrumentMetaData (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup

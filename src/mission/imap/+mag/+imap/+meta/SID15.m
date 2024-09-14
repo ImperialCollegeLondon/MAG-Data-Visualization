@@ -1,4 +1,4 @@
-classdef SID15 < mag.meta.log.Type
+classdef SID15 < mag.imap.meta.Type
 % SID15 Load meta data from SID15 HK files.
 
     properties (Constant)
@@ -16,7 +16,7 @@ classdef SID15 < mag.meta.log.Type
         function this = SID15(options)
 
             arguments
-                options.?mag.meta.log.SID15
+                options.?mag.imap.meta.SID15
             end
 
             this.assignProperties(options);
@@ -28,7 +28,7 @@ classdef SID15 < mag.meta.log.Type
         function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
 
             arguments
-                this (1, 1) mag.meta.log.SID15
+                this (1, 1) mag.imap.meta.SID15
                 instrumentMetaData (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
