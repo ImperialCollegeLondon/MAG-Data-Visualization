@@ -1,5 +1,5 @@
 classdef tHKMATOut < MAGIOTestCase
-% THKMATOUT Unit tests for "mag.io.out.HKMAT" class.
+% THKMATOUT Unit tests for "mag.imap.out.HKMAT" class.
 
     methods (Test)
 
@@ -13,7 +13,7 @@ classdef tHKMATOut < MAGIOTestCase
             expectedFileName = compose("%s HK.mat", datetime("now", Format = "ddMMyy-HHmm"));
 
             % Exercise.
-            format = mag.io.out.HKMAT();
+            format = mag.imap.out.HKMAT();
             actualFileName = format.getExportFileName(data);
 
             % Verify.
@@ -30,7 +30,7 @@ classdef tHKMATOut < MAGIOTestCase
             data = mag.imap.hk.SID15(rawData, metaData);
 
             % Exercise.
-            format = mag.io.out.HKMAT();
+            format = mag.imap.out.HKMAT();
             exportData = format.convertToExportFormat(data);
 
             % Verify.

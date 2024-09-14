@@ -15,7 +15,7 @@ classdef ScienceCDF < mag.io.in.CDF
         function this = ScienceCDF(options)
 
             arguments
-                options.?mag.io.in.ScienceCDF
+                options.?mag.imap.in.ScienceCDF
             end
 
             this.assignProperties(options);

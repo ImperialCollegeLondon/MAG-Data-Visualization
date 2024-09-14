@@ -6,7 +6,7 @@ classdef HKMAT < mag.io.out.MAT
         function fileName = getExportFileName(this, data)
 
             arguments
-                this (1, 1) mag.io.out.HKMAT
+                this (1, 1) mag.imap.out.HKMAT
                 data (1, :) mag.HK
             end
 
@@ -17,7 +17,7 @@ classdef HKMAT < mag.io.out.MAT
         function exportData = convertToExportFormat(this, data)
 
             arguments
-                this (1, 1) mag.io.out.HKMAT
+                this (1, 1) mag.imap.out.HKMAT
                 data (1, :) mag.HK
             end
 

@@ -9,8 +9,8 @@ function export(this, exportType, options)
     end
 
     % Determine export classes.
-    scienceFormat = feval("mag.io.out.Science" + exportType);
-    hkFormat = feval("mag.io.out.HK" + exportType);
+    scienceFormat = feval("mag.imap.out.Science" + exportType);
+    hkFormat = feval("mag.imap.out.HK" + exportType);
 
     % Determine export window.
     if ismissing(options.StartTime)

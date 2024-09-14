@@ -6,7 +6,7 @@ classdef ScienceMAT < mag.io.out.MAT
         function fileName = getExportFileName(this, data)
 
             arguments
-                this (1, 1) mag.io.out.ScienceMAT
+                this (1, 1) mag.imap.out.ScienceMAT
                 data (1, 1) {mustBeA(data, ["mag.Instrument", "mag.IALiRT"])}
             end
 
@@ -23,7 +23,7 @@ classdef ScienceMAT < mag.io.out.MAT
         function exportData = convertToExportFormat(this, data)
 
             arguments
-                this (1, 1) mag.io.out.ScienceMAT
+                this (1, 1) mag.imap.out.ScienceMAT
                 data (1, 1) {mustBeA(data, ["mag.Instrument", "mag.IALiRT"])}
             end
 
