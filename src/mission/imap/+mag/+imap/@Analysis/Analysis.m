@@ -469,7 +469,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
                 results = loadedObject.Results;
 
                 for hk = 1:numel(results.HK)
-                    results.HK(hk) = mag.hk.dispatchHKType(results.HK(hk).Data, results.HK(hk).MetaData);
+                    results.HK(hk) = mag.imap.hk.dispatchHKType(results.HK(hk).Data, results.HK(hk).MetaData);
                 end
             else
 

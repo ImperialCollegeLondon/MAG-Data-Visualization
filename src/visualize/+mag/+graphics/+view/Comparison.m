@@ -109,7 +109,7 @@ classdef Comparison < mag.graphics.view.View
             arguments (Input)
                 science (1, 1) mag.Science
                 iALiRT (1, 1) mag.Science
-                sid5 (1, 1) mag.hk.Science
+                sid5 (1, 1) mag.imap.hk.Science
                 sensor (1, 1) string {mustBeMember(sensor, ["FOB", "FIB"])}
             end
 

@@ -3,11 +3,11 @@ classdef tHK < matlab.unittest.TestCase
 
     properties (TestParameter)
         HKTypes = {"SID15", "Processor", "Power", "Status", "Science"}
-        Dispatch = {struct(Type = "SID15", Class = "mag.hk.SID15"), ...
-            struct(Type = "PROCSTAT", Class = "mag.hk.Processor"), ...
-            struct(Type = "PW", Class = "mag.hk.Power"), ...
-            struct(Type = "STATUS", Class = "mag.hk.Status"), ...
-            struct(Type = "SCI", Class = "mag.hk.Science")}
+        Dispatch = {struct(Type = "SID15", Class = "mag.imap.hk.SID15"), ...
+            struct(Type = "PROCSTAT", Class = "mag.imap.hk.Processor"), ...
+            struct(Type = "PW", Class = "mag.imap.hk.Power"), ...
+            struct(Type = "STATUS", Class = "mag.imap.hk.Status"), ...
+            struct(Type = "SCI", Class = "mag.imap.hk.Science")}
     end
 
     methods (Test)
@@ -16,7 +16,7 @@ classdef tHK < matlab.unittest.TestCase
         function hasData(testCase)
 
             % Set up.
-            hk = mag.hk.Power(timetable(datetime("now", TimeZone = "UTC"), 1), mag.meta.HK());
+            hk = mag.imap.hk.Power(timetable(datetime("now", TimeZone = "UTC"), 1), mag.meta.HK());
 
             % Exercise and verify.
             testCase.verifyTrue(hk.HasData, """HasData"" property should be ""true"".");
@@ -27,7 +27,7 @@ classdef tHK < matlab.unittest.TestCase
         function hasData_noData(testCase)
 
             % Set up.
-            hk = mag.hk.Power(timetable.empty(), mag.meta.HK());
+            hk = mag.imap.hk.Power(timetable.empty(), mag.meta.HK());
 
             % Exercise and verify.
             testCase.verifyFalse(hk.HasData, """HasData"" property should be ""false"".");
@@ -111,7 +111,7 @@ classdef tHK < matlab.unittest.TestCase
         function getHKType_empty(testCase)
 
             % Set up.
-            hk = mag.hk.Power.empty();
+            hk = mag.imap.hk.Power.empty();
 
             % Exercise.
             selectedHK = hk.getHKType("PROCSTAT");
@@ -143,7 +143,7 @@ classdef tHK < matlab.unittest.TestCase
             selectedHK = hk.getHKType("PROCSTAT");
 
             % Verify.
-            testCase.verifyClass(selectedHK, "mag.hk.Processor", "Correct type should be returned.");
+            testCase.verifyClass(selectedHK, "mag.imap.hk.Processor", "Correct type should be returned.");
         end
 
         % Test that all dependent properties of the HK types supported can
@@ -156,11 +156,11 @@ classdef tHK < matlab.unittest.TestCase
             hk = readtimetable(fileName);
             hk.Properties.DimensionNames{1} = 't';
 
-            metaClass = meta.class.fromName("mag.hk." + HKTypes);
+            metaClass = meta.class.fromName("mag.imap.hk." + HKTypes);
             properties = metaClass.PropertyList;
 
             % Exercise and verify.
-            hk = mag.hk.(HKTypes)(hk, mag.meta.HK());
+            hk = mag.imap.hk.(HKTypes)(hk, mag.meta.HK());
 
             for p = properties([properties.Dependent] & cellfun(@(x) isequal(x, "public"), {properties.GetAccess}))'
                 hk.(p.Name);
@@ -184,7 +184,7 @@ classdef tHK < matlab.unittest.TestCase
         function customDisplay_empty(~)
 
             % Set up.
-            hk = mag.hk.Power.empty(); %#ok<NASGU>
+            hk = mag.imap.hk.Power.empty(); %#ok<NASGU>
 
             % Exercise and verify.
             evalc("display(hk)");
@@ -222,7 +222,7 @@ classdef tHK < matlab.unittest.TestCase
             metaData = mag.meta.HK(Type = Dispatch.Type);
 
             % Exercise.
-            hk = mag.hk.dispatchHKType(tt, metaData);
+            hk = mag.imap.hk.dispatchHKType(tt, metaData);
 
             % Verify.
             testCase.verifyClass(hk, Dispatch.Class, "HK data should be dispateched to correct type.");
@@ -259,8 +259,8 @@ classdef tHK < matlab.unittest.TestCase
             statusData = timetable(timestamps, ones(10, 1), zeros(10, 1), VariableNames = ["FOBSTAT", "FIBSTAT"]);
             procstatData = timetable(timestamps(1:2:end), (1:5)', (11:15)', VariableNames = ["OBNQ_NUM_MSG", "IBNQ_NUM_MSG"]);
 
-            hk(1) = mag.hk.Status(statusData, mag.meta.HK(Type = "STATUS"));
-            hk(2) = mag.hk.Processor(procstatData, mag.meta.HK(Type = "PROCSTAT"));
+            hk(1) = mag.imap.hk.Status(statusData, mag.meta.HK(Type = "STATUS"));
+            hk(2) = mag.imap.hk.Processor(procstatData, mag.meta.HK(Type = "PROCSTAT"));
         end
     end
 end

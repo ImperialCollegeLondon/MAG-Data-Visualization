@@ -103,6 +103,6 @@ function combinedData = combineHK(data)
         md = selectedData(1).MetaData.copy();
         md.set(Timestamp = min([metaData(locSelection).Timestamp]));
 
-        combinedData(end + 1) = mag.hk.dispatchHKType(td, md); %#ok<AGROW>
+        combinedData(end + 1) = mag.imap.hk.dispatchHKType(td, md); %#ok<AGROW>
     end
 end

@@ -8,7 +8,7 @@ classdef tHKMATOut < MAGIOTestCase
 
             % Set up.
             metaData = mag.meta.HK(Type = "SID15", Timestamp = datetime("now"));
-            data = mag.hk.SID15(timetable.empty(), metaData);
+            data = mag.imap.hk.SID15(timetable.empty(), metaData);
 
             expectedFileName = compose("%s HK.mat", datetime("now", Format = "ddMMyy-HHmm"));
 
@@ -27,7 +27,7 @@ classdef tHKMATOut < MAGIOTestCase
             metaData = mag.meta.HK(Type = "SID15", Timestamp = datetime("now"));
 
             rawData = timetable([datetime("yesterday"); datetime("today")], [1; 2], [3; 4], VariableNames = ["A", "B"]);
-            data = mag.hk.SID15(rawData, metaData);
+            data = mag.imap.hk.SID15(rawData, metaData);
 
             % Exercise.
             format = mag.io.out.HKMAT();

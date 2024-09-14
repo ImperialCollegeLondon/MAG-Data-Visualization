@@ -32,7 +32,7 @@ classdef HKCSV < mag.io.in.CSV
             end
 
             % Dispatch correct type.
-            data = mag.hk.dispatchHKType(table2timetable(rawData, RowTimes = "t"), this.extractFileMetaData(fileName));
+            data = mag.imap.hk.dispatchHKType(table2timetable(rawData, RowTimes = "t"), this.extractFileMetaData(fileName));
         end
     end
 

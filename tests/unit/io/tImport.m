@@ -104,7 +104,7 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
             data = mag.io.import(FileNames = fileNames, Format = format, ProcessingSteps = step);
 
             % Verify.
-            testCase.verifyClass(data, "mag.hk.Power", "Import output should be a ""mag.HK"".");
+            testCase.verifyClass(data, "mag.imap.hk.Power", "Import output should be a ""mag.HK"".");
             testCase.verifyNumElements(data, 1, "HK data should be combined into one output.");
 
             testCase.verifyThat(withAnyInputs(formatBehavior.load), matlab.mock.constraints.WasCalled(WithCount = 2));
@@ -157,11 +157,11 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
 
             rawData1 = table(1, 2, 3);
             details1 = "details1";
-            data1 = mag.hk.Power(timetable.empty(), mag.meta.HK(Type = options.FirstType));
+            data1 = mag.imap.hk.Power(timetable.empty(), mag.meta.HK(Type = options.FirstType));
 
             rawData2 = table(4, 5, 6);
             details2 = "details2";
-            data2 = mag.hk.Processor(timetable.empty(), mag.meta.HK(Type = options.SecondType));
+            data2 = mag.imap.hk.Processor(timetable.empty(), mag.meta.HK(Type = options.SecondType));
 
             [format, formatBehavior] = testCase.createMock(?mag.io.in.Format, Strict = true);
 
