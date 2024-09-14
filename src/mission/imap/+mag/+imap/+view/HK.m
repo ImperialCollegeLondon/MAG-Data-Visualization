@@ -12,7 +12,7 @@ classdef HK < mag.graphics.view.View
 
             arguments
                 results
-                options.?mag.graphics.view.HK
+                options.?mag.imap.view.HK
             end
 
             this.Results = results;

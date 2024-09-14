@@ -7,7 +7,7 @@ classdef Comparison < mag.graphics.view.View
 
             arguments
                 results
-                options.?mag.graphics.view.Comparison
+                options.?mag.imap.view.Comparison
             end
 
             this.Results = results;

@@ -7,7 +7,7 @@ classdef Timestamp < mag.graphics.view.View
 
             arguments
                 results
-                options.?mag.graphics.view.Timestamp
+                options.?mag.imap.view.Timestamp
             end
 
             this.Results = results;

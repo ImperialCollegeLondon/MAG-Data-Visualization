@@ -7,7 +7,7 @@ classdef RampMode < mag.graphics.view.View
 
             arguments
                 results
-                options.?mag.graphics.view.RampMode
+                options.?mag.imap.view.RampMode
             end
 
             this.Results = results;

@@ -1,5 +1,5 @@
 classdef PSD < mag.app.control.Control
-% PSD View-controller for generating "mag.graphics.view.PSD".
+% PSD View-controller for generating "mag.imap.view.PSD".
 
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
@@ -52,7 +52,7 @@ classdef PSD < mag.app.control.Control
             startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
             duration = hours(this.DurationSpinner.Value);
             
-            command = mag.app.Command(Functional = @(varargin) mag.graphics.view.PSD(varargin{:}).visualizeAll(), ...
+            command = mag.app.Command(Functional = @(varargin) mag.imap.view.PSD(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
                 NamedArguments = struct(Start = startTime, Duration = duration));
         end

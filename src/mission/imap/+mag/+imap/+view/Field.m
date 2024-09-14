@@ -1,4 +1,4 @@
-classdef Field < mag.graphics.view.Science
+classdef Field < mag.imap.view.Science
 % FIELD Show magnetic field and optional HK.
 
     properties
@@ -12,7 +12,7 @@ classdef Field < mag.graphics.view.Science
 
             arguments
                 results
-                options.?mag.graphics.view.Field
+                options.?mag.imap.view.Field
             end
 
             this.Results = results;

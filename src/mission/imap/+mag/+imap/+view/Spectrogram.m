@@ -21,7 +21,7 @@ classdef Spectrogram < mag.graphics.view.View
 
             arguments
                 results
-                options.?mag.graphics.view.Spectrogram
+                options.?mag.imap.view.Spectrogram
             end
 
             this.Results = results;

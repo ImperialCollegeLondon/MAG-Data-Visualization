@@ -14,7 +14,7 @@ classdef EventPSD < mag.graphics.view.View
 
             arguments
                 results
-                options.?mag.graphics.view.EventPSD
+                options.?mag.imap.view.EventPSD
             end
 
             this.Results = results;

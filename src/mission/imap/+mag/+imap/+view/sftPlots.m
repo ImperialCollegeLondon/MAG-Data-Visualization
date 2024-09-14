@@ -35,8 +35,8 @@ function figures = sftPlots(analysis, options)
     % Show science and frequency.
     for m = modes
 
-        views(end + 1) = mag.graphics.view.Field(m);
-        views(end + 1) = mag.graphics.view.Spectrogram(m);
+        views(end + 1) = mag.imap.view.Field(m);
+        views(end + 1) = mag.imap.view.Spectrogram(m);
 
         if ~isempty(options.PSDStart)
 
@@ -46,7 +46,7 @@ function figures = sftPlots(analysis, options)
                 m.crop([seconds(30), seconds(-30)]);
             end
 
-            views(end + 1) = mag.graphics.view.PSD(m, Start = options.PSDStart, Duration = options.PSDDuration);
+            views(end + 1) = mag.imap.view.PSD(m, Start = options.PSDStart, Duration = options.PSDDuration);
         end
     end
 
@@ -54,17 +54,17 @@ function figures = sftPlots(analysis, options)
     if ~isempty(croppedAnalysis.Results.IALiRT) && croppedAnalysis.Results.IALiRT.HasData
 
         tempInstrument = mag.Instrument(Science = croppedAnalysis.Results.IALiRT.Science);
-        views(end + 1) = mag.graphics.view.Field(tempInstrument);
+        views(end + 1) = mag.imap.view.Field(tempInstrument);
     end
 
     % Show science comparison.
-    views(end + 1) = mag.graphics.view.Comparison(croppedAnalysis.Results);
+    views(end + 1) = mag.imap.view.Comparison(croppedAnalysis.Results);
 
     % Show timestamp analysis.
-    views(end + 1) = mag.graphics.view.Timestamp(analysis.Results);
+    views(end + 1) = mag.imap.view.Timestamp(analysis.Results);
 
     % Show HK.
-    views(end + 1) = mag.graphics.view.HK(analysis.Results);
+    views(end + 1) = mag.imap.view.HK(analysis.Results);
 
     % Generate figures.
     figures = views.visualizeAll();

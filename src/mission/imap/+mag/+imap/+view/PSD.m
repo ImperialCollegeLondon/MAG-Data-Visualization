@@ -14,7 +14,7 @@ classdef PSD < mag.graphics.view.View
 
             arguments
                 results
-                options.?mag.graphics.view.PSD
+                options.?mag.imap.view.PSD
             end
 
             this.Results = results;

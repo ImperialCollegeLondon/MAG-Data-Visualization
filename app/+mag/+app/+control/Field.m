@@ -1,8 +1,8 @@
 classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
-% FIELD View-controller for generating "mag.graphics.view.Field".
+% FIELD View-controller for generating "mag.imap.view.Field".
 
     properties (Constant, Access = private)
-        % SUPPORTEDEVENTS Events supported by "mag.graphics.view.Field".
+        % SUPPORTEDEVENTS Events supported by "mag.imap.view.Field".
         SupportedEvents (1, 3) string = ["Compression", "Mode", "Range"]
     end
 
@@ -55,7 +55,7 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
 
             results = mag.app.internal.cropResults(results, startTime, endTime);
 
-            command = mag.app.Command(Functional = @(varargin) mag.graphics.view.Field(varargin{:}).visualizeAll(), ...
+            command = mag.app.Command(Functional = @(varargin) mag.imap.view.Field(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
                 NamedArguments = struct(Events = events));
         end
