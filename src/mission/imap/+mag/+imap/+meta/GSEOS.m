@@ -60,7 +60,6 @@ classdef GSEOS < mag.imap.meta.Type
             end
 
             % Assign instrument meta data.
-            instrumentMetaData.Mission = "IMAP";
             instrumentMetaData.Timestamp = timestamp;
 
             if contains(messages, "CPT", IgnoreCase = true)

@@ -49,7 +49,6 @@ classdef SID15 < mag.imap.meta.Type
             fobAttempts = median(rawData{rawData.ISV_FOB_ACTTRIES ~= 0, "ISV_FOB_ACTTRIES"});
             fibAttempts = median(rawData{rawData.ISV_FIB_ACTTRIES ~= 0, "ISV_FIB_ACTTRIES"});
 
-            instrumentMetaData.Mission = "IMAP";
             instrumentMetaData.Attemps = [fobAttempts, fibAttempts];
 
             instrumentMetaData.Timestamp = rawData{1, "SHCOARSE"};

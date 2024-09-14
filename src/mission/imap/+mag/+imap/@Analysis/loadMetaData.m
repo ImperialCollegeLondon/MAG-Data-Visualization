@@ -1,12 +1,10 @@
 function [primarySetup, secondarySetup] = loadMetaData(this)
-    %%  Initialize
-
-    metaData = mag.meta.Instrument();
+    % Initialize.
+    metaData = mag.meta.Instrument(Mission = mag.meta.Mission.IMAP);
     primarySetup = mag.meta.Setup();
     secondarySetup = mag.meta.Setup();
 
-    %% Instrument and Science Meta Data
-
+    % Load instrument and science meta data.
     for mdf = this.MetaDataFileNames
 
         [~, ~, extension] = fileparts(mdf);
@@ -27,7 +25,6 @@ function [primarySetup, secondarySetup] = loadMetaData(this)
         [metaData, primarySetup, secondarySetup] = loader.load(metaData, primarySetup, secondarySetup);
     end
 
-    %% Assign Value
-
+    % Assign value.
     this.Results.MetaData = metaData;
 end

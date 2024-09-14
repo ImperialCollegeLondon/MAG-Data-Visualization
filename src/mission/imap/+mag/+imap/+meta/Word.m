@@ -63,7 +63,6 @@ classdef Word < mag.imap.meta.Type
             end
 
             % Assign instrument meta data.
-            instrumentMetaData.Mission = "IMAP";
             instrumentMetaData.Model = model;
             instrumentMetaData.BSW = extractAfter(rawData.BSW, optionalPattern(lettersPattern()));
             instrumentMetaData.ASW = extractAfter(rawData.ASW, optionalPattern(lettersPattern()));
