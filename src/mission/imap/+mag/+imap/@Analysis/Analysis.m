@@ -1,5 +1,5 @@
-classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.SaveLoad
-% IMAPANALYSIS Automate analysis of an IMAP CPT or SFT folder.
+classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.SaveLoad
+% ANALYSIS Automate analysis of an IMAP data.
 
     properties (Constant)
         Version = mag.version()
@@ -98,11 +98,11 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         % START Start automated analysis with options.
 
             arguments
-                options.?mag.IMAPAnalysis
+                options.?mag.imap.Analysis
             end
 
             args = namedargs2cell(options);
-            analysis = mag.IMAPAnalysis(args{:});
+            analysis = mag.imap.Analysis(args{:});
 
             analysis.detect();
             analysis.load();
@@ -111,10 +111,10 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
 
     methods
 
-        function this = IMAPAnalysis(options)
+        function this = Analysis(options)
 
             arguments
-                options.?mag.IMAPAnalysis
+                options.?mag.imap.Analysis
             end
 
             this.assignProperties(options);
@@ -180,7 +180,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         % GETALLMODES Get all modes as separate data.
 
             arguments (Input)
-                this (1, 1) mag.IMAPAnalysis
+                this (1, 1) mag.imap.Analysis
             end
 
             arguments (Output)
@@ -247,7 +247,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         % GETMODECYCLING Get mode cycling data.
 
             arguments (Input)
-                this (1, 1) mag.IMAPAnalysis
+                this (1, 1) mag.imap.Analysis
                 options.PrimaryPattern (1, :) double = [2, 64, 4, 64, 4, 128]
                 options.SecondaryPattern (1, :) double = [2, 8, 1, 64, 4, 128]
             end
@@ -276,7 +276,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         % GETRANGECYCLING Get range cycling data.
 
             arguments (Input)
-                this (1, 1) mag.IMAPAnalysis
+                this (1, 1) mag.imap.Analysis
                 options.Pattern (1, :) double = [3, 2, 1, 0]
             end
 
@@ -305,7 +305,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         % GETRAMPMODE Get ramp mode data.
 
             arguments (Input)
-                this (1, 1) mag.IMAPAnalysis
+                this (1, 1) mag.imap.Analysis
             end
 
             arguments (Output)
@@ -326,7 +326,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         % GETFINALNORMALMODE Get normal mode at the end of analysis.
 
             arguments (Input)
-                this (1, 1) mag.IMAPAnalysis
+                this (1, 1) mag.imap.Analysis
             end
 
             arguments (Output)
@@ -354,7 +354,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         % magnitude.
 
             arguments (Input)
-                this (1, 1) mag.IMAPAnalysis
+                this (1, 1) mag.imap.Analysis
                 gap (1, 1) duration
             end
 
@@ -456,7 +456,7 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         function loadedObject = loadobj(object)
         % LOADOBJ Override default loading from MAT file.
 
-            if isa(object, "mag.IMAPAnalysis")
+            if isa(object, "mag.imap.Analysis")
 
                 loadedObject = object;
 
@@ -473,8 +473,8 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
                 end
             else
 
-                error("Cannot retrieve ""mag.IMAPAnalysis"" from ""%s"". Data needs to be reprocessed:" + newline() + newline() + ...
-                    ">> mag.IMAPAnalysis.start(Location = ""%s"")", class(object), object.Location);
+                error("Cannot retrieve ""mag.imap.Analysis"" from ""%s"". Data needs to be reprocessed:" + newline() + newline() + ...
+                    ">> mag.imap.Analysis.start(Location = ""%s"")", class(object), object.Location);
             end
         end
     end
@@ -510,3 +510,5 @@ classdef (Sealed) IMAPAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.
         end
     end
 end
+
+

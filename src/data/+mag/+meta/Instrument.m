@@ -2,6 +2,8 @@ classdef Instrument < mag.meta.Data
 % INSTRUMENT Description of MAG instrument data.
 
     properties
+        % MISSION Name of mission.
+        Mission mag.meta.Mission {mustBeScalarOrEmpty}
         % MODEL Instrument model type.
         Model string {mustBeScalarOrEmpty, mustBeMember(Model, ["LM", "EM", "FM"])}
         % BSW Boot sowftware version.

@@ -89,7 +89,7 @@ classdef (Sealed) DataVisualization < handle
     end
 
     properties (SetObservable, Access = private)
-        Analysis mag.IMAPTestingAnalysis {mustBeScalarOrEmpty}
+        Analysis mag.imap.Analysis {mustBeScalarOrEmpty}
         Figures (1, :) matlab.ui.Figure
     end
 
@@ -232,7 +232,7 @@ classdef (Sealed) DataVisualization < handle
             app.VersionLabel.Text = compose("Version %s", mag.version());
 
             % Set default patterns.
-            dummyAnalysis = mag.IMAPTestingAnalysis();
+            dummyAnalysis = mag.imap.Analysis();
 
             app.LocationEditField.Value = string.empty();
             app.EventPatternEditField.Value = join(dummyAnalysis.EventPattern, pathsep());
@@ -289,7 +289,7 @@ classdef (Sealed) DataVisualization < handle
             % Start analysis.
             try
 
-                app.Analysis = mag.IMAPTestingAnalysis.start(Location = app.LocationEditField.Value, ...
+                app.Analysis = mag.imap.Analysis.start(Location = app.LocationEditField.Value, ...
                     EventPattern = eventPattern, ...
                     MetaDataPattern = metaDataPattern, ...
                     SciencePattern = app.SciencePatternEditField.Value, ...
@@ -361,7 +361,7 @@ classdef (Sealed) DataVisualization < handle
             app.startupFcn();
             app.closeFiguresButtonPushed(event);
 
-            app.Analysis = mag.IMAPTestingAnalysis.empty();
+            app.Analysis = mag.imap.Analysis.empty();
             app.Figures = matlab.ui.Figure.empty();
         end
 
@@ -427,14 +427,14 @@ classdef (Sealed) DataVisualization < handle
 
                 for f = string(fieldnames(results))'
 
-                    if isa(results.(f), "mag.IMAPTestingAnalysis")
+                    if isa(results.(f), "mag.imap.Analysis")
 
                         app.Analysis = results.(f);
                         return;
                     end
                 end
 
-                app.displayAlert("No ""mag.IMAPTestingAnalysis"" found in MAT file.", "Invalid File Selected", "warning");
+                app.displayAlert("No ""mag.imap.Analysis"" found in MAT file.", "Invalid File Selected", "warning");
             end
         end
 

@@ -1,5 +1,5 @@
-classdef (Sealed) HelioSwarmAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.SaveLoad
-% HELIOSWARMANALYSIS Automate analysis of HelioSwarm data.
+classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.SaveLoad
+% ANALYSIS Automate analysis of HelioSwarm data.
 
     properties (Constant)
         Version = mag.version()
@@ -9,9 +9,9 @@ classdef (Sealed) HelioSwarmAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet 
         % LOCATION Location of data to load.
         Location (1, 1) string {mustBeFolder} = pwd()
         % SCIENCEPATTERN Pattern of science data files.
-        SciencePattern (1, :) string = fullfile("MAGScience-*-(*)-*.csv")
+        SciencePattern (1, :) string = fullfile("science*.csv")
         % HKPATTERN Pattern of housekeeping files.
-        HKPattern (1, 1) string = ""
+        HKPattern (1, 1) string = fullfile("hk*.csv")
         % PERFILEPROCESSING Steps needed to process single files of data.
         PerFileProcessing (1, :) mag.process.Step = [ ...
             mag.process.AllZero(Variables = ["time", "x", "y", "z"])]
@@ -26,5 +26,7 @@ classdef (Sealed) HelioSwarmAnalysis < matlab.mixin.Copyable & mag.mixin.SetGet 
         HKProcessing (1, :) mag.process.Step = []
     end
 
+    methods (Static)
 
+    end
 end

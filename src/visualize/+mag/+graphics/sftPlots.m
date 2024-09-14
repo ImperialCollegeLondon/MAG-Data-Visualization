@@ -3,7 +3,7 @@ function figures = sftPlots(analysis, options)
 %#ok<*AGROW>
 
     arguments (Input)
-        analysis (1, 1) mag.IMAPAnalysis
+        analysis (1, 1) mag.imap.Analysis
         options.Filter duration {mustBeScalarOrEmpty} = duration.empty()
         options.PSDStart datetime {mustBeScalarOrEmpty} = datetime.empty()
         options.PSDDuration (1, 1) duration = hours(1)
@@ -69,3 +69,5 @@ function figures = sftPlots(analysis, options)
     % Generate figures.
     figures = views.visualizeAll();
 end
+
+

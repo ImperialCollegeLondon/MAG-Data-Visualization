@@ -1,7 +1,7 @@
 function export(this, exportType, options)
 
     arguments
-        this (1, 1) mag.IMAPAnalysis
+        this (1, 1) mag.imap.Analysis
         exportType (1, 1) string {mustBeMember(exportType, ["MAT", "CDF"])}
         options.Location (1, 1) string {mustBeFolder} = "results"
         options.StartTime (1, 1) datetime = NaT(TimeZone = "UTC")
@@ -77,3 +77,5 @@ function export(this, exportType, options)
         mag.io.export(hk, Location = options.Location, Format = hkFormat);
     end
 end
+
+

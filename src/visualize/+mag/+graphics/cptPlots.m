@@ -2,7 +2,7 @@ function figures = cptPlots(analysis, options)
 % CPTPLOTS Create plots for CPT results.
 
     arguments
-        analysis (1, 1) mag.IMAPAnalysis
+        analysis (1, 1) mag.imap.Analysis
         options.Filter duration {mustBeScalarOrEmpty} = duration.empty()
         options.PrimaryModePattern (1, :) double = [2, 64, 4, 64, 4, 128]
         options.SecondaryModePattern (1, :) double = [2, 8, 1, 64, 4, 128]
@@ -75,3 +75,5 @@ function figures = cptPlots(analysis, options)
 
     figures = [figures, views.visualizeAll()];
 end
+
+

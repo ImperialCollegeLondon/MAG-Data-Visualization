@@ -60,6 +60,9 @@ classdef GSEOS < mag.meta.log.Type
             end
 
             % Assign instrument meta data.
+            instrumentMetaData.Mission = "IMAP";
+            instrumentMetaData.Timestamp = timestamp;
+
             if contains(messages, "CPT", IgnoreCase = true)
 
                 model = regexp(messages, "^MAG_PROG_BTSUCC HW_MODEL = (.*)$", "tokens", "once", "dotexceptnewline", "lineanchors");
@@ -74,10 +77,6 @@ classdef GSEOS < mag.meta.log.Type
                 instrumentMetaData.ASW = genericData.asw;
                 instrumentMetaData.Operator = genericData.operator;
                 instrumentMetaData.Description = genericData.name;
-                instrumentMetaData.Timestamp = timestamp;
-            else
-
-                instrumentMetaData.Timestamp = timestamp;
             end
         end
     end

@@ -56,7 +56,7 @@ classdef AT < mag.app.control.Control & mag.app.mixin.Filter
 
             arguments (Input)
                 this
-                results (1, 1) mag.IMAPAnalysis
+                results (1, 1) mag.imap.Analysis
             end
 
             arguments (Output)
@@ -90,3 +90,5 @@ classdef AT < mag.app.control.Control & mag.app.mixin.Filter
         end
     end
 end
+
+

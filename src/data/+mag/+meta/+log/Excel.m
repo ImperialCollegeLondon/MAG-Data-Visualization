@@ -68,6 +68,7 @@ classdef Excel < mag.meta.log.Type
             end
 
             % Assign instrument meta data.
+            instrumentMetaData.Mission = "IMAP";
             instrumentMetaData.Model = extract(rawData{4, "Var3"}, regexpPattern("[LEF]M"));
             instrumentMetaData.BSW = rawData{5, "Var3"};
             instrumentMetaData.ASW = rawData{5, "Var7"};
