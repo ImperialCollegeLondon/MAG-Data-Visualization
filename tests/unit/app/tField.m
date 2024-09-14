@@ -1,5 +1,5 @@
 classdef tField < MAGControllerTestCase
-% TFIELD Unit tests for "mag.imap.app.Field" class.
+% TFIELD Unit tests for "mag.app.imap.controlField" class.
 
     methods (Test)
 
@@ -8,7 +8,7 @@ classdef tField < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            field = mag.imap.app.Field(panel);
+            field = mag.app.imap.controlField(panel);
 
             % Exercise.
             field.instantiate();
@@ -33,7 +33,7 @@ classdef tField < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            field = mag.imap.app.Field(panel);
+            field = mag.app.imap.controlField(panel);
             field.instantiate();
 
             results = mag.Instrument();
@@ -55,7 +55,7 @@ classdef tField < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            field = mag.imap.app.Field(panel);
+            field = mag.app.imap.controlField(panel);
             field.instantiate();
 
             field.EventsTree.CheckedNodes = field.EventsTree.Children(2);

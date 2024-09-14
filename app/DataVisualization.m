@@ -474,7 +474,7 @@ classdef (Sealed) DataVisualization < handle
             % Select plotting function based on plot types.
             try
 
-                if isa(app.SelectedControl, "mag.imap.app.AT") || isa(app.SelectedControl, "mag.imap.app.CPT")
+                if isa(app.SelectedControl, "mag.app.imap.controlAT") || isa(app.SelectedControl, "mag.app.imap.controlCPT")
                     args = {app.Analysis};
                 else
                     args = {app.Analysis.Results};
@@ -518,7 +518,7 @@ classdef (Sealed) DataVisualization < handle
         function createComponents(app)
 
             % Get the file path for locating images.
-            pathToMLAPP = fileparts(mfilename("fullpath"));
+            pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
 
             % Create UIFigure and hide until all components are created.
             app.UIFigure = uifigure("Visible", "off");
@@ -533,12 +533,12 @@ classdef (Sealed) DataVisualization < handle
             app.PushTool = uipushtool(app.Toolbar);
             app.PushTool.Tooltip = "Import existing analysis";
             app.PushTool.ClickedCallback = @(~, ~) app.pushToolClicked();
-            app.PushTool.Icon = fullfile(pathToMLAPP, "icons", "import.png");
+            app.PushTool.Icon = fullfile(pathToAppIcons, "import.png");
 
             % Create DebugToggleTool.
             app.DebugToggleTool = uitoggletool(app.Toolbar);
             app.DebugToggleTool.Tooltip = "Set break point at last error source";
-            app.DebugToggleTool.Icon = fullfile(pathToMLAPP, "icons", "debug.png");
+            app.DebugToggleTool.Icon = fullfile(pathToAppIcons, "debug.png");
             app.DebugToggleTool.Separator = "on";
             app.DebugToggleTool.OffCallback = @(~, ~) app.debugToggleToolOff();
             app.DebugToggleTool.OnCallback = @(~, ~) app.debugToggleToolOn();
@@ -547,7 +547,7 @@ classdef (Sealed) DataVisualization < handle
             app.HelpPushTool = uipushtool(app.Toolbar);
             app.HelpPushTool.Tooltip = "Share debugging information with development";
             app.HelpPushTool.ClickedCallback = @(~, ~) app.helpPushToolClicked();
-            app.HelpPushTool.Icon = fullfile(pathToMLAPP, "icons", "help.png");
+            app.HelpPushTool.Icon = fullfile(pathToAppIcons, "help.png");
 
             % Create GridLayout.
             app.GridLayout = uigridlayout(app.UIFigure);
@@ -979,12 +979,12 @@ classdef (Sealed) DataVisualization < handle
             % Create VisualizationTypeListBox.
             app.VisualizationTypeListBox = uilistbox(app.VisualizationOptionsLayout);
             app.VisualizationTypeListBox.Items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
-            app.VisualizationTypeListBox.ItemsData = ["mag.imap.app.AT", "mag.imap.app.CPT", "mag.imap.app.Field", "mag.imap.app.Spectrogram", "mag.imap.app.PSD"];
+            app.VisualizationTypeListBox.ItemsData = ["mag.app.imap.controlAT", "mag.app.imap.controlCPT", "mag.app.imap.controlField", "mag.app.imap.controlSpectrogram", "mag.app.imap.controlPSD"];
             app.VisualizationTypeListBox.ValueChangedFcn = @(~, ~) app.visualizationTypeListBoxValueChanged();
             app.VisualizationTypeListBox.Enable = "off";
             app.VisualizationTypeListBox.Layout.Row = 1;
             app.VisualizationTypeListBox.Layout.Column = 1;
-            app.VisualizationTypeListBox.Value = "mag.imap.app.AT";
+            app.VisualizationTypeListBox.Value = "mag.app.imap.controlAT";
 
             % Create VisualizationOptionsPanel.
             app.VisualizationOptionsPanel = uipanel(app.VisualizationOptionsLayout);
