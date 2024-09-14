@@ -474,7 +474,7 @@ classdef (Sealed) DataVisualization < handle
             % Select plotting function based on plot types.
             try
 
-                if isa(app.SelectedControl, "mag.app.control.AT") || isa(app.SelectedControl, "mag.app.control.CPT")
+                if isa(app.SelectedControl, "mag.imap.app.AT") || isa(app.SelectedControl, "mag.imap.app.CPT")
                     args = {app.Analysis};
                 else
                     args = {app.Analysis.Results};
@@ -979,12 +979,12 @@ classdef (Sealed) DataVisualization < handle
             % Create VisualizationTypeListBox.
             app.VisualizationTypeListBox = uilistbox(app.VisualizationOptionsLayout);
             app.VisualizationTypeListBox.Items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
-            app.VisualizationTypeListBox.ItemsData = ["mag.app.control.AT", "mag.app.control.CPT", "mag.app.control.Field", "mag.app.control.Spectrogram", "mag.app.control.PSD"];
+            app.VisualizationTypeListBox.ItemsData = ["mag.imap.app.AT", "mag.imap.app.CPT", "mag.imap.app.Field", "mag.imap.app.Spectrogram", "mag.imap.app.PSD"];
             app.VisualizationTypeListBox.ValueChangedFcn = @(~, ~) app.visualizationTypeListBoxValueChanged();
             app.VisualizationTypeListBox.Enable = "off";
             app.VisualizationTypeListBox.Layout.Row = 1;
             app.VisualizationTypeListBox.Layout.Column = 1;
-            app.VisualizationTypeListBox.Value = "mag.app.control.AT";
+            app.VisualizationTypeListBox.Value = "mag.imap.app.AT";
 
             % Create VisualizationOptionsPanel.
             app.VisualizationOptionsPanel = uipanel(app.VisualizationOptionsLayout);

@@ -1,5 +1,5 @@
 classdef tPSD < MAGControllerTestCase
-% TPSD Unit tests for "mag.app.control.PSD" class.
+% TPSD Unit tests for "mag.imap.app.PSD" class.
 
     methods (Test)
 
@@ -8,7 +8,7 @@ classdef tPSD < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            psd = mag.app.control.PSD(panel);
+            psd = mag.imap.app.PSD(panel);
 
             % Exercise.
             psd.instantiate();
@@ -37,7 +37,7 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.control.PSD(panel);
+            psd = mag.imap.app.PSD(panel);
             psd.instantiate();
 
             results = mag.Instrument();
@@ -63,7 +63,7 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.control.PSD(panel);
+            psd = mag.imap.app.PSD(panel);
             psd.instantiate();
 
             psd.StartDatePicker.Value = datetime("today");
@@ -96,7 +96,7 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.control.PSD(panel);
+            psd = mag.imap.app.PSD(panel);
             psd.instantiate();
 
             psd.DurationSpinner.Value = 2.15;

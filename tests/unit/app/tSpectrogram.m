@@ -1,5 +1,5 @@
 classdef tSpectrogram < MAGControllerTestCase
-% TSPECTROGRAM Unit tests for "mag.app.control.Spectrogram" class.
+% TSPECTROGRAM Unit tests for "mag.imap.app.Spectrogram" class.
 
     methods (Test)
 
@@ -8,7 +8,7 @@ classdef tSpectrogram < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            spectrogram = mag.app.control.Spectrogram(panel);
+            spectrogram = mag.imap.app.Spectrogram(panel);
 
             % Exercise.
             spectrogram.instantiate();
@@ -52,7 +52,7 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.control.Spectrogram(panel);
+            spectrogram = mag.imap.app.Spectrogram(panel);
             spectrogram.instantiate();
 
             results = mag.Instrument();
@@ -79,7 +79,7 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.control.Spectrogram(panel);
+            spectrogram = mag.imap.app.Spectrogram(panel);
             spectrogram.instantiate();
 
             spectrogram.OverlapSpinner.Value = 0.5;
@@ -108,7 +108,7 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.control.Spectrogram(panel);
+            spectrogram = mag.imap.app.Spectrogram(panel);
             spectrogram.instantiate();
 
             spectrogram.WindowSpinner.Value = 25;
