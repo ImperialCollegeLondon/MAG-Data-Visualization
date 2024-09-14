@@ -4,7 +4,7 @@
 
 # App
 
-- Refactor `mag.app.control.Control` to not accept parent as constructor input, but rather as `instantiate` argument
+- Refactor `mag.app.Control` to not accept parent as constructor input, but rather as `instantiate` argument
 
 # Software
 

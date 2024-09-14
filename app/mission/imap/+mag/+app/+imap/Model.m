@@ -1,9 +1,9 @@
-classdef Model < mag.mixin.SetGet
+classdef Model < mag.app.Model
 % MODEL IMAP mission analysis model.
 
     methods
 
-        function performAnalysis(this, analysisManager)
+        function perform(this, analysisManager)
 
             arguments
                 this
@@ -39,7 +39,7 @@ classdef Model < mag.mixin.SetGet
             end
 
             % Perform analysis.
-            analysisManager.Analysis = mag.imap.Analysis.start(Location = analysisManager.LocationEditField.Value, ...
+            this.Results = mag.imap.Analysis.start(Location = analysisManager.LocationEditField.Value, ...
                 EventPattern = eventPattern, ...
                 MetaDataPattern = metaDataPattern, ...
                 SciencePattern = analysisManager.SciencePatternEditField.Value, ...

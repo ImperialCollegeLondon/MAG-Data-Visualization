@@ -8,12 +8,12 @@ classdef (Abstract) Model < mag.mixin.SetGet
 
     properties (SetAccess = protected)
         % RESULTS Analysis results.
-        Results {mustBeScalarOrEmpty, mustBeA(Results, ["mag.hs.Analysis", "mag.imap.Analysis"])}
+        Results {mustBeScalarOrEmpty, mustBeA(Results, ["mag.hs.Analysis", "mag.imap.Analysis"])} = mag.imap.Analysis.empty()
     end
 
     methods
 
-        % PERFORMANALYSIS Perform analysis.
-        performAnalysis(this, analysisManager)
+        % PERFORM Perform analysis.
+        perform(this, analysisManager)
     end
 end

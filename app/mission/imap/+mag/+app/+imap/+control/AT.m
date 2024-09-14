@@ -1,4 +1,4 @@
-classdef AT < mag.app.control.Control & mag.app.mixin.Filter
+classdef AT < mag.app.Control & mag.app.mixin.Filter
 % AT View-controller for generating Aliveness Test plots.
 
     properties (SetAccess = private)

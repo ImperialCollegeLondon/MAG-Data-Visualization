@@ -1,4 +1,4 @@
-classdef Spectrogram < mag.app.control.Control & mag.app.mixin.StartEndDate
+classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
 % SPECTROGRAM View-controller for generating
 % "mag.imap.view.Spectrogram".
 

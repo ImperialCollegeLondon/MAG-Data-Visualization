@@ -41,7 +41,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     end
 
     properties (SetAccess = private)
-        Model mag.app.Model {mustBeScalarOrEmpty}
+        Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
         AnalysisManager mag.app.Manager {mustBeScalarOrEmpty}
         ResultsManager mag.app.Manager {mustBeScalarOrEmpty}
         VisualizationManager mag.app.Manager {mustBeScalarOrEmpty}
@@ -53,7 +53,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     end
 
     properties (SetObservable, Access = private)
-        Analysis mag.imap.Analysis {mustBeScalarOrEmpty}
         Figures (1, :) matlab.ui.Figure
     end
 
@@ -65,10 +64,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function value = get.ResultsLocation(app)
 
-            if isempty(app.Analysis)
+            if isempty(app.Model.Results)
                 location = app.LocationEditField.Value;
             else
-                location = app.Analysis.Location;
+                location = app.Model.Results.Location;
             end
 
             value = fullfile(location, compose("Results (v%s)", mag.version()));
@@ -83,44 +82,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function analysisChanged(app, varargin)
 
-            resultsAvailable = ~isempty(app.Analysis) && ~isempty(app.Analysis.Results.Science);
-
-            % Enable/disable buttons.
-            status = matlab.lang.OnOffSwitchState(resultsAvailable);
-
             [app.FormatDropDown.Enable, app.ExportButton.Enable, app.ShowFiguresButton.Enable, ...
-                app.MetaDataPanel.Enable, app.ProcessingStepsPanel.Enable, ...
-                app.ExportSettingsPanel.Enable, ...
-                app.VisualizationTypeListBox.Enable, app.VisualizationOptionsPanel.Enable] = deal(status);
-
-            % Set values in app.
-            if resultsAvailable
-
-                results = app.Analysis.Results;
-
-                instrumentMetaData = compose("%s - BSW: %s - ASW: %s", results.MetaData.Model, results.MetaData.BSW, results.MetaData.ASW);
-                primaryMetaData = compose("%s (%s - %s - %s)", results.Primary.MetaData.getDisplay("Sensor"), results.Primary.MetaData.Setup.FEE, results.Primary.MetaData.Setup.Model, results.Primary.MetaData.Setup.Can);
-                secondaryMetaData = compose("%s (%s - %s - %s)", results.Secondary.MetaData.getDisplay("Sensor"), results.Secondary.MetaData.Setup.FEE, results.Secondary.MetaData.Setup.Model, results.Secondary.MetaData.Setup.Can);
-
-                if ~isempty(instrumentMetaData)
-                    app.InstrumentTextArea.Value = instrumentMetaData;
-                end
-
-                if ~isempty(primaryMetaData)
-                    app.PrimaryTextArea.Value = primaryMetaData;
-                end
-
-                if ~isempty(secondaryMetaData)
-                    app.SecondaryTextArea.Value = secondaryMetaData;
-                end
-
-                app.visualizationTypeListBoxValueChanged();
-            else
-
-                app.InstrumentTextArea.Value = char.empty();
-                app.PrimaryTextArea.Value = char.empty();
-                app.SecondaryTextArea.Value = char.empty();
-            end
+                app.MetaDataPanel.Enable, ...
+                app.ExportSettingsPanel.Enable] = deal(status);
         end
 
         function figuresChanged(app, varargin)
@@ -178,7 +142,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Start analysis.
             try
-                this.Model.performAnalysis(this.AnalysisManager);
+                app.Model.perform(app.AnalysisManager);
             catch exception
                 app.displayAlert(exception);
             end
@@ -203,11 +167,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                         end
                     end
 
-                    assignin("base", "analysis", app.Analysis);
+                    assignin("base", "analysis", app.Model.Results);
                     return;
                 case "MAT (Full Analysis)"
 
-                    analysis = app.Analysis;
+                    analysis = app.Model.Results;
                     save(fullfile(app.ResultsLocation, "Data.mat"), "analysis");
                     return;
                 case "MAT (Science Lead)"
@@ -223,7 +187,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 startTime = mag.app.internal.combineDateAndTime(app.StartDateTimeDatePicker.Value, app.StartTimeEditField.Value);
                 endTime = mag.app.internal.combineDateAndTime(app.EndDateTimeDatePicker.Value, app.EndTimeEditField.Value);
 
-                app.Analysis.export(exportType, Location = app.ResultsLocation, StartTime = startTime, EndTime = endTime);
+                app.Model.Results.export(exportType, Location = app.ResultsLocation, StartTime = startTime, EndTime = endTime);
             catch exception
                 app.displayAlert(exception);
             end
@@ -234,7 +198,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.startup();
             app.closeFiguresButtonPushed(event);
 
-            app.Analysis = mag.imap.Analysis.empty();
             app.Figures = matlab.ui.Figure.empty();
         end
 
@@ -244,7 +207,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             closeProgressBar = app.overlayProgressBar("Generating diagnostics..."); %#ok<NASGU>
 
             % Initialize variables to save.
-            analysis = app.Analysis;
+            analysis = app.Model.Results;
 
             exportStartDate = app.StartDateTimeDatePicker.Value;
             exportStartTime = app.StartTimeEditField.Value;
@@ -302,7 +265,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
                     if isa(results.(f), "mag.imap.Analysis")
 
-                        app.Analysis = results.(f);
+                        app.Model.Results = results.(f);
                         return;
                     end
                 end
@@ -544,8 +507,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.VisualizePanel.Layout.Column = 1;
 
             % Populate "Visualize" tab based on mission.
-            app.VisualizeManager.instantiate(app.VisualizePanel);
-            app.VisualizeManager.reset();
+            app.VisualizationManager.instantiate(app.VisualizePanel);
+            app.VisualizationManager.reset();
 
             % Create VisualizeButtonsLayout.
             app.VisualizeButtonsLayout = uigridlayout(app.VisualizeLayout);
@@ -584,7 +547,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function app = DataVisualization()
 
-            % Create UIFigure and hide until all components are created.
+            % Create figure and hide until all components are created.
             app.UIFigure = uifigure();
             app.UIFigure.Position = [100 100 694 429];
             app.UIFigure.Name = "MAG Data Visulization App";
@@ -598,11 +561,12 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 case "Cancel"
 
                     delete(app);
+                    clear("app");
                     return;
                 case "HelioSwarm"
                     error("HelioSwarm mission not yet supported.");
                 case "IMAP"
-                    appProvider = mag.app.imap.Provider();
+                    provider = mag.app.imap.Provider();
                 case "Solar Orbiter"
                     error("Solar Orbiter mission not yet supported.");
             end
@@ -612,14 +576,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             restoreVisibility = onCleanup(@() set(app.UIFigure, Visible = "on"));
 
             % Set managers.
-            app.Model = appProvider.getModel();
-            app.AnalysisManager = appProvider.getAnalysisManager();
-            app.ResultsManager = appProvider.getResultsManager();
-            app.VisualizationManager = appProvider.getVisualizationManager();
+            app.Model = provider.Model;
+            app.AnalysisManager = provider.AnalysisManager;
+            app.ResultsManager = provider.ResultsManager;
+            app.VisualizationManager = provider.VisualizationManager;
 
             % Initialize app.
             app.createComponents();
-            app.addlistener("Analysis", "PostSet", @app.analysisChanged);
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
 
             if nargout == 0

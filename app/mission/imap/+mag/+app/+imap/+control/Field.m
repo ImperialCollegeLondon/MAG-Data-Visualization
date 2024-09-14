@@ -1,4 +1,4 @@
-classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
+classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
 % FIELD View-controller for generating "mag.imap.view.Field".
 
     properties (Constant, Access = private)

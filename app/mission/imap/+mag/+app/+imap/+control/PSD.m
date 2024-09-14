@@ -1,4 +1,4 @@
-classdef PSD < mag.app.control.Control
+classdef PSD < mag.app.Control
 % PSD View-controller for generating "mag.imap.view.PSD".
 
     properties (SetAccess = private)

@@ -1,4 +1,4 @@
-classdef VisualizationManager < mag.this.Manager
+classdef VisualizationManager < mag.app.Manager
 % VISUALIZATIONMANAGER Manager for visualization of IMAP analysis.
 
     properties (SetAccess = private)
@@ -8,7 +8,7 @@ classdef VisualizationManager < mag.this.Manager
     end
 
     properties (Access = private)
-        SelectedControl mag.app.control.Control {mustBeScalarOrEmpty}
+        SelectedControl mag.app.Control {mustBeScalarOrEmpty}
     end
 
     methods
@@ -23,9 +23,9 @@ classdef VisualizationManager < mag.this.Manager
             % Create VisualizationTypeListBox.
             this.VisualizationTypeListBox = uilistbox(this.VisualizationOptionsLayout);
             this.VisualizationTypeListBox.Items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
-            this.VisualizationTypeListBox.ItemsData = [mag.this.imap.control.AT(), mag.this.imap.control.CPT(), mag.this.imap.control.Field(), ...
-                mag.this.imap.control.Spectrogram(), mag.this.imap.control.PSD()];
-            this.VisualizationTypeListBox.Value = mag.this.imap.control.AT();
+            this.VisualizationTypeListBox.ItemsData = [mag.app.imap.control.AT(), mag.app.imap.control.CPT(), mag.app.imap.control.Field(), ...
+                mag.app.imap.control.Spectrogram(), mag.app.imap.control.PSD()];
+            this.VisualizationTypeListBox.Value = mag.app.imap.control.AT();
             this.VisualizationTypeListBox.ValueChangedFcn = @(~, ~) this.visualizationTypeListBoxValueChanged();
             this.VisualizationTypeListBox.Enable = "off";
             this.VisualizationTypeListBox.Layout.Row = 1;
@@ -41,9 +41,13 @@ classdef VisualizationManager < mag.this.Manager
 
         function reset(this)
 
-            this.VisualizationTypeListBox.Value = mag.this.imap.control.AT();
+            this.VisualizationTypeListBox.Value = mag.app.imap.control.AT();
             this.VisualizationTypeListBox.Enable = "off";
             this.VisualizationOptionsPanel.Enable = "off";
+        end
+
+        function subscribe(this, model)
+            this.addlistener(model, "AnalysisChanged", @this.analysisChanged);
         end
 
         function figures = visualize(this, analysis)
@@ -65,6 +69,15 @@ classdef VisualizationManager < mag.this.Manager
 
             this.SelectedControl = this.VisualizationTypeListBox.ItemsData{this.VisualizationTypeListBox.ValueIndex};
             this.SelectedControl.instantiate(this.VisualizationOptionsPanel);
+        end
+
+        function analysisChanged(this, source, event)
+
+            if ~isempty(source.Results) && ~isempty(app.Analysis.Results.Science)
+                app.visualizationTypeListBoxValueChanged();
+            else
+                app.reset();
+            end
         end
     end
 end

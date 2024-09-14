@@ -8,5 +8,8 @@ classdef (Abstract) Manager < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
         % RESET Reset to default values.
         reset(this)
+
+        % SUBSCRIBE Subscribe to event.
+        subscribe(this, model)
     end
 end

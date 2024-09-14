@@ -1,4 +1,4 @@
-classdef CPT < mag.app.control.Control & mag.app.mixin.Filter
+classdef CPT < mag.app.Control & mag.app.mixin.Filter
 % CPT View-controller for generating Comprehensive Performance Test plots.
 
     properties (Constant, Access = private)

@@ -24,6 +24,10 @@ classdef (Abstract) Control < mag.app.Manager
         function reset(~)
             error("Reset method not supported.");
         end
+
+        function subscribe(~, ~)
+            error("Subscrive method not supported.");
+        end
     end
 
     methods (Access = protected)

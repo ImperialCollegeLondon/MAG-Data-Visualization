@@ -58,9 +58,44 @@ classdef ResultsManager < mag.app.Manager
 
         function reset(this)
 
+            this.MetaDataPanel.Enable = "off";
+
             this.InstrumentTextArea.Value = char.empty();
             this.PrimaryTextArea.Value = char.empty();
             this.SecondaryTextArea.Value = char.empty();
+        end
+
+        function subscribe(this, model)
+            this.addlistener(model, "AnalysisChanged", @this.analysisChanged);
+        end
+    end
+
+    methods (Access = private)
+
+        function analysisChanged(this, source, event)
+
+            if ~isempty(app.Analysis) && ~isempty(app.Analysis.Results.Science)
+
+                results = app.Analysis.Results;
+
+                instrumentMetaData = compose("%s - BSW: %s - ASW: %s", results.MetaData.Model, results.MetaData.BSW, results.MetaData.ASW);
+                primaryMetaData = compose("%s (%s - %s - %s)", results.Primary.MetaData.getDisplay("Sensor"), results.Primary.MetaData.Setup.FEE, results.Primary.MetaData.Setup.Model, results.Primary.MetaData.Setup.Can);
+                secondaryMetaData = compose("%s (%s - %s - %s)", results.Secondary.MetaData.getDisplay("Sensor"), results.Secondary.MetaData.Setup.FEE, results.Secondary.MetaData.Setup.Model, results.Secondary.MetaData.Setup.Can);
+
+                if ~isempty(instrumentMetaData)
+                    app.InstrumentTextArea.Value = instrumentMetaData;
+                end
+
+                if ~isempty(primaryMetaData)
+                    app.PrimaryTextArea.Value = primaryMetaData;
+                end
+
+                if ~isempty(secondaryMetaData)
+                    app.SecondaryTextArea.Value = secondaryMetaData;
+                end
+            else
+                this.reset();
+            end
         end
     end
 end
