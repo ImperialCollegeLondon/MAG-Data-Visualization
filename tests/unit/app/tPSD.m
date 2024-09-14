@@ -8,10 +8,10 @@ classdef tPSD < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            psd = mag.app.imap.controlPSD(panel);
+            psd = mag.app.imap.control.PSD();
 
             % Exercise.
-            psd.instantiate();
+            psd.instantiate(panel);
 
             % Verify.
             testCase.assertNotEmpty(psd.StartDatePicker, "Start date picker should not be empty.");
@@ -37,8 +37,8 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.imap.controlPSD(panel);
-            psd.instantiate();
+            psd = mag.app.imap.control.PSD();
+            psd.instantiate(panel);
 
             results = mag.Instrument();
 
@@ -63,8 +63,8 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.imap.controlPSD(panel);
-            psd.instantiate();
+            psd = mag.app.imap.control.PSD();
+            psd.instantiate(panel);
 
             psd.StartDatePicker.Value = datetime("today");
             psd.StartTimeField.Value = "10:30";
@@ -96,8 +96,8 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.imap.controlPSD(panel);
-            psd.instantiate();
+            psd = mag.app.imap.control.PSD();
+            psd.instantiate(panel);
 
             psd.DurationSpinner.Value = 2.15;
 

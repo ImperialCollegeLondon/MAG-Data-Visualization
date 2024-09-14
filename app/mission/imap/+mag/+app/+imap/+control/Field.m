@@ -13,9 +13,9 @@ classdef Field < mag.app.control.Control & mag.app.mixin.StartEndDate
 
     methods
 
-        function instantiate(this)
+        function instantiate(this, parent)
 
-            this.Layout = this.createDefaultGridLayout();
+            this.Layout = this.createDefaultGridLayout(parent);
 
             % Start and end dates.
             this.addStartEndDateButtons(this.Layout, StartDateRow = 1, EndDateRow = 2);

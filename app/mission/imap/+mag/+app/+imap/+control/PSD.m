@@ -10,9 +10,9 @@ classdef PSD < mag.app.control.Control
 
     methods
 
-        function instantiate(this)
+        function instantiate(this, parent)
 
-            this.Layout = this.createDefaultGridLayout();
+            this.Layout = this.createDefaultGridLayout(parent);
 
             % Start date.
             startLabel = uilabel(this.Layout, Text = "Start date/time:");

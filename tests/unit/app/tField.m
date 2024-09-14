@@ -8,10 +8,10 @@ classdef tField < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            field = mag.app.imap.controlField(panel);
+            field = mag.app.imap.control.Field();
 
             % Exercise.
-            field.instantiate();
+            field.instantiate(panel);
 
             % Verify.
             testCase.verifyStartEndDateButtons(field, StartDateRow = 1, EndDateRow = 2);
@@ -33,8 +33,8 @@ classdef tField < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            field = mag.app.imap.controlField(panel);
-            field.instantiate();
+            field = mag.app.imap.control.Field();
+            field.instantiate(panel);
 
             results = mag.Instrument();
 
@@ -55,8 +55,8 @@ classdef tField < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            field = mag.app.imap.controlField(panel);
-            field.instantiate();
+            field = mag.app.imap.control.Field();
+            field.instantiate(panel);
 
             field.EventsTree.CheckedNodes = field.EventsTree.Children(2);
 

@@ -19,9 +19,9 @@ classdef CPT < mag.app.control.Control & mag.app.mixin.Filter
 
     methods
 
-        function instantiate(this)
+        function instantiate(this, parent)
 
-            this.Layout = this.createDefaultGridLayout();
+            this.Layout = this.createDefaultGridLayout(parent);
 
             % Filter.
             this.addFilterButtons(this.Layout, StartFilterRow = 1);

@@ -1,4 +1,4 @@
-classdef (Abstract) Control < matlab.mixin.Heterogeneous & mag.mixin.SetGet
+classdef (Abstract) Control < mag.app.Manager
 % CONTROL Abstract base class for view-controllers.
 
     properties (Constant, Access = private)
@@ -13,30 +13,23 @@ classdef (Abstract) Control < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         DynamicPlaceholder (1, 1) string = "dynamic (default)"
     end
 
-    properties (SetAccess = immutable)
-        Parent (1, 1) matlab.ui.container.Panel
-    end
-
-    methods
-
-        function this = Control(parent)
-            this.Parent = parent;
-        end
-    end
-
     methods (Abstract)
-
-        % INSTANTIATE Populate view-control elements.
-        instantiate(this)
 
         % GETVISUALIZECOMMAND Retrieve command to plot all figures.
         command = getVisualizeCommand(this, results)
     end
 
+    methods
+
+        function reset(~)
+            error("Reset method not supported.");
+        end
+    end
+
     methods (Access = protected)
 
-        function layout = createDefaultGridLayout(this)
-            layout = uigridlayout(this.Parent, this.DefaultSize, ColumnWidth = this.DefaultColumnWidth);
+        function layout = createDefaultGridLayout(this, parent)
+            layout = uigridlayout(parent, this.DefaultSize, ColumnWidth = this.DefaultColumnWidth);
         end
     end
 end

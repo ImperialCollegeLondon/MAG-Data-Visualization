@@ -2,6 +2,10 @@
 
 - Refactor IMAP and HelioSwarm code, in separate folders: `src/mission/*` and `app/mission/*`
 
+# App
+
+- Refactor `mag.app.control.Control` to not accept parent as constructor input, but rather as `instantiate` argument
+
 # Software
 
 - Add support for HelioSwarm analysis with `mag.hs.Analysis`

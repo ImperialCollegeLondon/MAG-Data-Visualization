@@ -8,10 +8,10 @@ classdef tSpectrogram < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            spectrogram = mag.app.imap.controlSpectrogram(panel);
+            spectrogram = mag.app.imap.control.Spectrogram();
 
             % Exercise.
-            spectrogram.instantiate();
+            spectrogram.instantiate(panel);
 
             % Verify.
             testCase.verifyStartEndDateButtons(spectrogram, StartDateRow = 1, EndDateRow = 2);
@@ -52,8 +52,8 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.imap.controlSpectrogram(panel);
-            spectrogram.instantiate();
+            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram.instantiate(panel);
 
             results = mag.Instrument();
 
@@ -79,8 +79,8 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.imap.controlSpectrogram(panel);
-            spectrogram.instantiate();
+            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram.instantiate(panel);
 
             spectrogram.OverlapSpinner.Value = 0.5;
 
@@ -108,8 +108,8 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.imap.controlSpectrogram(panel);
-            spectrogram.instantiate();
+            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram.instantiate(panel);
 
             spectrogram.WindowSpinner.Value = 25;
 
