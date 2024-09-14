@@ -2,9 +2,9 @@ classdef (Abstract, HandleCompatible) SaveLoad
 % SAVELOAD Interface adding support for customization of saving and loading
 % to MAT files.
 
-    properties (Abstract, Constant, Transient)
+    properties (Constant, Transient)
         % VERSION Version number.
-        Version (1, 1) string
+        Version (1, 1) string = mag.version()
     end
 
     properties (Hidden, SetAccess = private)

@@ -1,10 +1,6 @@
 classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.SaveLoad
 % ANALYSIS Automate analysis of an IMAP data.
 
-    properties (Constant)
-        Version = mag.version()
-    end
-
     properties
         % LOCATION Location of data to load.
         Location (1, 1) string {mustBeFolder} = pwd()
@@ -14,9 +10,9 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         MetaDataPattern (1, :) string = [fullfile("*.msg"), fullfile("IMAP-MAG-TE-ICL-058*.xlsx"), fullfile("IMAP-MAG-TE-ICL-061*.xlsx"), ...
             fullfile("IMAP-MAG-TE-ICL-071*.docx"), fullfile("IMAP-OPS-TE-ICL-001*.docx"), fullfile("IMAP-OPS-TE-ICL-002*.docx")]
         % SCIENCEPATTERN Pattern of science data files.
-        SciencePattern (1, :) string = fullfile("MAGScience-*-(*)-*.csv")
+        SciencePattern (1, 1) string = fullfile("MAGScience-*-(*)-*.csv")
         % IALIRTPATTERN Pattern of I-ALiRT data files.
-        IALiRTPattern (1, :) string = fullfile("MAGScience-IALiRT-*.csv")
+        IALiRTPattern (1, 1) string = fullfile("MAGScience-IALiRT-*.csv")
         % HKPATTERN Pattern of housekeeping files.
         HKPattern (1, :) string = [fullfile("*", "Export", "idle_export_conf.*.csv"), ...
             fullfile("*", "Export", "idle_export_proc.*.csv"), ...
@@ -79,7 +75,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         SecondaryRamp mag.Science {mustBeScalarOrEmpty}
     end
 
-    properties (Hidden, Access = private)
+    properties (Access = private)
         % EVENTFILES Information about files containing event data.
         EventFiles (:, 1) struct
         % METADATAFILES Information about files containing meta data.
@@ -144,7 +140,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         end
 
         function detect(this)
-        % DETECT Detect files based on filters.
+        % DETECT Detect files based on patterns.
 
             this.EventFiles = dir(fullfile(this.Location, this.EventPattern));
 
