@@ -3,7 +3,7 @@ classdef Model < mag.app.Model
 
     methods
 
-        function perform(this, analysisManager)
+        function analyze(this, analysisManager)
 
             arguments
                 this
@@ -39,7 +39,7 @@ classdef Model < mag.app.Model
             end
 
             % Perform analysis.
-            this.Results = mag.imap.Analysis.start(Location = analysisManager.LocationEditField.Value, ...
+            results = mag.imap.Analysis.start(Location = analysisManager.LocationEditField.Value, ...
                 EventPattern = eventPattern, ...
                 MetaDataPattern = metaDataPattern, ...
                 SciencePattern = analysisManager.SciencePatternEditField.Value, ...
@@ -47,7 +47,32 @@ classdef Model < mag.app.Model
                 HKPattern = hkPattern);
 
             % Notify analysis changed.
-            notify(this, "AnalysisChanged");
+            this.setAnalysisAndNotify(results);
+        end
+
+        function load(this, matFile)
+
+            results = load(matFile);
+
+            for f = string(fieldnames(results))'
+
+                if isa(results.(f), "mag.imap.Analysis")
+
+                    this.setAnalysisAndNotify(results.(f));
+                    return;
+                end
+            end
+
+            error("No ""mag.imap.Analysis"" found in MAT file.");
+        end
+    end
+
+    methods (Access = private)
+
+        function setAnalysisAndNotify(this, analysis)
+
+            this.Analysis = analysis;
+            this.notify("AnalysisChanged");
         end
     end
 end

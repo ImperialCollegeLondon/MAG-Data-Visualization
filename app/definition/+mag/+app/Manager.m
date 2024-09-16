@@ -8,8 +8,19 @@ classdef (Abstract) Manager < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
         % RESET Reset to default values.
         reset(this)
+    end
+
+    methods
 
         % SUBSCRIBE Subscribe to event.
-        subscribe(this, model)
+        function subscribe(this, model)
+            model.addlistener("AnalysisChanged", @this.modelChangedCallback);
+        end
+    end
+
+    methods (Abstract, Access = protected)
+
+        % MODELCHANGEDCALLBACK Callback for model changed.
+        modelChangedCallback(this, model, event)
     end
 end

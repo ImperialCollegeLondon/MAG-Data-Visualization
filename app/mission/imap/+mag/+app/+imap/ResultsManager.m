@@ -64,35 +64,33 @@ classdef ResultsManager < mag.app.Manager
             this.PrimaryTextArea.Value = char.empty();
             this.SecondaryTextArea.Value = char.empty();
         end
-
-        function subscribe(this, model)
-            this.addlistener(model, "AnalysisChanged", @this.analysisChanged);
-        end
     end
 
-    methods (Access = private)
+    methods (Access = protected)
 
-        function analysisChanged(this, source, event)
+        function modelChangedCallback(this, model, ~)
 
-            if ~isempty(app.Analysis) && ~isempty(app.Analysis.Results.Science)
+            if model.HasAnalysis && model.Analysis.Results.HasScience
 
-                results = app.Analysis.Results;
+                results = model.Analysis.Results;
 
                 instrumentMetaData = compose("%s - BSW: %s - ASW: %s", results.MetaData.Model, results.MetaData.BSW, results.MetaData.ASW);
                 primaryMetaData = compose("%s (%s - %s - %s)", results.Primary.MetaData.getDisplay("Sensor"), results.Primary.MetaData.Setup.FEE, results.Primary.MetaData.Setup.Model, results.Primary.MetaData.Setup.Can);
                 secondaryMetaData = compose("%s (%s - %s - %s)", results.Secondary.MetaData.getDisplay("Sensor"), results.Secondary.MetaData.Setup.FEE, results.Secondary.MetaData.Setup.Model, results.Secondary.MetaData.Setup.Can);
 
                 if ~isempty(instrumentMetaData)
-                    app.InstrumentTextArea.Value = instrumentMetaData;
+                    this.InstrumentTextArea.Value = instrumentMetaData;
                 end
 
                 if ~isempty(primaryMetaData)
-                    app.PrimaryTextArea.Value = primaryMetaData;
+                    this.PrimaryTextArea.Value = primaryMetaData;
                 end
 
                 if ~isempty(secondaryMetaData)
-                    app.SecondaryTextArea.Value = secondaryMetaData;
+                    this.SecondaryTextArea.Value = secondaryMetaData;
                 end
+
+                this.MetaDataPanel.Enable = "on";
             else
                 this.reset();
             end

@@ -29,7 +29,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ExportButtonsLayout matlab.ui.container.GridLayout
         ExportNoteLabel matlab.ui.control.Label
         ExportButton matlab.ui.control.Button
-        FormatDropDown matlab.ui.control.DropDown
+        ExportFormatDropDown matlab.ui.control.DropDown
         FormatDropDownLabel matlab.ui.control.Label
         VisualizeTab matlab.ui.container.Tab
         VisualizeLayout matlab.ui.container.GridLayout
@@ -41,6 +41,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     end
 
     properties (SetAccess = private)
+        Provider mag.app.Provider {mustBeScalarOrEmpty}
         Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
         AnalysisManager mag.app.Manager {mustBeScalarOrEmpty}
         ResultsManager mag.app.Manager {mustBeScalarOrEmpty}
@@ -64,10 +65,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function value = get.ResultsLocation(app)
 
-            if isempty(app.Model.Results)
-                location = app.LocationEditField.Value;
+            if isempty(app.Model.Analysis)
+                location = app.AnalysisManager.LocationEditField.Value;
             else
-                location = app.Model.Results.Location;
+                location = app.Model.Analysis.Location;
             end
 
             value = fullfile(location, compose("Results (v%s)", mag.version()));
@@ -80,11 +81,12 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
     methods (Access = private)
 
-        function analysisChanged(app, varargin)
+        function modelChangedCallback(app, model, ~)
 
-            [app.FormatDropDown.Enable, app.ExportButton.Enable, app.ShowFiguresButton.Enable, ...
-                app.MetaDataPanel.Enable, ...
-                app.ExportSettingsPanel.Enable] = deal(status);
+            status = matlab.lang.OnOffSwitchState(model.HasAnalysis);
+
+            [app.ExportFormatDropDown.Enable, app.ExportButton.Enable, app.ExportSettingsPanel.Enable, ...
+                app.ShowFiguresButton.Enable] = deal(status);
         end
 
         function figuresChanged(app, varargin)
@@ -142,7 +144,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Start analysis.
             try
-                app.Model.perform(app.AnalysisManager);
+                app.Model.analyze(app.AnalysisManager);
             catch exception
                 app.displayAlert(exception);
             end
@@ -152,7 +154,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             closeProgressBar = app.overlayProgressBar("Exporting..."); %#ok<NASGU>
 
-            format = app.FormatDropDown.Value;
+            format = app.ExportFormatDropDown.Value;
 
             switch format
                 case "Workspace"
@@ -167,11 +169,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                         end
                     end
 
-                    assignin("base", "analysis", app.Model.Results);
+                    assignin("base", "analysis", app.Model.Analysis);
                     return;
                 case "MAT (Full Analysis)"
 
-                    analysis = app.Model.Results;
+                    analysis = app.Model.Analysis;
                     save(fullfile(app.ResultsLocation, "Data.mat"), "analysis");
                     return;
                 case "MAT (Science Lead)"
@@ -187,7 +189,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 startTime = mag.app.internal.combineDateAndTime(app.StartDateTimeDatePicker.Value, app.StartTimeEditField.Value);
                 endTime = mag.app.internal.combineDateAndTime(app.EndDateTimeDatePicker.Value, app.EndTimeEditField.Value);
 
-                app.Model.Results.export(exportType, Location = app.ResultsLocation, StartTime = startTime, EndTime = endTime);
+                app.Model.Analysis.export(exportType, Location = app.ResultsLocation, StartTime = startTime, EndTime = endTime);
             catch exception
                 app.displayAlert(exception);
             end
@@ -207,7 +209,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             closeProgressBar = app.overlayProgressBar("Generating diagnostics..."); %#ok<NASGU>
 
             % Initialize variables to save.
-            analysis = app.Model.Results;
+            analysis = app.Model.Analysis;
 
             exportStartDate = app.StartDateTimeDatePicker.Value;
             exportStartTime = app.StartTimeEditField.Value;
@@ -259,18 +261,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             if ~isequal(file, 0) && ~isequal(folder, 0)
 
-                results = load(fullfile(folder, file));
-
-                for f = string(fieldnames(results))'
-
-                    if isa(results.(f), "mag.imap.Analysis")
-
-                        app.Model.Results = results.(f);
-                        return;
-                    end
+                try
+                    app.Model.load(fullfile(folder, file));
+                catch exception
+                    app.displayAlert(exception);
                 end
-
-                app.displayAlert("No ""mag.imap.Analysis"" found in MAT file.", "Invalid File Selected", "warning");
             end
         end
 
@@ -281,7 +276,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Select plotting function based on plot types.
             try
-                app.Figures = app.VisualizationManager.visualize(app.Model.Results);
+                app.Figures = app.VisualizationManager.visualize(app.Model.Analysis);
             catch exception
                 app.displayAlert(exception);
             end
@@ -422,13 +417,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.FormatDropDownLabel.Layout.Column = 3;
             app.FormatDropDownLabel.Text = "Format:";
 
-            % Create FormatDropDown.
-            app.FormatDropDown = uidropdown(app.ExportButtonsLayout);
-            app.FormatDropDown.Items = ["Workspace", "MAT (Full Analysis)", "MAT (Science Lead)", "CDF"];
-            app.FormatDropDown.Enable = "off";
-            app.FormatDropDown.Layout.Row = 1;
-            app.FormatDropDown.Layout.Column = 4;
-            app.FormatDropDown.Value = "Workspace";
+            % Create ExportFormatDropDown.
+            app.ExportFormatDropDown = uidropdown(app.ExportButtonsLayout);
+            app.ExportFormatDropDown.Items = ["Workspace", "MAT (Full Analysis)", "MAT (Science Lead)", "CDF"];
+            app.ExportFormatDropDown.Enable = "off";
+            app.ExportFormatDropDown.Layout.Row = 1;
+            app.ExportFormatDropDown.Layout.Column = 4;
+            app.ExportFormatDropDown.Value = "Workspace";
 
             % Create ExportButton.
             app.ExportButton = uibutton(app.ExportButtonsLayout, "push");
@@ -566,7 +561,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 case "HelioSwarm"
                     error("HelioSwarm mission not yet supported.");
                 case "IMAP"
-                    provider = mag.app.imap.Provider();
+                    app.Provider = mag.app.imap.Provider();
                 case "Solar Orbiter"
                     error("Solar Orbiter mission not yet supported.");
             end
@@ -576,14 +571,19 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             restoreVisibility = onCleanup(@() set(app.UIFigure, Visible = "on"));
 
             % Set managers.
-            app.Model = provider.Model;
-            app.AnalysisManager = provider.AnalysisManager;
-            app.ResultsManager = provider.ResultsManager;
-            app.VisualizationManager = provider.VisualizationManager;
+            app.Model = app.Provider.getModel();
+            app.AnalysisManager = app.Provider.getAnalysisManager();
+            app.ResultsManager = app.Provider.getResultsManager();
+            app.VisualizationManager = app.Provider.getVisualizationManager();
+
+            for manager = [app.AnalysisManager, app.ResultsManager, app.VisualizationManager]
+                manager.subscribe(app.Model);
+            end
 
             % Initialize app.
             app.createComponents();
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
+            app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
 
             if nargout == 0
                 clear("app");

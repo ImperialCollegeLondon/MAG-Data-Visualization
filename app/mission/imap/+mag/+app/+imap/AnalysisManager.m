@@ -118,8 +118,11 @@ classdef AnalysisManager < mag.app.Manager
             this.IALiRTPatternEditField.Value = dummyAnalysis.IALiRTPattern;
             this.HKPatternEditField.Value = join(dummyAnalysis.HKPattern, pathsep());
         end
+    end
 
-        function subscribe(this, model)
+    methods (Access = protected)
+
+        function modelChangedCallback(~, ~, ~)
             % do nothing
         end
     end

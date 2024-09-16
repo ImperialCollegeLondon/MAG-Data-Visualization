@@ -46,10 +46,6 @@ classdef VisualizationManager < mag.app.Manager
             this.VisualizationOptionsPanel.Enable = "off";
         end
 
-        function subscribe(this, model)
-            this.addlistener(model, "AnalysisChanged", @this.analysisChanged);
-        end
-
         function figures = visualize(this, analysis)
 
             if isa(this.SelectedControl, "mag.app.imap.control.AT") || isa(this.SelectedControl, "mag.app.imap.control.CPT")
@@ -63,21 +59,28 @@ classdef VisualizationManager < mag.app.Manager
         end
     end
 
+    methods (Access = protected)
+
+        function modelChangedCallback(this, model, ~)
+
+            if model.HasAnalysis && model.Analysis.Results.HasScience
+
+                this.VisualizationTypeListBox.Enable = "on";
+                this.VisualizationOptionsPanel.Enable = "on";
+
+                this.visualizationTypeListBoxValueChanged();
+            else
+                this.reset();
+            end
+        end
+    end
+
     methods (Access = private)
 
         function visualizationTypeListBoxValueChanged(this)
 
-            this.SelectedControl = this.VisualizationTypeListBox.ItemsData{this.VisualizationTypeListBox.ValueIndex};
+            this.SelectedControl = this.VisualizationTypeListBox.ItemsData(this.VisualizationTypeListBox.ValueIndex);
             this.SelectedControl.instantiate(this.VisualizationOptionsPanel);
-        end
-
-        function analysisChanged(this, source, event)
-
-            if ~isempty(source.Results) && ~isempty(app.Analysis.Results.Science)
-                app.visualizationTypeListBoxValueChanged();
-            else
-                app.reset();
-            end
         end
     end
 end
