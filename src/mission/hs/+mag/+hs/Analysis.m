@@ -118,7 +118,11 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         end
 
         function loadScienceData(this)
-            % TODO: add definition
+
+            this.Results.Science = mag.io.import( ...
+                FileNames = this.ScienceFileNames, ...
+                Format = mag.hs.in.ScienceCSV(), ...
+                ProcessingSteps = this.PerFileProcessing);
         end
 
         function loadHKData(~)
