@@ -19,13 +19,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ExportTab matlab.ui.container.Tab
         ExportLayout matlab.ui.container.GridLayout
         ExportSettingsPanel matlab.ui.container.Panel
-        ExportSettingsLayout matlab.ui.container.GridLayout
-        EndTimeEditField matlab.ui.control.EditField
-        EndDateTimeDatePicker matlab.ui.control.DatePicker
-        EndDateTimeDatePickerLabel matlab.ui.control.Label
-        StartTimeEditField matlab.ui.control.EditField
-        StartDateTimeDatePicker matlab.ui.control.DatePicker
-        StartDateTimeDatePickerLabel matlab.ui.control.Label
         ExportButtonsLayout matlab.ui.container.GridLayout
         ExportNoteLabel matlab.ui.control.Label
         ExportButton matlab.ui.control.Button
@@ -43,9 +36,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     properties (SetAccess = private)
         Provider mag.app.Provider {mustBeScalarOrEmpty}
         Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
-        AnalysisManager mag.app.Manager {mustBeScalarOrEmpty}
-        ResultsManager mag.app.Manager {mustBeScalarOrEmpty}
-        VisualizationManager mag.app.Manager {mustBeScalarOrEmpty}
+        AnalysisManager mag.app.manage.AnalysisManager {mustBeScalarOrEmpty}
+        ResultsManager mag.app.manage.Manager {mustBeScalarOrEmpty}
+        ExportManager mag.app.manage.ExportManager {mustBeScalarOrEmpty}
+        VisualizationManager mag.app.manage.Manager {mustBeScalarOrEmpty}
     end
 
     properties (Access = private)
@@ -144,7 +138,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Start analysis.
             try
-                app.Model.analyze(app.AnalysisManager);
+                app.Model.analyze(app.AnalysisManager.getAnalysisOptions());
             catch exception
                 app.displayAlert(exception);
             end
@@ -153,7 +147,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function exportButtonPushed(app)
 
             closeProgressBar = app.overlayProgressBar("Exporting..."); %#ok<NASGU>
-
             format = app.ExportFormatDropDown.Value;
 
             switch format
@@ -176,20 +169,12 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     analysis = app.Model.Analysis;
                     save(fullfile(app.ResultsLocation, "Data.mat"), "analysis");
                     return;
-                case "MAT (Science Lead)"
-                    exportType = "MAT";
-                case "CDF"
-                    exportType = "CDF";
                 otherwise
                     app.displayAlert(compose("Unrecognized export format option ""%s"".", format));
             end
 
             try
-
-                startTime = mag.app.internal.combineDateAndTime(app.StartDateTimeDatePicker.Value, app.StartTimeEditField.Value);
-                endTime = mag.app.internal.combineDateAndTime(app.EndDateTimeDatePicker.Value, app.EndTimeEditField.Value);
-
-                app.Model.Analysis.export(exportType, Location = app.ResultsLocation, StartTime = startTime, EndTime = endTime);
+                app.Model.export(app.ExportManager.getExportOptions(format, app.ResultsLocation));
             catch exception
                 app.displayAlert(exception);
             end
@@ -197,9 +182,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function resetButtonPushed(app, event)
 
-            app.startup();
             app.closeFiguresButtonPushed(event);
 
+            app.Model.reset();
             app.Figures = matlab.ui.Figure.empty();
         end
 
@@ -419,7 +404,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Create ExportFormatDropDown.
             app.ExportFormatDropDown = uidropdown(app.ExportButtonsLayout);
-            app.ExportFormatDropDown.Items = ["Workspace", "MAT (Full Analysis)", "MAT (Science Lead)", "CDF"];
+            app.ExportFormatDropDown.Items = ["Workspace", "MAT (Full Analysis)", app.ExportManager.SupportedFormats];
             app.ExportFormatDropDown.Enable = "off";
             app.ExportFormatDropDown.Layout.Row = 1;
             app.ExportFormatDropDown.Layout.Column = 4;
@@ -433,12 +418,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ExportButton.Layout.Column = 5;
             app.ExportButton.Text = "Export";
 
-            % Create ExportNoteLabel.
-            app.ExportNoteLabel = uilabel(app.ExportButtonsLayout);
-            app.ExportNoteLabel.Layout.Row = 1;
-            app.ExportNoteLabel.Layout.Column = [1 2];
-            app.ExportNoteLabel.Text = ["Note: Export start and end times do not apply"; "to ""Workspace"" and ""MAT (Full Analysis)"""; "formats."];
-
             % Create ExportSettingsPanel.
             app.ExportSettingsPanel = uipanel(app.ExportLayout);
             app.ExportSettingsPanel.Enable = "off";
@@ -446,46 +425,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ExportSettingsPanel.Layout.Row = 1;
             app.ExportSettingsPanel.Layout.Column = 1;
 
-            % Create ExportSettingsLayout.
-            app.ExportSettingsLayout = uigridlayout(app.ExportSettingsPanel);
-            app.ExportSettingsLayout.ColumnWidth = ["1x", "2x", "2x"];
-            app.ExportSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x"];
-
-            % Create StartDateTimeDatePickerLabel.
-            app.StartDateTimeDatePickerLabel = uilabel(app.ExportSettingsLayout);
-            app.StartDateTimeDatePickerLabel.HorizontalAlignment = "right";
-            app.StartDateTimeDatePickerLabel.Layout.Row = 1;
-            app.StartDateTimeDatePickerLabel.Layout.Column = 1;
-            app.StartDateTimeDatePickerLabel.Text = "Start Date/Time:";
-
-            % Create StartDateTimeDatePicker.
-            app.StartDateTimeDatePicker = uidatepicker(app.ExportSettingsLayout);
-            app.StartDateTimeDatePicker.Layout.Row = 1;
-            app.StartDateTimeDatePicker.Layout.Column = 2;
-
-            % Create StartTimeEditField.
-            app.StartTimeEditField = uieditfield(app.ExportSettingsLayout, "text");
-            app.StartTimeEditField.Placeholder = "HH:mm:ss.SSS";
-            app.StartTimeEditField.Layout.Row = 1;
-            app.StartTimeEditField.Layout.Column = 3;
-
-            % Create EndDateTimeDatePickerLabel.
-            app.EndDateTimeDatePickerLabel = uilabel(app.ExportSettingsLayout);
-            app.EndDateTimeDatePickerLabel.HorizontalAlignment = "right";
-            app.EndDateTimeDatePickerLabel.Layout.Row = 2;
-            app.EndDateTimeDatePickerLabel.Layout.Column = 1;
-            app.EndDateTimeDatePickerLabel.Text = "End Date/Time:";
-
-            % Create EndDateTimeDatePicker.
-            app.EndDateTimeDatePicker = uidatepicker(app.ExportSettingsLayout);
-            app.EndDateTimeDatePicker.Layout.Row = 2;
-            app.EndDateTimeDatePicker.Layout.Column = 2;
-
-            % Create EndTimeEditField.
-            app.EndTimeEditField = uieditfield(app.ExportSettingsLayout, "text");
-            app.EndTimeEditField.Placeholder = "HH:mm:ss.SSS";
-            app.EndTimeEditField.Layout.Row = 2;
-            app.EndTimeEditField.Layout.Column = 3;
+            % Populate "Export" tab based on mission.
+            app.ExportManager.instantiate(app.ExportTab);
+            app.ExportManager.reset();
 
             % Create VisualizeTab.
             app.VisualizeTab = uitab(app.TabGroup);
@@ -540,7 +482,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
     methods (Access = public)
 
-        function app = DataVisualization()
+        function app = DataVisualization(mission)
+
+            arguments (Input)
+                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
+            end
 
             % Create figure and hide until all components are created.
             app.UIFigure = uifigure();
@@ -548,11 +494,14 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.UIFigure.Name = "MAG Data Visulization App";
             app.UIFigure.Resize = "off";
 
-            % Ask which mission to load.
-            selection = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
-                Options = ["HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
+            % Ask which mission to load, if not provided.
+            if isempty(mission)
 
-            switch selection
+                mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
+                    Options = ["HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
+            end
+
+            switch mission
                 case "Cancel"
 
                     delete(app);
@@ -566,22 +515,23 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     error("Solar Orbiter mission not yet supported.");
             end
 
-            % Show the figure after all components are created.
-            app.UIFigure.Visible = "off";
-            restoreVisibility = onCleanup(@() set(app.UIFigure, Visible = "on"));
+            % Show progress bar.
+            closeProgressBar = app.overlayProgressBar("Initializing app..."); %#ok<NASGU>
 
             % Set managers.
             app.Model = app.Provider.getModel();
             app.AnalysisManager = app.Provider.getAnalysisManager();
             app.ResultsManager = app.Provider.getResultsManager();
+            app.ExportManager = app.Provider.getExportManager();
             app.VisualizationManager = app.Provider.getVisualizationManager();
 
-            for manager = [app.AnalysisManager, app.ResultsManager, app.VisualizationManager]
+            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
                 manager.subscribe(app.Model);
             end
 
             % Initialize app.
             app.createComponents();
+
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
             app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
 

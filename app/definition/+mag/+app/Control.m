@@ -1,4 +1,4 @@
-classdef (Abstract) Control < mag.app.Manager
+classdef (Abstract) Control < mag.app.manage.Manager
 % CONTROL Abstract base class for view-controllers.
 
     properties (Constant, Access = private)

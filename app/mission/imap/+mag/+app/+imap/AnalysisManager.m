@@ -1,4 +1,4 @@
-classdef AnalysisManager < mag.app.Manager
+classdef AnalysisManager < mag.app.manage.AnalysisManager
 % ANALYSISMANAGER Manager for analysis of IMAP data.
 
     properties (SetAccess = private)
@@ -117,6 +117,44 @@ classdef AnalysisManager < mag.app.Manager
             this.SciencePatternEditField.Value = dummyAnalysis.SciencePattern;
             this.IALiRTPatternEditField.Value = dummyAnalysis.IALiRTPattern;
             this.HKPatternEditField.Value = join(dummyAnalysis.HKPattern, pathsep());
+        end
+
+        function options = getAnalysisOptions(this)
+
+            % Validate location.
+            location = analysisManager.LocationEditField.Value;
+
+            if isempty(location)
+                error("Location is empty.");
+            elseif ~isfolder(location)
+                error("Location ""%s"" does not exist.", location);
+            end
+
+            % Retrieve data file patterns.
+            if isempty(analysisManager.EventPatternEditField.Value)
+                eventPattern = string.empty();
+            else
+                eventPattern = split(analysisManager.EventPatternEditField.Value, pathsep())';
+            end
+
+            if isempty(analysisManager.MetaDataPatternEditField.Value)
+                metaDataPattern = string.empty();
+            else
+                metaDataPattern = split(analysisManager.MetaDataPatternEditField.Value, pathsep())';
+            end
+
+            if isempty(analysisManager.HKPatternEditField.Value)
+                hkPattern = string.empty();
+            else
+                hkPattern = split(analysisManager.HKPatternEditField.Value, pathsep())';
+            end
+
+            options = {"Location", this.LocationEditField.Value, ...
+                "EventPattern", eventPattern, ...
+                "MetaDataPattern", metaDataPattern, ...
+                "SciencePattern", this.SciencePatternEditField.Value, ...
+                "IALiRTPattern", this.IALiRTPatternEditField.Value, ...
+                "HKPattern", hkPattern};
         end
     end
 

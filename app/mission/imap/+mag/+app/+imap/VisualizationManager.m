@@ -1,4 +1,4 @@
-classdef VisualizationManager < mag.app.Manager
+classdef VisualizationManager < mag.app.manage.Manager
 % VISUALIZATIONMANAGER Manager for visualization of IMAP analysis.
 
     properties (SetAccess = private)

@@ -12,6 +12,9 @@ classdef (Abstract) Provider < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         % GETRESULTSMANAGER Retrieve results manager.
         manager = getResultsManager(this)
 
+        % GETEXPORTMANAGER Retrieve export manager.
+        manager = getExportManager(this)
+
         % GETVISUALIZATIONMANAGER Retrieve visualization manager.
         manager = getVisualizationManager(this)
     end

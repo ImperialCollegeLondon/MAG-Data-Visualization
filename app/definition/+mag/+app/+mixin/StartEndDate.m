@@ -57,5 +57,14 @@ classdef (Abstract, HandleCompatible) StartEndDate
             startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
             endTime = mag.app.internal.combineDateAndTime(this.EndDatePicker.Value, this.EndTimeField.Value);
         end
+
+        function resetStartEndDate(this)
+
+            this.StartDatePicker.Value = NaT();
+            this.StartTimeField.Value = string.empty();
+
+            this.EndDatePicker.Value = NaT();
+            this.EndTimeField.Value = string.empty();
+        end
     end
 end

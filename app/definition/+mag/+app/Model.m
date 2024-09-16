@@ -23,6 +23,12 @@ classdef (Abstract) Model < mag.mixin.SetGet
 
         % LOAD Load analysis.
         load(this, matFile)
+
+        % EXPORT Export analysis.
+        export(this, format)
+
+        % RESET Reset analysis.
+        reset(this)
     end
 
     methods

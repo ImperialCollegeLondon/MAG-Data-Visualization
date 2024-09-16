@@ -3,50 +3,9 @@ classdef Model < mag.app.Model
 
     methods
 
-        function analyze(this, analysisManager)
+        function analyze(this, options)
 
-            arguments
-                this
-                analysisManager (1,1) mag.app.imap.AnalysisManager
-            end
-
-            % Validate location.
-            location = analysisManager.LocationEditField.Value;
-
-            if isempty(location)
-                error("Location is empty.");
-            elseif ~isfolder(location)
-                error("Location ""%s"" does not exist.", location);
-            end
-
-            % Retrieve data file patterns.
-            if isempty(analysisManager.EventPatternEditField.Value)
-                eventPattern = string.empty();
-            else
-                eventPattern = split(analysisManager.EventPatternEditField.Value, pathsep())';
-            end
-
-            if isempty(analysisManager.MetaDataPatternEditField.Value)
-                metaDataPattern = string.empty();
-            else
-                metaDataPattern = split(analysisManager.MetaDataPatternEditField.Value, pathsep())';
-            end
-
-            if isempty(analysisManager.HKPatternEditField.Value)
-                hkPattern = string.empty();
-            else
-                hkPattern = split(analysisManager.HKPatternEditField.Value, pathsep())';
-            end
-
-            % Perform analysis.
-            results = mag.imap.Analysis.start(Location = analysisManager.LocationEditField.Value, ...
-                EventPattern = eventPattern, ...
-                MetaDataPattern = metaDataPattern, ...
-                SciencePattern = analysisManager.SciencePatternEditField.Value, ...
-                IALiRTPattern = analysisManager.IALiRTPatternEditField.Value, ...
-                HKPattern = hkPattern);
-
-            % Notify analysis changed.
+            results = mag.imap.Analysis.start(options{:});
             this.setAnalysisAndNotify(results);
         end
 
@@ -64,6 +23,14 @@ classdef Model < mag.app.Model
             end
 
             error("No ""mag.imap.Analysis"" found in MAT file.");
+        end
+
+        function export(this, options)
+            this.Analysis.export(options{:}, Location = location);
+        end
+
+        function reset(this)
+            this.setAnalysisAndNotify(mag.imap.Analysis.empty());
         end
     end
 

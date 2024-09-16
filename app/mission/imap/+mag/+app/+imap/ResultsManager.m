@@ -1,4 +1,4 @@
-classdef ResultsManager < mag.app.Manager
+classdef ResultsManager < mag.app.manage.Manager
 % RESULTSMANAGER Manager for results of IMAP analysis.
 
     properties (SetAccess = private)
