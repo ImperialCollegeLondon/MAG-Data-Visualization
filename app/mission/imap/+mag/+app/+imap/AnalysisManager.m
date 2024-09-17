@@ -122,7 +122,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
         function options = getAnalysisOptions(this)
 
             % Validate location.
-            location = analysisManager.LocationEditField.Value;
+            location = this.LocationEditField.Value;
 
             if isempty(location)
                 error("Location is empty.");
@@ -131,22 +131,22 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             end
 
             % Retrieve data file patterns.
-            if isempty(analysisManager.EventPatternEditField.Value)
+            if isempty(this.EventPatternEditField.Value)
                 eventPattern = string.empty();
             else
-                eventPattern = split(analysisManager.EventPatternEditField.Value, pathsep())';
+                eventPattern = split(this.EventPatternEditField.Value, pathsep())';
             end
 
-            if isempty(analysisManager.MetaDataPatternEditField.Value)
+            if isempty(this.MetaDataPatternEditField.Value)
                 metaDataPattern = string.empty();
             else
-                metaDataPattern = split(analysisManager.MetaDataPatternEditField.Value, pathsep())';
+                metaDataPattern = split(this.MetaDataPatternEditField.Value, pathsep())';
             end
 
-            if isempty(analysisManager.HKPatternEditField.Value)
+            if isempty(this.HKPatternEditField.Value)
                 hkPattern = string.empty();
             else
-                hkPattern = split(analysisManager.HKPatternEditField.Value, pathsep())';
+                hkPattern = split(this.HKPatternEditField.Value, pathsep())';
             end
 
             options = {"Location", this.LocationEditField.Value, ...

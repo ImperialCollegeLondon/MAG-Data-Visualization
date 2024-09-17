@@ -5,8 +5,8 @@ classdef Model < mag.app.Model
 
         function analyze(this, options)
 
-            results = mag.imap.Analysis.start(options{:});
-            this.setAnalysisAndNotify(results);
+            analysis = mag.imap.Analysis.start(options{:});
+            this.setAnalysisAndNotify(analysis);
         end
 
         function load(this, matFile)
@@ -26,7 +26,7 @@ classdef Model < mag.app.Model
         end
 
         function export(this, options)
-            this.Analysis.export(options{:}, Location = location);
+            this.Analysis.export(options{:});
         end
 
         function reset(this)

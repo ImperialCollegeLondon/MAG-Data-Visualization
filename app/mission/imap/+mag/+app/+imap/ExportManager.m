@@ -30,8 +30,8 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
 
             format = extractBefore(format, " ");
 
-            startTime = mag.app.internal.combineDateAndTime(this.StartDateTimeDatePicker.Value, this.StartTimeEditField.Value);
-            endTime = mag.app.internal.combineDateAndTime(this.EndDateTimeDatePicker.Value, this.EndTimeEditField.Value);
+            startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
+            endTime = mag.app.internal.combineDateAndTime(this.EndDatePicker.Value, this.EndTimeField.Value);
 
             options = {format, "Location", location, "StartTime", startTime, "EndTime", endTime};
         end

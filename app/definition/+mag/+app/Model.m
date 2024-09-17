@@ -19,13 +19,13 @@ classdef (Abstract) Model < mag.mixin.SetGet
     methods (Abstract)
 
         % ANALYZE Perform analysis.
-        analyze(this, analysisManager)
+        analyze(this, options)
 
         % LOAD Load analysis.
         load(this, matFile)
 
         % EXPORT Export analysis.
-        export(this, format)
+        export(this, options)
 
         % RESET Reset analysis.
         reset(this)

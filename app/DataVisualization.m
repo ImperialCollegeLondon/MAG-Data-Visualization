@@ -3,10 +3,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
     properties (SetAccess = private)
         UIFigure matlab.ui.Figure
-        Toolbar matlab.ui.container.Toolbar
-        PushTool matlab.ui.container.toolbar.PushTool
-        DebugToggleTool matlab.ui.container.toolbar.ToggleTool
-        HelpPushTool matlab.ui.container.toolbar.PushTool
         GridLayout matlab.ui.container.GridLayout
         TabGroup matlab.ui.container.TabGroup
         AnalyzeTab matlab.ui.container.Tab
@@ -36,15 +32,12 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     properties (SetAccess = private)
         Provider mag.app.Provider {mustBeScalarOrEmpty}
         Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
+        ToolbarManager mag.app.manage.ToolbarManager {mustBeScalarOrEmpty}
         AnalysisManager mag.app.manage.AnalysisManager {mustBeScalarOrEmpty}
         ResultsManager mag.app.manage.Manager {mustBeScalarOrEmpty}
         ExportManager mag.app.manage.ExportManager {mustBeScalarOrEmpty}
         VisualizationManager mag.app.manage.Manager {mustBeScalarOrEmpty}
-    end
-
-    properties (Access = private)
-        PreviousError MException {mustBeScalarOrEmpty}
-        DebugStatus struct = dbstatus()
+        AppNotificationHandler mag.app.internal.AppNotificationHandler {mustBeScalarOrEmpty}
     end
 
     properties (SetObservable, Access = private)
@@ -71,6 +64,56 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 mkdir(value);
             end
         end
+
+        function resetMission(app, mission)
+
+            arguments (Input)
+                app
+                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
+            end
+
+            % Ask which mission to load, if not provided.
+            if isempty(mission)
+
+                mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
+                    Options = ["HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
+            end
+
+            % Show progress bar.
+            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing app..."); %#ok<NASGU>
+
+            switch mission
+                case "Cancel"
+
+                    delete(app);
+                    clear("app");
+                    return;
+                case "HelioSwarm"
+                    error("HelioSwarm mission not yet supported.");
+                case "IMAP"
+                    app.Provider = mag.app.imap.Provider();
+                case "Solar Orbiter"
+                    error("Solar Orbiter mission not yet supported.");
+            end
+
+            % Set managers.
+            app.Model = app.Provider.getModel();
+
+            app.AnalysisManager = app.Provider.getAnalysisManager();
+            app.ResultsManager = app.Provider.getResultsManager();
+            app.ExportManager = app.Provider.getExportManager();
+            app.VisualizationManager = app.Provider.getVisualizationManager();
+
+            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
+                manager.subscribe(app.Model);
+            end
+
+            % Create components.
+            app.createComponents();
+
+            app.addlistener("Figures", "PostSet", @app.figuresChanged);
+            app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
+        end
     end
 
     methods (Access = private)
@@ -89,48 +132,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             [app.SaveFiguresButton.Enable, app.CloseFiguresButton.Enable] = deal(matlab.lang.OnOffSwitchState(figuresAvailable));
         end
 
-        function displayAlert(app, message, title, icon)
-
-            arguments
-                app
-                message (1, 1) {mustBeA(message, ["string", "MException"])}
-                title (1, 1) string = "Something Went Wrong..."
-                icon (1, 1) string {mustBeMember(icon, ["error", "warning", "info", "success", "none"])} = "error"
-            end
-
-            if isa(message, "MException")
-
-                app.PreviousError = message;
-                msg = message.message;
-            else
-                msg = message;
-            end
-
-            uialert(app.UIFigure, msg, title, Icon = icon, Interpreter = "html");
-        end
-
-        function closeProgressBar = overlayProgressBar(app, message)
-
-            arguments (Input)
-                app
-                message (1, 1) string
-            end
-
-            arguments (Output)
-                closeProgressBar (1, 2) onCleanup
-            end
-
-            progressBar = uiprogressdlg(app.UIFigure, Message = message, Icon = "info", Indeterminate = "on");
-            closeProgressBar = [onCleanup(@() delete(progressBar)), onCleanup(@() beep())];
-        end
-    end
-
-    methods (Access = private)
-
         function processDataButtonPushed(app)
 
             % Show progress bar.
-            closeProgressBar = app.overlayProgressBar("Processing data..."); %#ok<NASGU>
+            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Processing data..."); %#ok<NASGU>
 
             % Disable warning back-traces.
             previousWarningState = warning("off", "backtrace");
@@ -140,13 +145,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             try
                 app.Model.analyze(app.AnalysisManager.getAnalysisOptions());
             catch exception
-                app.displayAlert(exception);
+                app.AppNotificationHandler.displayAlert(exception);
             end
         end
 
         function exportButtonPushed(app)
 
-            closeProgressBar = app.overlayProgressBar("Exporting..."); %#ok<NASGU>
+            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Exporting..."); %#ok<NASGU>
             format = app.ExportFormatDropDown.Value;
 
             switch format
@@ -169,112 +174,51 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     analysis = app.Model.Analysis;
                     save(fullfile(app.ResultsLocation, "Data.mat"), "analysis");
                     return;
-                otherwise
-                    app.displayAlert(compose("Unrecognized export format option ""%s"".", format));
-            end
+                case cellstr(app.ExportManager.SupportedFormats)
 
-            try
-                app.Model.export(app.ExportManager.getExportOptions(format, app.ResultsLocation));
-            catch exception
-                app.displayAlert(exception);
+                    try
+                        app.Model.export(app.ExportManager.getExportOptions(format, app.ResultsLocation));
+                    catch exception
+                        app.AppNotificationHandler.displayAlert(exception);
+                    end
+                otherwise
+                    app.AppNotificationHandler.displayAlert(compose("Unrecognized export format option ""%s"".", format));
             end
         end
 
-        function resetButtonPushed(app, event)
+        function resetButtonPushed(app)
 
-            app.closeFiguresButtonPushed(event);
+            app.closeFiguresButtonPushed();
 
             app.Model.reset();
             app.Figures = matlab.ui.Figure.empty();
-        end
 
-        function helpPushToolClicked(app)
-
-            % Show progress bar.
-            closeProgressBar = app.overlayProgressBar("Generating diagnostics..."); %#ok<NASGU>
-
-            % Initialize variables to save.
-            analysis = app.Model.Analysis;
-
-            exportStartDate = app.StartDateTimeDatePicker.Value;
-            exportStartTime = app.StartTimeEditField.Value;
-            exportEndDate = app.EndDateTimeDatePicker.Value;
-            exportEndTime = app.EndTimeEditField.Value;
-
-            selectedControl = app.SelectedControl;
-
-            % Create folder to zip.
-            statusFolder = tempname();
-            zipFolder = statusFolder + ".zip";
-
-            mkdir(statusFolder);
-            deleteFolder = onCleanup(@() rmdir(statusFolder, "s"));
-
-            % Create MAT file with variables.
-            save(fullfile(statusFolder, "data.mat"), "analysis", ...
-                "exportStartDate", "exportStartTime", "exportEndDate", "exportEndTime", ...
-                "selectedControl");
-            exportapp(app.UIFigure, fullfile(statusFolder, "app.png"));
-
-            zip(zipFolder, statusFolder);
-            clipboard("copy", zipFolder);
-
-            % Show dialog.
-            app.displayAlert(compose("Share ZIP file ""%s""" + newline() + "with the developer. Path copied to clipboard.", zipFolder), "Share Diagnostics", "info");
-        end
-
-        function debugToggleToolOn(app)
-
-            app.DebugStatus = dbstatus();
-
-            if ~isempty(app.PreviousError)
-
-                stack = app.PreviousError.stack;
-                dbstop("in", stack(1).file, "at", num2str(stack(1).line));
-            end
-        end
-
-        function debugToggleToolOff(app)
-
-            dbclear("all");
-            dbstop(app.DebugStatus);
-        end
-
-        function pushToolClicked(app)
-
-            [file, folder] = uigetfile("*.mat", "Import Analysis");
-
-            if ~isequal(file, 0) && ~isequal(folder, 0)
-
-                try
-                    app.Model.load(fullfile(folder, file));
-                catch exception
-                    app.displayAlert(exception);
-                end
-            end
+            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
+                manager.reset();
+            end            
         end
 
         function showFiguresButtonPushed(app)
 
             % Show progress bar.
-            closeProgressBar = app.overlayProgressBar("Plotting data..."); %#ok<NASGU>
+            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Plotting data..."); %#ok<NASGU>
 
             % Select plotting function based on plot types.
             try
                 app.Figures = app.VisualizationManager.visualize(app.Model.Analysis);
             catch exception
-                app.displayAlert(exception);
+                app.AppNotificationHandler.displayAlert(exception);
             end
         end
 
         function saveFiguresButtonPushed(app)
 
-            closeProgressBar = app.overlayProgressBar("Saving figures..."); %#ok<NASGU>
+            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Saving figures..."); %#ok<NASGU>
 
             try
                 mag.graphics.savePlots(app.Figures, app.ResultsLocation);
             catch exception
-                app.displayAlert(exception);
+                app.AppNotificationHandler.displayAlert(exception);
             end
         end
 
@@ -284,43 +228,14 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             if ~isempty(app.Figures) && any(isValidFigures)
 
-                closeProgressBar = app.overlayProgressBar("Closing figures..."); %#ok<NASGU>
+                closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Closing figures..."); %#ok<NASGU>
                 close(app.Figures(isValidFigures));
 
                 app.Figures = matlab.ui.Figure.empty();
             end
         end
-    end
-
-    methods (Access = private)
 
         function createComponents(app)
-
-            % Get the file path for locating images.
-            pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
-
-            % Create Toolbar.
-            app.Toolbar = uitoolbar(app.UIFigure);
-
-            % Create PushTool.
-            app.PushTool = uipushtool(app.Toolbar);
-            app.PushTool.Tooltip = "Import existing analysis";
-            app.PushTool.ClickedCallback = @(~, ~) app.pushToolClicked();
-            app.PushTool.Icon = fullfile(pathToAppIcons, "import.png");
-
-            % Create DebugToggleTool.
-            app.DebugToggleTool = uitoggletool(app.Toolbar);
-            app.DebugToggleTool.Tooltip = "Set break point at last error source";
-            app.DebugToggleTool.Icon = fullfile(pathToAppIcons, "debug.png");
-            app.DebugToggleTool.Separator = "on";
-            app.DebugToggleTool.OffCallback = @(~, ~) app.debugToggleToolOff();
-            app.DebugToggleTool.OnCallback = @(~, ~) app.debugToggleToolOn();
-
-            % Create HelpPushTool.
-            app.HelpPushTool = uipushtool(app.Toolbar);
-            app.HelpPushTool.Tooltip = "Share debugging information with development";
-            app.HelpPushTool.ClickedCallback = @(~, ~) app.helpPushToolClicked();
-            app.HelpPushTool.Icon = fullfile(pathToAppIcons, "help.png");
 
             % Create GridLayout.
             app.GridLayout = uigridlayout(app.UIFigure);
@@ -426,7 +341,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ExportSettingsPanel.Layout.Column = 1;
 
             % Populate "Export" tab based on mission.
-            app.ExportManager.instantiate(app.ExportTab);
+            app.ExportManager.instantiate(app.ExportSettingsPanel);
             app.ExportManager.reset();
 
             % Create VisualizeTab.
@@ -488,52 +403,20 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
             end
 
-            % Create figure and hide until all components are created.
+            % Create figure and other UI components.
             app.UIFigure = uifigure();
-            app.UIFigure.Position = [100 100 694 429];
+            app.UIFigure.Position = [100, 100, 694, 429];
             app.UIFigure.Name = "MAG Data Visulization App";
             app.UIFigure.Resize = "off";
 
-            % Ask which mission to load, if not provided.
-            if isempty(mission)
+            pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
+            app.ToolbarManager = mag.app.manage.ToolbarManager(app, pathToAppIcons);
+            app.ToolbarManager.instantiate(app.UIFigure);
 
-                mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
-                    Options = ["HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
-            end
+            app.AppNotificationHandler = mag.app.internal.AppNotificationHandler(app.UIFigure, app.ToolbarManager);
 
-            switch mission
-                case "Cancel"
-
-                    delete(app);
-                    clear("app");
-                    return;
-                case "HelioSwarm"
-                    error("HelioSwarm mission not yet supported.");
-                case "IMAP"
-                    app.Provider = mag.app.imap.Provider();
-                case "Solar Orbiter"
-                    error("Solar Orbiter mission not yet supported.");
-            end
-
-            % Show progress bar.
-            closeProgressBar = app.overlayProgressBar("Initializing app..."); %#ok<NASGU>
-
-            % Set managers.
-            app.Model = app.Provider.getModel();
-            app.AnalysisManager = app.Provider.getAnalysisManager();
-            app.ResultsManager = app.Provider.getResultsManager();
-            app.ExportManager = app.Provider.getExportManager();
-            app.VisualizationManager = app.Provider.getVisualizationManager();
-
-            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
-                manager.subscribe(app.Model);
-            end
-
-            % Initialize app.
-            app.createComponents();
-
-            app.addlistener("Figures", "PostSet", @app.figuresChanged);
-            app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
+            % Initialize app based on mission.
+            app.resetMission(mission);
 
             if nargout == 0
                 clear("app");

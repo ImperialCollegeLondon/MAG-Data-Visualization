@@ -25,7 +25,7 @@ classdef VisualizationManager < mag.app.manage.Manager
             this.VisualizationTypeListBox.Items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
             this.VisualizationTypeListBox.ItemsData = [mag.app.imap.control.AT(), mag.app.imap.control.CPT(), mag.app.imap.control.Field(), ...
                 mag.app.imap.control.Spectrogram(), mag.app.imap.control.PSD()];
-            this.VisualizationTypeListBox.Value = mag.app.imap.control.AT();
+            this.VisualizationTypeListBox.Value = this.VisualizationTypeListBox.ItemsData(1);
             this.VisualizationTypeListBox.ValueChangedFcn = @(~, ~) this.visualizationTypeListBoxValueChanged();
             this.VisualizationTypeListBox.Enable = "off";
             this.VisualizationTypeListBox.Layout.Row = 1;
@@ -41,7 +41,7 @@ classdef VisualizationManager < mag.app.manage.Manager
 
         function reset(this)
 
-            this.VisualizationTypeListBox.Value = mag.app.imap.control.AT();
+            this.VisualizationTypeListBox.Value = this.VisualizationTypeListBox.ItemsData(1);
             this.VisualizationTypeListBox.Enable = "off";
             this.VisualizationOptionsPanel.Enable = "off";
         end

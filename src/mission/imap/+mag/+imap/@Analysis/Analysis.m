@@ -185,6 +185,13 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
 
             function [periods, modeEvents] = findModePeriods(data)
 
+                if isempty(data)
+
+                    periods = {};
+                    modeEvents = [];
+                    return;
+                end
+
                 events = data.Events;
 
                 modeEvents = events(~ismissing(events.Duration), :);
@@ -278,6 +285,12 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
 
             arguments (Output)
                 rangeCycling mag.Instrument {mustBeScalarOrEmpty}
+            end
+
+            if ~this.Results.HasScience
+
+                rangeCycling = mag.Instrument.empty();
+                return;
             end
 
             function period = findRangeCyclingPeriod(events, pattern)

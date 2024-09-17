@@ -1,0 +1,139 @@
+classdef ToolbarManager < mag.app.manage.Manager
+% TOOLBARMANAGER Manager for toolbar components.
+
+    properties (SetAccess = private)
+        Toolbar matlab.ui.container.Toolbar
+        ImportPushTool matlab.ui.container.toolbar.PushTool
+        DebugToggleTool matlab.ui.container.toolbar.ToggleTool
+        HelpPushTool matlab.ui.container.toolbar.PushTool
+        MissionPushTool matlab.ui.container.toolbar.PushTool
+    end
+
+    properties (Access = private)
+        App DataVisualization {mustBeScalarOrEmpty}
+        IconsPath string {mustBeScalarOrEmpty, mustBeFolder}
+        DebugStatus struct = dbstatus()
+        PreviousError MException {mustBeScalarOrEmpty}
+    end
+
+    methods
+
+        function this = ToolbarManager(app, pathToAppIcons)
+
+            this.App = app;
+            this.IconsPath = pathToAppIcons;
+        end
+
+        function instantiate(this, parent)
+
+            % Create Toolbar.
+            this.Toolbar = uitoolbar(parent);
+
+            % Create MissionPushTool.
+            this.MissionPushTool = uipushtool(this.Toolbar);
+            this.MissionPushTool.Tooltip = "Change mission";
+            this.MissionPushTool.ClickedCallback = @(~, ~) this.missionPushToolClicked();
+            this.MissionPushTool.Icon = fullfile(this.IconsPath, "mission.png");
+
+            % Create ImportPushTool.
+            this.ImportPushTool = uipushtool(this.Toolbar);
+            this.ImportPushTool.Tooltip = "Import existing analysis";
+            this.ImportPushTool.ClickedCallback = @(~, ~) this.importPushToolClicked();
+            this.ImportPushTool.Icon = fullfile(this.IconsPath, "import.png");
+            this.ImportPushTool.Separator = "on";
+
+            % Create DebugToggleTool.
+            this.DebugToggleTool = uitoggletool(this.Toolbar);
+            this.DebugToggleTool.Tooltip = "Set break point at last error source";
+            this.DebugToggleTool.Icon = fullfile(this.IconsPath, "debug.png");
+            this.DebugToggleTool.Separator = "on";
+            this.DebugToggleTool.OffCallback = @(~, ~) this.debugToggleToolOff();
+            this.DebugToggleTool.OnCallback = @(~, ~) this.debugToggleToolOn();
+
+            % Create HelpPushTool.
+            this.HelpPushTool = uipushtool(this.Toolbar);
+            this.HelpPushTool.Tooltip = "Share debugging information with development";
+            this.HelpPushTool.ClickedCallback = @(~, ~) this.helpPushToolClicked();
+            this.HelpPushTool.Icon = fullfile(this.IconsPath, "help.png");
+        end
+
+        function reset(~)
+            error("Reset method not supported.");
+        end
+
+        function setLatestErrorMessage(this, exception)
+            this.PreviousError = exception;
+        end
+    end
+
+    methods (Access = protected)
+
+        function modelChangedCallback(~, ~, ~)
+            % do nothing
+        end
+    end
+
+    methods (Access = private)
+
+        function missionPushToolClicked(this)
+            this.App.resetMission();
+        end
+
+        function importPushToolClicked(this)
+
+            [file, folder] = uigetfile("*.mat", "Import Analysis");
+
+            if ~isequal(file, 0) && ~isequal(folder, 0)
+
+                try
+                    this.App.Model.load(fullfile(folder, file));
+                catch exception
+                    this.App.AppNotificationHandler.displayAlert(exception);
+                end
+            end
+        end
+
+        function debugToggleToolOn(this)
+
+            this.DebugStatus = dbstatus();
+
+            if ~isempty(this.PreviousError)
+
+                stack = this.PreviousError.stack;
+                dbstop("in", stack(1).file, "at", num2str(stack(1).line));
+            end
+        end
+
+        function debugToggleToolOff(this)
+
+            dbclear("all");
+            dbstop(this.DebugStatus);
+        end
+
+        function helpPushToolClicked(this)
+
+            % Show progress bar.
+            closeProgressBar = this.App.AppNotificationHandler.overlayProgressBar("Generating diagnostics..."); %#ok<NASGU>
+
+            % Instantiate variables to save.
+            model = this.App.Model;
+
+            % Create folder to zip.
+            statusFolder = tempname();
+            zipFolder = statusFolder + ".zip";
+
+            mkdir(statusFolder);
+            deleteFolder = onCleanup(@() rmdir(statusFolder, "s"));
+
+            % Create MAT file with variables.
+            save(fullfile(statusFolder, "data.mat"), "model");
+            exportapp(this.App.UIFigure, fullfile(statusFolder, "app.png"));
+
+            zip(zipFolder, statusFolder);
+            clipboard("copy", zipFolder);
+
+            % Show dialog.
+            this.App.AppNotificationHandler.displayAlert(compose("Share ZIP file ""%s""" + newline() + "with the developer. Path copied to clipboard.", zipFolder), "Share Diagnostics", "info");
+        end
+    end
+end
