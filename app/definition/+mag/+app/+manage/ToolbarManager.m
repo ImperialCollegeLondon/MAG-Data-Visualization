@@ -76,7 +76,7 @@ classdef ToolbarManager < mag.app.manage.Manager
     methods (Access = private)
 
         function missionPushToolClicked(this)
-            this.App.resetMission();
+            this.App.selectMission();
         end
 
         function importPushToolClicked(this)

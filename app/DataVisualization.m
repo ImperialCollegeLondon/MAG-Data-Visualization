@@ -22,7 +22,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         FormatDropDownLabel matlab.ui.control.Label
         VisualizeTab matlab.ui.container.Tab
         VisualizeLayout matlab.ui.container.GridLayout
-        VisualizePanel matlab.ui.container.Panel
+        VisualizeSettingsPanel matlab.ui.container.Panel
         VisualizeButtonsLayout matlab.ui.container.GridLayout
         CloseFiguresButton matlab.ui.control.Button
         SaveFiguresButton matlab.ui.control.Button
@@ -65,7 +65,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
         end
 
-        function resetMission(app, mission)
+        function selectMission(app, mission)
+        % SELECTMISSION Select mission to analyze.
 
             arguments (Input)
                 app
@@ -353,13 +354,14 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.VisualizeLayout.ColumnWidth = "1x";
             app.VisualizeLayout.RowHeight = ["4x", "1x"];
 
-            % Create VisualizePanel.
-            app.VisualizePanel = uipanel(app.VisualizeLayout);
-            app.VisualizePanel.Layout.Row = 1;
-            app.VisualizePanel.Layout.Column = 1;
+            % Create VisualizeSettingsPanel.
+            app.VisualizeSettingsPanel = uipanel(app.VisualizeLayout);
+            app.VisualizeSettingsPanel.Title = "Settings";
+            app.VisualizeSettingsPanel.Layout.Row = 1;
+            app.VisualizeSettingsPanel.Layout.Column = 1;
 
             % Populate "Visualize" tab based on mission.
-            app.VisualizationManager.instantiate(app.VisualizePanel);
+            app.VisualizationManager.instantiate(app.VisualizeSettingsPanel);
             app.VisualizationManager.reset();
 
             % Create VisualizeButtonsLayout.
@@ -416,7 +418,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.AppNotificationHandler = mag.app.internal.AppNotificationHandler(app.UIFigure, app.ToolbarManager);
 
             % Initialize app based on mission.
-            app.resetMission(mission);
+            try
+                app.selectMission(mission);
+            catch exception
+
+                delete(app);
+                rethrow(exception);
+            end
 
             if nargout == 0
                 clear("app");
