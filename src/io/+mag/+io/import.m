@@ -93,6 +93,12 @@ function combinedData = combineHK(data)
     metaData = [data.MetaData];
     types = unique([metaData.Type]);
 
+    if isempty(types)
+
+        combinedData = data;
+        return;
+    end
+
     for t = types
 
         locSelection = [metaData.Type] == t;

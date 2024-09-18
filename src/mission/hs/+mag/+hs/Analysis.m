@@ -12,7 +12,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         HKPattern (1, 1) string = fullfile("hk*.csv")
         % PERFILEPROCESSING Steps needed to process single files of data.
         PerFileProcessing (1, :) mag.process.Step = [ ...
-            mag.process.AllZero(Variables = ["time", "x", "y", "z"])]
+            mag.process.AllZero(Variables = ["x", "y", "z"])]
         % WHOLEDATAPROCESSING Steps needed to process all of imported data.
         WholeDataProcessing (1, :) mag.process.Step = [ ...
             mag.process.Sort(), ...
@@ -84,17 +84,11 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         end
 
         function value = get.HKFileNames(this)
-
-            for hkp = 1:numel(this.HKPattern)
-                value{hkp} = string(fullfile({this.HKFiles{hkp}.folder}, {this.HKFiles{hkp}.name})); %#ok<AGROW>
-            end
+            value = string(fullfile({this.HKFiles.folder}, {this.HKFiles.name}));
         end
 
         function detect(this)
         % DETECT Detect files based on patterns.
-
-            % metaDataDir = arrayfun(@dir, fullfile(this.Location, this.MetaDataPattern), UniformOutput = false);
-            % this.MetaDataFiles = vertcat(metaDataDir{:});
 
             this.ScienceFiles = dir(fullfile(this.Location, this.SciencePattern));
             this.HKFiles = dir(fullfile(this.Location, this.HKPattern));
@@ -119,14 +113,26 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
 
         function loadScienceData(this)
 
+            if isempty(this.ScienceFileNames)
+                return;
+            end
+
             this.Results.Science = mag.io.import( ...
                 FileNames = this.ScienceFileNames, ...
                 Format = mag.hs.in.ScienceCSV(), ...
                 ProcessingSteps = this.PerFileProcessing);
         end
 
-        function loadHKData(~)
-            % nothing to do
+        function loadHKData(this)
+
+            if isempty(this.HKFileNames)
+                return;
+            end
+
+            this.Results.HK = mag.io.import( ...
+                FileNames = this.HKFileNames, ...
+                Format = mag.hs.in.HKCSV(), ...
+                ProcessingSteps = this.HKProcessing);
         end
     end
 end
