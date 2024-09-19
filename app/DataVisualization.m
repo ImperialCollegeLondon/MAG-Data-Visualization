@@ -1,6 +1,10 @@
 classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
+    properties (Constant, Access = private)
+        FigureName string = "MAG Data Visualization App"
+    end
+
     properties (SetAccess = private)
         UIFigure matlab.ui.Figure
         GridLayout matlab.ui.container.GridLayout
@@ -90,7 +94,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     clear("app");
                     return;
                 case "HelioSwarm"
-                    error("HelioSwarm mission not yet supported.");
+                    app.Provider = mag.app.hs.Provider();
                 case "IMAP"
                     app.Provider = mag.app.imap.Provider();
                 case "Solar Orbiter"
@@ -114,10 +118,26 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
             app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
+
+            app.UIFigure.Name = app.getFigureName(mission);
         end
     end
 
     methods (Access = private)
+
+        function name = getFigureName(app, mission)
+
+            arguments
+                app
+                mission string {mustBeScalarOrEmpty} = string.empty()
+            end
+
+            if isempty(mission)
+                name = app.FigureName;
+            else
+                name = compose("%s (%s)", app.FigureName, mission);
+            end
+        end
 
         function modelChangedCallback(app, model, ~)
 
@@ -404,7 +424,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             % Create figure and other UI components.
             app.UIFigure = uifigure();
             app.UIFigure.Position = [100, 100, 694, 429];
-            app.UIFigure.Name = "MAG Data Visulization App";
+            app.UIFigure.Name = app.getFigureName();
             app.UIFigure.Resize = "off";
 
             pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
