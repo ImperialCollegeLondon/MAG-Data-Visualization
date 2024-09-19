@@ -188,7 +188,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                         end
                     end
 
-                    assignin("base", "analysis", app.Model.Analysis);
+                    analysis = app.Model.Analysis.copy();
+                    assignin("base", "analysis", analysis);
                     return;
                 case "MAT (Full Analysis)"
 

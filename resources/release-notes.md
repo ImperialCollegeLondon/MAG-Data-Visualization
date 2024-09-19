@@ -4,7 +4,9 @@
 
 # App
 
+- Add support for HelioSwarm analysis
 - Refactor `mag.app.Control` to not accept parent as constructor input, but rather as `instantiate` argument
+- Exporting analysis to "Workspace" now creates a copy, to prevent unwanted modifications of original
 
 # Software
 
