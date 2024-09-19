@@ -89,10 +89,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             switch mission
                 case "Cancel"
-
-                    delete(app);
-                    clear("app");
-                    return;
+                    error("User aborted.");
                 case "HelioSwarm"
                     app.Provider = mag.app.hs.Provider();
                 case "IMAP"
@@ -443,7 +440,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 rethrow(exception);
             end
 
-            if nargout == 0
+            if nargout() == 0
                 clear("app");
             end
         end
