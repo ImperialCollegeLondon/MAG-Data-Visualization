@@ -2,7 +2,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
     properties (Constant, Access = private)
-        FigureName string = "MAG Data Visualization App"
+        AppName string = "MAG Data Visualization App"
     end
 
     properties (SetAccess = private)
@@ -119,13 +119,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
             app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
 
-            app.UIFigure.Name = app.getFigureName(mission);
+            app.UIFigure.Name = app.getAppName(mission);
         end
     end
 
     methods (Access = private)
 
-        function name = getFigureName(app, mission)
+        function name = getAppName(app, mission)
 
             arguments
                 app
@@ -133,9 +133,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
 
             if isempty(mission)
-                name = app.FigureName;
+                name = app.AppName;
             else
-                name = compose("%s (%s)", app.FigureName, mission);
+                name = compose("%s (%s)", app.AppName, mission);
             end
         end
 
@@ -424,7 +424,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             % Create figure and other UI components.
             app.UIFigure = uifigure();
             app.UIFigure.Position = [100, 100, 694, 429];
-            app.UIFigure.Name = app.getFigureName();
+            app.UIFigure.Name = app.getAppName();
             app.UIFigure.Resize = "off";
 
             pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
