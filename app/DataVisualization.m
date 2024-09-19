@@ -264,7 +264,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Populate "Analyze" tab based on mission.
             app.AnalysisManager.instantiate(app.AnalyzeSettingsPanel);
-            app.AnalysisManager.reset();
 
             % Create ProcessDataButton.
             app.ProcessDataButton = uibutton(app.AnalyzeLayout, "push");
@@ -293,7 +292,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Populate "Results" tab based on mission.
             app.ResultsManager.instantiate(app.ResultsTab);
-            app.ResultsManager.reset();
 
             % Create ExportTab.
             app.ExportTab = uitab(app.TabGroup);
@@ -343,7 +341,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Populate "Export" tab based on mission.
             app.ExportManager.instantiate(app.ExportSettingsPanel);
-            app.ExportManager.reset();
 
             % Create VisualizeTab.
             app.VisualizeTab = uitab(app.TabGroup);
@@ -362,7 +359,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Populate "Visualize" tab based on mission.
             app.VisualizationManager.instantiate(app.VisualizeSettingsPanel);
-            app.VisualizationManager.reset();
 
             % Create VisualizeButtonsLayout.
             app.VisualizeButtonsLayout = uigridlayout(app.VisualizeLayout);

@@ -20,6 +20,9 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
 
             % Start and end dates.
             this.addStartEndDateButtons(this.ExportSettingsLayout, StartDateRow = 1, EndDateRow = 2);
+
+            % Reset.
+            this.reset();
         end
 
         function reset(this)

@@ -105,6 +105,9 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.HKPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
             this.HKPatternEditField.Layout.Row = 6;
             this.HKPatternEditField.Layout.Column = [2, 3];
+
+            % Reset.
+            this.reset();
         end
 
         function reset(this)

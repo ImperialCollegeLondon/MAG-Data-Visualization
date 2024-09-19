@@ -54,6 +54,9 @@ classdef ResultsManager < mag.app.manage.Manager
             this.SecondaryTextArea.Placeholder = "Secondary Sensor...";
             this.SecondaryTextArea.Layout.Row = 1;
             this.SecondaryTextArea.Layout.Column = 3;
+
+            % Reset.
+            this.reset();
         end
 
         function reset(this)

@@ -37,6 +37,9 @@ classdef VisualizationManager < mag.app.manage.Manager
             this.VisualizationOptionsPanel.BorderType = "none";
             this.VisualizationOptionsPanel.Layout.Row = 1;
             this.VisualizationOptionsPanel.Layout.Column = 2;
+
+            % Reset.
+            this.reset();
         end
 
         function reset(this)
