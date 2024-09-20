@@ -5,7 +5,7 @@ function varargout = splitFilters(filters, expectedNumber)
 
     arguments
         filters (1, :) cell
-        expectedNumber double {mustBeScalarOrEmpty}
+        expectedNumber (1, 1) double
     end
 
     actualNumber = numel(filters);
