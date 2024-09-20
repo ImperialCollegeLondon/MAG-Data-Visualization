@@ -95,7 +95,7 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
             end
 
             nScience = numel(this.Science);
-            [scienceFilters{1:nScience}] = mag.internal.splitFilters(filters, nScience);
+            [scienceFilters{1:nScience}] = this.splitFilters(filters, nScience);
 
             for s = 1:numel(this.Science)
                 this.Science(s).crop(scienceFilters{s});

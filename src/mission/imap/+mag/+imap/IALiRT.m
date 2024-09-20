@@ -54,7 +54,7 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
                 filters
             end
 
-            [primaryFilter, secondaryFilter] = mag.internal.splitFilters(filters, 2);
+            [primaryFilter, secondaryFilter] = this.splitFilters(filters, 2);
 
             this.Primary.crop(primaryFilter);
             this.Secondary.crop(secondaryFilter);

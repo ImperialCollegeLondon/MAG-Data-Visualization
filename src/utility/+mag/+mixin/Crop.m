@@ -128,5 +128,32 @@ classdef (Abstract, HandleCompatible) Crop
                 endTime = structWithTol.subscriptTimes + structWithTol.tol;
             end
         end
+
+        function varargout = splitFilters(filters, expectedNumber)
+        % SPLITFILTERS Split filters by expected numbers.
+
+            arguments
+                filters (1, :) cell
+                expectedNumber (1, 1) double
+            end
+
+            actualNumber = numel(filters);
+
+            if ~isequal(actualNumber, 1) && ~isequal(actualNumber, expectedNumber)
+                throwAsCaller(MException("", "Number of time filters (%d) does not match expected number (%d).", actualNumber, expectedNumber));
+            end
+
+            if isscalar(filters)
+
+                for i = 1:expectedNumber
+                    varargout{i} = filters{1}; %#ok<AGROW>
+                end
+            else
+
+                for i = 1:expectedNumber
+                    varargout{i} = filters{i}; %#ok<AGROW>
+                end
+            end
+        end
     end
 end
