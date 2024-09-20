@@ -4,7 +4,7 @@ function varargout = splitFilters(filters, expectedNumber)
 %#ok<*AGROW>
 
     arguments
-        filters cell {mustBeVector}
+        filters (1, :) cell
         expectedNumber double {mustBeScalarOrEmpty}
     end
 
