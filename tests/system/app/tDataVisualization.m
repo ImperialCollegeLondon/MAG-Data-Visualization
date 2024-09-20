@@ -8,6 +8,11 @@ classdef tDataVisualization < matlab.uitest.TestCase
 
     methods (TestClassSetup)
 
+        % Skip tests on GitHub CI runner.
+        function skipOnGitHub(testCase)
+            testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
+        end
+
         % Close all figures opened by test.
         function closeTestFigures(testCase)
             testCase.applyFixture(mag.test.fixture.CleanupFigures());
