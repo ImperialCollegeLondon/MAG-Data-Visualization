@@ -40,7 +40,7 @@ classdef tPSD < MAGControllerTestCase
             psd = mag.app.imap.control.PSD();
             psd.instantiate(panel);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);
@@ -73,7 +73,7 @@ classdef tPSD < MAGControllerTestCase
             expectedStartDate.Format = mag.time.Constant.Format;
             expectedStartDate.TimeZone = mag.time.Constant.TimeZone;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);
@@ -101,7 +101,7 @@ classdef tPSD < MAGControllerTestCase
 
             psd.DurationSpinner.Value = 2.15;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);

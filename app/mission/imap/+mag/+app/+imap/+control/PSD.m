@@ -42,7 +42,7 @@ classdef PSD < mag.app.Control
 
             arguments (Input)
                 this
-                results (1, 1) mag.Instrument
+                results (1, 1) mag.imap.Instrument
             end
 
             arguments (Output)

@@ -22,7 +22,7 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
         function this = IALiRT(options)
 
             arguments
-                options.?mag.IALiRT
+                options.?mag.imap.IALiRT
             end
 
             this.assignProperties(options);
@@ -44,13 +44,17 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
             secondary = this.Science.select("Secondary");
         end
 
-        function crop(this, primaryFilter, secondaryFilter)
+        function crop(this, filters)
 
             arguments
-                this (1, 1) mag.IALiRT
-                primaryFilter
-                secondaryFilter = primaryFilter
+                this (1, 1) mag.imap.IALiRT
             end
+
+            arguments (Repeating)
+                filters
+            end
+
+            [primaryFilter, secondaryFilter] = mag.internal.splitFilters(filters, 2);
 
             this.Primary.crop(primaryFilter);
             this.Secondary.crop(secondaryFilter);
@@ -59,7 +63,7 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
         function resample(this, targetFrequency)
 
             arguments
-                this (1, 1) mag.IALiRT
+                this (1, 1) mag.imap.IALiRT
                 targetFrequency (1, 1) double
             end
 
@@ -71,7 +75,7 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
         function downsample(this, targetFrequency)
 
             arguments
-                this (1, 1) mag.IALiRT
+                this (1, 1) mag.imap.IALiRT
                 targetFrequency (1, 1) double
             end
 

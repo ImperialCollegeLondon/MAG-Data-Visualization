@@ -1,5 +1,5 @@
 classdef tIALiRT < matlab.mock.TestCase
-% TIALIRT Unit tests for "mag.IALiRT" class.
+% TIALIRT Unit tests for "mag.imap.IALiRT" class.
 
     properties (TestParameter)
         SignalMethod = {"resample", "downsample"}
@@ -14,7 +14,7 @@ classdef tIALiRT < matlab.mock.TestCase
             primary = mag.Science(timetable(datetime("now", TimeZone = "UTC"), 1), mag.meta.Science());
             secondary = mag.Science(timetable(datetime("now", TimeZone = "UTC"), 1), mag.meta.Science());
 
-            iALiRT = mag.IALiRT(Science = [primary, secondary]);
+            iALiRT = mag.imap.IALiRT(Science = [primary, secondary]);
 
             % Exercise and verify.
             testCase.verifyTrue(iALiRT.HasData, """HasData"" property should be ""true"".");
@@ -28,7 +28,7 @@ classdef tIALiRT < matlab.mock.TestCase
             primary = mag.Science(timetable.empty(), mag.meta.Science());
             secondary = mag.Science(timetable(datetime("now", TimeZone = "UTC"), 1), mag.meta.Science());
 
-            iALiRT = mag.IALiRT(Science = [primary, secondary]);
+            iALiRT = mag.imap.IALiRT(Science = [primary, secondary]);
 
             % Exercise and verify.
             testCase.verifyFalse(iALiRT.HasData, """HasData"" property should be ""false"".");
@@ -42,7 +42,7 @@ classdef tIALiRT < matlab.mock.TestCase
             primary = mag.Science(timetable(datetime("now", TimeZone = "UTC"), 1), mag.meta.Science());
             secondary = mag.Science(timetable.empty(), mag.meta.Science());
 
-            iALiRT = mag.IALiRT(Science = [primary, secondary]);
+            iALiRT = mag.imap.IALiRT(Science = [primary, secondary]);
 
             % Exercise and verify.
             testCase.verifyFalse(iALiRT.HasData, """HasData"" property should be ""false"".");
@@ -107,7 +107,7 @@ classdef tIALiRT < matlab.mock.TestCase
             [primary, primaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Primary = true, Sensor = "FOB")}, Strict = true);
             [secondary, secondaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Sensor = "FIB")}, Strict = true);
 
-            iALiRT = mag.IALiRT(Science = [primary, secondary]);
+            iALiRT = mag.imap.IALiRT(Science = [primary, secondary]);
         end
     end
 end

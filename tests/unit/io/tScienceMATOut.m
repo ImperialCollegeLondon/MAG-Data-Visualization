@@ -16,7 +16,7 @@ classdef tScienceMATOut < MAGIOTestCase & matlab.mock.TestCase
                 DataFrequency = 64, ...
                 Timestamp = datetime("now"));
 
-            data = mag.Instrument(Science = [mag.Science(timetable.empty(), primaryMetaData), ...
+            data = mag.imap.Instrument(Science = [mag.Science(timetable.empty(), primaryMetaData), ...
                 mag.Science(timetable.empty(), secondaryMetaData)]);
 
             expectedFileName = compose("%s Burst (128, 64).mat", datetime("now", Format = "ddMMyy-HHmm"));
@@ -42,7 +42,7 @@ classdef tScienceMATOut < MAGIOTestCase & matlab.mock.TestCase
                 DataFrequency = 0.25, ...
                 Timestamp = datetime("now"));
 
-            data = mag.Instrument(Science = [mag.Science(timetable.empty(), primaryMetaData), ...
+            data = mag.imap.Instrument(Science = [mag.Science(timetable.empty(), primaryMetaData), ...
                 mag.Science(timetable.empty(), secondaryMetaData)]);
 
             expectedFileName = compose("%s IALiRT (0.25, 0.25).mat", datetime("now", Format = "ddMMyy-HHmm"));
@@ -196,7 +196,7 @@ classdef tScienceMATOut < MAGIOTestCase & matlab.mock.TestCase
                 Timestamp = datetime("now"));
 
             % Create instrument data.
-            data = mag.Instrument(Science = [mag.Science(primaryData, primaryMetaData), ...
+            data = mag.imap.Instrument(Science = [mag.Science(primaryData, primaryMetaData), ...
                 mag.Science(secondaryData, secondaryMetaData)]);
         end
     end

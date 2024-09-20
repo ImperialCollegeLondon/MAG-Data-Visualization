@@ -55,7 +55,7 @@ classdef tSpectrogram < MAGControllerTestCase
             spectrogram = mag.app.imap.control.Spectrogram();
             spectrogram.instantiate(panel);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);
@@ -84,7 +84,7 @@ classdef tSpectrogram < MAGControllerTestCase
 
             spectrogram.OverlapSpinner.Value = 0.5;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);
@@ -113,7 +113,7 @@ classdef tSpectrogram < MAGControllerTestCase
 
             spectrogram.WindowSpinner.Value = 25;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);

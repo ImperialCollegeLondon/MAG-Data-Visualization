@@ -53,7 +53,7 @@ function figures = sftPlots(analysis, options)
     % Show I-ALiRT.
     if ~isempty(croppedAnalysis.Results.IALiRT) && croppedAnalysis.Results.IALiRT.HasData
 
-        tempInstrument = mag.Instrument(Science = croppedAnalysis.Results.IALiRT.Science);
+        tempInstrument = mag.imap.Instrument(Science = croppedAnalysis.Results.IALiRT.Science);
         views(end + 1) = mag.imap.view.Field(tempInstrument);
     end
 

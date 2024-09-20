@@ -8,7 +8,7 @@ classdef tExport < MAGIOTestCase & matlab.mock.TestCase
         function export_defaultFileName(testCase)
 
             % Set up.
-            data = mag.Instrument();
+            data = mag.imap.Instrument();
             location = testCase.WorkingDirectory.Folder;
 
             fileName = "myExportFileName";
@@ -31,7 +31,7 @@ classdef tExport < MAGIOTestCase & matlab.mock.TestCase
         function export_specifiedFileName(testCase)
 
             % Set up.
-            data = mag.Instrument();
+            data = mag.imap.Instrument();
             location = testCase.WorkingDirectory.Folder;
 
             fileName = "myExportFileName";

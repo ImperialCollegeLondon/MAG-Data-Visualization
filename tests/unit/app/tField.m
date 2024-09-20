@@ -36,7 +36,7 @@ classdef tField < MAGControllerTestCase
             field = mag.app.imap.control.Field();
             field.instantiate(panel);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = field.getVisualizeCommand(results);
@@ -60,7 +60,7 @@ classdef tField < MAGControllerTestCase
 
             field.EventsTree.CheckedNodes = field.EventsTree.Children(2);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = field.getVisualizeCommand(results);

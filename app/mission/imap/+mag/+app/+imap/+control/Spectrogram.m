@@ -59,7 +59,7 @@ classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
 
             arguments (Input)
                 this
-                results (1, 1) mag.Instrument
+                results (1, 1) mag.imap.Instrument
             end
 
             arguments (Output)

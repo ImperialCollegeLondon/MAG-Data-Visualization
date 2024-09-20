@@ -10,6 +10,11 @@
             "WarnOnOldName": true
         },
         {
+            "NewName": "mag.imap.IALiRT",
+            "OldNames": "mag.IALiRT",
+            "WarnOnOldName": true
+        },
+        {
             "NewName": "mag.imap.hk.Power",
             "OldNames": "mag.hk.Power",
             "WarnOnOldName": true

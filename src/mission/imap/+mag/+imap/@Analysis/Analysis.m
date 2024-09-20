@@ -65,7 +65,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
 
     properties (SetAccess = private)
         % RESULTS Results collected during analysis.
-        Results mag.Instrument {mustBeScalarOrEmpty}
+        Results mag.imap.Instrument {mustBeScalarOrEmpty}
     end
 
     properties (Access = private)
@@ -159,7 +159,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         function load(this)
         % LOAD Load all data stored in selected location.
 
-            this.Results = mag.Instrument();
+            this.Results = mag.imap.Instrument();
 
             this.loadEventsData();
 
@@ -180,7 +180,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             end
 
             arguments (Output)
-                modes (1, :) mag.Instrument
+                modes (1, :) mag.imap.Instrument
             end
 
             function [periods, modeEvents] = findModePeriods(data)
@@ -216,7 +216,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
                 end
             end
 
-            modes = mag.Instrument.empty();
+            modes = mag.imap.Instrument.empty();
 
             % Find duration for each mode.
             [primaryPeriods, primaryEvents] = findModePeriods(this.Results.Primary);
@@ -256,7 +256,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             end
 
             arguments (Output)
-                modeCycling mag.Instrument {mustBeScalarOrEmpty}
+                modeCycling mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
             function period = findModeCyclingPeriod(events, pattern)
@@ -284,12 +284,12 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             end
 
             arguments (Output)
-                rangeCycling mag.Instrument {mustBeScalarOrEmpty}
+                rangeCycling mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
             if ~this.Results.HasScience
 
-                rangeCycling = mag.Instrument.empty();
+                rangeCycling = mag.imap.Instrument.empty();
                 return;
             end
 
@@ -318,7 +318,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             end
 
             arguments (Output)
-                rampMode mag.Instrument {mustBeScalarOrEmpty}
+                rampMode mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
             rampMode = this.Results.copy();
@@ -327,7 +327,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             if rampMode.HasScience
                 rampMode.cropToMatch();
             else
-                rampMode = mag.Instrument.empty();
+                rampMode = mag.imap.Instrument.empty();
             end
         end
 
@@ -339,7 +339,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             end
 
             arguments (Output)
-                finalNormal mag.Instrument {mustBeScalarOrEmpty}
+                finalNormal mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
             function period = findFinalNormalMode(events, endTime)
@@ -368,7 +368,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             end
 
             arguments (Output)
-                periods (1, :) mag.Instrument
+                periods (1, :) mag.imap.Instrument
             end
 
             tPrimary = this.Results.Primary.Time;
@@ -436,7 +436,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             end
 
             arguments (Output)
-                result mag.Instrument {mustBeScalarOrEmpty}
+                result mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
             result = this.Results.copy();
@@ -448,7 +448,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
             result.crop(primaryPeriod, secondaryPeriod);
 
             if ~result.Primary.HasData || ~result.Secondary.HasData
-                result = mag.Instrument.empty();
+                result = mag.imap.Instrument.empty();
             elseif options.EnforceSizeMatch
 
                 if numel(result.Primary.Time) > numel(result.Secondary.Time)

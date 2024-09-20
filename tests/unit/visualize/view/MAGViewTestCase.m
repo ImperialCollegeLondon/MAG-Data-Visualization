@@ -63,7 +63,7 @@ classdef MAGViewTestCase < mag.test.GraphicsTestCase & matlab.mock.TestCase
             science2 = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), metaScience2);
 
             % Assemble instrument data.
-            instrument = mag.Instrument(Science = [science1, science2], MetaData = metaInstrument);
+            instrument = mag.imap.Instrument(Science = [science1, science2], MetaData = metaInstrument);
 
             % Create HK.
             if options.AddHK

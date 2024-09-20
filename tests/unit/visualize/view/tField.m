@@ -129,7 +129,7 @@ classdef tField < MAGViewTestCase
         function expectedInputs = generateExpectedInputs(instrument, options)
 
             arguments
-                instrument (1, 1) mag.Instrument
+                instrument (1, 1) mag.imap.Instrument
                 options.PrimaryTitle (1, 1) string = "FIB (FEE4 - LM2 - Some)"
                 options.SecondaryTitle (1, 1) string = "FOB (FEE2 - EM4 - None)"
                 options.Title (1, 1) string = "Burst (64, 8)"

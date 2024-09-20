@@ -7,7 +7,7 @@ classdef ScienceMAT < mag.io.out.MAT
 
             arguments
                 this (1, 1) mag.imap.out.ScienceMAT
-                data (1, 1) {mustBeA(data, ["mag.Instrument", "mag.IALiRT"])}
+                data (1, 1) {mustBeA(data, ["mag.imap.Instrument", "mag.imap.IALiRT"])}
             end
 
             if data.Primary.MetaData.Mode == mag.meta.Mode.IALiRT
@@ -24,7 +24,7 @@ classdef ScienceMAT < mag.io.out.MAT
 
             arguments
                 this (1, 1) mag.imap.out.ScienceMAT
-                data (1, 1) {mustBeA(data, ["mag.Instrument", "mag.IALiRT"])}
+                data (1, 1) {mustBeA(data, ["mag.imap.Instrument", "mag.imap.IALiRT"])}
             end
 
             exportData.B.P.Time = data.Primary.Time;

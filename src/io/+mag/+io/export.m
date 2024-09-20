@@ -2,7 +2,7 @@ function export(data, options)
 % EXPORT Export data to specified files with specified format.
 
     arguments
-        data (1, :) {mustBeA(data, ["mag.Instrument", "mag.IALiRT", "mag.HK"])}
+        data (1, :)
         options.Location (1, 1) string {mustBeFolder}
         options.FileName string {mustBeScalarOrEmpty} = string.empty()
         options.Format (1, 1) mag.io.out.Format

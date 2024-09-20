@@ -5,7 +5,7 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
         return;
     end
 
-    this.Results.IALiRT = mag.IALiRT();
+    this.Results.IALiRT = mag.imap.IALiRT();
 
     %% Import Data
 

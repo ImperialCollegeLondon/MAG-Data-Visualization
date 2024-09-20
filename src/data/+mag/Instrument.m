@@ -1,4 +1,4 @@
-classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDisplay & ...
+classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDisplay & ...
         mag.mixin.SetGet & mag.mixin.Crop & mag.mixin.Signal
 % INSTRUMENT Class containing MAG instrument data.
 
@@ -9,8 +9,6 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
         MetaData mag.meta.Instrument {mustBeScalarOrEmpty}
         % SCIENCE Science data.
         Science (1, :) mag.Science
-        % IALIRT I-ALiRT data.
-        IALiRT mag.IALiRT {mustBeScalarOrEmpty}
         % HK Housekeeping data.
         HK (1, :) mag.HK
     end
@@ -22,20 +20,10 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
         HasMetaData (1, 1) logical
         % HASSCIENCE Logical denoting whether instrument has science data.
         HasScience (1, 1) logical
-        % HASIALIRT Logical denoting whether instrument has I-ALiRT data.
-        HasIALiRT (1, 1) logical
         % HASHK Logical denoting whether instrument has HK data.
         HasHK (1, 1) logical
         % TIMERANGE Time range covered by science data.
         TimeRange (1, 2) datetime
-        % OUTBOARD Outboard science data (FOB, OBS, MAGo).
-        Outboard mag.Science {mustBeScalarOrEmpty}
-        % INBOARD Inboard science data (FIB, IBS, MAGi).
-        Inboard mag.Science {mustBeScalarOrEmpty}
-        % PRIMARY Primary science data.
-        Primary mag.Science {mustBeScalarOrEmpty}
-        % SECONDARY Secondary science data.
-        Secondary mag.Science {mustBeScalarOrEmpty}
     end
 
     methods
@@ -50,7 +38,7 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
         end
 
         function hasData = get.HasData(this)
-            hasData = this.HasMetaData || this.HasScience || this.HasIALiRT || this.HasHK;
+            hasData = this.HasMetaData || this.HasScience || this.HasHK;
         end
 
         function hasMetaData = get.HasMetaData(this)
@@ -59,10 +47,6 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
 
         function hasScience = get.HasScience(this)
             hasScience = ~isempty(this.Science) && all([this.Science.HasData]);
-        end
-
-        function hasIALiRT = get.HasIALiRT(this)
-            hasIALiRT = ~isempty(this.IALiRT);
         end
 
         function hasHK = get.HasHK(this)
@@ -82,73 +66,39 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
             end
         end
 
-        function outboard = get.Outboard(this)
-            outboard = this.Science.select("Outboard");
-        end
-
-        function inboard = get.Inboard(this)
-            inboard = this.Science.select("Inboard");
-        end
-
-        function primary = get.Primary(this)
-            primary = this.Science.select("Primary");
-        end
-
-        function secondary = get.Secondary(this)
-            secondary = this.Science.select("Secondary");
-        end
-
-        function fillWarmUp(this, timePeriod, filler)
-        % FILLWARMUP Replace beginning of science mode with filler
-        % variable.
-
-            arguments
-                this (1, 1) mag.Instrument
-                timePeriod (1, 1) duration = minutes(1)
-                filler (1, 1) double = missing()
-            end
-
-            for s = this.Science
-                s.replace(timePeriod, filler);
-            end
-        end
-
-        function crop(this, primaryFilter, secondaryFilter)
+        function crop(this, filters)
         % CROP Crop data based on selected filters for primary and
         % secondary science.
 
             arguments
                 this (1, 1) mag.Instrument
-                primaryFilter
-                secondaryFilter = primaryFilter
             end
 
-            this.cropScience(primaryFilter, secondaryFilter);
+            arguments (Repeating)
+                filters
+            end
+
+            this.cropScience(filters{:});
             this.cropToMatch();
         end
 
-        function cropScience(this, primaryFilter, secondaryFilter)
+        function cropScience(this, filters)
         % CROPSCIENCE Crop only science data based on selected time
         % filters.
 
             arguments
                 this (1, 1) mag.Instrument
-                primaryFilter
-                secondaryFilter = primaryFilter
             end
 
-            % Filter science.
-            if ~isempty(this.Primary)
-                this.Primary.crop(primaryFilter);
+            arguments (Repeating)
+                filters
             end
 
-            if ~isempty(this.Secondary)
-                this.Secondary.crop(secondaryFilter);
-            end
+            nScience = numel(this.Science);
+            [scienceFilters{1:nScience}] = mag.internal.splitFilters(filters, nScience);
 
-            % Filter I-ALiRT.
-            if this.HasIALiRT
-                this.IALiRT.crop(primaryFilter, secondaryFilter);
+            for s = 1:numel(this.Science)
+                this.Science(s).crop(scienceFilters{s});
             end
         end
 
@@ -226,7 +176,11 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
                     object = rmfield(object, ["Primary", "Secondary"]);
 
                     args = namedargs2cell(object);
-                    loadedObject = mag.Instrument(args{:}, Science = science);
+                    loadedObject = mag.imap.Instrument(args{:}, Science = science);
+                else
+
+                    args = namedargs2cell(object);
+                    loadedObject = mag.imap.Instrument(args{:});
                 end
             end
         end
@@ -241,22 +195,7 @@ classdef (Sealed) Instrument < handle & matlab.mixin.Copyable & matlab.mixin.Cus
             copiedThis.MetaData = copy(this.MetaData);
             copiedThis.Events = copy(this.Events);
             copiedThis.Science = copy(this.Science);
-            copiedThis.IALiRT = copy(this.IALiRT);
             copiedThis.HK = copy(this.HK);
-        end
-
-        function header = getHeader(this)
-
-            if isscalar(this) && this.HasScience && this.HasMetaData && ~isempty(this.Primary) && ~isempty(this.Secondary) && ...
-                    ~isempty(this.Primary.MetaData) && ~isempty(this.Secondary.MetaData)
-
-                className = matlab.mixin.CustomDisplay.getClassNameForHeader(this);
-                tag = char(compose(" in %s (%d, %d)", this.Primary.MetaData.Mode, this.Primary.MetaData.DataFrequency, this.Secondary.MetaData.DataFrequency));
-
-                header = ['  ', className, tag, ' with properties:'];
-            else
-                header = getHeader@matlab.mixin.CustomDisplay(this);
-            end
         end
     end
 end
