@@ -45,8 +45,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: test
-    env:
-      VERSION: "6.0.0"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -54,10 +52,12 @@ jobs:
         uses: matlab-actions/setup-matlab@v2.2.0
         with:
           release: R2023b
+      - name: Load Environment Variables
+        uses: aarcangeli/load-dotenv@v1.0.0
       - name: Package toolbox
         uses: matlab-actions/run-build@v2.5.0
         with:
-          tasks: package("${{ env.VERSION }}")
+          tasks: package("${{ env.MAG_DATA_VISUALIZATION_VERSION }}")
       - name: Upload toolbox
         uses: actions/upload-artifact@v4.4.0
         with:
@@ -67,6 +67,6 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1.14.0
         with:
-          tag: v${{ env.VERSION }}
+          tag: v${{ env.MAG_DATA_VISUALIZATION_VERSION }}
           artifacts: 'artifacts/MAG Data Visualization.mltbx'
           bodyFile: 'resources/release-notes.md'

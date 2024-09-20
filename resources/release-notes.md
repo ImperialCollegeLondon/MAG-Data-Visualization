@@ -18,3 +18,4 @@
 # GitHub
 
 - Run tests also with MATLAB R2024b
+- Use `.env` file to define version (also in `mag.version`)

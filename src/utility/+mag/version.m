@@ -11,17 +11,16 @@ function v = version()
     if isempty(ver)
 
         location = fileparts(mfilename("fullpath"));
-        fileName = fullfile(location, "../../../.github/workflows/matlab.yml");
+        fileName = fullfile(location, "../../../.env");
 
         if isfile(fileName)
 
-            data = fileread(fileName);
-            match = regexp(data, "VERSION: ""(?<version>\d+\.\d+\.\d+)""", "once", "names");
+            env = loadenv(fileName);
 
-            if isempty(match)
-                error("Could not determine version from ""matlab.yml"" file.");
+            if env.isKey("MAG_DATA_VISUALIZATION_VERSION")
+                ver = env("MAG_DATA_VISUALIZATION_VERSION");
             else
-                ver = match.version;
+                error("Could not determine version from "".env"" file.");
             end
         else
 
