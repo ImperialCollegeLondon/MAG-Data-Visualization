@@ -5,7 +5,7 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         % LOCATION Location of data to load.
         Location (1, 1) string {mustBeFolder} = pwd()
         % METADATAPATTERN Pattern of meta data files.
-        MetaDataPattern (1, 1) string = ""
+        MetaDataPattern string {mustBeScalarOrEmpty} = string.empty()
         % SCIENCEPATTERN Pattern of science data files.
         SciencePattern (1, 1) string = fullfile("science*.csv")
         % HKPATTERN Pattern of housekeeping files.

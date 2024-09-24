@@ -58,6 +58,12 @@ function combinedData = combineScience(data)
     metaData = [data.MetaData];
     sensors = unique([metaData.Sensor]);
 
+    if isempty(sensors)
+
+        combinedData = data;
+        return;
+    end
+
     for s = sensors
 
         locSelection = [metaData.Sensor] == s;

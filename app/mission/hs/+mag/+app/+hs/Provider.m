@@ -12,7 +12,7 @@ classdef Provider < mag.app.Provider
         end
 
         function manager = getResultsManager(~)
-            manager = mag.app.imap.ResultsManager();
+            manager = mag.app.hs.ResultsManager();
         end
 
         function manager = getExportManager(~)

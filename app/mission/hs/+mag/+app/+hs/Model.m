@@ -5,7 +5,7 @@ classdef Model < mag.app.Model
 
         function analyze(this, options)
 
-            analysis = mag.hk.Analysis.start(options{:});
+            analysis = mag.hs.Analysis.start(options{:});
             this.setAnalysisAndNotify(analysis);
         end
 

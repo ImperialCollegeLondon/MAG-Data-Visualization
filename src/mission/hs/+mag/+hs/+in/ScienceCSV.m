@@ -3,10 +3,10 @@ classdef ScienceCSV < mag.io.in.CSV
 
     methods
 
-        function data = process(~, rawData, ~)
+        function data = process(this, rawData, ~)
 
             arguments (Input)
-                ~
+                this
                 rawData table
                 ~
             end
@@ -60,10 +60,10 @@ classdef ScienceCSV < mag.io.in.CSV
 
             % Add continuity information, for simpler interpolation.
             % Property order:
-            %     x, y, z, range, compression, compression width, quality,
-            %     t
-            rawData.Properties.VariableContinuity = ["continuous", "continuous", "continuous", "step", ...
-               "step", "step", "event", "continuous"];
+            %     time, x, y, z, range, compression, compression width,
+            %     quality
+            rawData.Properties.VariableContinuity = ["continuous", "continuous", "continuous", "continuous", ...
+                "step", "step", "step", "step", "event"];
 
             % Convert to mag.Science.
             data = mag.Science(table2timetable(rawData, RowTimes = "time"), metaData);
