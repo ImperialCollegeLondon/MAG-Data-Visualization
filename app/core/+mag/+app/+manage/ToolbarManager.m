@@ -86,7 +86,9 @@ classdef ToolbarManager < mag.app.manage.Manager
             if ~isequal(file, 0) && ~isequal(folder, 0)
 
                 try
+
                     this.App.Model.load(fullfile(folder, file));
+                    this.App.AppNotificationHandler.displayAlert("Analysis successfully imported.", "Import Complete", "success");
                 catch exception
                     this.App.AppNotificationHandler.displayAlert(exception);
                 end

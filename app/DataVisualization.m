@@ -54,6 +54,42 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
     methods
 
+        function app = DataVisualization(mission)
+
+            arguments (Input)
+                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
+            end
+
+            % Create figure and other UI components.
+            app.UIFigure = uifigure();
+            app.UIFigure.Position = [100, 100, 694, 429];
+            app.UIFigure.Name = app.getAppName();
+            app.UIFigure.Resize = "off";
+
+            pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
+            app.ToolbarManager = mag.app.manage.ToolbarManager(app, pathToAppIcons);
+            app.ToolbarManager.instantiate(app.UIFigure);
+
+            app.AppNotificationHandler = mag.app.internal.AppNotificationHandler(app.UIFigure, app.ToolbarManager);
+
+            % Initialize app based on mission.
+            try
+                app.selectMission(mission);
+            catch exception
+
+                delete(app);
+                rethrow(exception);
+            end
+
+            if nargout() == 0
+                clear("app");
+            end
+        end
+
+        function delete(app)
+            delete(app.UIFigure)
+        end
+
         function value = get.ResultsLocation(app)
 
             if isempty(app.Model.Analysis)
@@ -152,14 +188,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function processDataButtonPushed(app)
 
-            % Show progress bar.
             closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Processing data..."); %#ok<NASGU>
+            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
-            % Disable warning back-traces.
-            previousWarningState = warning("off", "backtrace");
-            restoreWarningState = onCleanup(@() warning(previousWarningState));
-
-            % Start analysis.
             try
                 app.Model.analyze(app.AnalysisManager.getAnalysisOptions());
             catch exception
@@ -167,9 +198,23 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
         end
 
+        function resetButtonPushed(app)
+
+            app.closeFiguresButtonPushed();
+
+            app.Model.reset();
+            app.Figures = matlab.ui.Figure.empty();
+
+            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
+                manager.reset();
+            end            
+        end
+
         function exportButtonPushed(app)
 
             closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Exporting..."); %#ok<NASGU>
+            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
+
             format = app.ExportFormatDropDown.Value;
 
             switch format
@@ -205,24 +250,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
         end
 
-        function resetButtonPushed(app)
-
-            app.closeFiguresButtonPushed();
-
-            app.Model.reset();
-            app.Figures = matlab.ui.Figure.empty();
-
-            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
-                manager.reset();
-            end            
-        end
-
         function showFiguresButtonPushed(app)
 
-            % Show progress bar.
             closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Plotting data..."); %#ok<NASGU>
+            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
-            % Select plotting function based on plot types.
             try
                 app.Figures = app.VisualizationManager.visualize(app.Model.Analysis);
             catch exception
@@ -233,6 +265,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function saveFiguresButtonPushed(app)
 
             closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Saving figures..."); %#ok<NASGU>
+            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
             try
                 mag.graphics.savePlots(app.Figures, app.ResultsLocation);
@@ -248,6 +281,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             if ~isempty(app.Figures) && any(isValidFigures)
 
                 closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Closing figures..."); %#ok<NASGU>
+                restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
+
                 close(app.Figures(isValidFigures));
 
                 app.Figures = matlab.ui.Figure.empty();
@@ -411,42 +446,12 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         end
     end
 
-    methods (Access = public)
+    methods (Static, Access = private)
 
-        function app = DataVisualization(mission)
+        function restoreWarningState = disableWarningStackTrace()
 
-            arguments (Input)
-                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
-            end
-
-            % Create figure and other UI components.
-            app.UIFigure = uifigure();
-            app.UIFigure.Position = [100, 100, 694, 429];
-            app.UIFigure.Name = app.getAppName();
-            app.UIFigure.Resize = "off";
-
-            pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
-            app.ToolbarManager = mag.app.manage.ToolbarManager(app, pathToAppIcons);
-            app.ToolbarManager.instantiate(app.UIFigure);
-
-            app.AppNotificationHandler = mag.app.internal.AppNotificationHandler(app.UIFigure, app.ToolbarManager);
-
-            % Initialize app based on mission.
-            try
-                app.selectMission(mission);
-            catch exception
-
-                delete(app);
-                rethrow(exception);
-            end
-
-            if nargout() == 0
-                clear("app");
-            end
-        end
-
-        function delete(app)
-            delete(app.UIFigure)
+            previousWarningState = warning("off", "backtrace");
+            restoreWarningState = onCleanup(@() warning(previousWarningState));
         end
     end
 end

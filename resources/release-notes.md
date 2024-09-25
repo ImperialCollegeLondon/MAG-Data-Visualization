@@ -6,8 +6,10 @@
 
 - Add support for HelioSwarm analysis
 - Refactor app to use MVVM design
-- Delete App Designer app
+- Do not show warning stack trace for any long-running function
+- Show success message upon successful import
 - Exporting analysis to "Workspace" now creates a copy, to prevent unwanted modifications of original
+- Delete App Designer app
 
 # Software
 
