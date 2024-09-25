@@ -1,5 +1,5 @@
 classdef tField < MAGViewTestCase
-% TFIELD Unit tests for "mag.graphics.view.Field" class.
+% TFIELD Unit tests for "mag.imap.view.Field" class.
 
     properties (TestParameter)
         AddHK = {false, true}
@@ -20,7 +20,7 @@ classdef tField < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.graphics.view.Field(instrument, Factory = mockFactory);
+            view = mag.imap.view.Field(instrument, Factory = mockFactory);
             view.visualize();
 
             % Verify.
@@ -43,7 +43,7 @@ classdef tField < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyNameValuesAndAssignOutput(expectedOutput, expectedNameValues, varargin)));
 
             % Exercise.
-            view = mag.graphics.view.Field(instrument, Title = title, Name = name, Factory = mockFactory);
+            view = mag.imap.view.Field(instrument, Title = title, Name = name, Factory = mockFactory);
             view.visualize();
 
             % Verify.
@@ -68,7 +68,7 @@ classdef tField < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.graphics.view.Field(instrument, Factory = mockFactory);
+            view = mag.imap.view.Field(instrument, Factory = mockFactory);
             view.visualize();
 
             % Verify.
@@ -92,7 +92,7 @@ classdef tField < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.graphics.view.Field(instrument, Factory = mockFactory);
+            view = mag.imap.view.Field(instrument, Factory = mockFactory);
             view.visualize();
 
             % Verify.
@@ -116,7 +116,7 @@ classdef tField < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.graphics.view.Field(instrument, Factory = mockFactory);
+            view = mag.imap.view.Field(instrument, Factory = mockFactory);
             view.visualize();
 
             % Verify.
@@ -129,7 +129,7 @@ classdef tField < MAGViewTestCase
         function expectedInputs = generateExpectedInputs(instrument, options)
 
             arguments
-                instrument (1, 1) mag.Instrument
+                instrument (1, 1) mag.imap.Instrument
                 options.PrimaryTitle (1, 1) string = "FIB (FEE4 - LM2 - Some)"
                 options.SecondaryTitle (1, 1) string = "FOB (FEE2 - EM4 - None)"
                 options.Title (1, 1) string = "Burst (64, 8)"

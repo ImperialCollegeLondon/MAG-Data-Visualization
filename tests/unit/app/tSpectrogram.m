@@ -1,5 +1,5 @@
 classdef tSpectrogram < MAGControllerTestCase
-% TSPECTROGRAM Unit tests for "mag.app.control.Spectrogram" class.
+% TSPECTROGRAM Unit tests for "mag.app.imap.controlSpectrogram" class.
 
     methods (Test)
 
@@ -8,10 +8,10 @@ classdef tSpectrogram < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            spectrogram = mag.app.control.Spectrogram(panel);
+            spectrogram = mag.app.imap.control.Spectrogram();
 
             % Exercise.
-            spectrogram.instantiate();
+            spectrogram.instantiate(panel);
 
             % Verify.
             testCase.verifyStartEndDateButtons(spectrogram, StartDateRow = 1, EndDateRow = 2);
@@ -52,10 +52,10 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.control.Spectrogram(panel);
-            spectrogram.instantiate();
+            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram.instantiate(panel);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);
@@ -79,12 +79,12 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.control.Spectrogram(panel);
-            spectrogram.instantiate();
+            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram.instantiate(panel);
 
             spectrogram.OverlapSpinner.Value = 0.5;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);
@@ -108,12 +108,12 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.control.Spectrogram(panel);
-            spectrogram.instantiate();
+            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram.instantiate(panel);
 
             spectrogram.WindowSpinner.Value = 25;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);

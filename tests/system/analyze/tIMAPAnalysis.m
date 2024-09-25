@@ -32,7 +32,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             expectedResults = load("results.mat", "results").results;
 
             % Exercise.
-            analysis = testCase.verifyWarning(@() mag.IMAPAnalysis.start(Location = pwd()), "");
+            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "");
 
             % Verify file names.
             testCase.verifySubstring(analysis.EventFileNames, "20240507_111204.html", "Event file names do not match.");
@@ -86,3 +86,5 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
         end
     end
 end
+
+

@@ -11,7 +11,7 @@ jobs:
     name: Run MATLAB Tests
     strategy:
       matrix:
-        release: ["R2023b", "R2024a"]
+        release: ["R2023b", "R2024a", "R2024b"]
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -29,7 +29,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: MATLAB Test Results
+          name: MATLAB Test Results (${{ matrix.release }})
           path: 'results.xml'
           working-directory: 'artifacts'
           reporter: java-junit
@@ -38,15 +38,13 @@ jobs:
         with:
           path: 'artifacts/coverage.xml'
           minimum_coverage: 80
-          report_name: Coverage Report
+          report_name: Coverage Report (${{ matrix.release }})
 
   package:
     name: Package MATLAB Toolbox
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     needs: test
-    env:
-      VERSION: "5.1.1"
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -54,10 +52,12 @@ jobs:
         uses: matlab-actions/setup-matlab@v2.2.0
         with:
           release: R2023b
+      - name: Load Environment Variables
+        uses: aarcangeli/load-dotenv@v1.0.0
       - name: Package toolbox
         uses: matlab-actions/run-build@v2.5.0
         with:
-          tasks: package("${{ env.VERSION }}")
+          tasks: package("${{ env.MAG_DATA_VISUALIZATION_VERSION }}")
       - name: Upload toolbox
         uses: actions/upload-artifact@v4.4.0
         with:
@@ -67,6 +67,6 @@ jobs:
       - name: Create release
         uses: ncipollo/release-action@v1.14.0
         with:
-          tag: v${{ env.VERSION }}
+          tag: v${{ env.MAG_DATA_VISUALIZATION_VERSION }}
           artifacts: 'artifacts/MAG Data Visualization.mltbx'
           bodyFile: 'resources/release-notes.md'

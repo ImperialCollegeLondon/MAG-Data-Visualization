@@ -7,11 +7,17 @@ classdef (Abstract, HandleCompatible) Struct
         % STRUCT Convert class to struct containing only public properties.
 
             arguments (Input)
-                this (1, 1) mag.mixin.Struct
+                this mag.mixin.Struct {mustBeScalarOrEmpty}
             end
 
             arguments (Output)
-                structThis (1, 1) struct
+                structThis struct {mustBeScalarOrEmpty}
+            end
+
+            if isempty(this)
+
+                structThis = struct.empty();
+                return;
             end
 
             metaClasses = metaclass(this);

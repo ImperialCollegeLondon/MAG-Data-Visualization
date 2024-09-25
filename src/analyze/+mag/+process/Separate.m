@@ -1,6 +1,7 @@
 classdef Separate < mag.process.Step
 % SEPARATE Add row with missing data at end of tabular to separate
-% different files. Avoid continuous lines when gap between files is large.
+% different files. Optionally, add missing row before large time gaps.
+% Avoid continuous lines when gap between files is large.
 
     properties (Dependent)
         Name
@@ -11,6 +12,9 @@ classdef Separate < mag.process.Step
     properties
         % DISCRIMINATIONVARIABLE Name of variable to increase in row.
         DiscriminationVariable (1, 1) string
+        % LARGEDISCRIMIATETHRESHOLD Value above which gaps in
+        % discrimination variable are considered large.
+        LargeDiscriminateThreshold {mustBeScalarOrEmpty, mustBeA(LargeDiscriminateThreshold, ["double", "duration"])} = double.empty()
         % QUALITYVARIABLE Name of quality variable.
         QualityVariable string {mustBeScalarOrEmpty}
         % VARIABLES Variables to be set to missing.
@@ -52,32 +56,67 @@ classdef Separate < mag.process.Step
                 return;
             end
 
+            rows = {};
+
+            % Add missing after final row.
+            rows{end + 1} = data(end, :);
+
+            % Add missing after long pauses.
+            if ~isempty(this.LargeDiscriminateThreshold)
+
+                discriminationVar = data.(this.DiscriminationVariable);
+
+                locGap = diff(discriminationVar) > this.LargeDiscriminateThreshold;
+                idxGap = find([locGap; false]);
+
+                for g = idxGap(:)'
+                    rows{end + 1} = data(g, :); %#ok<AGROW>
+                end
+            end
+
+            % Process.
+            data = this.addMissingRows(data, rows);
+        end
+    end
+
+    methods (Access = private)
+
+        function missingVariables = getMissingVariables(this, data)
+        % GETMISSINGVARIABLES Variables to be set to missing, after
+        % validation.
+
             if isequal(this.Variables, "*")
 
                 locMissingCompatible = varfun(@mag.internal.isMissingCompatible, data, OutputFormat = "uniform");
-                variables = data.Properties.VariableNames(locMissingCompatible);
+                missingVariables = data.Properties.VariableNames(locMissingCompatible);
 
-                variables(variables == this.DiscriminationVariable) = [];
+                missingVariables(missingVariables == this.DiscriminationVariable) = [];
             else
-                variables = this.Variables;
+                missingVariables = this.Variables;
             end
+        end
 
-            finalRow = data(end, :);
+        function data = addMissingRows(this, data, rows)
 
-            if isdatetime(finalRow.(this.DiscriminationVariable)) || isduration(finalRow.(this.DiscriminationVariable))
+            if isdatetime(data.(this.DiscriminationVariable)) || isduration(data.(this.DiscriminationVariable))
                 smallValue = mag.time.Constant.Eps;
             else
                 smallValue = eps();
             end
 
-            finalRow.(this.DiscriminationVariable) = finalRow.(this.DiscriminationVariable) + smallValue;
-            finalRow{:, variables} = missing();
+            for r = 1:numel(rows)
 
-            if ~isempty(this.QualityVariable)
-                finalRow.(this.QualityVariable) = mag.meta.Quality.Artificial;
+                missingRow = rows{r};
+
+                missingRow.(this.DiscriminationVariable) = missingRow.(this.DiscriminationVariable) + smallValue;
+                missingRow{:, this.getMissingVariables(data)} = missing();
+
+                if ~isempty(this.QualityVariable)
+                    missingRow.(this.QualityVariable) = mag.meta.Quality.Artificial;
+                end
+
+                data = [data; missingRow]; %#ok<AGROW>
             end
-
-            data = [data; finalRow];
         end
     end
 end

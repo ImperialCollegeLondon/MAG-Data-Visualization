@@ -27,15 +27,21 @@ classdef CleanupFigures < matlab.unittest.fixtures.Fixture
 
             % Store pre-test figures.
             if ~isempty(fixture.GraphicsRoot.Children)
-                fixture.PreTestFigures = fixture.GraphicsRoot.Children;
+                fixture.PreTestFigures = findall(fixture.GraphicsRoot, Type = "figure");
             end
         end
 
         function teardown(fixture)
 
+            % Retrieve post-test figures.
+            postTestFigures = findall(fixture.GraphicsRoot, Type = "figure");
+
             % Close any new figure.
-            locTestFigure = ~ismember(fixture.GraphicsRoot.Children, fixture.PreTestFigures);
-            close(fixture.GraphicsRoot.Children(locTestFigure));
+            if ~isempty(postTestFigures)
+
+                locTestFigure = ~ismember(postTestFigures, fixture.PreTestFigures);
+                close(postTestFigures(locTestFigure));
+            end
         end
     end
 

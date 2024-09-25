@@ -92,5 +92,45 @@ classdef tCrop < matlab.mock.TestCase
             testCase.verifyEqual(startTime, StartEndTime.Start, "Start time should match expectation.");
             testCase.verifyEqual(endTime, StartEndTime.End, "End time should match expectation.");
         end
+
+        % Test that "mag.internal.splitFilters" expands scalar filters.
+        function splitFilters_scalar(testCase)
+
+            % Set up.
+            crop = testCase.createMock(?mag.mixin.Crop, Strict = true);
+
+            % Exercise.
+            [filter1, filter2] = crop.splitFilters({3.14}, 2);
+
+            % Verify.
+            testCase.verifyEqual(filter1, 3.14, "First filter should match expectation.");
+            testCase.verifyEqual(filter2, 3.14, "Second filter should match expectation.");
+        end
+
+        % Test that "mag.internal.splitFilters" matches vector filters.
+        function splitFilters_vector(testCase)
+
+            % Set up.
+            crop = testCase.createMock(?mag.mixin.Crop, Strict = true);
+
+            % Exercise.
+            [filter1, filter2] = crop.splitFilters({3.14, 2.15}, 2);
+
+            % Verify.
+            testCase.verifyEqual(filter1, 3.14, "First filter should match expectation.");
+            testCase.verifyEqual(filter2, 2.15, "Second filter should match expectation.");
+        end
+
+        % Test that "mag.internal.splitFilters" errors on incompatible
+        % sizes.
+        function splitFilters_incompatibleSize(testCase)
+
+            % Set up.
+            crop = testCase.createMock(?mag.mixin.Crop, Strict = true);
+
+            % Exercise and verify.
+            testCase.verifyError(@() crop.splitFilters({1, 2}, 3), ?MException, ...
+                "Error should be thrown when number of filters and expected number do not match.");
+        end
     end
 end

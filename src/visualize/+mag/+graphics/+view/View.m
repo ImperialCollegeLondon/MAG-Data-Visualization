@@ -60,17 +60,6 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
                 secondarySensor = "FIB";
             end
         end
-
-        function hkType = getHKType(this, type)
-        % GETHKTYPE Get specific type of HK. Default is power HK.
-
-            arguments
-                this
-                type (1, 1) string = "PW"
-            end
-
-            hkType = this.Results.HK.getHKType(type);
-        end
     end
 
     methods (Static, Access = protected)
@@ -84,6 +73,24 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
             end
 
             date.Format = format;
+        end
+
+        function dataFrequency = getDataFrequency(metaData)
+        % GETDATAFREQUENCY Get frequency of science data.
+
+            arguments
+                metaData (1, 1) mag.meta.Science
+            end
+
+            dataFrequency = metaData.getDisplay("DataFrequency");
+
+            if ~ismissing(dataFrequency) && (dataFrequency < 1)
+
+                [num, den] = rat(dataFrequency);
+                dataFrequency = compose("%d/%d", num, den);
+            else
+                dataFrequency = num2str(dataFrequency);
+            end
         end
     end
 end

@@ -7,7 +7,7 @@ classdef tSaveLoad < matlab.mock.TestCase
         function saveobj(testCase)
 
             % Set up.
-            saveLoad = testCase.createMock(?mag.mixin.SaveLoad, Strict = true, DefaultPropertyValues = struct("Version", "ABC"));
+            saveLoad = testCase.createMock(?mag.mixin.SaveLoad, Strict = true);
 
             % Exercise.
             savedObject = saveobj(saveLoad);

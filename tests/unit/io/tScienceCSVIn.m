@@ -1,5 +1,5 @@
 classdef tScienceCSVIn < MAGIOTestCase
-% TSCIENCECSVIN Unit tests for "mag.io.in.ScienceCSV" class.
+% TSCIENCECSVIN Unit tests for "mag.imap.in.ScienceCSV" class.
 
     properties (TestParameter)
         ValidFileDetails
@@ -73,7 +73,7 @@ classdef tScienceCSVIn < MAGIOTestCase
             fileName = fullfile(testCase.TestDataLocation, "MAGScience-normal-(2,2)-8s-20240410-15h26.csv");
 
             % Exercise.
-            csvFormat = mag.io.in.ScienceCSV();
+            csvFormat = mag.imap.in.ScienceCSV();
             [rawData, fileName] = csvFormat.load(fileName);
 
             % Verify.
@@ -88,7 +88,7 @@ classdef tScienceCSVIn < MAGIOTestCase
             fileName = fullfile(testCase.TestDataLocation, "empty.csv");
 
             % Exercise and verify.
-            csvFormat = mag.io.in.ScienceCSV();
+            csvFormat = mag.imap.in.ScienceCSV();
             testCase.verifyEmpty(csvFormat.load(fileName), "Empty file should result in empty table.");
         end
 
@@ -100,7 +100,7 @@ classdef tScienceCSVIn < MAGIOTestCase
             fileName = fullfile(testCase.TestDataLocation, ValidFileDetails.FileName);
 
             % Exercise.
-            csvFormat = mag.io.in.ScienceCSV();
+            csvFormat = mag.imap.in.ScienceCSV();
 
             [rawData, fileName] = csvFormat.load(fileName);
             data = csvFormat.process(rawData, fileName);
@@ -131,7 +131,7 @@ classdef tScienceCSVIn < MAGIOTestCase
             fileName = fullfile(testCase.TestDataLocation, InvalidFileName);
 
             % Exercise and verify.
-            csvFormat = mag.io.in.ScienceCSV();
+            csvFormat = mag.imap.in.ScienceCSV();
 
             [rawData, fileName] = csvFormat.load(fileName);
             testCase.verifyError(@() csvFormat.process(rawData, fileName), ?MException, "Error should be thrown when file is invalid.");

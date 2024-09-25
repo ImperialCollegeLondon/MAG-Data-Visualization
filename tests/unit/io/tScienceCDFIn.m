@@ -1,5 +1,5 @@
 classdef tScienceCDFIn < MAGIOTestCase
-% TSCIENCECDFIN Unit tests for "mag.io.in.ScienceCDF" class.
+% TSCIENCECDFIN Unit tests for "mag.imap.in.ScienceCDF" class.
 
     properties (TestParameter)
         ValidFileDetails
@@ -41,7 +41,7 @@ classdef tScienceCDFIn < MAGIOTestCase
             fileName = fullfile(testCase.TestDataLocation, "imap_mag_l1a_burst-mago_20240314_v001.cdf");
 
             % Exercise.
-            cdfFormat = mag.io.in.ScienceCDF();
+            cdfFormat = mag.imap.in.ScienceCDF();
             [rawData, cdfInfo] = cdfFormat.load(fileName);
 
             % Verify.
@@ -58,7 +58,7 @@ classdef tScienceCDFIn < MAGIOTestCase
             cdfSettings = mag.io.CDFSettings(Timestamp = "epoch", Field = "vectors", Range = "vectors");
 
             % Exercise.
-            cdfFormat = mag.io.in.ScienceCDF(CDFSettings = cdfSettings);
+            cdfFormat = mag.imap.in.ScienceCDF(CDFSettings = cdfSettings);
 
             [rawData, cdfInfo] = cdfFormat.load(fileName);
             data = cdfFormat.process(rawData, cdfInfo);
@@ -81,7 +81,7 @@ classdef tScienceCDFIn < MAGIOTestCase
             fileName = fullfile(testCase.TestDataLocation, InvalidFileName);
 
             % Exercise and verify.
-            cdfFormat = mag.io.in.ScienceCDF();
+            cdfFormat = mag.imap.in.ScienceCDF();
 
             [rawData, cdfInfo] = cdfFormat.load(fileName);
             testCase.verifyError(@() cdfFormat.process(rawData, cdfInfo), ?MException, "Error should be thrown when file is invalid.");

@@ -273,48 +273,8 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             this.Data{timePeriod, [this.Settings.X, this.Settings.Y, this.Settings.Z]} = filler;
         end
 
-        function data = computePSD(this, options)
-        % COMPUTEPSD Compute the power spectral density of the magnetic
-        % field measurements.
-
-            arguments (Input)
-                this (1, 1) mag.Science
-                options.Start datetime {mustBeScalarOrEmpty} = datetime.empty()
-                options.Duration (1, 1) duration = hours(1)
-                options.FFTType (1, 1) double {mustBeGreaterThanOrEqual(options.FFTType, 1), mustBeLessThanOrEqual(options.FFTType, 3)} = 2
-                options.NW (1, 1) double = 7/2
-            end
-
-            arguments (Output)
-                data (1, 1) mag.PSD
-            end
-
-            % Filter out data.
-            if isempty(options.Start)
-
-                t = this.Time;
-                locFilter = true(size(this.Data, 1), 1);
-            else
-
-                t = (this.Time - options.Start);
-
-                locFilter = t >= 0;
-
-                if (options.Duration ~= 0)
-                    locFilter = locFilter & (t < options.Duration);
-                end
-            end
-
-            % Compute PSD.
-            dt = seconds(median(diff(t(locFilter))));
-
-            xyz = this.XYZ(locFilter, :);
-            xyz(ismissing(xyz) | isinf(xyz)) = 0;
-
-            [psd, f] = psdtsh(xyz, dt, options.FFTType, options.NW);
-            psd = psd .^ 0.5;
-
-            data = mag.PSD(table(f, psd(:, 1), psd(:, 2), psd(:, 3), VariableNames = ["f", this.Settings.X, this.Settings.Y, this.Settings.Z]));
+        function data = computePSD(this, varargin)
+            data = mag.psd(this, varargin{:});
         end
     end
 

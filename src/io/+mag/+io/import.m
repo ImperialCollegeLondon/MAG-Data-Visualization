@@ -58,6 +58,12 @@ function combinedData = combineScience(data)
     metaData = [data.MetaData];
     sensors = unique([metaData.Sensor]);
 
+    if isempty(sensors)
+
+        combinedData = data;
+        return;
+    end
+
     for s = sensors
 
         locSelection = [metaData.Sensor] == s;
@@ -93,6 +99,12 @@ function combinedData = combineHK(data)
     metaData = [data.MetaData];
     types = unique([metaData.Type]);
 
+    if isempty(types)
+
+        combinedData = data;
+        return;
+    end
+
     for t = types
 
         locSelection = [metaData.Type] == t;
@@ -103,6 +115,6 @@ function combinedData = combineHK(data)
         md = selectedData(1).MetaData.copy();
         md.set(Timestamp = min([metaData(locSelection).Timestamp]));
 
-        combinedData(end + 1) = mag.hk.dispatchHKType(td, md); %#ok<AGROW>
+        combinedData(end + 1) = mag.imap.hk.dispatchHKType(td, md); %#ok<AGROW>
     end
 end

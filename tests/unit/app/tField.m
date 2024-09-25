@@ -1,5 +1,5 @@
 classdef tField < MAGControllerTestCase
-% TFIELD Unit tests for "mag.app.control.Field" class.
+% TFIELD Unit tests for "mag.app.imap.controlField" class.
 
     methods (Test)
 
@@ -8,10 +8,10 @@ classdef tField < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            field = mag.app.control.Field(panel);
+            field = mag.app.imap.control.Field();
 
             % Exercise.
-            field.instantiate();
+            field.instantiate(panel);
 
             % Verify.
             testCase.verifyStartEndDateButtons(field, StartDateRow = 1, EndDateRow = 2);
@@ -33,10 +33,10 @@ classdef tField < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            field = mag.app.control.Field(panel);
-            field.instantiate();
+            field = mag.app.imap.control.Field();
+            field.instantiate(panel);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = field.getVisualizeCommand(results);
@@ -55,12 +55,12 @@ classdef tField < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            field = mag.app.control.Field(panel);
-            field.instantiate();
+            field = mag.app.imap.control.Field();
+            field.instantiate(panel);
 
             field.EventsTree.CheckedNodes = field.EventsTree.Children(2);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = field.getVisualizeCommand(results);

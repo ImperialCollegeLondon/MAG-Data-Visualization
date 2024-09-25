@@ -1,5 +1,5 @@
 classdef tPSD < MAGControllerTestCase
-% TPSD Unit tests for "mag.app.control.PSD" class.
+% TPSD Unit tests for "mag.app.imap.controlPSD" class.
 
     methods (Test)
 
@@ -8,10 +8,10 @@ classdef tPSD < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            psd = mag.app.control.PSD(panel);
+            psd = mag.app.imap.control.PSD();
 
             % Exercise.
-            psd.instantiate();
+            psd.instantiate(panel);
 
             % Verify.
             testCase.assertNotEmpty(psd.StartDatePicker, "Start date picker should not be empty.");
@@ -37,10 +37,10 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.control.PSD(panel);
-            psd.instantiate();
+            psd = mag.app.imap.control.PSD();
+            psd.instantiate(panel);
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);
@@ -63,8 +63,8 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.control.PSD(panel);
-            psd.instantiate();
+            psd = mag.app.imap.control.PSD();
+            psd.instantiate(panel);
 
             psd.StartDatePicker.Value = datetime("today");
             psd.StartTimeField.Value = "10:30";
@@ -73,7 +73,7 @@ classdef tPSD < MAGControllerTestCase
             expectedStartDate.Format = mag.time.Constant.Format;
             expectedStartDate.TimeZone = mag.time.Constant.TimeZone;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);
@@ -96,12 +96,12 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.control.PSD(panel);
-            psd.instantiate();
+            psd = mag.app.imap.control.PSD();
+            psd.instantiate(panel);
 
             psd.DurationSpinner.Value = 2.15;
 
-            results = mag.Instrument();
+            results = mag.imap.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);

@@ -1,5 +1,5 @@
 classdef tInstrument < matlab.mock.TestCase
-% TINSTRUMENT Unit tests for "mag.Instrument" class.
+% TINSTRUMENT Unit tests for "mag.imap.Instrument" class.
 
     properties (TestParameter)
         HasProperty = {"HasData", "HasMetaData", "HasScience", "HasHK"}
@@ -12,7 +12,7 @@ classdef tInstrument < matlab.mock.TestCase
         function hasProperties_noData(testCase, HasProperty)
 
             % Set up.
-            instrument = mag.Instrument();
+            instrument = mag.imap.Instrument();
 
             % Exercise and verify.
             testCase.verifyFalse(instrument.(HasProperty), """" + HasProperty + """ should return ""false"" when object has no data.");
@@ -22,7 +22,7 @@ classdef tInstrument < matlab.mock.TestCase
         function timeRange_noData(testCase)
 
             % Set up.
-            instrument = mag.Instrument();
+            instrument = mag.imap.Instrument();
 
             % Exercise and verify.
             testCase.verifyTrue(all(ismissing(instrument.TimeRange)), """TimeRange"" should return ""missing"" when object has no data.");
@@ -47,24 +47,6 @@ classdef tInstrument < matlab.mock.TestCase
             testCase.verifyEqual(instrument.TimeRange, expectedTimeRange, """TimeRange"" should return minimum and maximum time based on both sensors.");
         end
 
-        % Test that "fillWarmUp" method calls method of underlying science
-        % data.
-        function fillWarmUpMethod(testCase)
-
-            % Set up.
-            [instrument, primaryBehavior, secondaryBehavior] = testCase.createTestData();
-
-            timePeriod = minutes(1);
-            filler = 1;
-
-            % Exercise.
-            instrument.fillWarmUp(timePeriod, filler);
-
-            % Verify.
-            testCase.verifyCalled(primaryBehavior.replace(timePeriod, filler), "Primary data should be cropped with same filter.");
-            testCase.verifyCalled(secondaryBehavior.replace(timePeriod, filler), "Secondary data should be cropped with same filter.");
-        end
-
         % Test that "cropScience" method calls method of underlying science
         % data.
         function cropScienceMethod(testCase)
@@ -80,7 +62,7 @@ classdef tInstrument < matlab.mock.TestCase
             % Verify.
             testCase.verifyCalled(primaryBehavior.crop(timeFilter), "Primary data should be cropped with same filter.");
             testCase.verifyCalled(secondaryBehavior.crop(timeFilter), "Secondary data should be cropped with same filter.");
-            testCase.verifyCalled(iALiRTBehavior.crop(timeFilter, timeFilter), "I-ALiRT data should be cropped with expected filter.");
+            testCase.verifyCalled(iALiRTBehavior.crop(timeFilter), "I-ALiRT data should be cropped with expected filter.");
         end
 
         % Test that "crop" method calls method of underlying science data.
@@ -97,7 +79,7 @@ classdef tInstrument < matlab.mock.TestCase
             % Verify.
             testCase.verifyCalled(primaryBehavior.crop(timeFilter), "Primary data should be cropped with same filter.");
             testCase.verifyCalled(secondaryBehavior.crop(timeFilter), "Secondary data should be cropped with same filter.");
-            testCase.verifyCalled(iALiRTBehavior.crop(timeFilter, timeFilter), "I-ALiRT data should be cropped with same filter.");
+            testCase.verifyCalled(iALiRTBehavior.crop(timeFilter), "I-ALiRT data should be cropped with same filter.");
 
             testCase.verifyTrue(all(isbetween(instrument.HK.Time, instrument.TimeRange(1), instrument.TimeRange(2), "closed")), "HK data should be cropped with same filter.");
         end
@@ -195,11 +177,11 @@ classdef tInstrument < matlab.mock.TestCase
 
             iALiRTPrimaryScience = mag.Science(scienceTT, mag.meta.Science(Primary = true, Sensor = "FOB", Timestamp = datetime("now", TimeZone = "UTC")));
             iALiRTSecondaryScience = mag.Science(scienceTT, mag.meta.Science(Sensor = "FIB", Timestamp = datetime("now", TimeZone = "UTC")));
-            [iALiRT, iALiRTBehavior] = testCase.createMock(?mag.IALiRT, ConstructorInputs = {"Science", [iALiRTPrimaryScience, iALiRTSecondaryScience]}, Strict = true);
+            [iALiRT, iALiRTBehavior] = testCase.createMock(?mag.imap.IALiRT, ConstructorInputs = {"Science", [iALiRTPrimaryScience, iALiRTSecondaryScience]}, Strict = true);
 
             [hk, hkBehavior] = testCase.createMock(?mag.HK, ConstructorInputs = {hkTT, mag.meta.HK(Timestamp = datetime("now", TimeZone = "UTC"))}, Strict = true);
 
-            instrument = mag.Instrument(MetaData = mag.meta.Instrument(), ...
+            instrument = mag.imap.Instrument(MetaData = mag.meta.Instrument(), ...
                 Science = [primary, secondary], ...
                 IALiRT = iALiRT, ...
                 HK = hk);
