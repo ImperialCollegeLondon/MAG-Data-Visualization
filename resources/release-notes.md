@@ -11,6 +11,7 @@
 
 # Software
 
+- Add abstract base class for generic analysis `mag.Analysis`
 - Add support for HelioSwarm analysis with `mag.hs.Analysis`
 - Rename `mag.IMAPAnalysis` as `mag.imap.Analysis` (many other IMAP-related classes moved and renamed)
 - Add new definition of `mag.imap.Instrument` for specific IMAP results (e.g., including I-ALiRT)

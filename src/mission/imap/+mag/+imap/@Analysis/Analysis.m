@@ -1,4 +1,4 @@
-classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.SaveLoad
+classdef (Sealed) Analysis < mag.Analysis
 % ANALYSIS Automate analysis of an IMAP data.
 
     properties
@@ -91,7 +91,6 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
     methods (Static)
 
         function analysis = start(options)
-        % START Start automated analysis with options.
 
             arguments
                 options.?mag.imap.Analysis
@@ -140,7 +139,6 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         end
 
         function detect(this)
-        % DETECT Detect files based on patterns.
 
             this.EventFiles = dir(fullfile(this.Location, this.EventPattern));
 
@@ -157,7 +155,6 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         end
 
         function load(this)
-        % LOAD Load all data stored in selected location.
 
             this.Results = mag.imap.Instrument();
 
@@ -389,9 +386,6 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
                     timerange(tSplitSecondary(i), tSplitSecondary(i + 1), "open")); %#ok<AGROW>
             end
         end
-
-        % EXPORT Export data to specified format.
-        export(this, exportStrategy, options)
     end
 
     methods (Access = protected)

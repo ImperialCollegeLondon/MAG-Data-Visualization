@@ -9,8 +9,8 @@ function export(this, exportType, options)
     end
 
     % Determine export classes.
-    scienceFormat = feval("mag.imap.out.Science" + exportType);
-    hkFormat = feval("mag.imap.out.HK" + exportType);
+    scienceFormat = mag.imap.out.("Science" + exportType);
+    hkFormat = mag.imap.out.("HK" + exportType);
 
     % Determine export window.
     if ismissing(options.StartTime)
@@ -69,7 +69,7 @@ function export(this, exportType, options)
     end
 
     % Export HK data.
-    if ~isempty(this.Results.HK)
+    if this.Results.HasHK
 
         hk = this.Results.HK.copy();
         hk.crop(period);

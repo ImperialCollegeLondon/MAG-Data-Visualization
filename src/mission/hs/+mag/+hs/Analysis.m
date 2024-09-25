@@ -1,4 +1,4 @@
-classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.SaveLoad
+classdef (Sealed) Analysis < mag.Analysis
 % ANALYSIS Automate analysis of HelioSwarm data.
 
     properties
@@ -88,20 +88,62 @@ classdef (Sealed) Analysis < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixi
         end
 
         function detect(this)
-        % DETECT Detect files based on patterns.
 
             this.ScienceFiles = dir(fullfile(this.Location, this.SciencePattern));
             this.HKFiles = dir(fullfile(this.Location, this.HKPattern));
         end
 
         function load(this)
-        % LOAD Load all data stored in selected location.
 
             this.Results = mag.Instrument();
 
             this.loadMetaData();
             this.loadScienceData();
             this.loadHKData();
+        end
+
+        function export(this, exportType, options)
+
+            arguments
+                this (1, 1) mag.hs.Analysis
+                exportType (1, 1) string {mustBeMember(exportType, ["MAT", "CDF"])}
+                options.Location (1, 1) string {mustBeFolder} = "results"
+                options.StartTime (1, 1) datetime = NaT(TimeZone = "UTC")
+                options.EndTime (1, 1) datetime = NaT(TimeZone = "UTC")
+            end
+
+            % Determine export classes.
+            scienceFormat = mag.hs.out.("Science" + exportType);
+            hkFormat = mag.hs.out.("HK" + exportType);
+
+            % Determine export window.
+            if ismissing(options.StartTime)
+                options.StartTime = datetime("-Inf", TimeZone = "UTC");
+            end
+
+            if ismissing(options.EndTime)
+                options.EndTime = datetime("Inf", TimeZone = "UTC");
+            end
+
+            period = timerange(options.StartTime, options.EndTime, "closed");
+
+            % Export full science.
+            if this.Results.HasScience
+
+                results = this.Results.copy();
+                results.crop(period);
+
+                mag.io.export(results, Location = options.Location, Format = scienceFormat);
+            end
+
+            % Export HK data.
+            if this.Results.HasHK
+
+                hk = this.Results.HK.copy();
+                hk.crop(period);
+
+                mag.io.export(hk, Location = options.Location, Format = hkFormat);
+            end
         end
     end
 
