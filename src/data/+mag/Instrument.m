@@ -50,7 +50,7 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
         end
 
         function hasHK = get.HasHK(this)
-            hasHK = ~isempty(this.HK) && any(this.HK.HasData);
+            hasHK = ~isempty(this.HK) && any([this.HK.HasData]);
         end
 
         function timeRange = get.TimeRange(this)
