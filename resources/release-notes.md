@@ -22,4 +22,5 @@
 # GitHub
 
 - Run tests also with MATLAB R2024b
+- Add release to "Test Results" and "Coverage Report" in CI results
 - Use `.env` file to define version (also in `mag.version`)

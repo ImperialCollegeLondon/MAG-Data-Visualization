@@ -29,7 +29,7 @@ jobs:
         uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          name: MATLAB Test Results
+          name: MATLAB Test Results (${{ matrix.release }})
           path: 'results.xml'
           working-directory: 'artifacts'
           reporter: java-junit
@@ -38,7 +38,7 @@ jobs:
         with:
           path: 'artifacts/coverage.xml'
           minimum_coverage: 80
-          report_name: Coverage Report
+          report_name: Coverage Report (${{ matrix.release }})
 
   package:
     name: Package MATLAB Toolbox
