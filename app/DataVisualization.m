@@ -40,7 +40,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         AnalysisManager mag.app.manage.AnalysisManager {mustBeScalarOrEmpty}
         ResultsManager mag.app.manage.Manager {mustBeScalarOrEmpty}
         ExportManager mag.app.manage.ExportManager {mustBeScalarOrEmpty}
-        VisualizationManager mag.app.manage.Manager {mustBeScalarOrEmpty}
+        VisualizationManager mag.app.manage.VisualizationManager {mustBeScalarOrEmpty}
         AppNotificationHandler mag.app.internal.AppNotificationHandler {mustBeScalarOrEmpty}
     end
 

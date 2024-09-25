@@ -31,19 +31,6 @@ classdef (Abstract, Hidden) Science < mag.graphics.view.View
 
     methods (Static, Access = protected)
 
-        function dataFrequency = getDataFrequency(metaData)
-
-            dataFrequency = metaData.getDisplay("DataFrequency");
-
-            if ~ismissing(dataFrequency) && (dataFrequency < 1)
-
-                [num, den] = rat(dataFrequency);
-                dataFrequency = compose("%d/%d", num, den);
-            else
-                dataFrequency = num2str(dataFrequency);
-            end
-        end
-
         function value = getFieldTitle(data)
 
             if isempty(data.MetaData.Setup) || isempty(data.MetaData.Setup.FEE) || isempty(data.MetaData.Setup.Model) || isempty(data.MetaData.Setup.Can)

@@ -16,11 +16,11 @@ classdef Provider < mag.app.Provider
         end
 
         function manager = getExportManager(~)
-            manager = mag.app.imap.ExportManager();
+            manager = mag.app.hs.ExportManager();
         end
 
         function manager = getVisualizationManager(~)
-            manager = mag.app.imap.VisualizationManager();
+            manager = mag.app.hs.VisualizationManager();
         end
     end
 end

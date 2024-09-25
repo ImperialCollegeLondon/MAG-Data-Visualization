@@ -25,7 +25,7 @@ classdef HK < mag.graphics.view.View
             this.Figures = matlab.ui.Figure.empty();
 
             [primarySensor, secondarySensor] = this.getSensorNames();
-            pwr = this.getHKType("PW");
+            pwr = this.Results.HK.getHKType("PW");
 
             if isempty(pwr) || ~pwr.HasData
                 return;
@@ -93,7 +93,7 @@ classdef HK < mag.graphics.view.View
             end
 
             % Science HK.
-            sid5 = this.getHKType("SCI");
+            sid5 = this.Results.HK.getHKType("SCI");
 
             if ~isempty(sid5)
 
@@ -121,8 +121,8 @@ classdef HK < mag.graphics.view.View
             end
 
             % Processor HK.
-            sid15 = this.getHKType("SID15");
-            procstat = this.getHKType("PROCSTAT");
+            sid15 = this.Results.HK.getHKType("SID15");
+            procstat = this.Results.HK.getHKType("PROCSTAT");
 
             if ~isempty(sid15) && ~isempty(procstat)
 

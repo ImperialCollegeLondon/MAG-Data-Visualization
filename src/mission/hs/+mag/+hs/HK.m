@@ -52,6 +52,10 @@ classdef HK < mag.HK
             temperature1 = this.Data.temp1;
         end
 
+        function temperature2 = get.Temperature2(this)
+            temperature2 = this.Data.temp2;
+        end
+
         function filterType = get.FilterType(this)
             filterType = this.Data.filter_type;
         end

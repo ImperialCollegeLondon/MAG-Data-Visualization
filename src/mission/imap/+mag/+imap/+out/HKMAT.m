@@ -5,9 +5,13 @@ classdef HKMAT < mag.io.out.MAT
 
         function fileName = getExportFileName(this, data)
 
-            arguments
+            arguments (Input)
                 this (1, 1) mag.imap.out.HKMAT
                 data (1, :) mag.HK
+            end
+
+            arguments (Output)
+                fileName (1, 1) string
             end
 
             metaData = [data.MetaData];
@@ -16,9 +20,13 @@ classdef HKMAT < mag.io.out.MAT
 
         function exportData = convertToExportFormat(this, data)
 
-            arguments
+            arguments (Input)
                 this (1, 1) mag.imap.out.HKMAT
                 data (1, :) mag.HK
+            end
+
+            arguments (Output)
+                exportData (1, 1) struct
             end
 
             exportData = struct();
