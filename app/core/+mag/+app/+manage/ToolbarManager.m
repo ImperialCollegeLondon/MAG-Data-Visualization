@@ -81,6 +81,7 @@ classdef ToolbarManager < mag.app.manage.Manager
 
         function importPushToolClicked(this)
 
+            closeProgressBar = this.App.AppNotificationHandler.overlayProgressBar("Importing..."); %#ok<NASGU>
             [file, folder] = uigetfile("*.mat", "Import Analysis");
 
             if ~isequal(file, 0) && ~isequal(folder, 0)
