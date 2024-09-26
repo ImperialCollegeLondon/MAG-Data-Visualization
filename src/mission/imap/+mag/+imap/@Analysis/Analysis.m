@@ -47,7 +47,8 @@ classdef (Sealed) Analysis < mag.Analysis
         % HKPROCESSING Steps needed to process imported HK data.
         HKProcessing (1, :) mag.process.Step = [ ...
             mag.process.Units(), ...
-            mag.process.Separate(DiscriminationVariable = "t", LargeDiscriminateThreshold = minutes(5), QualityVariable = string.empty(), Variables = "*")]
+            mag.process.Separate(DiscriminationVariable = "t", LargeDiscriminateThreshold = minutes(5), QualityVariable = string.empty(), Variables = "*"), ...
+            mag.process.Sort()]
     end
 
     properties (Dependent)
