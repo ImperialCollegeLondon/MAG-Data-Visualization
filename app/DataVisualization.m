@@ -118,10 +118,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
                 mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
                     Options = ["HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
-            end
 
-            % Show progress bar.
-            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing app..."); %#ok<NASGU>
+                closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing app..."); %#ok<NASGU>
+            end
 
             switch mission
                 case "Cancel"
