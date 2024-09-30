@@ -53,7 +53,7 @@ jobs:
         with:
           release: R2023b
       - name: Load Environment Variables
-        uses: aarcangeli/load-dotenv@v1.0.0
+        uses: aarcangeli/load-dotenv@v1.1.0
       - name: Package toolbox
         uses: matlab-actions/run-build@v2.5.0
         with:
