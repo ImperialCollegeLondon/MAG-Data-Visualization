@@ -6,3 +6,4 @@
 # Software
 
 - Fix HK data not being shown after long gaps
+- Fix `mag.Science/CompressionWidth` converted to `logical` instead of `double`

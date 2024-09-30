@@ -98,7 +98,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
         end
 
         function compressionWidth = get.CompressionWidth(this)
-            compressionWidth = logical(this.Data.(this.Settings.CompressionWidth));
+            compressionWidth = this.Data.(this.Settings.CompressionWidth);
         end
 
         function set.Quality(this, quality)
