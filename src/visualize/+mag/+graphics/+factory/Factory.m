@@ -1,4 +1,4 @@
-classdef (Abstract) Factory
+classdef (Abstract) Factory < mag.mixin.SetGet
 % FACTORY Interface for graphics generation factories.
 
     methods (Abstract)
