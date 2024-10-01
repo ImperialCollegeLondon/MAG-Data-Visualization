@@ -6,5 +6,6 @@
 # Software
 
 - Add `mag.graphics.factory.LimitDisplayFactory` to limit the number of data points displayed in a figure
+- Add `mag.feature` to enable/disable experimental features
 - Fix HK data not being shown after long gaps
 - Fix `mag.Science/CompressionWidth` converted to `logical` instead of `double`
