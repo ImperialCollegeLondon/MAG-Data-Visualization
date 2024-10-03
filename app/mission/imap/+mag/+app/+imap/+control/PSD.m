@@ -51,7 +51,7 @@ classdef PSD < mag.app.Control
 
             startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
             duration = hours(this.DurationSpinner.Value);
-            
+
             command = mag.app.Command(Functional = @(varargin) mag.imap.view.PSD(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
                 NamedArguments = struct(Start = startTime, Duration = duration));

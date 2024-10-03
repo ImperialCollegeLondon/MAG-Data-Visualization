@@ -4,13 +4,13 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
     methods
 
         function items = getVisualizationTypes(~)
-            items = ["AT, SFT", "CPT", "Science", "Spectrogram", "PSD"];
+            items = ["AT/SFT", "CPT", "HK", "Science", "Spectrogram", "PSD"];
         end
 
         function itemsData = getVisualizationClasses(~)
 
-            itemsData = [mag.app.imap.control.AT(), mag.app.imap.control.CPT(), mag.app.imap.control.Field(), ...
-                mag.app.imap.control.Spectrogram(), mag.app.imap.control.PSD()];
+            itemsData = [mag.app.imap.control.AT(), mag.app.imap.control.CPT(), mag.app.imap.control.HK(), ...
+                mag.app.imap.control.Field(), mag.app.imap.control.Spectrogram(), mag.app.imap.control.PSD()];
         end
 
         function figures = visualize(this, analysis)

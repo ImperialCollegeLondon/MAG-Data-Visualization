@@ -29,11 +29,34 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         function figures = visualizeAll(this)
         % VISUALIZEALL Visualize all views in array and return figures.
 
+            arguments (Input)
+                this (1, :) mag.graphics.view.View
+            end
+
+            arguments (Output)
+                figures (1, :) matlab.ui.Figure
+            end
+
             if isempty(this)
                 figures = matlab.ui.Figure.empty();
             else
 
-                arrayfun(@(v) v.visualize(), this);
+                for v = this
+
+                    try
+                        v.visualize();
+                    catch exception
+
+                        if isempty(exception.stack)
+                            setBreakpointHyperlink = char.empty();
+                        else
+                            setBreakpointHyperlink = compose("\n\nClick <a href=""matlab:dbstop in '%s' at %d"">here</a> to set a breakpoint at the error source.", exception.stack(1).file, exception.stack(1).line);
+                        end
+
+                        warning("Failed to visualize ""%s"" because of error ""%s"":\n%s%s", class(v), exception.identifier, exception.message, setBreakpointHyperlink);
+                    end
+                end
+
                 figures = [this.Figures];
             end
         end
