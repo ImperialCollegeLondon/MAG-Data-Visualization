@@ -4,7 +4,7 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
     methods
 
         function items = getVisualizationTypes(~)
-            items = "Field";
+            items = "Science";
         end
 
         function itemsData = getVisualizationClasses(~)
