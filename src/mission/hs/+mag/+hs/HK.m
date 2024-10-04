@@ -1,5 +1,5 @@
 classdef HK < mag.HK
-% HK Class containing MAG HK packet data.
+% HK Class containing HelioSwarm MAG HK packet data.
 
     properties (Dependent)
         % P1V5V +1.5 V voltage.

@@ -1,5 +1,5 @@
 classdef Field < mag.graphics.view.View
-% FIELD Show magnetic field and optional HK.
+% FIELD Show magnetic field and optional HK for HelioSwarm.
 
     methods
 

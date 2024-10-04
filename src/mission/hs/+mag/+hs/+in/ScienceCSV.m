@@ -1,5 +1,5 @@
 classdef ScienceCSV < mag.io.in.CSV
-% SCIENCECSV Format science data for CSV import.
+% SCIENCECSV Format HelioSwarm science data for CSV import.
 
     methods
 
