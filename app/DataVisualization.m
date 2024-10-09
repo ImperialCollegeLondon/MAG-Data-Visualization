@@ -255,7 +255,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
             try
-                app.Figures = app.VisualizationManager.visualize(app.Model.Analysis);
+                app.Figures = [app.Figures, app.VisualizationManager.visualize(app.Model.Analysis)];
             catch exception
                 app.AppNotificationHandler.displayAlert(exception);
             end
