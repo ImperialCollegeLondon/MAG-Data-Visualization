@@ -5,6 +5,7 @@
 # Software
 
 - Add mission to description of `io` classes
+- Set more realistic default pattern for determining CPT mode cycling
 - Fix issue with events processing failing if acknowledge or completion events are not received
 
 # Git

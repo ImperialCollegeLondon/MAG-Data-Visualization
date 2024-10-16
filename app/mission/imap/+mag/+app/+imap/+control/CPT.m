@@ -3,9 +3,9 @@ classdef CPT < mag.app.Control & mag.app.mixin.Filter
 
     properties (Constant, Access = private)
         % PRIMARYMODEPATTERN Mode cycling pattern for primary sensor.
-        PrimaryModePattern (1, :) double = [2, 64, 4, 64, 4, 128]
+        PrimaryModePattern (1, :) double = [2, 64, 2, 4, 64, 4, 4, 128]
         % SECONDARYMODEPATTERN Mode cycling pattern for secondary sensor.
-        SecondaryModePattern (1, :) double = [2, 8, 1, 64, 4, 128]
+        SecondaryModePattern (1, :) double = [2, 8, 2, 1, 64, 1, 4, 128]
         % RANGEPATTERN Range cycling pattern for both sensor.
         RangePattern (1, :) double = [3, 2, 1, 0]
     end
