@@ -1,5 +1,5 @@
 classdef ScienceCSV < mag.io.in.CSV
-% SCIENCECSV Format science data for CSV import.
+% SCIENCECSV Format IMAP science data for CSV import.
 
     properties (Constant, Access = private)
         FileNamePattern (1, 1) string = "MAGScience-(?<mode>\w+)-\((?<primaryFrequency>\d+),(?<secondaryFrequency>\d+)\)-(?<packetFrequency>\d+)s-(?<date>\d+)-(?<time>\w+).(?<extension>\w+)"

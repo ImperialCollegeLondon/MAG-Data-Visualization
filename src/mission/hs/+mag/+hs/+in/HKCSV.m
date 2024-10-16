@@ -1,5 +1,5 @@
 classdef HKCSV < mag.io.in.CSV
-% HKCSV Format HK data for CSV import.
+% HKCSV Format HelioSwarm HK data for CSV import.
 
     methods
 

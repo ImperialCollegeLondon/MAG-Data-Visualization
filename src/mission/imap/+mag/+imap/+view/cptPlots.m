@@ -4,8 +4,8 @@ function figures = cptPlots(analysis, options)
     arguments
         analysis (1, 1) mag.imap.Analysis
         options.Filter duration {mustBeScalarOrEmpty} = duration.empty()
-        options.PrimaryModePattern (1, :) double = [2, 64, 4, 64, 4, 128]
-        options.SecondaryModePattern (1, :) double = [2, 8, 1, 64, 4, 128]
+        options.PrimaryModePattern (1, :) double = [2, 64, 2, 4, 64, 4, 4, 128]
+        options.SecondaryModePattern (1, :) double = [2, 8, 2, 1, 64, 1, 4, 128]
         options.RangePattern (1, :) double = [3, 2, 1, 0]
     end
 

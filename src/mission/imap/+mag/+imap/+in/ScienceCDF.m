@@ -1,5 +1,5 @@
 classdef ScienceCDF < mag.io.in.CDF
-% SCIENCECDF Format science data for CDF import.
+% SCIENCECDF Format IMAP science data for CDF import.
 
     properties (Constant, Access = private)
         FileNamePattern (1, 1) string = "imap_mag_(?<level>.+?)_(?<mode>\w+?)-mag(?<sensor>\w)_(?<date>\d+)_(?<version>.+?)\.cdf"

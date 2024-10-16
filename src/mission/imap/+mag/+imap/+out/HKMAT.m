@@ -1,5 +1,5 @@
 classdef HKMAT < mag.io.out.MAT
-% HKMAT Format HK data for MAT export.
+% HKMAT Format IMAP HK data for MAT export.
 
     methods
 

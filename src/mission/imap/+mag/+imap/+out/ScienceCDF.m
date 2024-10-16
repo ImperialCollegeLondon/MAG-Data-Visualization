@@ -1,5 +1,5 @@
 classdef ScienceCDF < mag.io.out.CDF
-% SCIENCECDF Format science data for CDF export.
+% SCIENCECDF Format IMAP science data for CDF export.
 
     properties
         % CDFSETTINGS CDF file options.

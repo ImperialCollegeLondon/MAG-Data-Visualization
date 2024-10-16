@@ -1,5 +1,5 @@
 classdef HKCSV < mag.io.in.CSV
-% HKCSV Format HK data for CSV import.
+% HKCSV Format IMAP HK data for CSV import.
 
     properties (Constant, Access = private)
         FileNamePattern (1, 1) string = "idle_export_\w+.MAG_HSK_(?<type>\w+)_(?<date>\d+)_(?<time>\w+).(?<extension>\w+)"
