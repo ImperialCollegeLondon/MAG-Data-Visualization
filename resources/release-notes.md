@@ -1,13 +1,3 @@
-# App
+# Toolbox
 
-- Append figures when visualizing different plot types
-
-# Software
-
-- Add mission to description of `io` classes
-- Set more realistic default pattern for determining CPT mode cycling
-- Fix issue with events processing failing if acknowledge or completion events are not received
-
-# Git
-
-- Ignore `local` folder
+- Remove `.env` file, and `.vscode` and `local` folders from toolbox
