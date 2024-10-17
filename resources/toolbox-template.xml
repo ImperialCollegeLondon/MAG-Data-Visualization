@@ -18,9 +18,12 @@
 .buildtool
 .git
 .github
-resources
+.vscode
 artifacts
+local
+resources
 tests
+.env
 .gitignore
 buildfile.m
 DataVisualization.mlapp
@@ -28,8 +31,10 @@ README.md
 .buildtool/*
 .git/*
 .github/*
-resources/*
+.vscode/*
 artifacts/*
+resources/*
+local/*
 tests/*
 **/*.prj</param.exclude.filters>
     <param.exclude.pcodedmfiles>true</param.exclude.pcodedmfiles>
