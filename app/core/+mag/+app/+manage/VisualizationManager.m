@@ -1,6 +1,10 @@
 classdef (Abstract) VisualizationManager < mag.app.manage.Manager
 % VISUALIZATIONMANAGER Manager for visualization components.
 
+    properties (Abstract, Constant, Access = protected)
+        EmptyModel mag.app.Model {mustBeScalarOrEmpty}
+    end
+
     properties (SetAccess = private)
         VisualizationOptionsLayout matlab.ui.container.GridLayout
         VisualizationOptionsPanel matlab.ui.container.Panel
@@ -28,7 +32,7 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
             this.VisualizationTypeListBox.Layout.Row = 1;
             this.VisualizationTypeListBox.Layout.Column = 1;
 
-            this.setVisualizationTypesAndClasses(mag.app.imap.Model.empty());
+            this.setVisualizationTypesAndClasses(this.EmptyModel);
 
             % Create VisualizationOptionsPanel.
             this.VisualizationOptionsPanel = uipanel(this.VisualizationOptionsLayout);
