@@ -1,3 +1,3 @@
 # Toolbox
 
-- Remove `.env` file, and `.vscode` and `local` folders from toolbox
+- Allow loading of science when one sensor is inactive
