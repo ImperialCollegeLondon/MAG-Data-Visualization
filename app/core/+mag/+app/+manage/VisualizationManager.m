@@ -46,6 +46,8 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
             this.VisualizationTypeListBox.ValueIndex = [];
             this.VisualizationTypeListBox.Enable = "off";
             this.VisualizationOptionsPanel.Enable = "off";
+
+            delete(this.VisualizationOptionsPanel.Children);
         end
     end
 
@@ -93,8 +95,6 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
         function visualizationTypeListBoxValueChanged(this)
 
             if isempty(this.VisualizationTypeListBox.ValueIndex)
-
-                this.VisualizationOptionsPanel.Children = [];
                 return;
             end
 
