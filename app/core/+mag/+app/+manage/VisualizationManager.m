@@ -1,6 +1,10 @@
 classdef (Abstract) VisualizationManager < mag.app.manage.Manager
 % VISUALIZATIONMANAGER Manager for visualization components.
 
+    properties (Abstract, Constant, Access = protected)
+        EmptyModel mag.app.Model {mustBeScalarOrEmpty}
+    end
+
     properties (SetAccess = private)
         VisualizationOptionsLayout matlab.ui.container.GridLayout
         VisualizationOptionsPanel matlab.ui.container.Panel
@@ -22,13 +26,13 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
 
             % Create VisualizationTypeListBox.
             this.VisualizationTypeListBox = uilistbox(this.VisualizationOptionsLayout);
-            this.VisualizationTypeListBox.Items = this.getVisualizationTypes();
-            this.VisualizationTypeListBox.ItemsData = this.getVisualizationClasses();
-            this.VisualizationTypeListBox.Value = this.VisualizationTypeListBox.ItemsData(1);
+            this.VisualizationTypeListBox.ValueIndex = [];
             this.VisualizationTypeListBox.ValueChangedFcn = @(~, ~) this.visualizationTypeListBoxValueChanged();
             this.VisualizationTypeListBox.Enable = "off";
             this.VisualizationTypeListBox.Layout.Row = 1;
             this.VisualizationTypeListBox.Layout.Column = 1;
+
+            this.setVisualizationTypesAndClasses(this.EmptyModel);
 
             % Create VisualizationOptionsPanel.
             this.VisualizationOptionsPanel = uipanel(this.VisualizationOptionsLayout);
@@ -43,19 +47,19 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
 
         function reset(this)
 
-            this.VisualizationTypeListBox.Value = this.VisualizationTypeListBox.ItemsData(1);
+            this.VisualizationTypeListBox.ValueIndex = [];
             this.VisualizationTypeListBox.Enable = "off";
             this.VisualizationOptionsPanel.Enable = "off";
+
+            delete(this.VisualizationOptionsPanel.Children);
         end
     end
 
     methods (Abstract)
 
-        % GETVISUALIZATIONTYPES Retrieve types of visualization supported.
-        items = getVisualizationTypes(this)
-
-        % GETVISUALIZATIONCLASSES Retrieve classes for visualization.
-        itemsData = getVisualizationClasses(this)
+        % GETVISUALIZATIONTYPES Retrieve types and classes of visualization
+        % supported.
+        items = getVisualizationTypesAndClasses(this, model)
 
         % VISUALIZE Visualize analysis using selected view.
         figures = visualize(this, analysis)
@@ -65,7 +69,9 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
 
         function modelChangedCallback(this, model, ~)
 
-            if model.HasAnalysis && model.Analysis.Results.HasScience
+            this.setVisualizationTypesAndClasses(model);
+
+            if model.HasAnalysis
 
                 this.VisualizationTypeListBox.Enable = "on";
                 this.VisualizationOptionsPanel.Enable = "on";
@@ -79,7 +85,22 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
 
     methods (Access = private)
 
+        function setVisualizationTypesAndClasses(this, model)
+
+            [items, itemsData] = this.getVisualizationTypesAndClasses(model);
+
+            [items, idxSorted] = sort(items);
+            itemsData = itemsData(idxSorted);
+
+            this.VisualizationTypeListBox.Items = items;
+            this.VisualizationTypeListBox.ItemsData = itemsData;
+        end
+
         function visualizationTypeListBoxValueChanged(this)
+
+            if isempty(this.VisualizationTypeListBox.ValueIndex)
+                return;
+            end
 
             this.SelectedControl = this.VisualizationTypeListBox.ItemsData(this.VisualizationTypeListBox.ValueIndex);
             this.SelectedControl.instantiate(this.VisualizationOptionsPanel);
