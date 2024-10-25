@@ -23,11 +23,16 @@ function loadScienceData(this, primarySetup, secondarySetup)
 
     %% Amend Timestamp
 
-    [startTime(1), endTime(1)] = bounds(primary.Time);
-    [startTime(2), endTime(2)] = bounds(secondary.Time);
+    if primary.HasData
+        [startTime(1), endTime(1)] = bounds(primary.Time);
+    end
 
-    startTime = min(startTime);
-    endTime = max(endTime);
+    if secondary.HasData
+        [startTime(2), endTime(2)] = bounds(secondary.Time);
+    end
+
+    startTime = min(startTime, [], "omitmissing");
+    endTime = max(endTime, [], "omitmissing");
 
     primary.MetaData.Timestamp = startTime;
     secondary.MetaData.Timestamp = startTime;
@@ -37,8 +42,17 @@ function loadScienceData(this, primarySetup, secondarySetup)
     sensorEvents = eventtable(this.Results.Events);
     sensorEvents = sensorEvents(timerange(startTime - seconds(1), endTime, "closed"), :);
 
-    primary.Data.Properties.Events = this.generateEventTable(primary, sensorEvents);
-    secondary.Data.Properties.Events = this.generateEventTable(secondary, sensorEvents);
+    if primary.HasData
+        primary.Data.Properties.Events = this.generateEventTable(primary, sensorEvents);
+    else
+        primary.Data.Properties.Events = mag.Science.generateEmptyEventtable();
+    end
+
+    if secondary.HasData
+        secondary.Data.Properties.Events = this.generateEventTable(secondary, sensorEvents);
+    else
+        secondary.Data.Properties.Events = mag.Science.generateEmptyEventtable();
+    end
 
     %% Process Data as a Whole
 
@@ -82,10 +96,18 @@ function loadScienceData(this, primarySetup, secondarySetup)
 
     %% Process Science Data
 
-    for ss = this.ScienceProcessing
+    if primary.HasData
 
-        primary.Data = ss.apply(primary.Data, primary.MetaData);
-        secondary.Data = ss.apply(secondary.Data, secondary.MetaData);
+        for ss = this.ScienceProcessing
+            primary.Data = ss.apply(primary.Data, primary.MetaData);
+        end
+    end
+
+    if secondary.HasData
+
+        for ss = this.ScienceProcessing
+            secondary.Data = ss.apply(secondary.Data, secondary.MetaData);
+        end
     end
 end
 
