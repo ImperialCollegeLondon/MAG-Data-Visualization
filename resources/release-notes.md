@@ -1,3 +1,3 @@
-# Toolbox
+# App
 
-- Allow loading of science when one sensor is inactive
+- Hide views from "Visualize" tab when not supported
