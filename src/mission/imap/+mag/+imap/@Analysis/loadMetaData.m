@@ -1,4 +1,5 @@
 function [primarySetup, secondarySetup] = loadMetaData(this)
+
     % Initialize.
     metaData = mag.meta.Instrument(Mission = mag.meta.Mission.IMAP);
     primarySetup = mag.meta.Setup();
