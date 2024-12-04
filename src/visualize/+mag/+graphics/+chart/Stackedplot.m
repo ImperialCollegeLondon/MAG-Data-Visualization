@@ -1,4 +1,4 @@
-classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSupport & mag.graphics.mixin.MarkerSupport
+classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSupport & mag.graphics.mixin.MarkerSupport & mag.graphics.mixin.LineSupport
 % STACKEDPLOT Definition of chart of "stackedplot" type.
 
     properties
@@ -49,7 +49,7 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
             for y = 1:Ny
 
                 ax = nexttile(stackLayout);
-                graph(y) = plot(ax, xData, yData(:, y), this.MarkerStyle{:}, Color = this.Colors(y, :));
+                graph(y) = plot(ax, xData, yData(:, y), this.MarkerStyle{:}, this.LineCustomization{:}, Color = this.Colors(y, :));
 
                 if this.EventsVisible && ~isempty(data.Properties.Events)
                     this.addEventsData(ax, data);
