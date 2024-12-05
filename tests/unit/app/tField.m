@@ -69,7 +69,7 @@ classdef tField < MAGControllerTestCase
             testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
 
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Events"), """Events"" should be a named argument.");
-            testCase.verifyEqual(command.NamedArguments.Events, 'Mode', """Events"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.Events, "Mode", """Events"" should match expectation.");
         end
     end
 end
