@@ -12,8 +12,11 @@
         "**/*~": true
     },
     "cSpell.words": [
+        "Bartington",
         "downsample",
+        "HELIOSWARM",
+        "IMAP",
         "signedness",
-        "IMAP"
+        "SOLARORBITER"
     ]
 }
