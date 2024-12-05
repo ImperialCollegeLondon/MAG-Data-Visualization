@@ -13,7 +13,7 @@ classdef ModeChange < mag.event.Event
         % SECONDARYBURSTRATE Burst mode rate of secondary sensor.
         SecondaryBurstRate (1, 1) double {mustBeMemberOrMissing(SecondaryBurstRate, [8, 64, 128])} = 8
         % NORMALPACKETFREQUENCY Frequency of data packets in Normal mode.
-        PacketNormalFrequency (1, 1) double {mustBeMemberOrMissing(PacketNormalFrequency, [2, 4, 8])} = 8
+        PacketNormalFrequency (1, 1) double {mustBeMemberOrMissing(PacketNormalFrequency, [2, 4, 8, 16, 32, 64])} = 8
         % BURSTPACKETFREQUENCY Frequency of data packets in Burst mode.
         PacketBurstFrequency (1, 1) double {mustBeMemberOrMissing(PacketBurstFrequency, [2, 4, 8])} = 4
         % DURATION Duration of burst mode.
