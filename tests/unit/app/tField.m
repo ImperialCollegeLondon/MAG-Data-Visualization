@@ -49,7 +49,7 @@ classdef tField < MAGControllerTestCase
         end
 
         % Test that "getVisualizeCommand" returns expected command, when
-        % events have been selected.
+        % one event has been selected.
         function getVisualizeCommand_selectedEvents(testCase)
 
             % Set up.
@@ -69,7 +69,31 @@ classdef tField < MAGControllerTestCase
             testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
 
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Events"), """Events"" should be a named argument.");
-            testCase.verifyEqual(command.NamedArguments.Events, 'Mode', """Events"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.Events, "Mode", """Events"" should match expectation.");
+        end
+
+        % Test that "getVisualizeCommand" returns expected command, when
+        % more than one event have been selected.
+        function getVisualizeCommand_multipleSelectedEvents(testCase)
+
+            % Set up.
+            panel = testCase.createTestPanel();
+
+            field = mag.app.imap.control.Field();
+            field.instantiate(panel);
+
+            field.EventsTree.CheckedNodes = [field.EventsTree.Children(1), field.EventsTree.Children(3)];
+
+            results = mag.imap.Instrument();
+
+            % Exercise.
+            command = field.getVisualizeCommand(results);
+
+            % Verify.
+            testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
+
+            testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Events"), """Events"" should be a named argument.");
+            testCase.verifyEqual(command.NamedArguments.Events, ["Compression", "Range"], """Events"" should match expectation.");
         end
     end
 end
