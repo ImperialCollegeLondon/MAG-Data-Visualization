@@ -57,7 +57,7 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
 
             command = mag.app.Command(Functional = @(varargin) mag.imap.view.Field(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
-                NamedArguments = struct(Events = events));
+                NamedArguments = struct(Events = string(events)));
         end
     end
 end
