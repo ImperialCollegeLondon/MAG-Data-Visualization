@@ -11,7 +11,7 @@ classdef DigitalFilter < mag.process.Step
         % VARIABLES Variables to apply filter to.
         Variables (1, :) string
         % COEFFICIENTS Filter coefficients.
-        Coefficients double {mustBeVector}
+        Coefficients (:, 1) double
     end
 
     methods
