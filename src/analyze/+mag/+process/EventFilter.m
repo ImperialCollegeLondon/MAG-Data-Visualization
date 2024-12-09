@@ -1,5 +1,5 @@
-classdef Filter < mag.process.Step
-% FILTER Remove data points at events, such as mode and range changes.
+classdef EventFilter < mag.process.Step
+% EVENTFILTER Remove data points at events, such as mode and range changes.
 
     properties (Dependent)
         Name
@@ -28,10 +28,10 @@ classdef Filter < mag.process.Step
 
     methods
 
-        function this = Filter(options)
+        function this = EventFilter(options)
 
             arguments
-                options.?mag.process.Filter
+                options.?mag.process.EventFilter
             end
 
             this.assignProperties(options);
@@ -58,7 +58,7 @@ classdef Filter < mag.process.Step
         function data = apply(this, data, ~)
 
             arguments
-                this (1, 1) mag.process.Filter
+                this (1, 1) mag.process.EventFilter
                 data timetable
                 ~
             end

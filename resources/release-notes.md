@@ -4,4 +4,4 @@
 
 # Software
 
-- 
+- Rename `mag.process.Filter` to `mag.process.EventFilter`
