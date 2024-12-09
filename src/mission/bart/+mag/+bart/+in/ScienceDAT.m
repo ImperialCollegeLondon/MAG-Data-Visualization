@@ -24,7 +24,11 @@ classdef ScienceDAT < mag.io.in.DAT
             rawData = readtable(fileName, VariableNamingRule = "preserve", TextType = "string");
             rawData.("Time (s)") = startTime + seconds(rawData.("Time (s)"));
 
-            assert(width(rawData) == 4, "Bartington data should have 4 columns.");
+            if width(rawData) > 4
+                rawData = rawData(:, ["Time (s)", "x (nT)", "y (nT)", "z (nT)"]);
+            elseif width(rawData) < 4
+                error("Bartington data should have 4 columns.");
+            end
         end
 
         function data = process(~, rawData, ~)
@@ -39,21 +43,25 @@ classdef ScienceDAT < mag.io.in.DAT
                 data (1, 1) mag.Science
             end
 
-            data = renamevars(rawData, regexpPattern("\w+ \(\w+\)"), ["t", "x", "y", "z"]);
-            data = table2timetable(data, RowTimes = "t");
+            originalVarNames = rawData.Properties.VariableNames;
+
+            rawData = renamevars(rawData, regexpPattern("\w+ \(\w+\)"), ["t", "x", "y", "z"]);
+            rawData = table2timetable(rawData, RowTimes = "t");
 
             % Correct for units.
-            originalVarNames = rawData.Properties.VariableNames;
             units = extractBetween(string(originalVarNames{2}), "(", regexpPattern("T\)"));
 
             switch units
                 case "u"
-                    data{:, ["x", "y", "z"]} = data{:, ["x", "y", "z"]} * 1000;
+                    rawData{:, ["x", "y", "z"]} = rawData{:, ["x", "y", "z"]} * 1000;
                 case "n"
                     % nothing to do
                 otherwise
                     error("Unrecognized unit ""%s"".", units);
             end
+
+            % Convert to science.
+            data = mag.Science(rawData, mag.meta.Science());
         end
     end
 end
