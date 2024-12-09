@@ -1,0 +1,7 @@
+{
+    "Aliases": {
+        "NewName": "mag.process.EventFilter",
+        "OldNames": "mag.process.Filter",
+        "WarnOnOldName": false
+    }
+}
