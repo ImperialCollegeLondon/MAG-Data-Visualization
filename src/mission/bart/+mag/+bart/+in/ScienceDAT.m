@@ -1,28 +1,16 @@
 classdef ScienceDAT < mag.io.in.DAT
 % SCIENCEDAT Format Bartington science data for DAT import.
 
+    properties
+        % TIMEZONE Time zone for Bartington measurements.
+        TimeZone (1, 1) string = "local"
+    end
+
     methods
 
-        function [rawData, fileName] = load(~, fileName)
+        function [rawData, fileName] = load(this, fileName)
 
-            % Check there is at least one line of data in the file.
-            if nnz(~cellfun(@isempty, strsplit(fileread(fileName), newline))) < 2
-
-                rawData = table.empty();
-                return;
-            end
-
-            % Get start date.
-            rawText = fileread(fileName);
-
-            details = regexp(string(rawText), "Scan started at (?<hour>\d+):(?<minute>\d+):(?<second>\d+) (?<day>\d+)/(?<month>\d+)/(?<year>\d+)", "once", "names");
-            details = structfun(@str2double, details, UniformOutput = false);
-
-            startTime = datetime(details.year, details.month, details.day, details.hour, details.minute, details.second, TimeZone = "local", Format = mag.time.Constant.Format);
-
-            % Get data.
-            rawData = readtable(fileName, VariableNamingRule = "preserve", TextType = "string");
-            rawData.("Time (s)") = startTime + seconds(rawData.("Time (s)"));
+            [rawData, fileName] = load@mag.io.in.DAT(this, fileName);
 
             if width(rawData) > 4
                 rawData = rawData(:, ["Time (s)", "x (nT)", "y (nT)", "z (nT)"]);
@@ -31,12 +19,12 @@ classdef ScienceDAT < mag.io.in.DAT
             end
         end
 
-        function data = process(~, rawData, ~)
+        function data = process(this, rawData, fileName)
 
             arguments (Input)
-                ~
+                this (1, 1) mag.bart.in.ScienceDAT
                 rawData table
-                ~
+                fileName (1, 1) string
             end
 
             arguments (Output)
@@ -45,6 +33,17 @@ classdef ScienceDAT < mag.io.in.DAT
 
             originalVarNames = rawData.Properties.VariableNames;
 
+            % Add start date.
+            rawText = fileread(fileName);
+
+            details = regexp(string(rawText), "Scan started at (?<hour>\d+):(?<minute>\d+):(?<second>\d+) (?<day>\d+)/(?<month>\d+)/(?<year>\d+)", "once", "names");
+            details = structfun(@str2double, details, UniformOutput = false);
+
+            startTime = datetime(details.year, details.month, details.day, details.hour, details.minute, details.second, ...
+                TimeZone = this.TimeZone, Format = mag.time.Constant.Format);
+            rawData.("Time (s)") = startTime + seconds(rawData.("Time (s)"));
+
+            % Rename variables.
             rawData = renamevars(rawData, regexpPattern("\w+ \(\w+\)"), ["t", "x", "y", "z"]);
             rawData = table2timetable(rawData, RowTimes = "t");
 
@@ -61,7 +60,22 @@ classdef ScienceDAT < mag.io.in.DAT
             end
 
             % Convert to science.
-            data = mag.Science(rawData, mag.meta.Science());
+            inputType = extract(fileName, regexpPattern("in(?:put)? ?(\d)", IgnoreCase = true));
+            inputNumber = extract(inputType, digitsPattern());
+
+            if ~isempty(inputNumber)
+
+                switch inputNumber
+                    case "1"
+                        sensor = mag.meta.Sensor.FOB;
+                    case "2"
+                        sensor = mag.meta.Sensor.FIB;
+                    otherwise
+                        sensor = mag.meta.Sensor.empty();
+                end
+            end
+
+            data = mag.Science(rawData, mag.meta.Science(Sensor = sensor));
         end
     end
 end
