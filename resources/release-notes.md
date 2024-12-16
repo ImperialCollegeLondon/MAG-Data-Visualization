@@ -6,3 +6,4 @@
 # Software
 
 - Add support for PSD and Spectrogram for HelioSwarm data visualization
+- Remove use of `mag.Science/computePSD` and warn for deprecation
