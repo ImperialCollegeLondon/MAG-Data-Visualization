@@ -42,8 +42,8 @@ classdef PSD < mag.graphics.view.View
                 psdDuration = this.Duration;
             end
 
-            psdPrimary = primary.computePSD(Start = psdStart, Duration = psdDuration);
-            psdSecondary = secondary.computePSD(Start = psdStart, Duration = psdDuration);
+            psdPrimary = mag.psd(primary, Start = psdStart, Duration = psdDuration);
+            psdSecondary = mag.psd(secondary, Start = psdStart, Duration = psdDuration);
 
             yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
 

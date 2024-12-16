@@ -30,7 +30,7 @@ classdef Model < mag.app.Model
         end
 
         function reset(this)
-            this.setAnalysisAndNotify(mag.hk.Analysis.empty());
+            this.setAnalysisAndNotify(mag.hs.Analysis.empty());
         end
     end
 
