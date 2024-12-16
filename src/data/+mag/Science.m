@@ -274,6 +274,9 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
         end
 
         function data = computePSD(this, varargin)
+
+            warning("""computePSD"" will be removed in a future release. With appropriate changes, use ""mag.psd"" instead.");
+
             data = mag.psd(this, varargin{:});
         end
     end

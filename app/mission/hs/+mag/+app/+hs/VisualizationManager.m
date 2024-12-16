@@ -19,8 +19,13 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
 
             if ~isempty(model) && model.HasAnalysis
 
-                if (~isempty(model.Analysis.Results.Primary) && model.Analysis.Results.Primary.HasData) || ...
-                        (~isempty(model.Analysis.Results.Secondary) && model.Analysis.Results.Secondary.HasData)
+                if model.Analysis.Results.HasScience
+
+                    items = [items, "Spectrogram", "PSD"];
+                    itemsData = [itemsData, mag.app.hs.control.Spectrogram(), mag.app.hs.control.PSD()];
+                end
+
+                if ~isempty(model.Analysis.Results.Science) && model.Analysis.Results.Science.HasData
 
                     items = [items, "Science"];
                     itemsData = [itemsData, mag.app.hs.control.Field()];

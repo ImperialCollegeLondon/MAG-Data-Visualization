@@ -1,6 +1,9 @@
+# App
+
+- Add support for PSD and Spectrogram for HelioSwarm data visualization
+- Fix issues with HelioSwarm app ("Reset" button failing, nonexistent properties `Primary` and `Secondary`)
+
 # Software
 
-- Add support for 16, 32 and 64 second cadences in Normal mode
-- Add option to customize `LineStyle` and `LineWidth` in `mag.graphics.chart.Stackedplot`
-- Remove duplicate entries in HK
-- Fix issue with visualizing multiple events in IMAP science view
+- Add support for PSD and Spectrogram for HelioSwarm data visualization
+- Remove use of `mag.Science/computePSD` and warn for deprecation
