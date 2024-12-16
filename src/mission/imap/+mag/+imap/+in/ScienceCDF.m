@@ -41,7 +41,9 @@ classdef ScienceCDF < mag.io.in.CDF
 
             % Convert timestamps to datetime.
             timestamps = datetime(rawTimestamps, ConvertFrom = "tt2000", TimeZone = "UTCLeapSeconds");
-            timestamps.TimeZone = mag.time.Constant.TimeZone;
+
+            % Account for leap seconds.
+            timestamps = mag.time.removeLeapSeconds(timestamps);
             timestamps.Format = mag.time.Constant.Format;
 
             % Create science timetable.
