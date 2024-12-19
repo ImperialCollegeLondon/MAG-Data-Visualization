@@ -57,7 +57,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function app = DataVisualization(mission)
 
             arguments (Input)
-                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
+                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
             end
 
             % Create figure and other UI components.
@@ -110,19 +110,21 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             arguments (Input)
                 app
-                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
+                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
             end
 
             % Ask which mission to load, if not provided.
             if isempty(mission)
 
                 mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
-                    Options = ["HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
+                    Options = ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
 
                 closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing app..."); %#ok<NASGU>
             end
 
             switch mission
+                case "Bartington"
+                    app.Provider = mag.app.bart.Provider();
                 case "Cancel"
                     error("User aborted.");
                 case "HelioSwarm"

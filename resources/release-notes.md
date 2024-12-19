@@ -1,5 +1,6 @@
 # App
 
+- Add support for Bartington analysis and visualization
 - Reduce duplication in `mag.app.Model` and subclasses
 
 # Software

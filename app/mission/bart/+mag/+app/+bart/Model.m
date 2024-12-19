@@ -1,11 +1,11 @@
 classdef Model < mag.app.Model
-% MODEL HelioSwarm mission analysis model.
+% MODEL Bartington reference analysis model.
 
     methods
 
         function analyze(this, options)
 
-            analysis = mag.hs.Analysis.start(options{:});
+            analysis = mag.bart.Analysis.start(options{:});
             this.setAnalysisAndNotify(analysis);
         end
 
@@ -15,14 +15,14 @@ classdef Model < mag.app.Model
 
             for f = string(fieldnames(results))'
 
-                if isa(results.(f), "mag.hs.Analysis")
+                if isa(results.(f), "mag.bart.Analysis")
 
                     this.setAnalysisAndNotify(results.(f));
                     return;
                 end
             end
 
-            error("No ""mag.hs.Analysis"" found in MAT file.");
+            error("No ""mag.bart.Analysis"" found in MAT file.");
         end
 
         function export(this, options)
@@ -30,7 +30,7 @@ classdef Model < mag.app.Model
         end
 
         function reset(this)
-            this.setAnalysisAndNotify(mag.hs.Analysis.empty());
+            this.setAnalysisAndNotify(mag.bart.Analysis.empty());
         end
     end
 end
