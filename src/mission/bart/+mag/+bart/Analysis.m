@@ -4,25 +4,33 @@ classdef (Sealed) Analysis < mag.Analysis
     properties
         % LOCATION Location of data to load.
         Location (1, 1) string {mustBeFolder} = pwd()
-        % SCIENCEPATTERN Pattern of science data files.
-        SciencePattern (1, 1) string = fullfile("*.Dat")
+        % GRADIOMETER Gradiometer mode.
+        Gradiometer (1, 1) logical = false
+        % INPUT1PATTERN Pattern of input 1 data files.
+        Input1Pattern (1, 1) string = fullfile("*Input 1*.Dat")
+        % INPUT2PATTERN Pattern of input 2 data files.
+        Input2Pattern (1, 1) string = fullfile("*Input 2*.Dat")
         % SCIENCEPROCESSING Steps needed to process science data.
         ScienceProcessing (1, :) mag.process.Step = mag.process.Step.empty()
     end
 
     properties (Dependent)
-        % SCIENCEFILENAMES Files containing science data.
-        ScienceFileNames (1, :) string
+        % INPUT1FILENAMES Files containing input 1 data.
+        Input1FileNames (1, :) string
+        % INPUT2FILENAMES Files containing input 2 data.
+        Input2FileNames (1, :) string
     end
 
     properties (SetAccess = private)
         % RESULTS Results collected during analysis.
-        Results mag.Instrument {mustBeScalarOrEmpty}
+        Results mag.bart.Instrument {mustBeScalarOrEmpty}
     end
 
     properties (Access = private)
-        % SCIENCEFILES Information about files containing science data.
-        ScienceFiles (:, 1) struct
+        % INPUT1FILES Information about files containing input 1 data.
+        Input1Files (:, 1) struct
+        % INPUT2FILES Information about files containing input 2 data.
+        Input2Files (:, 1) struct
     end
 
     methods (Static)
@@ -53,17 +61,23 @@ classdef (Sealed) Analysis < mag.Analysis
             this.assignProperties(options);
         end
 
-        function value = get.ScienceFileNames(this)
-            value = string(fullfile({this.ScienceFiles.folder}, {this.ScienceFiles.name}));
+        function value = get.Input1FileNames(this)
+            value = string(fullfile({this.Input1Files.folder}, {this.Input1Files.name}));
+        end
+
+        function value = get.Input2FileNames(this)
+            value = string(fullfile({this.Input2Files.folder}, {this.Input2Files.name}));
         end
 
         function detect(this)
-            this.ScienceFiles = dir(fullfile(this.Location, this.SciencePattern));
+
+            this.Input1Files = dir(fullfile(this.Location, this.Input1Pattern));
+            this.Input2Files = dir(fullfile(this.Location, this.Input2Pattern));
         end
 
         function load(this)
 
-            this.Results = mag.Instrument();
+            this.Results = mag.bart.Instrument();
 
             this.loadScienceData();
         end
@@ -107,14 +121,21 @@ classdef (Sealed) Analysis < mag.Analysis
 
         function loadScienceData(this)
 
-            if isempty(this.ScienceFileNames)
+            if isempty(this.Input1FileNames) && isempty(this.Input2FileNames)
                 return;
             end
 
-            this.Results.Science = mag.io.import( ...
-                FileNames = this.ScienceFileNames, ...
-                Format = mag.bart.in.ScienceDAT(), ...
+            input1Science = mag.io.import( ...
+                FileNames = this.Input1FileNames, ...
+                Format = mag.bart.in.ScienceDAT(InputType = 1), ...
                 ProcessingSteps = this.ScienceProcessing);
+
+            input2Science = mag.io.import( ...
+                FileNames = this.Input2FileNames, ...
+                Format = mag.bart.in.ScienceDAT(InputType = 2), ...
+                ProcessingSteps = this.ScienceProcessing);
+
+            this.Results.Science = [input1Science, input2Science];
         end
     end
 end

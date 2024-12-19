@@ -4,9 +4,20 @@ classdef ScienceDAT < mag.io.in.DAT
     properties
         % TIMEZONE Time zone for Bartington measurements.
         TimeZone (1, 1) string = "local"
+        % INPUTTYPE Input type (1 or 2).
+        InputType (1, 1) double {mustBeMember(InputType, [1, 2])} = 1
     end
 
     methods
+
+        function this = ScienceDAT(options)
+
+            arguments
+                options.?mag.bart.in.ScienceDAT
+            end
+
+            this.assignProperties(options);
+        end
 
         function [rawData, fileName] = load(this, fileName)
 
@@ -60,22 +71,30 @@ classdef ScienceDAT < mag.io.in.DAT
             end
 
             % Convert to science.
-            inputType = extract(fileName, regexpPattern("in(?:put)? ?(\d)", IgnoreCase = true));
-            inputNumber = extract(inputType, digitsPattern());
+            metaData = this.detectMetaData(rawData.t);
+            data = mag.Science(rawData, metaData);
+        end
+    end
 
-            if ~isempty(inputNumber)
+    methods (Access = private)
 
-                switch inputNumber
-                    case "1"
-                        sensor = mag.meta.Sensor.FOB;
-                    case "2"
-                        sensor = mag.meta.Sensor.FIB;
-                    otherwise
-                        sensor = mag.meta.Sensor.empty();
-                end
+        function metaData = detectMetaData(this, time)
+
+            switch this.InputType
+                case 1
+                    sensor = mag.meta.Sensor.FOB;
+                case 2
+                    sensor = mag.meta.Sensor.FIB;
+                otherwise
+                    error("Unrecognized input type ""%d"".", this.InputType);
             end
 
-            data = mag.Science(rawData, mag.meta.Science(Sensor = sensor));
+            dt = diff(time);
+            frequency = round(1 / seconds(median(dt)), 1);
+
+            timestamp = min(time);
+
+            metaData = mag.meta.Science(Sensor = sensor, DataFrequency = frequency, Timestamp = timestamp);
         end
     end
 end
