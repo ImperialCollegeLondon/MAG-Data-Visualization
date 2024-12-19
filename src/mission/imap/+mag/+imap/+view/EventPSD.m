@@ -77,7 +77,7 @@ classdef EventPSD < mag.graphics.view.View
                 if (duration > 0) && (height(data.Data(timerange(startTime, startTime + duration, "closed"), :)) > 7)
 
                     % Compute PSD.
-                    psd = data.computePSD(Start = startTime, Duration = duration);
+                    psd = mag.psd(data, Start = startTime, Duration = duration);
 
                     % Add plot.
                     charts = [charts, {psd, ...

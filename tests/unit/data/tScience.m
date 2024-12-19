@@ -370,7 +370,7 @@ classdef tScience < matlab.unittest.TestCase
             science = testCase.createSineWaveTestData();
 
             % Execute.
-            psd = science.computePSD();
+            psd = testCase.verifyWarning(@() science.computePSD(), "");
 
             % Verify.
             [~, idxMax] = max([psd.X, psd.Y, psd.Z]);
@@ -386,7 +386,7 @@ classdef tScience < matlab.unittest.TestCase
             science = testCase.createSineWaveTestData();
 
             % Execute.
-            psd = science.computePSD(Start = science.Time(10), Duration = milliseconds(500));
+            psd = testCase.verifyWarning(@() science.computePSD(Start = science.Time(10), Duration = milliseconds(500)), "");
 
             % Verify.
             [~, idxMax] = max([psd.X, psd.Y, psd.Z]);
