@@ -12,8 +12,12 @@
         "**/*~": true
     },
     "cSpell.words": [
+        "Bartington",
         "downsample",
+        "Gradiometer",
+        "HELIOSWARM",
+        "IMAP",
         "signedness",
-        "IMAP"
+        "SOLARORBITER"
     ]
 }

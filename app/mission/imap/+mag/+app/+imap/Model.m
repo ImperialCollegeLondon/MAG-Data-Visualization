@@ -33,13 +33,4 @@ classdef Model < mag.app.Model
             this.setAnalysisAndNotify(mag.imap.Analysis.empty());
         end
     end
-
-    methods (Access = private)
-
-        function setAnalysisAndNotify(this, analysis)
-
-            this.Analysis = analysis;
-            this.notify("AnalysisChanged");
-        end
-    end
 end

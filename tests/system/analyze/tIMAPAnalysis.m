@@ -1,5 +1,5 @@
 classdef tIMAPAnalysis < matlab.unittest.TestCase
-% TIMAPANALYSIS Tests for analysis flow.
+% TIMAPANALYSIS Tests for IMAP analysis flow.
 
     properties (Access = private)
         WorkingDirectory (1, 1) matlab.unittest.fixtures.WorkingFolderFixture
@@ -9,6 +9,12 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
         function setUpWorkingDirectory(testCase)
             testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
+        end
+
+        function copyDataToWorkingDirectory(testCase)
+
+            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "test_data", "imap"), fullfile(testCase.WorkingDirectory.Folder));
+            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
         end
 
         function suppressWarnings(testCase)
@@ -22,8 +28,6 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
         function fullAnalysis(testCase)
 
             % Set up.
-            testCase.copyData();
-
             modes = [mag.meta.Mode.Normal, mag.meta.Mode.Burst, mag.meta.Mode.Normal, mag.meta.Mode.Burst, mag.meta.Mode.Normal];
             primaryDataFrequencies = [2, 64, 2, 128, 2];
             secondaryDataFrequencies = [2, 8, 2, 128, 2];
@@ -74,15 +78,6 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
                     testCase.verifyEqual(results(i).Science(j).Data, expectedResults(i).Science(j).Data, "Analysis results should match expectation.");
                 end
             end
-        end
-    end
-
-    methods (Access = private)
-
-        function copyData(testCase)
-
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "data"), fullfile(testCase.WorkingDirectory.Folder));
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
         end
     end
 end

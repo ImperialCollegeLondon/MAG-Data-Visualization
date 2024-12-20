@@ -15,14 +15,14 @@ classdef Model < mag.app.Model
 
             for f = string(fieldnames(results))'
 
-                if isa(results.(f), "mag.hk.Analysis")
+                if isa(results.(f), "mag.hs.Analysis")
 
                     this.setAnalysisAndNotify(results.(f));
                     return;
                 end
             end
 
-            error("No ""mag.hk.Analysis"" found in MAT file.");
+            error("No ""mag.hs.Analysis"" found in MAT file.");
         end
 
         function export(this, options)
@@ -31,15 +31,6 @@ classdef Model < mag.app.Model
 
         function reset(this)
             this.setAnalysisAndNotify(mag.hs.Analysis.empty());
-        end
-    end
-
-    methods (Access = private)
-
-        function setAnalysisAndNotify(this, analysis)
-
-            this.Analysis = analysis;
-            this.notify("AnalysisChanged");
         end
     end
 end

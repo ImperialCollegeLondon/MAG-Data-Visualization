@@ -1,3 +1,13 @@
+# App
+
+- Add support for Bartington analysis and visualization
+- Reduce duplication in `mag.app.Model` and subclasses
+
 # Software
 
-- Correct for leap seconds in IMAP CDF files
+- Add definition of `mag.bart.Analysis` and other classes for analyzing Bartington data
+- Add definition of views for Bartington science, PSD and spectrogram
+- Add new processing classes for Bartington data
+- Add tests for Bartington and HelioSwarm analysis
+- Rename `mag.process.Filter` to `mag.process.EventFilter`
+- Fix IMAP export to CDF by correcting for UTC leap seconds

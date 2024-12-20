@@ -7,7 +7,7 @@ classdef (Abstract) CSV < mag.io.in.Format
 
     methods
 
-        function [rawData, fileName] = load(~, fileName)
+        function [rawData, fileName] = load(this, fileName)
 
             % Check there is at least one line of data in the file.
             if nnz(~cellfun(@isempty, strsplit(fileread(fileName), newline))) < 2
@@ -16,7 +16,7 @@ classdef (Abstract) CSV < mag.io.in.Format
                 return;
             end
 
-            dataStore = tabularTextDatastore(fileName, FileExtensions = ".csv");
+            dataStore = tabularTextDatastore(fileName, FileExtensions = this.Extension);
             rawData = dataStore.readall(UseParallel = mag.internal.useParallel());
         end
     end

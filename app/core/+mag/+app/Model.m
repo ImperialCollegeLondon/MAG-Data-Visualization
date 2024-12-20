@@ -8,7 +8,7 @@ classdef (Abstract) Model < mag.mixin.SetGet
 
     properties (SetAccess = protected)
         % ANALYSIS Analysis results.
-        Analysis {mustBeScalarOrEmpty, mustBeA(Analysis, ["mag.hs.Analysis", "mag.imap.Analysis"])} = mag.imap.Analysis.empty()
+        Analysis mag.Analysis {mustBeScalarOrEmpty} = mag.imap.Analysis.empty()
     end
 
     properties (Dependent, SetAccess = private)
@@ -35,6 +35,15 @@ classdef (Abstract) Model < mag.mixin.SetGet
 
         function value = get.HasAnalysis(this)
             value = ~isempty(this.Analysis) && ~isempty(this.Analysis.Results);
+        end
+    end
+
+    methods (Access = protected)
+
+        function setAnalysisAndNotify(this, analysis)
+
+            this.Analysis = analysis;
+            this.notify("AnalysisChanged");
         end
     end
 end

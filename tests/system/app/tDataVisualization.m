@@ -2,7 +2,7 @@ classdef tDataVisualization < matlab.uitest.TestCase
 % TDATAVISUALIZATION System tests for "DataVisualization" app.
 
     properties (TestParameter)
-        ValidMission = {"HelioSwarm", "IMAP"}
+        ValidMission = {"Bartington", "HelioSwarm", "IMAP"}
         InvalidMission = {"Solar Orbiter", "Not a Mission"}
     end
 
