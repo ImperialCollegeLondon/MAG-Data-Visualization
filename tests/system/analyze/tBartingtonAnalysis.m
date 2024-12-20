@@ -41,15 +41,6 @@ classdef tBartingtonAnalysis < matlab.unittest.TestCase
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
     end
-
-    methods (Access = private)
-
-        function copyData(testCase)
-
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "data"), fullfile(testCase.WorkingDirectory.Folder));
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
-        end
-    end
 end
 
 
