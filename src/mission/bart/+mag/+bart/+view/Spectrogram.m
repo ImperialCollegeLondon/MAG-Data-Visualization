@@ -35,23 +35,17 @@ classdef Spectrogram < mag.graphics.view.View
             input1 = this.Results.Input1;
             input2 = this.Results.Input2;
 
-            % Spectrogram.
-            imput1Spectrum = mag.spectrogram(input1, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
-                Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
+            [numSpectrogram, spectrogramData] = this.getSpectrogramData(input1, input2);
 
-            input2Spectrum = mag.spectrogram(input2, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
-                Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
-
-            % Field and spectrogram.
-            input1Charts = this.getFrequencyCharts(input1, imput1Spectrum, "Input 1", "left");
-            input2Charts = this.getFrequencyCharts(input2, input2Spectrum, "Input 2", "right");
+            if isempty(spectrogramData)
+                return;
+            end
 
             this.Figures = this.Factory.assemble( ...
-                input1Charts{:}, ...
-                input2Charts{:}, ...
-                Title = this.getFrequencyFigureTitle(input1.MetaData, input2.MetaData), ...
-                Name = this.getFrequencyFigureName(input1.MetaData, input2.MetaData), ...
-                Arrangement = [9, 2], ...
+                spectrogramData{:}, ...
+                Title = this.getFrequencyFigureTitle(input1, input2), ...
+                Name = this.getFrequencyFigureName(input1, input2), ...
+                Arrangement = [9, numSpectrogram], ...
                 LinkXAxes = true, ...
                 TileIndexing = "columnmajor", ...
                 WindowState = "maximized");
@@ -59,6 +53,30 @@ classdef Spectrogram < mag.graphics.view.View
     end
 
     methods (Access = private)
+
+        function [numSpectrogram, spectrogramData] = getSpectrogramData(this, input1, input2)
+
+            numSpectrogram = 0;
+            spectrogramData = {};
+
+            if ~isempty(input1) && input1.HasData
+
+                input1Spectrum = mag.spectrogram(input1, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
+                    Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
+
+                numSpectrogram = numSpectrogram + 1;
+                spectrogramData = [spectrogramData, this.getFrequencyCharts(input1, input1Spectrum, "Input 1", "left")];
+            end
+
+            if ~isempty(input2) && input2.HasData
+    
+                input2Spectrum = mag.spectrogram(input2, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
+                    Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
+
+                numSpectrogram = numSpectrogram + 1;
+                spectrogramData = [spectrogramData, this.getFrequencyCharts(input2, input2Spectrum, "Input 2", "right")];
+            end
+        end
 
         function charts = getFrequencyCharts(this, science, spectrum, name, axisLocation)
 
@@ -71,12 +89,26 @@ classdef Spectrogram < mag.graphics.view.View
                 spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "Z"))};
         end
 
-        function value = getFrequencyFigureTitle(~, input1MetaData, input2MetaData)
-            value = compose("Bartington (%d, %d)", input1MetaData.getDisplay("DataFrequency"), input2MetaData.getDisplay("DataFrequency"));
+        function value = getFrequencyFigureTitle(~, input1, input2)
+
+            if isempty(input1)
+                value = compose("Bartington (%d Hz)", input2.MetaData.getDisplay("DataFrequency"));
+            elseif isempty(input2)
+                value = compose("Bartington (%d Hz)", input1.MetaData.getDisplay("DataFrequency"));
+            else
+                value = compose("Bartington (%d, %d)", input1.MetaData.getDisplay("DataFrequency"), input2.MetaData.getDisplay("DataFrequency"));
+            end
         end
 
-        function value = getFrequencyFigureName(this, input1MetaData, input2MetaData)
-            value = this.getFrequencyFigureTitle(input1MetaData, input2MetaData) + compose(" Frequency (%s)", this.date2str(input1MetaData.Timestamp));
+        function value = getFrequencyFigureName(this, input1, input2)
+
+            value = this.getFrequencyFigureTitle(input1, input2);
+
+            if isempty(input1)
+                value = value + compose(" Frequency (%s)", this.date2str(input2.MetaData.Timestamp));
+            else
+                value = value + compose(" Frequency (%s)", this.date2str(input1.MetaData.Timestamp));;
+            end
         end
     end
 end

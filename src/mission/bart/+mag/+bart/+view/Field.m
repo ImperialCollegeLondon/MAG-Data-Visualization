@@ -31,8 +31,8 @@ classdef Field < mag.graphics.view.View
 
             this.Figures = this.Factory.assemble( ...
                 scienceData{:}, ...
-                Title = this.getFigureTitle(input1.MetaData, input2.MetaData), ...
-                Name = this.getFigureName(input1.MetaData, input2.MetaData), ...
+                Title = this.getFigureTitle(input1, input2), ...
+                Name = this.getFigureName(input1, input2), ...
                 Arrangement = [1, numScience], ...
                 LinkXAxes = true, ...
                 WindowState = "maximized");
@@ -41,14 +41,28 @@ classdef Field < mag.graphics.view.View
 
     methods (Access = private)
 
-        function value = getFigureTitle(this, input1MetaData, input2MetaData)
-            value = compose("Bartington (%s, %s)", this.getDataFrequency(input1MetaData), this.getDataFrequency(input2MetaData));
+        function value = getFigureTitle(this, input1, input2)
+
+            if isempty(input1)
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input2.MetaData));
+            elseif isempty(input2)
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input1.MetaData));
+            else
+                value = compose("Bartington (%s, %s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData));
+            end
         end
 
-        function value = getFigureName(this, input1MetaData, input2MetaData)
+        function value = getFigureName(this, input1, input2)
 
-            value = compose("Field (%s, %s) Time Series (%s)", this.getDataFrequency(input1MetaData), this.getDataFrequency(input2MetaData), ...
-                this.date2str(input1MetaData.Timestamp));
+            if isempty(input1)
+                value = compose("Field (%s Hz) Time Series (%s)", this.getDataFrequency(input2.MetaData), this.date2str(input2.MetaData.Timestamp));
+            elseif isempty(input2)
+                value = compose("Field (%s Hz) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.date2str(input1.MetaData.Timestamp));
+            else
+
+                value = compose("Field (%s, %s) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData), ...
+                    this.date2str(input1.MetaData.Timestamp));
+            end
         end
     end
 
