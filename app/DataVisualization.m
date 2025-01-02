@@ -2,7 +2,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
     properties (Constant, Access = private)
-        AppName string = "MAG Data Visualization App"
+        AppName (1, 1) string = "MAG Data Visualization App"
     end
 
     properties (SetAccess = private)
@@ -57,7 +57,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function app = DataVisualization(mission)
 
             arguments (Input)
-                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
+                mission mag.meta.Mission {mustBeScalarOrEmpty} = string.empty()
             end
 
             % Create figure and other UI components.
@@ -110,26 +110,27 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             arguments (Input)
                 app
-                mission string {mustBeScalarOrEmpty, mustBeMember(mission, ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter"])} = string.empty()
+                mission mag.meta.Mission {mustBeScalarOrEmpty} = string.empty()
             end
 
             % Ask which mission to load, if not provided.
             if isempty(mission)
 
+                imap = mag.meta.Mission.IMAP;
                 mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
-                    Options = ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter"], DefaultOption = "IMAP");
+                    Options = string(enumeration(imap)), DefaultOption = string(imap));
 
                 closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing app..."); %#ok<NASGU>
             end
 
             switch mission
-                case "Bartington"
+                case mag.meta.Mission.Bartington
                     app.Provider = mag.app.bart.Provider();
-                case "HelioSwarm"
+                case mag.meta.Mission.HelioSwarm
                     app.Provider = mag.app.hs.Provider();
-                case "IMAP"
+                case mag.meta.Mission.IMAP
                     app.Provider = mag.app.imap.Provider();
-                case "Solar Orbiter"
+                case mag.meta.Mission.SolarOrbiter
                     error("Solar Orbiter mission not yet supported.");
                 otherwise
                     error("User aborted.");
