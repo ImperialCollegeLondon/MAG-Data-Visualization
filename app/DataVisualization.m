@@ -117,7 +117,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             if isempty(mission)
 
                 mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
-                    Options = ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter", "Cancel"], DefaultOption = "IMAP", CancelOption = "Cancel");
+                    Options = ["Bartington", "HelioSwarm", "IMAP", "Solar Orbiter"], DefaultOption = "IMAP");
 
                 closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing app..."); %#ok<NASGU>
             end
@@ -125,14 +125,14 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             switch mission
                 case "Bartington"
                     app.Provider = mag.app.bart.Provider();
-                case "Cancel"
-                    error("User aborted.");
                 case "HelioSwarm"
                     app.Provider = mag.app.hs.Provider();
                 case "IMAP"
                     app.Provider = mag.app.imap.Provider();
                 case "Solar Orbiter"
                     error("Solar Orbiter mission not yet supported.");
+                otherwise
+                    error("User aborted.");
             end
 
             % Set managers.
