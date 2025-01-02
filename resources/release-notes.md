@@ -1,4 +1,3 @@
 # App
 
-- Reduce duplication of supported missions
-- Fix issue with opening app without mission
+- Redesign mission selection window to support all enumerated missions (in `mag.meta.Mission`)

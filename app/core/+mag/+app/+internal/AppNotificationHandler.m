@@ -23,6 +23,10 @@ classdef AppNotificationHandler < handle
                 icon (1, 1) string {mustBeMember(icon, ["error", "warning", "info", "success", "none"])} = "error"
             end
 
+            if ~isvalid(this.UIFigure)
+                return;
+            end
+
             if isa(message, "MException")
 
                 this.ToolbarManager.setLatestErrorMessage(message);
@@ -42,7 +46,13 @@ classdef AppNotificationHandler < handle
             end
 
             arguments (Output)
-                closeProgressBar (1, 2) onCleanup
+                closeProgressBar (1, :) onCleanup
+            end
+
+            if ~isvalid(this.UIFigure)
+
+                closeProgressBar = onCleanup.empty();
+                return;
             end
 
             progressBar = uiprogressdlg(this.UIFigure, Message = message, Icon = "info", Indeterminate = "on");
