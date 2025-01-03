@@ -11,7 +11,7 @@ classdef Field < mag.imap.view.Science
         function this = Field(results, options)
 
             arguments
-                results
+                results (1, 1) mag.imap.Instrument
                 options.?mag.imap.view.Field
             end
 

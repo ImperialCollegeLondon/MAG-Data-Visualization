@@ -6,7 +6,7 @@ classdef RampMode < mag.graphics.view.View
         function this = RampMode(results, options)
 
             arguments
-                results
+                results (1, 1) mag.imap.Instrument
                 options.?mag.imap.view.RampMode
             end
 
