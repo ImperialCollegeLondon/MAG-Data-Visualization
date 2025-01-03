@@ -22,13 +22,16 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
                 if model.Analysis.Results.HasScience
 
                     items = [items, "Spectrogram", "PSD"];
-                    itemsData = [itemsData, mag.app.hs.control.Spectrogram(), mag.app.hs.control.PSD()];
+                    itemsData = [itemsData, ...
+                        mag.app.control.Spectrogram(@mag.hs.view.Spectrogram), ...
+                        mag.app.control.PSD(@mag.hs.view.PSD)];
                 end
 
                 if ~isempty(model.Analysis.Results.Science) && model.Analysis.Results.Science.HasData
 
                     items = [items, "Science"];
-                    itemsData = [itemsData, mag.app.hs.control.Field()];
+                    itemsData = [itemsData, ...
+                        mag.app.control.Field(@mag.hs.view.Field)];
                 end
             end
         end

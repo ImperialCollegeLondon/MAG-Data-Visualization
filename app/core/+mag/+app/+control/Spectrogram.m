@@ -1,5 +1,9 @@
 classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
-% SPECTROGRAM View-controller for generating "mag.imap.view.Spectrogram".
+% SPECTROGRAM View-controller for generating spectrogram view
+
+    properties (SetAccess = immutable)
+        ViewType function_handle {mustBeScalarOrEmpty}
+    end
 
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
@@ -9,6 +13,15 @@ classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
     end
 
     methods
+
+        function this = Spectrogram(viewType)
+
+            arguments
+                viewType (1, 1) function_handle
+            end
+
+            this.ViewType = viewType;
+        end
 
         function instantiate(this, parent)
 
@@ -58,7 +71,7 @@ classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
 
             arguments (Input)
                 this
-                results (1, 1) mag.imap.Instrument
+                results (1, 1) mag.Instrument
             end
 
             arguments (Output)
@@ -82,7 +95,7 @@ classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
 
             results = mag.app.internal.cropResults(results, startTime, endTime);
 
-            command = mag.app.Command(Functional = @(varargin) mag.imap.view.Spectrogram(varargin{:}).visualizeAll(), ...
+            command = mag.app.Command(Functional = @(varargin) this.ViewType(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
                 NamedArguments = struct(FrequencyPoints = frequencyPoints, Overlap = overlap, Window = window));
         end

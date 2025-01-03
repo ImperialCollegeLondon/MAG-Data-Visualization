@@ -1,11 +1,24 @@
 classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
-% FIELD View-controller for generating "mag.hs.view.Field".
+% FIELD View-controller for generating field view.
+
+    properties (SetAccess = immutable)
+        ViewType function_handle {mustBeScalarOrEmpty}
+    end
 
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
     end
 
     methods
+
+        function this = Field(viewType)
+
+            arguments
+                viewType (1, 1) function_handle
+            end
+
+            this.ViewType = viewType;
+        end
 
         function instantiate(this, parent)
 
@@ -29,7 +42,7 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
             [startTime, endTime] = this.getStartEndTimes();
             results = mag.app.internal.cropResults(results, startTime, endTime);
 
-            command = mag.app.Command(Functional = @(varargin) mag.hs.view.Field(varargin{:}).visualizeAll(), ...
+            command = mag.app.Command(Functional = @(varargin) this.ViewType(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results});
         end
     end

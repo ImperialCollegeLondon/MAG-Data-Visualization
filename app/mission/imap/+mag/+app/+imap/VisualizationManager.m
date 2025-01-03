@@ -22,21 +22,26 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
                 if model.Analysis.Results.HasScience
 
                     items = [items, "AT/SFT", "CPT", "Spectrogram", "PSD"];
-                    itemsData = [itemsData, mag.app.imap.control.AT(), mag.app.imap.control.CPT(), ...
-                        mag.app.imap.control.Spectrogram(), mag.app.imap.control.PSD()];
+                    itemsData = [itemsData, ...
+                        mag.app.imap.control.AT(), ...
+                        mag.app.imap.control.CPT(), ...
+                        mag.app.control.Spectrogram(@mag.imap.view.Spectrogram), ...
+                        mag.app.control.PSD(@mag.imap.view.PSD)];
                 end
 
                 if (~isempty(model.Analysis.Results.Primary) && model.Analysis.Results.Primary.HasData) || ...
                         (~isempty(model.Analysis.Results.Secondary) && model.Analysis.Results.Secondary.HasData)
 
                     items = [items, "Science"];
-                    itemsData = [itemsData, mag.app.imap.control.Field()];
+                    itemsData = [itemsData, ...
+                        mag.app.imap.control.Field()];
                 end
 
                 if model.Analysis.Results.HasHK
 
                     items = [items, "HK"];
-                    itemsData = [itemsData, mag.app.imap.control.HK()];
+                    itemsData = [itemsData, ...
+                        mag.app.imap.control.HK()];
                 end
             end
         end

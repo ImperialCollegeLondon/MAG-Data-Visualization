@@ -1,5 +1,9 @@
 classdef PSD < mag.app.Control
-% PSD View-controller for generating "mag.imap.view.PSD".
+% PSD View-controller for generating PSD view.
+
+    properties (SetAccess = immutable)
+        ViewType function_handle {mustBeScalarOrEmpty}
+    end
 
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
@@ -9,6 +13,15 @@ classdef PSD < mag.app.Control
     end
 
     methods
+
+        function this = PSD(viewType)
+
+            arguments
+                viewType (1, 1) function_handle
+            end
+
+            this.ViewType = viewType;
+        end
 
         function instantiate(this, parent)
 
@@ -42,7 +55,7 @@ classdef PSD < mag.app.Control
 
             arguments (Input)
                 this
-                results (1, 1) mag.imap.Instrument
+                results (1, 1) mag.Instrument
             end
 
             arguments (Output)
@@ -52,7 +65,7 @@ classdef PSD < mag.app.Control
             startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
             duration = hours(this.DurationSpinner.Value);
 
-            command = mag.app.Command(Functional = @(varargin) mag.imap.view.PSD(varargin{:}).visualizeAll(), ...
+            command = mag.app.Command(Functional = @(varargin) this.ViewType(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
                 NamedArguments = struct(Start = startTime, Duration = duration));
         end
