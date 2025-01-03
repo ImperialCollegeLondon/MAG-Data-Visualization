@@ -1,5 +1,5 @@
 classdef tPSD < MAGControllerTestCase
-% TPSD Unit tests for "mag.app.imap.controlPSD" class.
+% TPSD Unit tests for "mag.app.control.PSD" class.
 
     methods (Test)
 
@@ -8,7 +8,7 @@ classdef tPSD < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            psd = mag.app.imap.control.PSD();
+            psd = mag.app.control.PSD(@mag.bart.view.PSD);
 
             % Exercise.
             psd.instantiate(panel);
@@ -37,10 +37,10 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.imap.control.PSD();
+            psd = mag.app.control.PSD(@mag.bart.view.PSD);
             psd.instantiate(panel);
 
-            results = mag.imap.Instrument();
+            results = mag.bart.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);
@@ -63,7 +63,7 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.imap.control.PSD();
+            psd = mag.app.control.PSD(@mag.bart.view.PSD);
             psd.instantiate(panel);
 
             psd.StartDatePicker.Value = datetime("today");
@@ -73,7 +73,7 @@ classdef tPSD < MAGControllerTestCase
             expectedStartDate.Format = mag.time.Constant.Format;
             expectedStartDate.TimeZone = mag.time.Constant.TimeZone;
 
-            results = mag.imap.Instrument();
+            results = mag.bart.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);
@@ -96,12 +96,12 @@ classdef tPSD < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            psd = mag.app.imap.control.PSD();
+            psd = mag.app.control.PSD(@mag.bart.view.PSD);
             psd.instantiate(panel);
 
             psd.DurationSpinner.Value = 2.15;
 
-            results = mag.imap.Instrument();
+            results = mag.bart.Instrument();
 
             % Exercise.
             command = psd.getVisualizeCommand(results);
