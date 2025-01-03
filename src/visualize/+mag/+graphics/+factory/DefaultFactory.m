@@ -34,6 +34,12 @@ classdef DefaultFactory < mag.graphics.factory.Factory
             f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, Visible = "off");
             setVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
 
+            if isprop(f, "Theme")
+                f.Theme = options.Theme;
+            else
+                warning("Theme ""%s"" cannot be applied.", options.Theme);
+            end
+
             if any(ismissing(options.Arrangement))
                 arrangement = {"flow"};
             else

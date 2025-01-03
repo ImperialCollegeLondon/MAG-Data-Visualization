@@ -5,6 +5,7 @@
 
 # Software
 
+- Add support for dark-mode figures
 - Fix issue with tab-completion of Bartington views
 
 # Project
