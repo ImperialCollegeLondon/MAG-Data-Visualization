@@ -6,3 +6,8 @@
 # Software
 
 - Fix issue with tab-completion of Bartington views
+
+# Project
+
+- Add shortcut to run tests with coverage
+- Reorganize project files
