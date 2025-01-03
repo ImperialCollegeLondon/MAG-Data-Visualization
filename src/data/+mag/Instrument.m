@@ -46,7 +46,7 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
         end
 
         function hasScience = get.HasScience(this)
-            hasScience = ~isempty(this.Science) && all([this.Science.HasData]);
+            hasScience = ~isempty(this.Science) && any([this.Science.HasData]);
         end
 
         function hasHK = get.HasHK(this)

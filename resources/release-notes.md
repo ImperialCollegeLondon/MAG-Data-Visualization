@@ -8,6 +8,7 @@
 
 - Add support for dark-mode figures
 - Fix issue with tab-completion of Bartington views
+- `mag.Instrument.HasScience` now returns true if any science object has data
 
 # Project
 
