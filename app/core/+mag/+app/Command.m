@@ -10,6 +10,13 @@ classdef Command < mag.mixin.SetGet
         NamedArguments struct {mustBeScalarOrEmpty}
     end
 
+    properties (Dependent, SetAccess = private)
+        % NARGIN Number of input arguments.
+        NArgIn (1, 1) double
+        % NARGOUT Number of output arguments.
+        NArgOut (1, 1) double
+    end
+
     methods
 
         function this = Command(options)
@@ -19,6 +26,14 @@ classdef Command < mag.mixin.SetGet
             end
 
             this.assignProperties(options);
+        end
+
+        function value = get.NArgIn(this)
+            value = nargin(this.Functional);
+        end
+
+        function value = get.NArgOut(this)
+            value = nargout(this.Functional);
         end
 
         function args = getCellArguments(this)
