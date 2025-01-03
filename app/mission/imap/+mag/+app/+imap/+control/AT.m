@@ -1,6 +1,10 @@
 classdef AT < mag.app.Control & mag.app.mixin.Filter
 % AT View-controller for generating Aliveness Test plots.
 
+    properties (Constant)
+        Name = "AT/SFT"
+    end
+
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
         PSDCheckBox matlab.ui.control.CheckBox
@@ -50,6 +54,10 @@ classdef AT < mag.app.Control & mag.app.mixin.Filter
                 Limits = [0, Inf], LowerLimitInclusive = true);
             this.PSDDurationSpinner.Layout.Row = 4;
             this.PSDDurationSpinner.Layout.Column = [2, 3];
+        end
+
+        function supported = isSupported(~, results)
+            supported = results.HasScience;
         end
 
         function command = getVisualizeCommand(this, results)

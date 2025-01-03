@@ -14,25 +14,26 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
                 model mag.app.hs.Model {mustBeScalarOrEmpty}
             end
 
-            items = string.empty();
             itemsData = mag.app.Control.empty();
+
+            supportedControls = [mag.app.control.Field(@mag.hs.view.Field), ...
+                mag.app.control.PSD(@mag.hs.view.PSD), ...
+                mag.app.control.Spectrogram(@mag.hs.view.Spectrogram)];
 
             if ~isempty(model) && model.HasAnalysis
 
-                if model.Analysis.Results.HasScience
+                for c = supportedControls
 
-                    items = [items, "Spectrogram", "PSD"];
-                    itemsData = [itemsData, ...
-                        mag.app.control.Spectrogram(@mag.hs.view.Spectrogram), ...
-                        mag.app.control.PSD(@mag.hs.view.PSD)];
+                    if c.isSupported(model.Analysis.Results)
+                        itemsData = [itemsData, c]; %#ok<AGROW>
+                    end
                 end
+            end
 
-                if ~isempty(model.Analysis.Results.Science) && model.Analysis.Results.Science.HasData
-
-                    items = [items, "Science"];
-                    itemsData = [itemsData, ...
-                        mag.app.control.Field(@mag.hs.view.Field)];
-                end
+            if ~isempty(itemsData)
+                items = [itemsData.Name];
+            else
+                items = string.empty();
             end
         end
 

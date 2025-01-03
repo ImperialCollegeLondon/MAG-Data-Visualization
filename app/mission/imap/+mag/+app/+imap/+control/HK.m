@@ -1,6 +1,10 @@
 classdef HK < mag.app.Control & mag.app.mixin.StartEndDate
 % HK View-controller for generating "mag.imap.view.HK".
 
+    properties (Constant)
+        Name = "HK"
+    end
+
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
     end
@@ -11,6 +15,10 @@ classdef HK < mag.app.Control & mag.app.mixin.StartEndDate
 
             this.Layout = this.createDefaultGridLayout(parent);
             this.addStartEndDateButtons(this.Layout, StartDateRow = 1, EndDateRow = 2);
+        end
+
+        function supported = isSupported(~, results)
+            supported = results.HasHK;
         end
 
         function command = getVisualizeCommand(this, results)

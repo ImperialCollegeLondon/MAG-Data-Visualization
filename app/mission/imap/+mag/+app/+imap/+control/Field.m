@@ -1,6 +1,10 @@
 classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
 % FIELD View-controller for generating "mag.imap.view.Field".
 
+    properties (Constant)
+        Name = "Field"
+    end
+
     properties (Constant, Access = private)
         % SUPPORTEDEVENTS Events supported by "mag.imap.view.Field".
         SupportedEvents (1, 3) string = ["Compression", "Mode", "Range"]
@@ -32,6 +36,12 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
             for e = this.SupportedEvents
                 uitreenode(this.EventsTree, Text = e);
             end
+        end
+
+        function supported = isSupported(~, results)
+
+            supported = (~isempty(results.Primary) && results.Primary.HasData) || ...
+                (~isempty(results.Secondary) && results.Secondary.HasData);
         end
 
         function command = getVisualizeCommand(this, results)

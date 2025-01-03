@@ -1,6 +1,10 @@
 classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
 % FIELD View-controller for generating field view.
 
+    properties (Constant)
+        Name = "Field"
+    end
+
     properties (SetAccess = immutable)
         ViewType function_handle {mustBeScalarOrEmpty}
     end
@@ -26,6 +30,10 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
 
             % Start and end dates.
             this.addStartEndDateButtons(this.Layout, StartDateRow = 1, EndDateRow = 2);
+        end
+
+        function supported = isSupported(~, results)
+            supported = results.HasScience;
         end
 
         function command = getVisualizeCommand(this, results)

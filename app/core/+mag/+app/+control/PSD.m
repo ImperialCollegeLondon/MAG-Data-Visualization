@@ -1,6 +1,10 @@
 classdef PSD < mag.app.Control
 % PSD View-controller for generating PSD view.
 
+    properties (Constant)
+        Name = "PSD"
+    end
+
     properties (SetAccess = immutable)
         ViewType function_handle {mustBeScalarOrEmpty}
     end
@@ -49,6 +53,10 @@ classdef PSD < mag.app.Control
                 Limits = [0, Inf]);
             this.DurationSpinner.Layout.Row = 2;
             this.DurationSpinner.Layout.Column = [2, 3];
+        end
+
+        function supported = isSupported(~, results)
+            supported = results.HasScience;
         end
 
         function command = getVisualizeCommand(this, results)

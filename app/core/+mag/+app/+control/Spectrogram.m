@@ -1,5 +1,9 @@
 classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
-% SPECTROGRAM View-controller for generating spectrogram view
+% SPECTROGRAM View-controller for generating spectrogram view.
+
+    properties (Constant)
+        Name = "Spectrogram"
+    end
 
     properties (SetAccess = immutable)
         ViewType function_handle {mustBeScalarOrEmpty}
@@ -65,6 +69,10 @@ classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
                 Placeholder = this.DynamicPlaceholder);
             this.WindowSpinner.Layout.Row = 5;
             this.WindowSpinner.Layout.Column = [2, 3];
+        end
+
+        function supported = isSupported(~, results)
+            supported = results.HasScience;
         end
 
         function command = getVisualizeCommand(this, results)
