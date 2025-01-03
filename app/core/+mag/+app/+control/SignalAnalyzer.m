@@ -30,8 +30,7 @@ classdef SignalAnalyzer < mag.app.Control
             inputLabel.Layout.Row = 1;
             inputLabel.Layout.Column = 1;
 
-            this.InputDropDown = uidropdown(this.Layout);
-            this.InputDropDown.Items = this.SelectableInputs;
+            this.InputDropDown = uidropdown(this.Layout, Items = this.SelectableInputs);
             this.InputDropDown.Layout.Row = 1;
             this.InputDropDown.Layout.Column = [2, 3];
 
@@ -40,10 +39,14 @@ classdef SignalAnalyzer < mag.app.Control
             signalLabel.Layout.Row = 2;
             signalLabel.Layout.Column = 1;
 
-            this.SignalDropDown = uidropdown(this.Layout);
-            this.SignalDropDown.Items = ["X", "Y", "Z"];
+            this.SignalDropDown = uidropdown(this.Layout, Items = ["X", "Y", "Z"]);
             this.SignalDropDown.Layout.Row = 2;
             this.SignalDropDown.Layout.Column = [2, 3];
+
+            % Note.
+            noteLabel = uilabel(this.Layout, Text = "Note: opens Signal Analyzer app.");
+            noteLabel.Layout.Row = 5;
+            noteLabel.Layout.Column = [1, 3];
         end
 
         function supported = isSupported(~, results)
