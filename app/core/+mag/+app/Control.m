@@ -1,6 +1,11 @@
 classdef (Abstract) Control < mag.app.manage.Manager
 % CONTROL Abstract base class for view-controllers.
 
+    properties (Abstract, Constant)
+        % NAME View name.
+        Name (1, 1) string
+    end
+
     properties (Constant, Access = private)
         % DEFAULTSIZE Default grid layout size.
         DefaultSize (1, 2) double = [5, 3]
@@ -14,6 +19,9 @@ classdef (Abstract) Control < mag.app.manage.Manager
     end
 
     methods (Abstract)
+
+        % ISSUPPORTED Determine whether view-controller is supported.
+        supported = isSupported(this, results)
 
         % GETVISUALIZECOMMAND Retrieve command to plot all figures.
         command = getVisualizeCommand(this, results)

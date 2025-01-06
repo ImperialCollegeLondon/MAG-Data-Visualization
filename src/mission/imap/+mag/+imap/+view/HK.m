@@ -11,7 +11,7 @@ classdef HK < mag.graphics.view.View
         function this = HK(results, options)
 
             arguments
-                results
+                results (1, 1) mag.imap.Instrument
                 options.?mag.imap.view.HK
             end
 

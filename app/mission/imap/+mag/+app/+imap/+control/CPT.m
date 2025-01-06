@@ -1,6 +1,10 @@
 classdef CPT < mag.app.Control & mag.app.mixin.Filter
 % CPT View-controller for generating Comprehensive Performance Test plots.
 
+    properties (Constant)
+        Name = "CPT"
+    end
+
     properties (Constant, Access = private)
         % PRIMARYMODEPATTERN Mode cycling pattern for primary sensor.
         PrimaryModePattern (1, :) double = [2, 64, 2, 4, 64, 4, 4, 128]
@@ -58,6 +62,10 @@ classdef CPT < mag.app.Control & mag.app.mixin.Filter
                 ValueChangingFcn = @(~, value) this.validatePattern(value));
             this.RangePatternField.Layout.Row = 4;
             this.RangePatternField.Layout.Column = [2, 3];
+        end
+
+        function supported = isSupported(~, results)
+            supported = results.HasScience;
         end
 
         function command = getVisualizeCommand(this, results)

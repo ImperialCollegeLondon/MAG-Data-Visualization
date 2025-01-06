@@ -20,9 +20,8 @@ classdef Spectrogram < mag.graphics.view.View
         function this = Spectrogram(results, options)
 
             arguments
-                results
+                results (1, 1) mag.bart.Instrument
                 options.?mag.bart.view.Spectrogram
-                options.Results (1, 1) mag.bart.Instrument
             end
 
             this.Results = results;

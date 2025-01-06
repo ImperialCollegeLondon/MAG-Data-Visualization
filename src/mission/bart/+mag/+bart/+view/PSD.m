@@ -13,9 +13,8 @@ classdef PSD < mag.graphics.view.View
         function this = PSD(results, options)
 
             arguments
-                results
+                results (1, 1) mag.bart.Instrument
                 options.?mag.bart.view.PSD
-                options.Results (1, 1) mag.bart.Instrument
             end
 
             this.Results = results;

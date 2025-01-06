@@ -6,7 +6,7 @@ classdef Timestamp < mag.graphics.view.View
         function this = Timestamp(results, options)
 
             arguments
-                results
+                results (1, 1) mag.imap.Instrument
                 options.?mag.imap.view.Timestamp
             end
 

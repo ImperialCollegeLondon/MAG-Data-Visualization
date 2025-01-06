@@ -12,6 +12,7 @@ classdef Settings < mag.mixin.SetGet
         WindowState (1, 1) string {mustBeMember(WindowState, ["normal", "maximized", "minimized", "fullscreen"])} = "normal"
         ShowVersion (1, 1) logical = false
         Visible (1, 1) logical = true
+        Theme (1, 1) string {mustBeMember(Theme, ["light", "dark"])} = "light"
     end
 
     methods

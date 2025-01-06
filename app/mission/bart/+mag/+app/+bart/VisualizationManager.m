@@ -14,30 +14,42 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
                 model mag.app.bart.Model {mustBeScalarOrEmpty}
             end
 
-            items = string.empty();
             itemsData = mag.app.Control.empty();
+
+            supportedControls = [mag.app.control.Field(@mag.bart.view.Field), ...
+                mag.app.control.PSD(@mag.bart.view.PSD), ...
+                mag.app.control.SignalAnalyzer(["Input1", "Input2"]), ...
+                mag.app.control.Spectrogram(@mag.bart.view.Spectrogram), ...
+                mag.app.control.WaveletAnalyzer(["Input1", "Input2"])];
 
             if ~isempty(model) && model.HasAnalysis
 
-                if model.Analysis.Results.HasScience
+                for c = supportedControls
 
-                    items = [items, "Spectrogram", "PSD"];
-                    itemsData = [itemsData, mag.app.bart.control.Spectrogram(), mag.app.bart.control.PSD()];
+                    if c.isSupported(model.Analysis.Results)
+                        itemsData = [itemsData, c]; %#ok<AGROW>
+                    end
                 end
+            end
 
-                if (~isempty(model.Analysis.Results.Input1) && model.Analysis.Results.Input1.HasData) || ...
-                    (~isempty(model.Analysis.Results.Input2) && model.Analysis.Results.Input2.HasData)
-
-                    items = [items, "Science"];
-                    itemsData = [itemsData, mag.app.bart.control.Field()];
-                end
+            if ~isempty(itemsData)
+                items = [itemsData.Name];
+            else
+                items = string.empty();
             end
         end
 
         function figures = visualize(this, analysis)
 
             command = this.SelectedControl.getVisualizeCommand(analysis.Results);
-            figures = command.call();
+
+            if command.NArgOut > 0
+                figures = command.call();
+            else
+
+                command.call();
+                figures = matlab.ui.Figure.empty();
+            end
         end
     end
 end

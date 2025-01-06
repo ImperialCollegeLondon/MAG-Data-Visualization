@@ -1,5 +1,5 @@
 classdef tSpectrogram < MAGControllerTestCase
-% TSPECTROGRAM Unit tests for "mag.app.imap.controlSpectrogram" class.
+% TSPECTROGRAM Unit tests for "mag.app.control.Spectrogram" class.
 
     methods (Test)
 
@@ -8,7 +8,7 @@ classdef tSpectrogram < MAGControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
-            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
 
             % Exercise.
             spectrogram.instantiate(panel);
@@ -52,10 +52,10 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
             spectrogram.instantiate(panel);
 
-            results = mag.imap.Instrument();
+            results = mag.bart.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);
@@ -79,12 +79,12 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
             spectrogram.instantiate(panel);
 
             spectrogram.OverlapSpinner.Value = 0.5;
 
-            results = mag.imap.Instrument();
+            results = mag.bart.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);
@@ -108,12 +108,12 @@ classdef tSpectrogram < MAGControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
-            spectrogram = mag.app.imap.control.Spectrogram();
+            spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
             spectrogram.instantiate(panel);
 
             spectrogram.WindowSpinner.Value = 25;
 
-            results = mag.imap.Instrument();
+            results = mag.bart.Instrument();
 
             % Exercise.
             command = spectrogram.getVisualizeCommand(results);

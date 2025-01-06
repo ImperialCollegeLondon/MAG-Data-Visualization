@@ -13,7 +13,7 @@ classdef PSD < mag.graphics.view.View
         function this = PSD(results, options)
 
             arguments
-                results
+                results (1, 1) mag.imap.Instrument
                 options.?mag.imap.view.PSD
             end
 

@@ -116,11 +116,16 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             % Ask which mission to load, if not provided.
             if isempty(mission)
 
-                imap = mag.meta.Mission.IMAP;
-                mission = uiconfirm(app.UIFigure, "Select the mission to load.", "Select Mission", Icon = "question", ...
-                    Options = string(enumeration(imap)), DefaultOption = string(imap));
+                selectMissionDialog = mag.app.internal.SelectMissionDialog(app.UIFigure);
+                mission = selectMissionDialog.waitForSelection();
 
-                closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing app..."); %#ok<NASGU>
+                if selectMissionDialog.Aborted
+                    error("User aborted.");
+                else
+                    selectMissionDialog.delete();
+                end
+
+                closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing mission..."); %#ok<NASGU>
             end
 
             switch mission
@@ -133,7 +138,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 case mag.meta.Mission.SolarOrbiter
                     error("Solar Orbiter mission not yet supported.");
                 otherwise
-                    error("User aborted.");
+                    error("Unknown mission ""%s"".", mission);
             end
 
             % Set managers.
@@ -149,6 +154,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
 
             % Create components.
+            delete(app.GridLayout);
+
             app.createComponents();
 
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
