@@ -12,8 +12,10 @@ classdef WaveletAnalyzer < mag.app.Control
 
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
+        AppDropDown matlab.ui.control.DropDown
         InputDropDown matlab.ui.control.DropDown
         SignalDropDown matlab.ui.control.DropDown
+        NoteLabel matlab.ui.control.Label
     end
 
     methods
@@ -26,28 +28,40 @@ classdef WaveletAnalyzer < mag.app.Control
 
             this.Layout = this.createDefaultGridLayout(parent);
 
+            % App.
+            appLabel = uilabel(this.Layout, Text = "App:");
+            appLabel.Layout.Row = 1;
+            appLabel.Layout.Column = 1;
+
+            this.AppDropDown = uidropdown(this.Layout, Items = ["Signal Analyzer", "Time-Frequency Analyzer"]);
+            this.AppDropDown.ValueChangedFcn = @(~, ~) this.appDropDownValueChanged();
+            this.AppDropDown.Layout.Row = 1;
+            this.AppDropDown.Layout.Column = [2, 3];
+
             % Input.
             inputLabel = uilabel(this.Layout, Text = "Input:");
-            inputLabel.Layout.Row = 1;
+            inputLabel.Layout.Row = 2;
             inputLabel.Layout.Column = 1;
 
             this.InputDropDown = uidropdown(this.Layout, Items = this.SelectableInputs);
-            this.InputDropDown.Layout.Row = 1;
+            this.InputDropDown.Layout.Row = 2;
             this.InputDropDown.Layout.Column = [2, 3];
 
             % Signal.
             signalLabel = uilabel(this.Layout, Text = "Signal:");
-            signalLabel.Layout.Row = 2;
+            signalLabel.Layout.Row = 3;
             signalLabel.Layout.Column = 1;
 
             this.SignalDropDown = uidropdown(this.Layout, Items = ["X", "Y", "Z"]);
-            this.SignalDropDown.Layout.Row = 2;
+            this.SignalDropDown.Layout.Row = 3;
             this.SignalDropDown.Layout.Column = [2, 3];
 
             % Note.
-            noteLabel = uilabel(this.Layout, Text = "Note: opens Wavelet Time-Frequency Analyzer app.");
-            noteLabel.Layout.Row = 5;
-            noteLabel.Layout.Column = [1, 3];
+            this.NoteLabel = uilabel(this.Layout, Text = "");
+            this.NoteLabel.Layout.Row = 5;
+            this.NoteLabel.Layout.Column = [1, 3];
+
+            this.appDropDownValueChanged();
         end
 
         function supported = isSupported(~, results)
@@ -69,7 +83,9 @@ classdef WaveletAnalyzer < mag.app.Control
             selectedSignal = string(this.SignalDropDown.Value);
 
             data = results.(selectedInput);
-            selectedData = timetable(data.Time - data.Time(1), data.(selectedSignal), VariableNames = selectedInput + "_" + selectedSignal);
+            propertyName = selectedInput + "_" + selectedSignal;
+
+            selectedData = timetable(data.Time - data.Time(1), data.(selectedSignal), VariableNames = propertyName);
 
             if ~isregular(selectedData)
 
@@ -79,8 +95,25 @@ classdef WaveletAnalyzer < mag.app.Control
                 selectedData = resample(selectedData);
             end
 
-            command = mag.app.Command(Functional = @(varargin) waveletTimeFrequencyAnalyzer(varargin{:}), ...
-                PositionalArguments = {selectedData});
+            switch this.AppDropDown.Value
+                case "Signal Analyzer"
+
+                    command = mag.app.Command(Functional = @(varargin) waveletSignalAnalyzer(varargin{:}), ...
+                        PositionalArguments = {selectedData.(propertyName)});
+                case "Time-Frequency Analyzer"
+
+                    command = mag.app.Command(Functional = @(varargin) waveletTimeFrequencyAnalyzer(varargin{:}), ...
+                        PositionalArguments = {selectedData});
+                otherwise
+                    error("Unknown Wavelet Toolbox app ""%s"".", this.AppDropDown.Value);
+            end
+        end
+    end
+
+    methods (Access = private)
+
+        function appDropDownValueChanged(this)
+            this.NoteLabel.Text = compose("Note: opens Wavelet %s app.", this.AppDropDown.Value);
         end
     end
 end
