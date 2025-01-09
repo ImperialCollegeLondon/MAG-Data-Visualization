@@ -5,4 +5,5 @@
 
 # Software
 
+- Add `isPlottable` method to check if `mag.TimeSeries` has enough data to be plotted
 - Fix issue with timed events (e.g., timed Burst mode) followed up by non-mode events (e.g., range-change events)

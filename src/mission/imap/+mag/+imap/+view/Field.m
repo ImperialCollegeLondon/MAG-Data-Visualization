@@ -37,7 +37,7 @@ classdef Field < mag.imap.view.Science
                 return;
             end
 
-            if isempty(pwrHK) || ~pwrHK.HasData
+            if pwrHK.isPlottable()
 
                 this.Figures = this.Factory.assemble( ...
                     scienceData{:}, ...
