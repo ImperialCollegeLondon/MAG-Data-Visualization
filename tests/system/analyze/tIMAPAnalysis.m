@@ -58,5 +58,3 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
         end
     end
 end
-
-
