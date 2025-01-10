@@ -2,6 +2,7 @@
 
 - Add checkbox in IMAP AT/SFT visualization options to show spectrograms
 - Reduce duplication in definition of supported view-controllers for each mission
+- Disable toolbar when selecting a mission
 
 # Software
 

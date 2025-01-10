@@ -3,10 +3,10 @@ classdef ToolbarManager < mag.app.manage.Manager
 
     properties (SetAccess = private)
         Toolbar matlab.ui.container.Toolbar
+        MissionPushTool matlab.ui.container.toolbar.PushTool
         ImportPushTool matlab.ui.container.toolbar.PushTool
         DebugToggleTool matlab.ui.container.toolbar.ToggleTool
         HelpPushTool matlab.ui.container.toolbar.PushTool
-        MissionPushTool matlab.ui.container.toolbar.PushTool
     end
 
     properties (Access = private)
@@ -63,6 +63,24 @@ classdef ToolbarManager < mag.app.manage.Manager
 
         function setLatestErrorMessage(this, exception)
             this.PreviousError = exception;
+        end
+
+        function unlockToolbar = lock(this)
+
+            arguments (Output)
+                unlockToolbar (1, 1) onCleanup
+            end
+
+            [this.MissionPushTool.Enable, this.ImportPushTool.Enable, ...
+                this.DebugToggleTool.Enable, this.HelpPushTool.Enable] = deal(false);
+
+            unlockToolbar = onCleanup(@() this.unlock());
+        end
+
+        function unlock(this)
+
+            [this.MissionPushTool.Enable, this.ImportPushTool.Enable, ...
+                this.DebugToggleTool.Enable, this.HelpPushTool.Enable] = deal(true);
         end
     end
 
