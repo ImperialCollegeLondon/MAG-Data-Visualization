@@ -29,23 +29,29 @@ classdef ToolbarManager < mag.app.manage.Manager
             % Create Toolbar.
             this.Toolbar = uitoolbar(parent);
 
+            if isprop(parent, "Theme")
+                theme = parent.Theme.BaseColorStyle;
+            else
+                theme = "light";
+            end
+
             % Create MissionPushTool.
             this.MissionPushTool = uipushtool(this.Toolbar);
             this.MissionPushTool.Tooltip = "Change mission";
             this.MissionPushTool.ClickedCallback = @(~, ~) this.missionPushToolClicked();
-            this.MissionPushTool.Icon = fullfile(this.IconsPath, "mission.png");
+            this.MissionPushTool.Icon = this.getIconPath("mission", theme);
 
             % Create ImportPushTool.
             this.ImportPushTool = uipushtool(this.Toolbar);
             this.ImportPushTool.Tooltip = "Import existing analysis";
             this.ImportPushTool.ClickedCallback = @(~, ~) this.importPushToolClicked();
-            this.ImportPushTool.Icon = fullfile(this.IconsPath, "import.png");
+            this.ImportPushTool.Icon = this.getIconPath("import", theme);
             this.ImportPushTool.Separator = "on";
 
             % Create DebugToggleTool.
             this.DebugToggleTool = uitoggletool(this.Toolbar);
             this.DebugToggleTool.Tooltip = "Set break point at last error source";
-            this.DebugToggleTool.Icon = fullfile(this.IconsPath, "debug.png");
+            this.DebugToggleTool.Icon = this.getIconPath("debug", theme);
             this.DebugToggleTool.Separator = "on";
             this.DebugToggleTool.OffCallback = @(~, ~) this.debugToggleToolOff();
             this.DebugToggleTool.OnCallback = @(~, ~) this.debugToggleToolOn();
@@ -54,7 +60,7 @@ classdef ToolbarManager < mag.app.manage.Manager
             this.HelpPushTool = uipushtool(this.Toolbar);
             this.HelpPushTool.Tooltip = "Share debugging information with development";
             this.HelpPushTool.ClickedCallback = @(~, ~) this.helpPushToolClicked();
-            this.HelpPushTool.Icon = fullfile(this.IconsPath, "help.png");
+            this.HelpPushTool.Icon = this.getIconPath("help", theme);
         end
 
         function reset(~)
@@ -92,6 +98,10 @@ classdef ToolbarManager < mag.app.manage.Manager
     end
 
     methods (Access = private)
+
+        function iconPath = getIconPath(this, iconName, theme)
+            iconPath = fullfile(this.IconsPath, compose("%s_%s.png", iconName, theme));
+        end
 
         function missionPushToolClicked(this)
             this.App.selectMission();
