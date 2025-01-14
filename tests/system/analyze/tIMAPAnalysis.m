@@ -7,6 +7,10 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
     methods (TestClassSetup)
 
+        function skipOnGitHub(testCase)
+            testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
+        end
+
         function useMATLABR2024bOrAbove(testCase)
             testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
         end
@@ -54,55 +58,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20240507_111151.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-
-            matBaseline = matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results");
-            testCase.verifyEqualsBaseline(analysis.Results, matBaseline, @() testCase.findDifference(analysis.Results, matBaseline.load()));
-        end
-    end
-
-    methods (Access = private)
-
-        function findDifference(testCase, expected, actual)
-
-            mc = metaclass(expected);
-
-            if ~isequal(numel(expected), numel(actual))
-                disp("Wrong size.");
-            elseif ~isequal(expected, actual)
-
-                if istable(expected) || istimetable(expected)
-                    disp(compose("Table property:\n  Exp: %s\n  Act: %s", expected, actual));
-                else
-
-                    for i = 1:numel(expected)
-
-                        if mc.Enumeration
-                            disp(compose("Enum property:\n  Exp: %s\n  Act: %s", expected(i), actual(i)));
-                        elseif startsWith(mc.Name, "mag.")
-
-                            for mp = mc.PropertyList'
-
-                                if isequal(mp.GetAccess, "public") && ~isequal(expected(i).(mp.Name), actual(i).(mp.Name))
-
-                                    disp(compose("Property ""%s"" is different.", mp.Name));
-                                    testCase.findDifference(expected(i).(mp.Name), actual(i).(mp.Name));
-                                end
-                            end
-                        else
-
-                            if isa(expected, "string") || isa(expected, "char")
-                                disp(compose("String property:\n  Exp: %s\n  Act: %s", expected(i), actual(i)));
-                            elseif isa(expected, "numeric")
-                                disp(compose("Numeric property:\n  Exp: %.3g\n  Act: %.3g\n  Diff: %.3g", expected(i), actual(i), expected(i) - actual(i)));
-                            elseif isa(expected, "logical")
-                                disp(compose("Logical property:\n  Exp: %d\n  Act: %d", expected(i), actual(i)));
-                            elseif isa(expected, "datetime") || isa(expected, "duration")
-                                disp(compose("Date/Time property:\n  Exp: %s\n  Act: %s\n  Diff: %s", expected(i), actual(i), expected(i) - actual(i)));
-                            end
-                        end
-                    end
-                end
-            end
+            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
     end
 end
