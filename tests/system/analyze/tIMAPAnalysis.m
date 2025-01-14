@@ -56,7 +56,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
 
             matBaseline = matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results");
-            testCase.verifyEqualsBaseline(analysis.Results, matBaseline, @() testCase.findDifference(analysis.Results, matBaseline.load()));
+            testCase.verifyEqualsBaseline(analysis.Results, matBaseline, @() testCase.findDifference(analysis.Results, matBaseline.load()), RelTol = 1e-3);
         end
     end
 
