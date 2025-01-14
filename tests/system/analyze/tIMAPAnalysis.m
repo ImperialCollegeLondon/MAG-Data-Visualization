@@ -68,28 +68,27 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
             if ~isequal(numel(expected), numel(actual))
                 disp("Wrong size.");
-            else
+            elseif ~isequal(expected, actual)
 
-                for i = 1:numel(expected)
+                if istable(expected) || istimetable(expected)
+                    disp(compose("Table property:\n  Exp: %s\n  Act: %s", expected, actual));
+                else
 
-                    if mc.Enumeration
+                    for i = 1:numel(expected)
 
-                        if ~isequal(expected(i), actual(i))
+                        if mc.Enumeration
                             disp(compose("Enum property:\n  Exp: %s\n  Act: %s", expected(i), actual(i)));
-                        end
-                    elseif startsWith(mc.Name, "mag.")
+                        elseif startsWith(mc.Name, "mag.")
 
-                        for mp = mc.PropertyList'
+                            for mp = mc.PropertyList'
 
-                            if isequal(mp.GetAccess, "public") && ~isequal(expected(i).(mp.Name), actual(i).(mp.Name))
+                                if isequal(mp.GetAccess, "public") && ~isequal(expected(i).(mp.Name), actual(i).(mp.Name))
 
-                                disp(compose("Property ""%s"" is different.", mp.Name));
-                                testCase.findDifference(expected(i).(mp.Name), actual(i).(mp.Name));
+                                    disp(compose("Property ""%s"" is different.", mp.Name));
+                                    testCase.findDifference(expected(i).(mp.Name), actual(i).(mp.Name));
+                                end
                             end
-                        end
-                    else
-
-                        if ~isequal(expected(i), actual(i))
+                        else
 
                             if isa(expected, "string") || isa(expected, "char")
                                 disp(compose("String property:\n  Exp: %s\n  Act: %s", expected(i), actual(i)));
