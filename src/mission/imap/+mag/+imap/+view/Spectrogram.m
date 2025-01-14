@@ -73,7 +73,7 @@ classdef Spectrogram < mag.graphics.view.View
         end
 
         function value = getFrequencyFigureTitle(~, primary, secondary)
-            value = compose("%s (%d, %d)", primary.MetaData.getDisplay("Mode"), primary.MetaData.getDisplay("DataFrequency"), secondary.MetaData.getDisplay("DataFrequency"));
+            value = compose("%s (%s, %s)", primary.MetaData.getDisplay("Mode"), this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData));
         end
 
         function value = getFrequencyFigureName(this, primary, secondary)

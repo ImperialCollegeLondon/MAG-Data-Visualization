@@ -91,11 +91,11 @@ classdef Spectrogram < mag.graphics.view.View
         function value = getFrequencyFigureTitle(~, input1, input2)
 
             if isempty(input1)
-                value = compose("Bartington (%d Hz)", input2.MetaData.getDisplay("DataFrequency"));
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input2.MetaData));
             elseif isempty(input2)
-                value = compose("Bartington (%d Hz)", input1.MetaData.getDisplay("DataFrequency"));
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input1.MetaData));
             else
-                value = compose("Bartington (%d, %d)", input1.MetaData.getDisplay("DataFrequency"), input2.MetaData.getDisplay("DataFrequency"));
+                value = compose("Bartington (%s, %s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData));
             end
         end
 
