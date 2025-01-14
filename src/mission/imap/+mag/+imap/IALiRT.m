@@ -45,7 +45,12 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
         end
 
         function value = isPlottable(this)
-            value = all([this.Science.isPlottable()]);
+
+            if isempty(this)
+                value = false;
+            else
+                value = all([this.Science.isPlottable()]);
+            end
         end
 
         function crop(this, filters)
