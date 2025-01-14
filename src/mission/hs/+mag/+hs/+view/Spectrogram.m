@@ -64,7 +64,7 @@ classdef Spectrogram < mag.graphics.view.View
                 spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "Z"))};
         end
 
-        function value = getFrequencyFigureTitle(~, science)
+        function value = getFrequencyFigureTitle(this, science)
             value = compose("%s (%s)", science.MetaData.getDisplay("Mode"), this.getDataFrequency(science.MetaData));
         end
 

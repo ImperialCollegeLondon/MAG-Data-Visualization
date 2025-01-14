@@ -88,7 +88,7 @@ classdef Spectrogram < mag.graphics.view.View
                 spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "Z"))};
         end
 
-        function value = getFrequencyFigureTitle(~, input1, input2)
+        function value = getFrequencyFigureTitle(this, input1, input2)
 
             if isempty(input1)
                 value = compose("Bartington (%s Hz)", this.getDataFrequency(input2.MetaData));
