@@ -64,18 +64,35 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
         function findDifference(testCase, expected, actual)
 
-            md = metaclass(expected);
+            mc = metaclass(expected);
 
-            for mp = md.PropertyList'
+            if mc.Enumeration
+                
+                if ~isequal(expected, actual)
+                    disp(compose("Enum property:\n  Exp: %s\n  Act: %s"), expected, actual);
+                end
+            elseif startsWith(mc.Name, "mag.")
 
-                if isequal(mp.GetAccess, "public")
+                for mp = mc.PropertyList'
 
-                    if ~isequal(expected.(mp.Name), actual.(mp.Name))
+                    if isequal(mp.GetAccess, "public") && ~isequal(expected.(mp.Name), actual.(mp.Name))
 
-                        testCase.log(compose("Property ""%s"" is different.", mp.Name));
+                        disp(compose("Property ""%s"" is different.", mp.Name));
+                        testCase.findDifference(expected.(mp.Name), actual.(mp.Name));
+                    end
+                end
+            else
 
-                        disp(expected.(mp.Name));
-                        disp(actual.(mp.Name));
+                if ~isequal(expected, actual)
+
+                    if isa(expected, "string") || isa(expected, "char")
+                        disp(compose("String property:\n  Exp: %s\n  Act: %s"), expected, actual);
+                    elseif isa(expected, "numeric")
+                        disp(compose("Numeric property:\n  Exp: %.3g\n  Act: %.3g\n  Diff: %.3g"), expected(1), actual(1), expected(1) - actual(1));
+                    elseif isa(expected, "logical")
+                        disp(compose("Logical property:\n  Exp: %d\n  Act: %d"), expected, actual);
+                    elseif isa(expected, "datetime") || isa(expected, "duration")
+                        disp(compose("Date/Time property:\n  Exp: %s\n  Act: %s\n  Diff: %s"), expected(1), actual(1), expected(1) - actual(1));
                     end
                 end
             end
