@@ -54,7 +54,31 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20240507_111151.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+
+            matBaseline = matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results");
+            testCase.verifyEqualsBaseline(analysis.Results, matBaseline, @() testCase.findDifference(analysis.Results, matBaseline.load()));
+        end
+    end
+
+    methods (Access = private)
+
+        function findDifference(testCase, expected, actual)
+
+            md = metaclass(expected);
+
+            for mp = md.PropertyList'
+
+                if isequal(mp.GetAccess, "public")
+
+                    if ~isequal(expected.(mp.Name), actual.(mp.Name))
+
+                        testCase.log(compose("Property ""%s"" is different.", mp.Name));
+
+                        disp(expected.(mp.Name));
+                        disp(actual.(mp.Name));
+                    end
+                end
+            end
         end
     end
 end
