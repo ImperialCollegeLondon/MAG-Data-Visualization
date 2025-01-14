@@ -71,7 +71,10 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             elseif ~isequal(expected, actual)
 
                 if istable(expected) || istimetable(expected)
-                    disp(compose("Table property:\n  Exp: %s\n  Act: %s", expected, actual));
+
+                    disp(compose("Table property:\n"));
+                    disp(expected);
+                    disp(actual);
                 else
 
                     for i = 1:numel(expected)
