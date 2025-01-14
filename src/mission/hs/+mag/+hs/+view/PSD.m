@@ -53,11 +53,11 @@ classdef PSD < mag.graphics.view.View
     methods (Access = private)
 
         function value = getPSDFigureTitle(this, science, psdStart, psdDuration)
-            value = compose("Start: %s - Duration: %s - (%d)", this.date2str(psdStart), psdDuration, science.MetaData.getDisplay("DataFrequency"));
+            value = compose("Start: %s - Duration: %s - (%s Hz)", this.date2str(psdStart), psdDuration, this.getDataFrequency(science.MetaData));
         end
 
         function value = getPSDFigureName(this, science, psdStart)
-            value = compose("%s (%d) PSD (%s)", science.MetaData.getDisplay("Mode"), science.MetaData.getDisplay("DataFrequency"), this.date2str(psdStart));
+            value = compose("%s (%s Hz) PSD (%s)", science.MetaData.getDisplay("Mode"), this.getDataFrequency(science.MetaData), this.date2str(psdStart));
         end
     end
 end

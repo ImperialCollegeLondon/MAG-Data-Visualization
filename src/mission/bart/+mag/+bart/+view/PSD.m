@@ -97,22 +97,22 @@ classdef PSD < mag.graphics.view.View
         function value = getPSDFigureTitle(this, input1, input2, psdStart, psdDuration)
 
             if isempty(input1)
-                value = compose("Start: %s - Duration: %s - (%d Hz)", this.date2str(psdStart), psdDuration, input2.MetaData.getDisplay("DataFrequency"));
+                value = compose("Start: %s - Duration: %s - (%s Hz)", this.date2str(psdStart), psdDuration, this.getDataFrequency(input2.MetaData));
             elseif isempty(input2)
-                value = compose("Start: %s - Duration: %s - (%d Hz)", this.date2str(psdStart), psdDuration, input1.MetaData.getDisplay("DataFrequency"));
+                value = compose("Start: %s - Duration: %s - (%s Hz)", this.date2str(psdStart), psdDuration, this.getDataFrequency(input1.MetaData));
             else
-                value = compose("Start: %s - Duration: %s - (%d, %d)", this.date2str(psdStart), psdDuration, input1.MetaData.getDisplay("DataFrequency"), input2.MetaData.getDisplay("DataFrequency"));
+                value = compose("Start: %s - Duration: %s - (%s, %s)", this.date2str(psdStart), psdDuration, this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData));
             end
         end
 
         function value = getPSDFigureName(this, input1, input2, psdStart)
 
             if isempty(input1)
-                value = compose("Bartington (%d Hz) PSD (%s)", input2.MetaData.getDisplay("DataFrequency"), this.date2str(psdStart));
+                value = compose("Bartington (%s Hz) PSD (%s)", this.getDataFrequency(input2.MetaData), this.date2str(psdStart));
             elseif isempty(input2)
-                value = compose("Bartington (%d Hz) PSD (%s)", input1.MetaData.getDisplay("DataFrequency"), this.date2str(psdStart));
+                value = compose("Bartington (%s Hz) PSD (%s)", this.getDataFrequency(input1.MetaData), this.date2str(psdStart));
             else
-                value = compose("Bartington (%d, %d) PSD (%s)", input1.MetaData.getDisplay("DataFrequency"), input2.MetaData.getDisplay("DataFrequency"), this.date2str(psdStart));
+                value = compose("Bartington (%s, %s) PSD (%s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData), this.date2str(psdStart));
             end
         end
     end
