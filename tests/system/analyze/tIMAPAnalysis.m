@@ -56,7 +56,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
 
             matBaseline = matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results");
-            testCase.verifyEqualsBaseline(analysis.Results, matBaseline, @() testCase.findDifference(analysis.Results, matBaseline.load()), RelTol = 1e-3);
+            testCase.verifyEqualsBaseline(analysis.Results, matBaseline, @() testCase.findDifference(analysis.Results, matBaseline.load()));
         end
     end
 
@@ -66,33 +66,41 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
             mc = metaclass(expected);
 
-            if mc.Enumeration
-                
-                if ~isequal(expected, actual)
-                    disp(compose("Enum property:\n  Exp: %s\n  Act: %s"), expected, actual);
-                end
-            elseif startsWith(mc.Name, "mag.")
-
-                for mp = mc.PropertyList'
-
-                    if isequal(mp.GetAccess, "public") && ~isequal(expected.(mp.Name), actual.(mp.Name))
-
-                        disp(compose("Property ""%s"" is different.", mp.Name));
-                        testCase.findDifference(expected.(mp.Name), actual.(mp.Name));
-                    end
-                end
+            if ~isequal(numel(expected), numel(actual))
+                disp("Wrong size.");
             else
 
-                if ~isequal(expected, actual)
+                for i = 1:numel(expected)
 
-                    if isa(expected, "string") || isa(expected, "char")
-                        disp(compose("String property:\n  Exp: %s\n  Act: %s"), expected, actual);
-                    elseif isa(expected, "numeric")
-                        disp(compose("Numeric property:\n  Exp: %.3g\n  Act: %.3g\n  Diff: %.3g"), expected(1), actual(1), expected(1) - actual(1));
-                    elseif isa(expected, "logical")
-                        disp(compose("Logical property:\n  Exp: %d\n  Act: %d"), expected, actual);
-                    elseif isa(expected, "datetime") || isa(expected, "duration")
-                        disp(compose("Date/Time property:\n  Exp: %s\n  Act: %s\n  Diff: %s"), expected(1), actual(1), expected(1) - actual(1));
+                    if mc.Enumeration
+
+                        if ~isequal(expected(i), actual(i))
+                            disp(compose("Enum property:\n  Exp: %s\n  Act: %s", expected(i), actual(i)));
+                        end
+                    elseif startsWith(mc.Name, "mag.")
+
+                        for mp = mc.PropertyList'
+
+                            if isequal(mp.GetAccess, "public") && ~isequal(expected(i).(mp.Name), actual(i).(mp.Name))
+
+                                disp(compose("Property ""%s"" is different.", mp.Name));
+                                testCase.findDifference(expected(i).(mp.Name), actual(i).(mp.Name));
+                            end
+                        end
+                    else
+
+                        if ~isequal(expected(i), actual(i))
+
+                            if isa(expected, "string") || isa(expected, "char")
+                                disp(compose("String property:\n  Exp: %s\n  Act: %s", expected(i), actual(i)));
+                            elseif isa(expected, "numeric")
+                                disp(compose("Numeric property:\n  Exp: %.3g\n  Act: %.3g\n  Diff: %.3g", expected(i), actual(i), expected(i) - actual(i)));
+                            elseif isa(expected, "logical")
+                                disp(compose("Logical property:\n  Exp: %d\n  Act: %d", expected(i), actual(i)));
+                            elseif isa(expected, "datetime") || isa(expected, "duration")
+                                disp(compose("Date/Time property:\n  Exp: %s\n  Act: %s\n  Diff: %s", expected(i), actual(i), expected(i) - actual(i)));
+                            end
+                        end
                     end
                 end
             end
