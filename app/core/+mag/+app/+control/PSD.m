@@ -53,6 +53,11 @@ classdef PSD < mag.app.Control
                 Limits = [0, Inf]);
             this.DurationSpinner.Layout.Row = 2;
             this.DurationSpinner.Layout.Column = [2, 3];
+
+            % Note.
+            noteLabel = uilabel(this.Layout, Text = "Note: does not support hybrid instrument modes.");
+            noteLabel.Layout.Row = 5;
+            noteLabel.Layout.Column = [1, 3];
         end
 
         function supported = isSupported(~, results)
