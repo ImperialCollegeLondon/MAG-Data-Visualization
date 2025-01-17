@@ -54,12 +54,12 @@ classdef Field < mag.graphics.view.View
         function value = getFigureName(this, input1, input2)
 
             if isempty(input1)
-                value = compose("Field (%s Hz) Time Series (%s)", this.getDataFrequency(input2.MetaData), this.date2str(input2.MetaData.Timestamp));
+                value = compose("Bartington (%s Hz) Time Series (%s)", this.getDataFrequency(input2.MetaData), this.date2str(input2.MetaData.Timestamp));
             elseif isempty(input2)
-                value = compose("Field (%s Hz) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.date2str(input1.MetaData.Timestamp));
+                value = compose("Bartington (%s Hz) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.date2str(input1.MetaData.Timestamp));
             else
 
-                value = compose("Field (%s, %s) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData), ...
+                value = compose("Bartington (%s, %s) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData), ...
                     this.date2str(input1.MetaData.Timestamp));
             end
         end
