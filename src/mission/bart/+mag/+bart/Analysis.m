@@ -11,7 +11,9 @@ classdef (Sealed) Analysis < mag.Analysis
         % INPUT2PATTERN Pattern of input 2 data files.
         Input2Pattern (1, 1) string = fullfile("*Input 2*.Dat")
         % SCIENCEPROCESSING Steps needed to process science data.
-        ScienceProcessing (1, :) mag.process.Step = mag.process.Step.empty()
+        ScienceProcessing (1, :) mag.process.Step = [ ...
+            mag.process.AllZero(Variables = ["x", "y", "z"]), ...
+            mag.process.Sort()]
     end
 
     properties (Dependent)
@@ -127,13 +129,18 @@ classdef (Sealed) Analysis < mag.Analysis
 
             input1Science = mag.io.import( ...
                 FileNames = this.Input1FileNames, ...
-                Format = mag.bart.in.ScienceDAT(InputType = 1), ...
-                ProcessingSteps = this.ScienceProcessing);
+                Format = mag.bart.in.ScienceDAT(InputType = 1));
 
             input2Science = mag.io.import( ...
                 FileNames = this.Input2FileNames, ...
-                Format = mag.bart.in.ScienceDAT(InputType = 2), ...
-                ProcessingSteps = this.ScienceProcessing);
+                Format = mag.bart.in.ScienceDAT(InputType = 2));
+
+            for sp = this.ScienceProcessing
+
+                for d = [input1Science, input2Science]
+                    d.Data = sp.apply(d.Data, d.MetaData);
+                end
+            end
 
             this.Results.Science = [input1Science, input2Science];
         end
