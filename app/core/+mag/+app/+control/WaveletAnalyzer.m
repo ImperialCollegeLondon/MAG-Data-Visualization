@@ -98,11 +98,11 @@ classdef WaveletAnalyzer < mag.app.Control
             switch this.AppDropDown.Value
                 case "Signal Analyzer"
 
-                    command = mag.app.Command(Functional = @(varargin) waveletSignalAnalyzer(varargin{:}), ...
+                    command = mag.app.Command(Functional = @waveletSignalAnalyzer, ...
                         PositionalArguments = {selectedData.(propertyName)});
                 case "Time-Frequency Analyzer"
 
-                    command = mag.app.Command(Functional = @(varargin) waveletTimeFrequencyAnalyzer(varargin{:}), ...
+                    command = mag.app.Command(Functional = @waveletTimeFrequencyAnalyzer, ...
                         PositionalArguments = {selectedData});
                 otherwise
                     error("Unknown Wavelet Toolbox app ""%s"".", this.AppDropDown.Value);

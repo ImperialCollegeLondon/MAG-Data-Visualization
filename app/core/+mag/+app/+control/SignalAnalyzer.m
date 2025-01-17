@@ -70,7 +70,7 @@ classdef SignalAnalyzer < mag.app.Control
             data = results.(selectedInput);
             selectedData = timetable(data.Time - data.Time(1), data.(selectedSignal), VariableNames = selectedInput + "_" + selectedSignal);
 
-            command = mag.app.Command(Functional = @(varargin) signalAnalyzer(varargin{:}), ...
+            command = mag.app.Command(Functional = @signalAnalyzer, ...
                 PositionalArguments = {selectedData});
         end
     end
