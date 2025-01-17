@@ -5,3 +5,4 @@
 # Software
 
 - Add sorting and removal of zeroed-out vectors for Bartington analysis processing
+- Bartington field figures are also called "Bartington...", instead of "Field..."
