@@ -1,9 +1,5 @@
-classdef (Abstract) CDF < mag.io.out.Format
-% CDF Interface for CDF export format providers.
-
-    properties (Constant)
-        Extension = ".cdf"
-    end
+classdef CDFProvider < mag.io.out.Provider
+% CDFPROVIDER CDF format data provider.
 
     properties
         % SKELETONLOCATION Location of skeleton files.
@@ -14,32 +10,7 @@ classdef (Abstract) CDF < mag.io.out.Format
         Version (1, 1) string = "V001"
     end
 
-    methods
-
-        function exportData = convertToExportFormat(~, data)
-            exportData = data;
-        end
-
-        function write(this, fileName, exportData)
-
-            assert(exist("spdfcdfinfo", "file"), "SPDF CDF Toolbox needs to be installed.");
-
-            cdfInfo = spdfcdfinfo(this.getSkeletonFileName());
-
-            spdfcdfwrite(char(fileName), ...
-                this.getVariableList(cdfInfo, exportData), ...
-                'GlobalAttributes', this.getGlobalAttributes(cdfInfo, exportData), ...
-                'VariableAttributes', this.getVariableAttributes(cdfInfo, exportData), ...
-                'WriteMode', 'overwrite', ...
-                'Format', 'singlefile', ...
-                'RecordBound', this.getRecordBound(cdfInfo), ...
-                'CDFCompress', 'gzip.6',...
-                'Checksum', 'MD5', ...
-                'VarDatatypes', this.getVariableDataType(cdfInfo));
-        end
-    end
-
-    methods (Abstract, Access = protected)
+    methods (Abstract)
 
         % GETSKELETONFILE Get skeleton file name containing meta data.
         fileName = getSkeletonFileName(this)

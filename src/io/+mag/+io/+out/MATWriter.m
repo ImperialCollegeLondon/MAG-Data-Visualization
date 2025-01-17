@@ -1,5 +1,5 @@
-classdef (Abstract) MAT < mag.io.out.Format
-% MAT Interface for MAT export format providers.
+classdef (Abstract) MATWriter < mag.io.out.Format
+% MATWRITER Interface for MAT export format writers.
 
     properties (Constant)
         Extension = ".mat"

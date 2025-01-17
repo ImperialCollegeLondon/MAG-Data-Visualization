@@ -4,18 +4,18 @@ function export(data, options)
     arguments
         data (1, :)
         options.Location (1, 1) string {mustBeFolder}
-        options.FileName string {mustBeScalarOrEmpty} = string.empty()
+        options.FileNames (1, :) string = string.empty()
         options.Format (1, 1) mag.io.out.Format
     end
 
-    if isempty(options.FileName)
-        fileName = options.Format.getExportFileName(data);
+    if isempty(options.FileNames)
+        fileNames = options.Format.getExportFileName(data);
     else
-        fileName = options.FileName;
+        fileNames = options.FileNames;
     end
 
-    fileName = fullfile(options.Location, fileName);
+    fileNames = fullfile(options.Location, fileNames);
     exportData = options.Format.convertToExportFormat(data);
 
-    options.Format.write(fileName, exportData);
+    options.Format.write(fileNames, exportData);
 end
