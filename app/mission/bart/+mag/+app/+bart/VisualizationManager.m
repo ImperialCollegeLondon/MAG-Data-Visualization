@@ -20,12 +20,12 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
 
             command = this.SelectedControl.getVisualizeCommand(analysis.Results);
 
-            if command.NArgOut > 0
-                figures = command.call();
-            else
+            if command.NArgOut == 0
 
                 command.call();
                 figures = matlab.ui.Figure.empty();
+            else
+                figures = command.call();
             end
         end
     end

@@ -1,3 +1,3 @@
 # App
 
-- Add note for unsupported instrument modes in PSD view
+- Fix Bartington figures not being registered by app when generated
