@@ -29,7 +29,7 @@ classdef ToolbarManager < mag.app.manage.Manager
             % Create Toolbar.
             this.Toolbar = uitoolbar(parent);
 
-            if isprop(parent, "Theme")
+            if mag.internal.isThemeable(parent)
                 theme = parent.Theme.BaseColorStyle;
             else
                 theme = "light";
