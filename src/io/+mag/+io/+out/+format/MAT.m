@@ -1,4 +1,4 @@
-classdef MAT < mag.io.out.provide.SimpleProvider
+classdef MAT < mag.io.out.format.SimpleProvider
 % MAT Interface for MAT export format providers.
 
     properties (Constant)

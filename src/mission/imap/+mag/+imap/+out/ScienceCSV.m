@@ -1,9 +1,9 @@
-classdef ScienceCSV < mag.io.out.CSV
+classdef ScienceCSV < mag.io.out.format.CSV
 % SCIENCECSV Format IMAP science data for CSV export.
 
-    methods
+    methods (Access = protected)
 
-        function fileName = getExportFileName(this, data)
+        function fileName = getExportFileNames(this, data)
 
             arguments (Input)
                 this (1, 1) mag.imap.out.ScienceCSV

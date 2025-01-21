@@ -4,9 +4,10 @@ function export(data, options)
     arguments
         data (1, :)
         options.Location (1, 1) string {mustBeFolder}
-        options.Provider (1, 1) mag.io.out.provide.Provider
+        options.OverwriteFileName string {mustBeScalarOrEmpty} = string.empty()
+        options.Provider (1, 1) mag.io.out.format.Provider
     end
 
     writer = options.Provider.Writer;
-    writer.write(data, Location = options.Location, Provider = options.Provider);
+    writer.write(data, options.Provider, Location = options.Location);
 end

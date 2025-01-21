@@ -1,4 +1,4 @@
-classdef CDF < mag.io.out.provide.Provider
+classdef CDF < mag.io.out.format.Provider
 % CDF Interface for CDF format data provider.
 
     properties (Constant)

@@ -1,4 +1,4 @@
-classdef ScienceMAT < mag.io.out.provide.MAT
+classdef ScienceMAT < mag.io.out.format.MAT
 % SCIENCEMAT Format IMAP science data for MAT export.
 
     methods (Access = protected)
