@@ -1,4 +1,4 @@
-classdef ScienceCDF < mag.io.out.CDFProvider
+classdef ScienceCDF < mag.io.out.provide.CDF
 % SCIENCECDF Format IMAP science data for CDF export.
 
     properties
@@ -18,7 +18,7 @@ classdef ScienceCDF < mag.io.out.CDFProvider
         end
     end
 
-    methods (Access = protected)
+    methods
 
         function fileName = getExportFileName(this, data)
 

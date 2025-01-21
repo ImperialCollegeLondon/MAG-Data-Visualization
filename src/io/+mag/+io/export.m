@@ -4,18 +4,9 @@ function export(data, options)
     arguments
         data (1, :)
         options.Location (1, 1) string {mustBeFolder}
-        options.FileNames (1, :) string = string.empty()
-        options.Format (1, 1) mag.io.out.Format
+        options.Provider (1, 1) mag.io.out.provide.Provider
     end
 
-    if isempty(options.FileNames)
-        fileNames = options.Format.getExportFileName(data);
-    else
-        fileNames = options.FileNames;
-    end
-
-    fileNames = fullfile(options.Location, fileNames);
-    exportData = options.Format.convertToExportFormat(data);
-
-    options.Format.write(fileNames, exportData);
+    writer = options.Provider.Writer;
+    writer.write(data, Location = options.Location, Provider = options.Provider);
 end
