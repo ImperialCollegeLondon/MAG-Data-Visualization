@@ -1,7 +1,7 @@
-classdef HKMAT < mag.io.out.format.MAT
+classdef HKMAT < mag.io.out.MAT
 % HKMAT Format HelioSwarm HK data for MAT export.
 
-    methods (Access = protected)
+    methods
 
         function fileName = getExportFileName(this, data)
 

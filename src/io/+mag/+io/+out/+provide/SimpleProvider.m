@@ -1,4 +1,4 @@
-classdef (Abstract, Hidden) SimpleProvider < mag.io.out.format.Provider
+classdef (Abstract, Hidden) SimpleProvider < mag.io.out.provide.Provider
 % SIMPLEPROVIDER Interface for simple data format providers for export.
 
     methods

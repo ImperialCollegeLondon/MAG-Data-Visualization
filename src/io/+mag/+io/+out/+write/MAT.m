@@ -12,14 +12,12 @@ classdef MAT < mag.io.out.write.Writer
 
     methods
 
-        function write(this, data, provider, options)
+        function write(this, data, provider)
 
             arguments
-                this (1, 1) mag.io.out.write.MAT
+                this (1, 1) mag.io.out.MAT
                 data (1, :)
-                provider (1, 1) mag.io.out.format.MAT
-                options.Location
-                options.OverwriteFileName
+                provider (1, 1) mag.io.out.provide.MAT
             end
 
             if this.Append && isfile(fileName)

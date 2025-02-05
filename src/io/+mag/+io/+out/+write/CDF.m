@@ -7,13 +7,11 @@ classdef CDF < mag.io.out.write.Writer
 
     methods
 
-        function write(~, data, provider, options)
+        function write(~, provider)
 
             arguments
                 ~
-                data (1, :)
-                provider (1, 1) mag.io.out.format.CDF
-                options.Location
+                provider (1, 1) mag.io.out.provide.CDF
             end
 
             assert(exist("spdfcdfinfo", "file"), "SPDF CDF Toolbox needs to be installed.");

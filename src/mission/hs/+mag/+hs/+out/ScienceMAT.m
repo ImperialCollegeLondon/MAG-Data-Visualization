@@ -1,7 +1,7 @@
-classdef ScienceMAT < mag.io.out.format.MAT
+classdef ScienceMAT < mag.io.out.MAT
 % SCIENCEMAT Format HelioSwarm science data for MAT export.
 
-    methods (Access = protected)
+    methods
 
         function fileName = getExportFileName(this, data)
 
