@@ -1,8 +1,9 @@
-classdef CDF < mag.io.out.write.Writer
-% CDF Interface for CDF export format writers.
+classdef CDFWriter < mag.io.out.Writer
+% CDFWRITER Interface for CDF export format writers.
 
     properties (Constant)
         Extension = ".cdf"
+        SupportedProviders (1, :) metaclass = ?mag.io.out.CDFProvider
     end
 
     methods
@@ -11,7 +12,7 @@ classdef CDF < mag.io.out.write.Writer
 
             arguments
                 ~
-                provider (1, 1) mag.io.out.provide.CDF
+                provider (1, 1) mag.io.out.CDFProvider
             end
 
             assert(exist("spdfcdfinfo", "file"), "SPDF CDF Toolbox needs to be installed.");

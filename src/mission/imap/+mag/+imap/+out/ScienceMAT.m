@@ -1,9 +1,9 @@
-classdef ScienceMAT < mag.io.out.provide.MAT
+classdef ScienceMAT < mag.io.out.MAT
 % SCIENCEMAT Format IMAP science data for MAT export.
 
-    methods (Access = protected)
+    methods
 
-        function fileName = getExportFileNames(this, data)
+        function fileName = getExportFileName(this, data)
 
             arguments (Input)
                 this (1, 1) mag.imap.out.ScienceMAT

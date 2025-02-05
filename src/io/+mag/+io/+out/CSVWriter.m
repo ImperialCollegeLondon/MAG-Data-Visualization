@@ -1,5 +1,5 @@
-classdef CSV < mag.io.out.write.Writer
-% CSV Writer for CSV export format.
+classdef (Abstract) CSVWriter < mag.io.out.Format
+% CSVWRITER Interface for CSV export format writers.
 
     properties (Constant)
         Extension = ".csv"
@@ -7,11 +7,12 @@ classdef CSV < mag.io.out.write.Writer
 
     methods
 
-        function write(~, exportData)
+        function write(this, fileName, exportData)
 
             arguments
-                ~
-                exportData (1, 1) mag.io.out.ExportData
+                this (1, 1) mag.io.out.CSV
+                fileName (1, 1) string
+                exportData (1, 1) tabular
             end
 
             if istimetable(exportData)

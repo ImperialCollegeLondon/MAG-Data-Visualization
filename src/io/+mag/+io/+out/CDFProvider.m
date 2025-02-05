@@ -1,9 +1,5 @@
-classdef CDF < mag.io.out.provide.Provider
-% CDF Interface for CDF format data provider.
-
-    properties (Constant)
-        Writer = mag.io.out.write.CDF()
-    end
+classdef CDFProvider < mag.io.out.Provider
+% CDFPROVIDER CDF format data provider.
 
     properties
         % SKELETONLOCATION Location of skeleton files.
