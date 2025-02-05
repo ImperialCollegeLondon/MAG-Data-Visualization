@@ -1,5 +1,6 @@
 ## Software
 
+- Use SPICE to convert time from MET (equivalent to SCLK, but in seconds) to UTC
 - Remove unnecessary `fullfile`s in `mag.imap.Analysis` default values
 - Remove unnecessary description of processing steps
 

@@ -114,7 +114,7 @@ classdef ScienceCSV < mag.io.in.CSV
             rawData.quality = repmat(mag.meta.Quality.Regular, height(rawData), 1);
 
             % Convert timestamps.
-            for ps = [mag.process.Missing(Variables = ["x", "y", "z"]), mag.process.Timestamp(), mag.process.DateTime()]
+            for ps = [mag.process.Missing(Variables = ["x", "y", "z"]), mag.process.Timestamp(), mag.process.Spice(Mission = "IMAP")]
                 rawData = ps.apply(rawData, metaData);
             end
 
