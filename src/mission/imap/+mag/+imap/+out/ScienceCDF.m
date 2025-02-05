@@ -1,4 +1,4 @@
-classdef ScienceCDF < mag.io.out.CDFProvider
+classdef ScienceCDF < mag.io.out.CDF
 % SCIENCECDF Format IMAP science data for CDF export.
 
     properties
@@ -16,9 +16,6 @@ classdef ScienceCDF < mag.io.out.CDFProvider
 
             this.assignProperties(options)
         end
-    end
-
-    methods (Access = protected)
 
         function fileName = getExportFileName(this, data)
 
@@ -29,10 +26,9 @@ classdef ScienceCDF < mag.io.out.CDFProvider
                 datestr(data.MetaData.Timestamp, "yyyymmdd"), ...
                 lower(this.Version)); %#ok<DATST>
         end
+    end
 
-        function exportData = convertToExportFormat(~, data)
-            exportData = data;
-        end
+    methods (Access = protected)
 
         function fileName = getSkeletonFileName(this)
             fileName = fullfile(this.SkeletonLocation, sprintf("imap_mag_%s_skeletontable_%s.cdf", lower(this.Level), lower(this.Version)));
