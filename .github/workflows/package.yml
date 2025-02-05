@@ -1,0 +1,44 @@
+name: MATLAB Packaging
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+
+  package:
+    name: Package MATLAB Toolbox
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2.3.0
+        with:
+          release: R2023b
+      - name: Load Environment Variables
+        uses: aarcangeli/load-dotenv@v1.1.0
+      - name: Validate version with tag
+        run: |
+          if [ "${{ env.MAG_DATA_VISUALIZATION_VERSION }}" != "${{ github.ref }}" ]; then
+            echo "Version mismatch between tag and environment variable"
+            exit 1
+          fi
+      - name: Package toolbox
+        uses: matlab-actions/run-build@v2.5.0
+        with:
+          tasks: package("${{ env.MAG_DATA_VISUALIZATION_VERSION }}")
+      - name: Upload toolbox
+        uses: actions/upload-artifact@v4.6.0
+        with:
+          name: 'MAG Data Visualization.mltbx'
+          path: artifacts
+          if-no-files-found: error
+      - name: Create release
+        uses: ncipollo/release-action@v1.15.0
+        with:
+          tag: v${{ env.MAG_DATA_VISUALIZATION_VERSION }}
+          artifacts: 'artifacts/MAG Data Visualization.mltbx'
+          bodyFile: 'resources/release-notes.md'

@@ -1,7 +1,8 @@
 # MAG Data Visualization Toolbox
 
 [![Imperial College Space Magnetometer Laboratory](https://img.shields.io/badge/Author-Space%20Magnetometer%20Laboratory-ff69b4.svg)][sml]
-[![MATLAB Tests](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/matlab.yml/badge.svg)](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/matlab.yml)
+[![MATLAB Tests](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/test.yml/badge.svg)](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/test.yml)
+[![MATLAB Toolbox](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml/badge.svg)](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml)
 [![View MAG Data Visualization Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/169568)
 
 This repository contains utilities for processing and visualizing MAG science and HK data. The supported MATLAB releases are MATLAB R2023b and later. The following MATLAB toolboxes are required to use the toolbox:

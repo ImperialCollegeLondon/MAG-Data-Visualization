@@ -7,12 +7,12 @@ classdef (Sealed) Analysis < mag.Analysis
         % EVENTPATTERN Pattern of event files.
         EventPattern (1, :) string = fullfile("*", "Event", "*.html")
         % METADATAPATTERN Pattern of meta data files.
-        MetaDataPattern (1, :) string = [fullfile("*.msg"), fullfile("IMAP-MAG-TE-ICL-058*.xlsx"), fullfile("IMAP-MAG-TE-ICL-061*.xlsx"), ...
-            fullfile("IMAP-MAG-TE-ICL-071*.docx"), fullfile("IMAP-OPS-TE-ICL-001*.docx"), fullfile("IMAP-OPS-TE-ICL-002*.docx")]
+        MetaDataPattern (1, :) string = ["*.msg", "IMAP-MAG-TE-ICL-058*.xlsx", "IMAP-MAG-TE-ICL-061*.xlsx", ...
+            "IMAP-MAG-TE-ICL-071*.docx", "IMAP-OPS-TE-ICL-001*.docx", "IMAP-OPS-TE-ICL-002*.docx"]
         % SCIENCEPATTERN Pattern of science data files.
-        SciencePattern (1, 1) string = fullfile("MAGScience-*-(*)-*.csv")
+        SciencePattern (1, 1) string = "MAGScience-*-(*)-*.csv"
         % IALIRTPATTERN Pattern of I-ALiRT data files.
-        IALiRTPattern (1, 1) string = fullfile("MAGScience-IALiRT-*.csv")
+        IALiRTPattern (1, 1) string = "MAGScience-IALiRT-*.csv"
         % HKPATTERN Pattern of housekeeping files.
         HKPattern (1, :) string = [fullfile("*", "Export", "idle_export_conf.*.csv"), ...
             fullfile("*", "Export", "idle_export_proc.*.csv"), ...
