@@ -1,3 +1,3 @@
 # Software
 
-- Fix issue with `Theme` property empty for MATLAB without new desktop
+- Remove unnecessary `fullfile`s in `mag.imap.Analysis` default values
