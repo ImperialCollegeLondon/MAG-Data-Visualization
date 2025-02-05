@@ -14,7 +14,7 @@ classdef tConvertToDateTime < MAGAnalysisTestCase
             dateTimeStep = mag.process.DateTime();
 
             % Exercise.
-            convertedNow = dateTimeStep.convertToDateTime(magNow);
+            convertedNow = dateTimeStep.apply(magNow, []);
 
             % Verify.
             testCase.verifyLessThan(convertedNow - rightNow, seconds(1e-5), ...

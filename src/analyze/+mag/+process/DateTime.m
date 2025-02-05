@@ -25,24 +25,7 @@ classdef DateTime < mag.process.Step
         end
 
         function data = apply(this, data, ~)
-            data.(this.TimeVariable) = this.convertToDateTime(data.(this.TimeVariable));
-        end
-    end
-
-    methods (Hidden)
-
-        function timeStamp = convertToDateTime(this, timeStamp)
-
-            arguments (Input)
-                this
-                timeStamp (:, 1) double
-            end
-
-            arguments (Output)
-                timeStamp (:, 1) datetime
-            end
-
-            timeStamp = datetime(this.Epoch + timeStamp, ConvertFrom = "posixtime", Format = this.Format, TimeZone = this.TimeZone);
+            data.(this.TimeVariable) = datetime(this.Epoch + data.(this.TimeVariable), ConvertFrom = "posixtime", Format = this.Format, TimeZone = this.TimeZone);
         end
     end
 end
