@@ -1,16 +1,6 @@
 classdef (Abstract) Step < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 % STEP Abstract class to capture a processing step for MAG science data.
 
-    properties (Abstract, Dependent)
-        % NAME Display name of processing step.
-        Name (1, 1) string
-        % DESCRIPTION Brief description of processing step functionality.
-        Description (1, 1) string
-        % DETAILEDDESCRIPTION Detailed description of processing step
-        % functionality.
-        DetailedDescription (1, 1) string
-    end
-
     methods (Abstract)
 
         % APPLY Apply processing step.

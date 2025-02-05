@@ -1,12 +1,6 @@
 classdef DateTime < mag.process.Step
 % DATETIME Convert timestamp to datetime.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % TIMEVARIABLE Name of time variable.
         TimeVariable (1, 1) string = "t"
@@ -28,20 +22,6 @@ classdef DateTime < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Date Time Conversion";
-        end
-
-        function value = get.Description(~)
-            value = "Convert time from seconds since 1st January 2010, to MATLAB's |datetime| format.";
-        end
-
-        function value = get.DetailedDescription(this)
-
-            value = this.Description + " Time is formatted according to """ + ...
-                this.Format + """ format.";
         end
 
         function data = apply(this, data, ~)

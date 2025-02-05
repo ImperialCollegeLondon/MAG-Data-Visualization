@@ -1,12 +1,6 @@
 classdef Resample < mag.process.Step
 % RESAMPLE Resample data to new fixed rate.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % RATE Rate to resample to.
         Rate (1, 1) double
@@ -21,18 +15,6 @@ classdef Resample < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Resample";
-        end
-
-        function value = get.Description(~)
-            value = "Resample data to new fixed rate.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description;
         end
 
         function data = apply(this, data, ~)

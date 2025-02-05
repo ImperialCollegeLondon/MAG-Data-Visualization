@@ -1,12 +1,6 @@
 classdef EventFilter < mag.process.Step
 % EVENTFILTER Remove data points at events, such as mode and range changes.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % MODEVARIABLE Name of mode change variable.
         ModeVariable (1, 1) string = "DataFrequency"
@@ -35,24 +29,6 @@ classdef EventFilter < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Filter Out Data";
-        end
-
-        function value = get.Description(~)
-            value = "Filter out data after mode and range change events.";
-        end
-
-        function value = get.DetailedDescription(this)
-
-            value = this.Description + " After said events, onboard filtering " + ...
-                "needs time to adjust, thus some data points are dropped for display purposes. " + ...
-                "For range changes, " + string(this.OnRangeChange(1)) + " before and " + string(this.OnRangeChange(2)) + ...
-                " after are dropped, for mode changes, " + string(this.OnModeChange(1)) + " before and " + ...
-                string(this.OnModeChange(2)) + " after are dropped, and for compression changes, " + ...
-                string(this.OnCompressionChange(1)) + " before and " + string(this.OnCompressionChange(2)) + " after are dropped.";
         end
 
         function data = apply(this, data, ~)

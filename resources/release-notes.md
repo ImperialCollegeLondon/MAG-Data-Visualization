@@ -1,6 +1,7 @@
 ## Software
 
 - Remove unnecessary `fullfile`s in `mag.imap.Analysis` default values
+- Remove unnecessary description of processing steps
 
 ## CI
 

@@ -1,12 +1,6 @@
 classdef Unwrap < mag.process.Step
 % UNWRAP Unwrap data based on integer limit provided.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % VARIABLES Variables to unwrap.
         Variables (1, :) string
@@ -25,18 +19,6 @@ classdef Unwrap < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Unwrap Integers";
-        end
-
-        function value = get.Description(this)
-            value = "Unwrap """ + this.IntegerSize + """ integer values by detecting when they reach saturation and restart counting.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description;
         end
 
         function data = apply(this, data, ~)
