@@ -9,3 +9,4 @@
 - Separate CI tests and packaging into separate GitHub workflows
 - `main` branch is no longer "special" and is not packaged up on push
 - Tags can be used to create new releases
+- Install support packages required for MATLAB tests
