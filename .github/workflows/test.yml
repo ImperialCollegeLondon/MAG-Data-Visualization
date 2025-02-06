@@ -22,13 +22,13 @@ jobs:
           release: ${{ matrix.release }}
           products: MATLAB_Test Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox
       - name: Download CDF support package
-        run: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.8
         with:
           name: MATLAB.SPDF.CDF.mltbx
           github-token: ${{ secrets.MATLAB_SUPPORT_PACKAGES_TOKEN }}
           repository: ImperialCollegeLondon/MATLAB-SPDF-CDF
       - name: Download SPICE support package
-        run: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v4.1.8
         with:
           name: MATLAB.SPICE.MICE.mltbx
           github-token: ${{ secrets.MATLAB_SUPPORT_PACKAGES_TOKEN }}
