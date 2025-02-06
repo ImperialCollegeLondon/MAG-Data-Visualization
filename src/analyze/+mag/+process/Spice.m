@@ -2,16 +2,18 @@ classdef Spice < mag.process.Step
 % SPICE Compute timestamp with SPICE data.
 
     properties (Constant)
-        % FILELOCATION Location of calibration files.
-        FileLocation (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "../../spice")
         % SPACECRAFTIDS Mapping of missions to SPICE spacecraft ID.
         SpacecraftIDs (1, 1) dictionary = dictionary(mag.meta.Mission.IMAP, -43)
+    end
+
+    properties (SetAccess = private)
         % SPACECRAFTEPOCHS Mapping of missions to SPICE spacecraft epoch.
-        SpacecraftEpochs (1, 1) dictionary = dictionary(mag.meta.Mission.IMAP, ...
-            datetime(cspice_et2utc(cspice_unitim(0, 'TT', 'ET'), 'ISOC', 9) + "Z", TimeZone = "UTCLeapSeconds"))
+        SpacecraftEpochs (1, 1) dictionary
     end
 
     properties
+        % FILELOCATION Location of calibration files.
+        FileLocation (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "../../spice")
         % TIMEVARIABLE Name of time variable.
         TimeVariable (1, 1) string = "t"
         % MISSION Mission to load Spice for.
@@ -28,13 +30,15 @@ classdef Spice < mag.process.Step
 
             assert(exist("mice", "file"), "MATLAB SPICE (MICE) Toolbox needs to be installed.");
 
-            spiceFiles = dir(fullfile(this.FileLocation, "*.t*"));
-
-            for sf = spiceFiles(:)'
-                cspice_furnsh(fullfile(sf.folder, sf.name));
-            end
-
             this.assignProperties(options);
+
+            % Initialize SPICE.
+            this.initializeSPICE();
+
+            % Value of epochs can only be assigned after SPICE is
+            % initialized.
+            this.SpacecraftEpochs = dictionary(mag.meta.Mission.IMAP, ...
+                datetime(cspice_et2utc(cspice_unitim(0, 'TT', 'ET'), 'ISOC', 9) + "Z", TimeZone = "UTCLeapSeconds"));
         end
 
         function data = apply(this, data, ~)
@@ -53,6 +57,25 @@ classdef Spice < mag.process.Step
             utc.Format = mag.time.Constant.Format;
 
             data.(this.TimeVariable) = utc;
+        end
+    end
+
+    methods (Access = private)
+
+        function initializeSPICE(this)
+
+            persistent spiceInitialized
+
+            if isempty(spiceInitialized) || ~spiceInitialized
+
+                spiceFiles = dir(fullfile(this.FileLocation, "*.t*"));
+
+                for sf = spiceFiles(:)'
+                    cspice_furnsh(fullfile(sf.folder, sf.name));
+                end
+
+                spiceInitialized = true;
+            end
         end
     end
 end
