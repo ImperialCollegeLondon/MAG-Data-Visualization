@@ -21,7 +21,7 @@ jobs:
         uses: aarcangeli/load-dotenv@v1.1.0
       - name: Validate version with tag
         run: |
-          if [ "${{ env.MAG_DATA_VISUALIZATION_VERSION }}" != "${{ github.ref }}" ]; then
+          if [ "v${{ env.MAG_DATA_VISUALIZATION_VERSION }}" != "${{ github.ref_name }}" ]; then
             echo "Version mismatch between tag and environment variable"
             exit 1
           fi
