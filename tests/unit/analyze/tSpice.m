@@ -19,10 +19,10 @@ classdef tSpice < MAGAnalysisTestCase
             actualTimes = processedData.time_variable;
 
             % Verify.
-            tolerance = 0.1;
+            millisecondTolerance = 0.1;
 
-            testCase.verifyLessThanOrEqual(abs(milliseconds(actualTimes - expectedTimes)), tolerance, ...
-                compose("Time should be within %s.", milliseconds(tolerance)));
+            testCase.verifyLessThanOrEqual(abs(milliseconds(actualTimes - expectedTimes)), millisecondTolerance, ...
+                compose("Time should be within %s.", milliseconds(millisecondTolerance)));
         end
     end
 
