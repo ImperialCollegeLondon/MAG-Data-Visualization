@@ -4,7 +4,8 @@
 
 ## Software
 
-- Add support for I-ALiRT data with one sensor only
+- Add support for IMAP I-ALiRT data with one sensor only
+- Add range and 24-bit scaling for HelioSwarm science data
 - Use SPICE to convert time from MET (equivalent to SCLK, but in seconds) to UTC
 - Remove unnecessary `fullfile`s in `mag.imap.Analysis` default values
 - Remove unnecessary description of processing steps
