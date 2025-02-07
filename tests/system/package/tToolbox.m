@@ -2,7 +2,7 @@ classdef tToolbox < matlab.unittest.TestCase
 % TTOOLBOX Tests for installation of MAG Data Visualization toolbox.
 
     properties (Constant, Access = private)
-        ProjectRoot (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "../../../")
+        ProjectRoot (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "..", "..", "..")
     end
 
     properties (TestParameter)
@@ -53,7 +53,7 @@ classdef tToolbox < matlab.unittest.TestCase
         function task = createPackageTask(testCase)
 
             task = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
-                ProjectRoot = fullfile(fileparts(mfilename("fullpath")), "..", "..", ".."), ...
+                ProjectRoot = testCase.ProjectRoot, ...
                 ToolboxPath = fullfile(testCase.ProjectRoot, "artifacts", "MAG Data Visualization.mltbx"));
         end
     end
