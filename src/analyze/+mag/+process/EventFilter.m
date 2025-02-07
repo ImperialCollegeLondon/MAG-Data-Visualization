@@ -48,6 +48,10 @@ classdef EventFilter < mag.process.Step
                 events = events(timerange(startTime, endTime, "closed"), :);
             end
 
+            if isempty(events)
+                return;
+            end
+
             % Filter data points at mode changes.
             if ~isequal(this.OnModeChange, zeros(1, 2))
                 data = this.cropDataWithEvents(events, data, this.ModeVariable, this.OnModeChange);

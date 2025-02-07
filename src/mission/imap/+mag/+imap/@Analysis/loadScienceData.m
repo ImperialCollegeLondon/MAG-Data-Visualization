@@ -23,12 +23,14 @@ function loadScienceData(this, primarySetup, secondarySetup)
 
     %% Amend Timestamp
 
+    [startTime, endTime] = deal(mag.time.emptyTime());
+
     if primary.HasData
-        [startTime(1), endTime(1)] = bounds(primary.Time);
+        [startTime(end + 1), endTime(end + 1)] = bounds(primary.Time);
     end
 
     if secondary.HasData
-        [startTime(2), endTime(2)] = bounds(secondary.Time);
+        [startTime(end + 1), endTime(end + 1)] = bounds(secondary.Time);
     end
 
     startTime = min(startTime, [], "omitmissing");
