@@ -49,7 +49,7 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
             end
 
             disp(compose("Project root: %s", task.ProjectRoot))
-            disp(ls())
+            disp(ls(task.ProjectRoot))
 
             toolboxOptions = matlab.addons.toolbox.ToolboxOptions(fileparts(task.ToolboxPath), task.ToolboxUUID, ...
                 ToolboxName = "MAG Data Visualization", ...
