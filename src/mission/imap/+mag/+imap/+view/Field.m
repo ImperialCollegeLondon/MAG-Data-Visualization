@@ -123,14 +123,14 @@ classdef Field < mag.imap.view.Science
 
                 if ~isempty(primary) && primary.HasData
 
-                    numHK = numHK + 1;
+                    numHK = 1;
                     hkData = [hkData, {pwrHK, ...
                         mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", primarySensor), YLabel = this.TLabel, Legend = [primarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [primarySensor, "ICU"] + "Temperature"))}];
                 end
     
                 if ~isempty(secondary) && secondary.HasData
     
-                    numHK = numHK + 1;
+                    numHK = 1;
                     hkData = [hkData, {pwrHK, ...
                         mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", secondarySensor), YLabel = this.TLabel, YAxisLocation = "right", Legend = [secondarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [secondarySensor, "ICU"] + "Temperature"))}];
                 end
