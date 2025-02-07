@@ -22,7 +22,6 @@ classdef tToolbox < matlab.unittest.TestCase
             testCase.addTeardown(@() testCase.cleanUpToolbox(task));
 
             % Verify.
-            testCase.verifyTrue(isfile(task.ToolboxProject.Path), "Project should be generated.");
             testCase.verifyTrue(isfile(task.ToolboxArtifact.Path), "Toolbox should be generated.");
         end
 
@@ -54,7 +53,7 @@ classdef tToolbox < matlab.unittest.TestCase
         function task = createPackageTask(testCase)
 
             task = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
-                ToolboxTemplate = fullfile(testCase.ProjectRoot, "resources", "toolbox-template.xml"), ...
+                ProjectRoot = fullfile(fileparts(mfilename("fullpath")), "..", "..", ".."), ...
                 ToolboxPath = fullfile(testCase.ProjectRoot, "artifacts", "MAG Data Visualization.mltbx"));
         end
     end
@@ -62,10 +61,6 @@ classdef tToolbox < matlab.unittest.TestCase
     methods (Static, Access = private)
 
         function cleanUpToolbox(task)
-
-            if isfile(task.ToolboxProject.Path)
-                delete(task.ToolboxProject.Path);
-            end
 
             if isfile(task.ToolboxArtifact.Path)
                 delete(task.ToolboxArtifact.Path);
