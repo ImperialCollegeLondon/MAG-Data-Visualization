@@ -50,7 +50,7 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
                         if isempty(exception.stack)
                             setBreakpointHyperlink = char.empty();
                         else
-                            setBreakpointHyperlink = compose("\n\nClick <a href=""matlab:dbstop in '%s' at %d"">here</a> to set a breakpoint at the error source.", exception.stack(1).file, exception.stack(1).line);
+                            setBreakpointHyperlink = compose("\n\nClick <a href=""matlab:mag.internal.stopIfException('%s')"">here</a> to set a breakpoint at the error source.", exception.identifier);
                         end
 
                         warning("Failed to visualize ""%s"" because of error ""%s"":\n%s%s", class(v), exception.identifier, exception.message, setBreakpointHyperlink);
