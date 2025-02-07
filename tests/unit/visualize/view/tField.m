@@ -27,6 +27,26 @@ classdef tField < MAGViewTestCase
             testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
         end
 
+        % Test that when no science is available empty figure is returned.
+        function noScience(testCase)
+
+            % Set up.
+            instrument = testCase.createTestInstrument(AddHK = false);
+
+            instrument.Science(1).Data(:, :) = [];
+            instrument.Science(2).Data(:, :) = [];
+
+            [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
+
+            % Exercise.
+            view = mag.imap.view.Field(instrument, Factory = mockFactory);
+            view.visualize();
+
+            % Verify.
+            testCase.verifyNotCalled(withAnyInputs(factoryBehavior.assemble()), "Figure should not be assembled.");
+            testCase.verifyEmpty(view.Figures, "Returned figure should be empty.");
+        end
+
         % Test that custom names are used when provided.
         function customNameTitle(testCase)
 
@@ -150,7 +170,10 @@ classdef tField < MAGViewTestCase
                 expectedInputs{5} = instrument.HK(1);
                 expectedInputs{6} = [ ...
                     mag.graphics.style.Default(Title = "FIB & ICU Temperatures", YLabel = "T [°C]", Legend = ["FIB", "ICU"], ...
-                    Charts = mag.graphics.chart.Plot(YVariables = ["FIB", "ICU"] + "Temperature")), ...
+                    Charts = mag.graphics.chart.Plot(YVariables = ["FIB", "ICU"] + "Temperature"))];
+
+                expectedInputs{7} = instrument.HK(1);
+                expectedInputs{8} = [ ...
                     mag.graphics.style.Default(Title = "FOB & ICU Temperatures", YLabel = "T [°C]", YAxisLocation = "right", Legend = ["FOB", "ICU"], ...
                     Charts = mag.graphics.chart.Plot(YVariables = ["FOB", "ICU"] + "Temperature"))];
 

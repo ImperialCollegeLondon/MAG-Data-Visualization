@@ -131,8 +131,7 @@ function events = updateRampModeTimestamps(events, data)
         data = data(timerange(rampEvents.Time(1) - minutes(5), rampEvents.Time(end) + minutes(5), "closed"), :);
 
         matches = double.empty(2, 0);
-        times = datetime.empty(2, 0);
-        times.TimeZone = "UTC";
+        times = mag.time.emptyTime(2, 0);
 
         for v = ["x", "y", "z"]
 
