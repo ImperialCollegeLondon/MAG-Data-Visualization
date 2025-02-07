@@ -4,6 +4,10 @@
 - Remove unnecessary `fullfile`s in `mag.imap.Analysis` default values
 - Remove unnecessary description of processing steps
 
+## Build
+
+- Use of `matlab.addons.toolbox.ToolboxOptions` to replace toolbox template
+
 ## CI
 
 - Separate CI tests and packaging into separate GitHub workflows
