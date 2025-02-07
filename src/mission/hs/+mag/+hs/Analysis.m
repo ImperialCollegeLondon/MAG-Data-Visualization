@@ -19,7 +19,8 @@ classdef (Sealed) Analysis < mag.Analysis
             mag.process.Duplicates()]
         % SCIENCEPROCESSING Steps needed to process only strictly science
         % data.
-        ScienceProcessing (1, :) mag.process.Step = mag.process.Step.empty()
+        ScienceProcessing (1, :) mag.process.Step = [ ...
+            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"], ExtraScaling = 1 / 2^8)]
         % HKPROCESSING Steps needed to process imported HK data.
         HKProcessing (1, :) mag.process.Step = mag.process.Step.empty()
     end
@@ -159,10 +160,19 @@ classdef (Sealed) Analysis < mag.Analysis
                 return;
             end
 
-            this.Results.Science = mag.io.import( ...
+            science = mag.io.import( ...
                 FileNames = this.ScienceFileNames, ...
                 Format = mag.hs.in.ScienceCSV(), ...
                 ProcessingSteps = this.PerFileProcessing);
+
+            for sp = this.ScienceProcessing
+
+                for s = science
+                    s.Data = sp.apply(s.Data, s.MetaData);
+                end
+            end
+
+            this.Results.Science = science;
         end
 
         function loadHKData(this)

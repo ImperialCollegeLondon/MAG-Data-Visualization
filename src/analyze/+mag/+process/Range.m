@@ -11,6 +11,8 @@ classdef Range < mag.process.Step
         RangeVariable (1, 1) string
         % VARIABLES Variables to be converted using range information.
         Variables (1, :) string
+        % EXTRASCALING Extra scaling factor.
+        ExtraScaling (1, 1) double = 1
     end
 
     methods
@@ -44,7 +46,7 @@ classdef Range < mag.process.Step
             for sf = 0:3
 
                 locScaleFactor = ranges == sf;
-                data(locScaleFactor, :) = this.ScaleFactors(sf + 1) * data(locScaleFactor, :);
+                data(locScaleFactor, :) = this.ExtraScaling * this.ScaleFactors(sf + 1) * data(locScaleFactor, :);
             end
         end
     end
