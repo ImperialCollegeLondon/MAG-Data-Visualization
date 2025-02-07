@@ -7,6 +7,10 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
     methods (TestClassSetup)
 
+        function skipOnGitHub(testCase)
+            testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
+        end
+
         function useMATLABR2024bOrAbove(testCase)
             testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
         end
@@ -29,7 +33,6 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
         function fullAnalysis(testCase)
 
             % Set up.
-            % testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
             testCase.copyDataToWorkingDirectory("full_analysis");
 
             % Exercise.
@@ -62,7 +65,6 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
         function fobOnlyAnalysis(testCase)
 
             % Set up.
-            % testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
             testCase.copyDataToWorkingDirectory("fob_only");
 
             % Exercise.
