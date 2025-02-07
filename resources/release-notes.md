@@ -1,3 +1,6 @@
+> [!WARNING]  
+> Starting v7.2.0, MATLAB R2023b is no longer supported.
+
 ## App
 
 - Add option to set breakpoint for error identifier (as well as error source)
@@ -13,7 +16,7 @@
 
 ## Build
 
-- Use of `matlab.addons.toolbox.ToolboxOptions` to replace toolbox template
+- Use `matlab.addons.toolbox.ToolboxOptions` to replace toolbox template
 
 ## CI
 
