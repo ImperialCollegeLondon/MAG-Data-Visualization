@@ -1,12 +1,6 @@
 classdef Convert < mag.process.Step
 % CONVERT Convert variables to type.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % TYPE Type to convert variables to.
         Type (1, 1) string
@@ -23,18 +17,6 @@ classdef Convert < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Convert to Type";
-        end
-
-        function value = get.Description(this)
-            value = "Convert " + join(compose("""%s""", this.Variables), ", ") + " to """ + this.Type + """.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description;
         end
 
         function data = apply(this, data, ~)

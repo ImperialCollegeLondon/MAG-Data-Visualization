@@ -117,7 +117,7 @@ classdef ScienceCDF < mag.io.out.CDF
             switch timeType
                 case "tt2000"
 
-                    time = mag.time.adjustLeapSeconds(time);
+                    time.TimeZone = "UTCLeapSeconds";
                     cdfTime = convertTo(time, "tt2000");
                 otherwise
                     error("Time type ""%s"" not supported.");

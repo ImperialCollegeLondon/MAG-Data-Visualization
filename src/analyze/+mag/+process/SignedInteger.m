@@ -2,12 +2,6 @@ classdef SignedInteger < mag.process.Step
 % SIGNEDINTEGER Convert data to signed int16, by using the first bit as
 % indicating signedness.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % INGORECOMPRESSEDDATA Flag to ignore compressed data.
         IgnoreCompressedData (1, 1) logical = true
@@ -33,18 +27,6 @@ classdef SignedInteger < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Change Signedness";
-        end
-
-        function value = get.Description(this)
-            value = "Convert variables " + join(compose("""%s""", this.Variables), ", ") + " from unsigned to signed int16.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description + " The first bit is treated as indicating signedness.";
         end
 
         function data = apply(this, data, ~)

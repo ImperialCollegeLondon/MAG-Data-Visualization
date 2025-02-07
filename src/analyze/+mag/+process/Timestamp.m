@@ -1,28 +1,7 @@
 classdef Timestamp < mag.process.Step
 % TIMESTAMP Adjust timestamp of data points based on frequency of data.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     methods
-
-        function value = get.Name(~)
-            value = "Adjust Timestamp";
-        end
-
-        function value = get.Description(~)
-            value = "Coarse timestamps are adjusted based on sensor mode and with fine timestamp data.";
-        end
-
-        function value = get.DetailedDescription(this)
-
-            value = this.Description + " Sensor mode is used to determine the time difference between each " + ...
-                "data point (data points in a packet are returned with the same timestamp, which needs to be adjusted). " + ...
-                "Moreover, fine timestamp data is added, to achieve a more precise estimate.";
-        end
 
         function data = apply(this, data, metaData)
             data.t = this.computeTimeStamp(data{:, ["coarse", "fine"]}, data.sequence, metaData.DataFrequency, metaData.PacketFrequency);

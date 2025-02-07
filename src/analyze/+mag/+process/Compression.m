@@ -1,12 +1,6 @@
 classdef Compression < mag.process.Step
 % COMPRESSION Apply correction for compressed data.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % COMPRESSIONVARIABLE Name of compression variable.
         CompressionVariable (1, 1) string
@@ -31,18 +25,6 @@ classdef Compression < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Apply Compression Correction";
-        end
-
-        function value = get.Description(this)
-            value = "Apply correction to " + join(compose("""%s""", this.Variables), ", ") + " based on compression """ + this.CompressionVariable + """.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description;
         end
 
         function data = apply(this, data, ~)

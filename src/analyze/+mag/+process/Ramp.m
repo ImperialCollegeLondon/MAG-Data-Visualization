@@ -1,30 +1,12 @@
 classdef Ramp < mag.process.Step
 % RAMP Isolate and validate ramp mode.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties (Constant)
         % PATTERN Pattern to be matched by ramp.
         Pattern (1, 8) double = [2, 2, 2, 2, 2, 2, 2, 1]
     end
 
     methods
-
-        function value = get.Name(~)
-            value = "Validate Ramp Mode";
-        end
-
-        function value = get.Description(~)
-            value = "Validate that ramp mode derivative meets the expected pattern.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description;
-        end
 
         function data = apply(this, data, metaData)
 

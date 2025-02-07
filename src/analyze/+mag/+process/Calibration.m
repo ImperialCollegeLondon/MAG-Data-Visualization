@@ -7,12 +7,6 @@ classdef Calibration < mag.process.Step
         FileLocation (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "../../calibration")
     end
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % TEMPERATURE Temperature range selected.
         Temperature (1, 1) string {mustBeMember(Temperature, ["Cold", "Cool", "Room"])} = "Room"
@@ -35,21 +29,6 @@ classdef Calibration < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Calibration";
-        end
-
-        function value = get.Description(this)
-            value = "Calibrate " + join(compose("""%s""", this.Variables), ", ") + " data by applying scale factor, misalignment and offset.";
-        end
-
-        function value = get.DetailedDescription(this)
-
-            value = this.Description + " Calibration data is stored in a text file, " + ...
-                "as a 5x3 matrix containing scale factor in the first row, misalignment from the second to forth row, " + ...
-                "and offset in the last row.";
         end
 
         function data = apply(this, data, metaData)

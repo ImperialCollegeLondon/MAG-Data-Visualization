@@ -1,12 +1,6 @@
 classdef Smooth < mag.process.Step
 % SMOOTH Smooth noisy data with moving average.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % VARIABLES Variables to smooth.
         Variables (1, :) string
@@ -23,18 +17,6 @@ classdef Smooth < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Smooth";
-        end
-
-        function value = get.Description(~)
-            value = "Smooth data with moving average.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description;
         end
 
         function data = apply(this, data, ~)
