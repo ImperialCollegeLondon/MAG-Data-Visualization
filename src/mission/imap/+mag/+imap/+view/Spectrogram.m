@@ -36,23 +36,43 @@ classdef Spectrogram < mag.graphics.view.View
             primary = this.Results.Primary;
             secondary = this.Results.Secondary;
 
-            % Spectrogram.
-            primarySpectrum = mag.spectrogram(primary, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
-                Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
+            numSpectra = 0;
 
-            secondarySpectrum = mag.spectrogram(secondary, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
-                Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
+            % Primary.
+            if ~isempty(primary) && primary.HasData
 
-            % Field and spectrogram.
-            primaryCharts = this.getFrequencyCharts(primary, primarySpectrum, primarySensor, "left");
-            secondaryCharts = this.getFrequencyCharts(secondary, secondarySpectrum, secondarySensor, "right");
+                numSpectra = numSpectra + 1;
+                primarySpectrum = mag.spectrogram(primary, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
+                    Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
+
+                primaryCharts = this.getSpectrogramCharts(primary, primarySpectrum, primarySensor, "left");
+            else
+                primaryCharts = {};
+            end
+
+            % Secondary.
+            if ~isempty(secondary) && secondary.HasData
+
+                numSpectra = numSpectra + 1;
+                secondarySpectrum = mag.spectrogram(secondary, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
+                    Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
+
+                secondaryCharts = this.getSpectrogramCharts(secondary, secondarySpectrum, secondarySensor, "right");
+            else
+                secondaryCharts = {};
+            end
+
+            % Plot.
+            if isempty(primaryCharts) && isempty(secondaryCharts)
+                return;
+            end
 
             this.Figures = this.Factory.assemble( ...
                 primaryCharts{:}, ...
                 secondaryCharts{:}, ...
-                Title = this.getFrequencyFigureTitle(primary, secondary), ...
-                Name = this.getFrequencyFigureName(primary, secondary), ...
-                Arrangement = [9, 2], ...
+                Title = this.getSpectrogramFigureTitle(primary, secondary), ...
+                Name = this.getSpectrogramFigureName(primary, secondary), ...
+                Arrangement = [9, numSpectra], ...
                 LinkXAxes = true, ...
                 TileIndexing = "columnmajor", ...
                 WindowState = "maximized");
@@ -61,7 +81,7 @@ classdef Spectrogram < mag.graphics.view.View
 
     methods (Access = private)
 
-        function charts = getFrequencyCharts(this, science, spectrum, name, axisLocation)
+        function charts = getSpectrogramCharts(this, science, spectrum, name, axisLocation)
 
             charts = { ...
                 science, mag.graphics.style.Default(Title = compose("%s x", name), YLabel = "[nT]", YAxisLocation = axisLocation, Charts = mag.graphics.chart.Plot(YVariables = "X")), ...
@@ -72,12 +92,12 @@ classdef Spectrogram < mag.graphics.view.View
                 spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "Z"))};
         end
 
-        function value = getFrequencyFigureTitle(this, primary, secondary)
+        function value = getSpectrogramFigureTitle(this, primary, secondary)
             value = compose("%s (%s, %s)", primary.MetaData.getDisplay("Mode"), this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData));
         end
 
-        function value = getFrequencyFigureName(this, primary, secondary)
-            value = this.getFrequencyFigureTitle(primary, secondary) + compose(" Frequency (%s)", this.date2str(primary.MetaData.Timestamp));
+        function value = getSpectrogramFigureName(this, primary, secondary)
+            value = this.getSpectrogramFigureTitle(primary, secondary) + compose(" Frequency (%s)", this.date2str(primary.MetaData.Timestamp));
         end
     end
 end

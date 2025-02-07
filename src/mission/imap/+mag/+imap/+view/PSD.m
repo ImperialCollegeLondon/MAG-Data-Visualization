@@ -29,7 +29,11 @@ classdef PSD < mag.graphics.view.View
             primary = this.Results.Primary;
             secondary = this.Results.Secondary;
 
-            % PSD.
+            numPSDs = 0;
+
+            yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
+
+            % Start and duration.
             if ismissing(this.Start) || ~isbetween(this.Start, primary.Time(1), primary.Time(end))
                 psdStart = primary.Time(1);
             else
@@ -42,22 +46,51 @@ classdef PSD < mag.graphics.view.View
                 psdDuration = this.Duration;
             end
 
-            psdPrimary = mag.psd(primary, Start = psdStart, Duration = psdDuration);
-            psdSecondary = mag.psd(secondary, Start = psdStart, Duration = psdDuration);
+            % Primary.
+            if ~isempty(primary) && primary.HasData
 
-            yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
+                numPSDs = numPSDs + 1;
+
+                primaryPSD = mag.psd(primary, Start = psdStart, Duration = psdDuration);
+                primaryCharts = this.getPSDCharts(primaryPSD, primarySensor, yLine);
+            else
+                primaryCharts = {};
+            end
+
+            % Secondary.
+            if ~isempty(secondary) && secondary.HasData
+
+                numPSDs = numPSDs + 1;
+
+                secondaryPSD = mag.psd(secondary, Start = psdStart, Duration = psdDuration);
+                secondaryCharts = this.getPSDCharts(secondaryPSD, secondarySensor, yLine);
+            else
+                secondaryCharts = {};
+            end
+
+            % Plot.
+            if isempty(primaryCharts) && isempty(secondaryCharts)
+                return;
+            end
 
             this.Figures = this.Factory.assemble( ...
-                psdPrimary, mag.graphics.style.Default(Title = compose("%s PSD", primarySensor), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]), ...
-                psdSecondary, mag.graphics.style.Default(Title = compose("%s PSD", secondarySensor), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]), ...
+                primaryCharts{:}, ...
+                secondaryCharts{:}, ...
                 Title = this.getPSDFigureTitle(primary, secondary, psdStart, psdDuration), ...
                 Name = this.getPSDFigureName(primary, secondary, psdStart), ...
-                Arrangement = [2, 1], ...
+                Arrangement = [numPSDs, 1], ...
                 WindowState = "maximized");
         end
     end
 
     methods (Access = private)
+
+        function charts = getPSDCharts(this, psd, sensor, yLine)
+
+            charts = {psd, ...
+                mag.graphics.style.Default(Title = compose("%s PSD", sensor), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
+                Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine])};
+        end
 
         function value = getPSDFigureTitle(this, primary, secondary, psdStart, psdDuration)
             value = compose("Start: %s - Duration: %s - (%s, %s)", this.date2str(psdStart), psdDuration, this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData));
