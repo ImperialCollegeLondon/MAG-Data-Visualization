@@ -25,6 +25,7 @@ jobs:
         uses: robinraju/release-downloader@v1.11
         with:
           repository: ImperialCollegeLondon/MATLAB-SPDF-CDF
+          tag: v3.9.0
           fileName: MATLAB.SPDF.CDF.mltbx
           token: ${{ secrets.MATLAB_SUPPORT_PACKAGES_TOKEN }}
           tarBall: false
@@ -33,6 +34,7 @@ jobs:
         uses: robinraju/release-downloader@v1.11
         with:
           repository: ImperialCollegeLondon/MATLAB-SPICE
+          tag: N0067
           fileName: MATLAB.SPICE.MICE.mltbx
           token: ${{ secrets.MATLAB_SUPPORT_PACKAGES_TOKEN }}
           tarBall: false
