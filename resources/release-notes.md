@@ -1,3 +1,6 @@
+> [!WARNING]  
+> Starting v7.2.0, MATLAB R2023b is no longer supported.
+
 ## Software
 
 - Remove unnecessary `fullfile`s in `mag.imap.Analysis` default values
