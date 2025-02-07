@@ -48,6 +48,9 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
                 version (1, 1) string = task.ToolboxVersion
             end
 
+            disp(compose("Project root: %s", task.ProjectRoot))
+            disp(ls())
+
             toolboxOptions = matlab.addons.toolbox.ToolboxOptions(fileparts(task.ToolboxPath), task.ToolboxUUID, ...
                 ToolboxName = "MAG Data Visualization", ...
                 ToolboxVersion = version, ...
