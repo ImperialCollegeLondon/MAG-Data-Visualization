@@ -57,8 +57,10 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
 
             if this.HasScience
 
-                firstTimes = arrayfun(@(x) x.Time(1), this.Science, UniformOutput = true);
-                lastTimes = arrayfun(@(x) x.Time(end), this.Science, UniformOutput = true);
+                science = this.Science([this.Science.HasData]);
+
+                firstTimes = arrayfun(@(x) x.Time(1), science, UniformOutput = true);
+                lastTimes = arrayfun(@(x) x.Time(end), science, UniformOutput = true);
 
                 timeRange = [min(firstTimes), max(lastTimes)];
             else

@@ -21,6 +21,28 @@ jobs:
         with:
           release: ${{ matrix.release }}
           products: MATLAB_Test Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox
+      - name: Download CDF support package
+        uses: robinraju/release-downloader@v1.11
+        with:
+          repository: ImperialCollegeLondon/MATLAB-SPDF-CDF
+          tag: v3.9.0
+          fileName: MATLAB.SPDF.CDF.mltbx
+          token: ${{ secrets.MATLAB_SUPPORT_PACKAGES_TOKEN }}
+          tarBall: false
+          zipBall: false
+      - name: Download SPICE support package
+        uses: robinraju/release-downloader@v1.11
+        with:
+          repository: ImperialCollegeLondon/MATLAB-SPICE
+          tag: N0067
+          fileName: MATLAB.SPICE.MICE.mltbx
+          token: ${{ secrets.MATLAB_SUPPORT_PACKAGES_TOKEN }}
+          tarBall: false
+          zipBall: false
+      - name: Install support packages
+        uses: matlab-actions/run-command@v2.1.1
+        with:
+          command: "matlab.addons.install('MATLAB.SPDF.CDF.mltbx'); matlab.addons.install('MATLAB.SPICE.MICE.mltbx');"
       - name: Run tests
         uses: matlab-actions/run-build@v2.5.0
         with:

@@ -6,6 +6,14 @@ classdef tScienceCSVIn < MAGIOTestCase
         InvalidFileName = {"super_data20240410-15h26.csv"}
     end
 
+    methods (TestClassSetup)
+
+        % Check that MICE Toolbox is installed.
+        function checkSPDFCDFToolbox(testCase)
+            testCase.assumeTrue(exist("mice", "file") == 3, "MICE Toolbox not installed. Test skipped.");
+        end
+    end
+
     methods (Static, TestParameterDefinition)
 
         function ValidFileDetails = initializeValidFileDetails()

@@ -8,7 +8,7 @@ classdef SID15 < mag.imap.meta.Type
     properties
         % PROCESSINGSTEPS Steps needed to process imported data.
         ProcessingSteps (1, :) mag.process.Step = [ ...
-            mag.process.DateTime(TimeVariable = "SHCOARSE")]
+            mag.process.Spice(TimeVariable = "SHCOARSE", Mission = "IMAP")]
     end
 
     methods

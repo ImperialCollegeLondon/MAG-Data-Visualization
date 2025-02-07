@@ -27,7 +27,7 @@ classdef HKCSV < mag.io.in.CSV
             rawData = renamevars(rawData, "SHCOARSE", "t");
 
             % Convert timestamps.
-            for ps = [mag.process.DateTime()]
+            for ps = [mag.process.Spice(Mission = "IMAP")]
                 rawData = ps.apply(rawData, mag.meta.HK());
             end
 

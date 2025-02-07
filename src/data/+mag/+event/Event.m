@@ -106,10 +106,7 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
         % GENERATEEMPTYEVENTTABLE Generate empty timetable for describing
         % events.
 
-            emptyTime = datetime.empty();
-            emptyTime.TimeZone = mag.time.Constant.TimeZone;
-
-            emptyTable = struct2table(struct(Time = emptyTime, ...
+            emptyTable = struct2table(struct(Time = mag.time.emptyTime(), ...
                 Mode = string.empty(0, 1), ...
                 PrimaryNormalRate = double.empty(0, 1), ...
                 SecondaryNormalRate = double.empty(0, 1), ...
@@ -212,9 +209,7 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
             end
 
             if isempty(timestamps)
-
-                timestamps = datetime.empty();
-                timestamps.TimeZone = mag.time.Constant.TimeZone;
+                timestamps = mag.time.emptyTime();
             end
         end
     end

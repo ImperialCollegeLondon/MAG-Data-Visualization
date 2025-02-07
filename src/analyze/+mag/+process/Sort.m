@@ -1,12 +1,6 @@
 classdef Sort < mag.process.Step
 % SORT Sort data cronologically.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % VARIABLES Variables to sort by.
         Variables (1, :) string = string.empty()
@@ -23,20 +17,6 @@ classdef Sort < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Sort Data";
-        end
-
-        function value = get.Description(~)
-            value = "Sort data rows based on timestamp.";
-        end
-
-        function value = get.DetailedDescription(this)
-
-            value = this.Description + " When importing data from multiple sources, data may not " + ...
-                "be loaded chronologically. This step ensures data is chronological.";
         end
 
         function data = apply(this, data, ~)

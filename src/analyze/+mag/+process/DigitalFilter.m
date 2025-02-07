@@ -1,12 +1,6 @@
 classdef DigitalFilter < mag.process.Step
 % DIGITALFILTER Apply digital to data.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % VARIABLES Variables to apply filter to.
         Variables (1, :) string
@@ -23,18 +17,6 @@ classdef DigitalFilter < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Apply Digital Filter";
-        end
-
-        function value = get.Description(~)
-            value = "Apply digital filter using a rational transfer function.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description;
         end
 
         function data = apply(this, data, ~)

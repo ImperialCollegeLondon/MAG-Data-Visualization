@@ -128,10 +128,25 @@ classdef ToolbarManager < mag.app.manage.Manager
 
             this.DebugStatus = dbstatus();
 
-            if ~isempty(this.PreviousError)
+            if isempty(this.PreviousError)
 
-                stack = this.PreviousError.stack;
-                dbstop("in", stack(1).file, "at", num2str(stack(1).line));
+                this.DebugToggleTool.State = "off";
+                this.App.AppNotificationHandler.displayAlert("No error found.", "No Errors", "warning");
+                return;
+            end
+
+            selection = uiconfirm(this.App.UIFigure, "Select debugging type.", "Debug Type", Icon = "question", Options = ["Error ID", "Error Source", "Cancel"], ...
+                DefaultOption = "Error ID", CancelOption = "Cancel");
+
+            switch selection
+                case "Error ID"
+                    mag.internal.stopIfException(this.PreviousError.identifier);
+                case "Error Source"
+
+                    stack = this.PreviousError.stack;
+                    dbstop("in", stack(1).file, "at", num2str(stack(1).line));
+                otherwise
+                    this.DebugToggleTool.State = "off";
             end
         end
 

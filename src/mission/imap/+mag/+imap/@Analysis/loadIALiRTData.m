@@ -25,8 +25,15 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
 
     %% Amend Timestamp
 
-    startTime(1) = bounds(primary.Time);
-    startTime(2) = bounds(secondary.Time);
+    startTime = mag.time.emptyTime();
+
+    if primary.HasData
+        startTime(end + 1) = bounds(primary.Time);
+    end
+
+    if secondary.HasData
+        startTime(end + 1) = bounds(secondary.Time);
+    end
 
     startTime = min(startTime);
 
@@ -45,8 +52,17 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
 
     sensorEvents = mag.event.Event.generateEmptyEventtable();
 
-    primary.Data.Properties.Events = this.generateEventTable(primary, sensorEvents);
-    secondary.Data.Properties.Events = this.generateEventTable(secondary, sensorEvents);
+    if primary.HasData
+        primary.Data.Properties.Events = this.generateEventTable(primary, sensorEvents);
+    else
+        primary.Data.Properties.Events = mag.Science.generateEmptyEventtable();
+    end
+
+    if secondary.HasData
+        secondary.Data.Properties.Events = this.generateEventTable(secondary, sensorEvents);
+    else
+        secondary.Data.Properties.Events = mag.Science.generateEmptyEventtable();
+    end
 
     %% Remove Ramp Mode (If Any)
 

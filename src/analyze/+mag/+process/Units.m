@@ -1,12 +1,6 @@
 classdef Units < mag.process.Step
 % UNITS Convert from engineering units.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties (Constant, Access = private)
         % SCALEFACTORS Scale factors for engineering unit conversions.
         ScaleFactors (1, 1) dictionary = dictionary( ...
@@ -43,18 +37,6 @@ classdef Units < mag.process.Step
     end
 
     methods
-
-        function value = get.Name(~)
-            value = "Convert from Engineering Units";
-        end
-
-        function value = get.Description(~)
-            value = "Convert engineering units to scientific units, depending on the type of housekeeping data.";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description + " Scale factors and offsets are applied to obtain regular scientific units.";
-        end
 
         function data = apply(this, data, metaData)
 

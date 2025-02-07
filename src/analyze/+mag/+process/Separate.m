@@ -3,12 +3,6 @@ classdef Separate < mag.process.Step
 % different files. Optionally, add missing row before large time gaps.
 % Avoid continuous lines when gap between files is large.
 
-    properties (Dependent)
-        Name
-        Description
-        DetailedDescription
-    end
-
     properties
         % DISCRIMINATIONVARIABLE Name of variable to increase in row.
         DiscriminationVariable (1, 1) string
@@ -30,18 +24,6 @@ classdef Separate < mag.process.Step
             end
 
             this.assignProperties(options);
-        end
-
-        function value = get.Name(~)
-            value = "Add Missing Row to Separate Files";
-        end
-
-        function value = get.Description(this)
-            value = "Add extra row with missing values for " + join(compose("""%s""", this.Variables), ", ") + ".";
-        end
-
-        function value = get.DetailedDescription(this)
-            value = this.Description + " This is to avoid continuous lines when gap between files is large.";
         end
 
         function data = apply(this, data, ~)
