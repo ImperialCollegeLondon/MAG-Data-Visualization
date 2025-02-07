@@ -39,4 +39,5 @@ jobs:
         with:
           path: 'artifacts/coverage.xml'
           minimum_coverage: 80
+          skip_covered: false
           report_name: Coverage Report (${{ matrix.release }})
