@@ -6,6 +6,9 @@ classdef PSD < mag.graphics.view.View
         Start (1, 1) datetime = NaT(TimeZone = "UTC")
         % DURATION Duration of PSD plot.
         Duration (1, 1) duration = hours(1)
+    end
+
+    properties (Hidden)
         % TRANSFORMATION Transformation for calculating PSD.
         Transformation (1, 1) mag.transform.PSD = mag.transform.PSD()
     end

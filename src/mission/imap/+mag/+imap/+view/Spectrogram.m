@@ -15,6 +15,11 @@ classdef Spectrogram < mag.graphics.view.View
         Overlap (1, 1) double = missing()
     end
 
+    properties (Hidden)
+        % TRANSFORMATION Transformation for calculating spectrogram.
+        Transformation (1, 1) mag.transform.Spectrogram = mag.transform.Spectrogram()
+    end
+
     methods
 
         function this = Spectrogram(results, options)
@@ -42,9 +47,8 @@ classdef Spectrogram < mag.graphics.view.View
             if ~isempty(primary) && primary.HasData
 
                 numSpectra = numSpectra + 1;
-                primarySpectrum = mag.spectrogram(primary, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
-                    Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
 
+                primarySpectrum = this.computeSpectrogram(primary);
                 primaryCharts = this.getSpectrogramCharts(primary, primarySpectrum, primarySensor, "left");
             else
                 primaryCharts = {};
@@ -54,9 +58,8 @@ classdef Spectrogram < mag.graphics.view.View
             if ~isempty(secondary) && secondary.HasData
 
                 numSpectra = numSpectra + 1;
-                secondarySpectrum = mag.spectrogram(secondary, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
-                    Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
 
+                secondarySpectrum = this.computeSpectrogram(secondary);
                 secondaryCharts = this.getSpectrogramCharts(secondary, secondarySpectrum, secondarySensor, "right");
             else
                 secondaryCharts = {};
@@ -80,6 +83,19 @@ classdef Spectrogram < mag.graphics.view.View
     end
 
     methods (Access = private)
+
+        function spectrum = computeSpectrogram(this, science)
+
+            transformation = this.Transformation;
+
+            transformation.FrequencyLimits = this.FrequencyLimits;
+            transformation.FrequencyPoints = this.FrequencyPoints;
+            transformation.Normalize = this.Normalize; 
+            transformation.Window = this.Window;
+            transformation.Overlap = this.Overlap;
+
+            spectrum = transformation.apply(science);
+        end
 
         function charts = getSpectrogramCharts(this, science, spectrum, name, axisLocation)
 

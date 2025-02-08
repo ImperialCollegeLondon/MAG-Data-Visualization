@@ -1,5 +1,5 @@
 classdef tPSD < MAGViewTestCase
-% TFIELD Unit tests for "mag.imap.view.PSD" class.
+% TPSD Unit tests for "mag.imap.view.PSD" class.
 
     methods (Test)
 
