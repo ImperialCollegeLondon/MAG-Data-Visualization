@@ -10,7 +10,7 @@ classdef MAGViewTestCase < mag.test.GraphicsTestCase & matlab.mock.TestCase
             testCase.assertNumElements(actualInputs, numel(expectedInputs), "Number of inputs should be as expected.");
 
             for i = 1:numel(expectedInputs)
-                testCase.verifyEqual(expectedInputs{i}, actualInputs{i}, compose("Input #%i should match expectation.", i));
+                testCase.verifyEqual(actualInputs{i}, expectedInputs{i}, compose("Input #%i should match expectation.", i));
             end
         end
 
@@ -48,7 +48,7 @@ classdef MAGViewTestCase < mag.test.GraphicsTestCase & matlab.mock.TestCase
             end
 
             % Create instrument meta data.
-            metaInstrument = mag.meta.Instrument(ASW = "5.01", BSW = "0.02", GSE = "10.5.4", Model = "FM", Timestamp = datetime("now", TimeZone = "UTC"));
+            metaInstrument = mag.meta.Instrument(Mission = "IMAP", ASW = "5.01", BSW = "0.02", GSE = "10.5.4", Model = "FM", Timestamp = datetime("now", TimeZone = "UTC"));
 
             % Create science data.
             setup1 = mag.meta.Setup(Can = "None", FEE = "FEE2", Harness = "Some cable", Model = "EM4");

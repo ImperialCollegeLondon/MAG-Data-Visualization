@@ -6,6 +6,8 @@ classdef PSD < mag.graphics.view.View
         Start (1, 1) datetime = NaT(TimeZone = "UTC")
         % DURATION Duration of PSD plot.
         Duration (1, 1) duration = hours(1)
+        % TRANSFORMATION Transformation for calculating PSD.
+        Transformation (1, 1) mag.transform.PSD = mag.transform.PSD()
     end
 
     methods
@@ -30,28 +32,14 @@ classdef PSD < mag.graphics.view.View
             secondary = this.Results.Secondary;
 
             numPSDs = 0;
-
             yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
-
-            % Start and duration.
-            if ismissing(this.Start) || ~isbetween(this.Start, primary.Time(1), primary.Time(end))
-                psdStart = primary.Time(1);
-            else
-                psdStart = this.Start;
-            end
-
-            if (this.Duration > (primary.Time(end) - psdStart))
-                psdDuration = primary.Time(end) - psdStart;
-            else
-                psdDuration = this.Duration;
-            end
 
             % Primary.
             if ~isempty(primary) && primary.HasData
 
                 numPSDs = numPSDs + 1;
 
-                primaryPSD = mag.psd(primary, Start = psdStart, Duration = psdDuration);
+                primaryPSD = this.computePSD(primary);
                 primaryCharts = this.getPSDCharts(primaryPSD, primarySensor, yLine);
             else
                 primaryCharts = {};
@@ -62,7 +50,7 @@ classdef PSD < mag.graphics.view.View
 
                 numPSDs = numPSDs + 1;
 
-                secondaryPSD = mag.psd(secondary, Start = psdStart, Duration = psdDuration);
+                secondaryPSD = this.computePSD(secondary);
                 secondaryCharts = this.getPSDCharts(secondaryPSD, secondarySensor, yLine);
             else
                 secondaryCharts = {};
@@ -76,14 +64,33 @@ classdef PSD < mag.graphics.view.View
             this.Figures = this.Factory.assemble( ...
                 primaryCharts{:}, ...
                 secondaryCharts{:}, ...
-                Title = this.getPSDFigureTitle(primary, secondary, psdStart, psdDuration), ...
-                Name = this.getPSDFigureName(primary, secondary, psdStart), ...
+                Title = this.getPSDFigureTitle(primary, secondary), ...
+                Name = this.getPSDFigureName(primary, secondary), ...
                 Arrangement = [numPSDs, 1], ...
                 WindowState = "maximized");
         end
     end
 
     methods (Access = private)
+
+        function psd = computePSD(this, science)
+
+            transformation = this.Transformation;
+
+            if ismissing(this.Start) || ~isbetween(this.Start, science.Time(1), science.Time(end))
+                transformation.Start = science.Time(1);
+            else
+                transformation.Start = this.Start;
+            end
+
+            if (this.Duration > (science.Time(end) - transformation.Start))
+                transformation.Duration = science.Time(end) - psdStart;
+            else
+                transformation.Duration = this.Duration;
+            end
+
+            psd = transformation.apply(science);
+        end
 
         function charts = getPSDCharts(this, psd, sensor, yLine)
 
@@ -92,12 +99,12 @@ classdef PSD < mag.graphics.view.View
                 Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine])};
         end
 
-        function value = getPSDFigureTitle(this, primary, secondary, psdStart, psdDuration)
-            value = compose("Start: %s - Duration: %s - (%s, %s)", this.date2str(psdStart), psdDuration, this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData));
+        function value = getPSDFigureTitle(this, primary, secondary)
+            value = compose("Start: %s - Duration: %s - (%s, %s)", this.date2str(this.Transformation.Start), this.Transformation.Duration, this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData));
         end
 
-        function value = getPSDFigureName(this, primary, secondary, psdStart)
-            value = compose("%s (%s, %s) PSD (%s)", primary.MetaData.getDisplay("Mode"), this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData), this.date2str(psdStart));
+        function value = getPSDFigureName(this, primary, secondary)
+            value = compose("%s (%s, %s) PSD (%s)", primary.MetaData.getDisplay("Mode"), this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData), this.date2str(this.Transformation.Start));
         end
     end
 end
