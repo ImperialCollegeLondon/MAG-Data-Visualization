@@ -1,6 +1,14 @@
 classdef tSpice < MAGAnalysisTestCase
 % TSPICE Unit tests for "mag.process.Spice" classes.
 
+    methods (TestClassSetup)
+
+        % Check that MICE Toolbox is installed.
+        function checkMICEToolbox(testCase)
+            testCase.assumeTrue(exist("mice", "file") == 3, "MICE Toolbox not installed. Test skipped.");
+        end
+    end
+
     methods (Test)
 
         % Test that conversion from MET to UTC is correct.

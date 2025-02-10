@@ -11,6 +11,10 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
         end
 
+        function checkMICEToolbox(testCase)
+            testCase.assumeTrue(exist("mice", "file") == 3, "MICE Toolbox not installed. Test skipped.");
+        end
+
         function useMATLABR2024bOrAbove(testCase)
             testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
         end
