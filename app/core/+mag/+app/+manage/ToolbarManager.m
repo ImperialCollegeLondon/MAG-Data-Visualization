@@ -158,28 +158,10 @@ classdef ToolbarManager < mag.app.manage.Manager
 
         function helpPushToolClicked(this)
 
-            % Show progress bar.
-            closeProgressBar = this.App.AppNotificationHandler.overlayProgressBar("Generating diagnostics..."); %#ok<NASGU>
+            web("https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/issues/new/choose");
 
-            % Instantiate variables to save.
-            model = this.App.Model;
-
-            % Create folder to zip.
-            statusFolder = tempname();
-            zipFolder = statusFolder + ".zip";
-
-            mkdir(statusFolder);
-            deleteFolder = onCleanup(@() rmdir(statusFolder, "s"));
-
-            % Create MAT file with variables.
-            save(fullfile(statusFolder, "data.mat"), "model");
-            exportapp(this.App.UIFigure, fullfile(statusFolder, "app.png"));
-
-            zip(zipFolder, statusFolder);
-            clipboard("copy", zipFolder);
-
-            % Show dialog.
-            this.App.AppNotificationHandler.displayAlert(compose("Share ZIP file ""%s""" + newline() + "with the developer. Path copied to clipboard.", zipFolder), "Share Diagnostics", "info");
+            this.App.AppNotificationHandler.displayAlert("Create issue on GitHub to share feedback, report issues and ask questions.", ...
+                "Create GitHub Issue", "info");
         end
     end
 end
