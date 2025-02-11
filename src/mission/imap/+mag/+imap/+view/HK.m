@@ -55,8 +55,8 @@ classdef HK < mag.graphics.view.View
                     secondary = this.Results.Secondary;
 
                     % Close up of HK.
-                    scienceStartTime = min(primary.Time(1), secondary.Time(1));
-                    scienceEndTime = max(primary.Time(end), secondary.Time(end));
+                    scienceStartTime = this.Results.TimeRange(1);
+                    scienceEndTime = this.Results.TimeRange(2);
 
                     voltsHK = pwr.copy();
                     voltsHK.Data = voltsHK.Data(timerange(scienceStartTime, scienceEndTime, "closed"), :);
@@ -123,15 +123,15 @@ classdef HK < mag.graphics.view.View
 
             % Processor HK.
             sid15 = this.Results.HK.getHKType("SID15");
-            procstat = this.Results.HK.getHKType("PROCSTAT");
+            procStat = this.Results.HK.getHKType("PROCSTAT");
 
-            if sid15.isPlottable() && procstat.isPlottable()
+            if sid15.isPlottable() && procStat.isPlottable()
 
                 drt = sid15.get("FOBDataReadyTime", "FIBDataReadyTime");
                 drt = timetable(sid15.Time, 1000 * (drt(:, 1) - drt(:, 2)), VariableNames = "Difference");
 
                 this.Figures(end + 1) = this.Factory.assemble( ...
-                    procstat, mag.graphics.style.Default(Title = "Messages in Queue", YLabel = "n [-]", Legend = ["FOB", "FIB"], Charts = [mag.graphics.chart.Plot(YVariables = "FOBQueueNumMSG"), mag.graphics.chart.Plot(YVariables = "FIBQueueNumMSG")]), ...
+                    procStat, mag.graphics.style.Default(Title = "Messages in Queue", YLabel = "n [-]", Legend = ["FOB", "FIB"], Charts = [mag.graphics.chart.Plot(YVariables = "FOBQueueNumMSG"), mag.graphics.chart.Plot(YVariables = "FIBQueueNumMSG")]), ...
                     drt, mag.graphics.style.Default(Title = "Data Ready Time", YLabel = "\Delta Data Ready Time [ms]", Charts = mag.graphics.chart.Plot(YVariables = "Difference")), ...
                     Name = "Processor Stats", ...
                     Arrangement = [2, 1], ...
