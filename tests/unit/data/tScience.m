@@ -137,6 +137,24 @@ classdef tScience < matlab.unittest.TestCase
             testCase.cropAndVerify(science, timeFilter, expectedTimes, expectedData);
         end
 
+        % Test that "crop" method does nothing if no data.
+        function cropMethod_noData(testCase)
+
+            % Set up.
+            science = testCase.createTestData();
+            science.Data(:, :) = [];
+
+            expectedScience = science.copy();
+
+            timeFilter = timerange(datetime("yesterday"), datetime("today"), "openleft");
+
+            % Exercise.
+            science.crop(timeFilter);
+
+            % Verify.
+            testCase.verifyEqual(science, expectedScience, "Data should not be cropped.");
+        end
+
         % Test that "crop" method crops data based on a "timerange" object.
         function cropMethod_timerange(testCase)
 
@@ -209,6 +227,22 @@ classdef tScience < matlab.unittest.TestCase
             testCase.verifyTrue(ismissing(science.MetaData.Timestamp), "All data should be cropped out.");
         end
 
+        % Test that "resample" method does nothing if no data.
+        function resampleMethod_noData(testCase)
+
+            % Set up.
+            science = testCase.createTestData();
+            science.Data(:, :) = [];
+
+            expectedScience = science.copy();
+
+            % Exercise.
+            science.resample(0);
+
+            % Verify.
+            testCase.verifyEqual(science, expectedScience, "Data should not be resampled.");
+        end
+
         % Test that "resample" method can resample to a lower frequency.
         function resampleMethod_lowerFrequency(testCase)
 
@@ -258,6 +292,22 @@ classdef tScience < matlab.unittest.TestCase
             testCase.verifyError(@() science.resample(0.12345), "", "Resampling should error when frequencies do not match.");
         end
 
+        % Test that "downsample" method does nothing if no data.
+        function downsampleMethod_noData(testCase)
+
+            % Set up.
+            science = testCase.createTestData();
+            science.Data(:, :) = [];
+
+            expectedScience = science.copy();
+
+            % Exercise.
+            science.downsample(0);
+
+            % Verify.
+            testCase.verifyEqual(science, expectedScience, "Data should not be downsampled.");
+        end
+
         % Test that "downsample" method can downsample to a lower
         % frequency.
         function downsampleMethod_lowerFrequency(testCase)
@@ -302,6 +352,22 @@ classdef tScience < matlab.unittest.TestCase
             testCase.verifyError(@() science.downsample(0.12345), "", "Resampling should error when frequencies do not match.");
         end
 
+        % Test that "filter" method does nothing if no data.
+        function filterMethod_noData(testCase)
+
+            % Set up.
+            science = testCase.createTestData();
+            science.Data(:, :) = [];
+
+            expectedScience = science.copy();
+
+            % Exercise.
+            science.filter(1, 2);
+
+            % Verify.
+            testCase.verifyEqual(science, expectedScience, "Data should not be filtered.");
+        end
+
         % Test that "filter" method can filter with a "digitalFilter"
         % object.
         function filterMethod_digitalFilter(testCase)
@@ -322,6 +388,24 @@ classdef tScience < matlab.unittest.TestCase
 
             testCase.assertSize(downsampledScience.DependentVariables, size(science.DependentVariables), "Filtering should not affect size.");
             testCase.verifyTrue(all(ismissing(downsampledScience.XYZ), "all"), "All data should be replaced with missing values to account for filter warm-up.");
+        end
+
+        % Test that "replace" method does nothing if no data.
+        function replaceMethod_noData(testCase)
+
+            % Set up.
+            science = testCase.createTestData();
+            science.Data(:, :) = [];
+
+            expectedScience = science.copy();
+
+            timeFilter = timerange(datetime("yesterday"), datetime("today"), "openleft");
+
+            % Exercise.
+            science.replace(timeFilter);
+
+            % Verify.
+            testCase.verifyEqual(science, expectedScience, "Data should not be replaced.");
         end
 
         % Test that "replace" method replaces data with default filler.

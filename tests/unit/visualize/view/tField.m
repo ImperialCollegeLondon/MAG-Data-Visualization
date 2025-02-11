@@ -8,7 +8,7 @@ classdef tField < MAGViewTestCase
     methods (Test)
 
         % Test that science and HK view is generated correctly.
-        function scienceHKView(testCase, AddHK)
+        function field_scienceHK(testCase, AddHK)
 
             % Set up.
             instrument = testCase.createTestInstrument(AddHK = AddHK);
@@ -27,12 +27,55 @@ classdef tField < MAGViewTestCase
             testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
         end
 
-        % Test that when no science is available empty figure is returned.
-        function noScience(testCase)
+        % Test that when only primary sensor is available view is generated
+        % correctly.
+        function field_primaryOnly(testCase)
 
             % Set up.
             instrument = testCase.createTestInstrument(AddHK = false);
+            instrument.Primary.Data(:, :) = [];
 
+            expectedInputs = testCase.generateExpectedInputs(instrument);
+            expectedOutput = figure();
+
+            [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
+            when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
+
+            % Exercise.
+            view = mag.imap.view.Field(instrument, Factory = mockFactory);
+            view.visualize();
+
+            % Verify.
+            testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
+        end
+
+        % Test that when only secondary sensor is available view is generated
+        % correctly.
+        function field_secondaryOnly(testCase)
+
+            % Set up.
+            instrument = testCase.createTestInstrument(AddHK = false);
+            instrument.Secondary.Data(:, :) = [];
+
+            expectedInputs = testCase.generateExpectedInputs(instrument);
+            expectedOutput = figure();
+
+            [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
+            when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
+
+            % Exercise.
+            view = mag.imap.view.Field(instrument, Factory = mockFactory);
+            view.visualize();
+
+            % Verify.
+            testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
+        end
+
+        % Test that when no science is available empty figure is returned.
+        function field_noScience(testCase)
+
+            % Set up.
+            instrument = testCase.createTestInstrument(AddHK = false);
             instrument.Science(1).Data(:, :) = [];
             instrument.Science(2).Data(:, :) = [];
 
@@ -157,29 +200,46 @@ classdef tField < MAGViewTestCase
                 options.Events (1, 1) string = missing()
             end
 
-            expectedInputs{1} = instrument.Science(2);
-            expectedInputs{2} = mag.graphics.style.Stackedplot(Title = options.PrimaryTitle, YLabels =  ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], Layout = [3, 1], ...
-                Charts = mag.graphics.chart.Stackedplot(YVariables = ["X", "Y", "Z", "B"], Filter = instrument.Science(2).Quality.isPlottable()));
+            expectedInputs = {};
+            arrangement = [3, 0];
 
-            expectedInputs{3} = instrument.Science(1);
-            expectedInputs{4} = mag.graphics.style.Stackedplot(Title = options.SecondaryTitle, YLabels = ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], YAxisLocation = "right", Layout = [3, 1], ...
-                Charts = mag.graphics.chart.Stackedplot(YVariables = ["X", "Y", "Z", "B"], Filter = instrument.Science(1).Quality.isPlottable()));
+            if instrument.Science(2).HasData
+
+                arrangement(2) = arrangement(2) + 1;
+
+                expectedInputs{end + 1} = instrument.Science(2);
+                expectedInputs{end + 1} = mag.graphics.style.Stackedplot(Title = options.PrimaryTitle, YLabels =  ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], Layout = [3, 1], ...
+                    Charts = mag.graphics.chart.Stackedplot(YVariables = ["X", "Y", "Z", "B"], Filter = instrument.Science(2).Quality.isPlottable()));
+            end
+
+            if instrument.Science(1).HasData
+
+                arrangement(2) = arrangement(2) + 1;
+
+                expectedInputs{end + 1} = instrument.Science(1);
+                expectedInputs{end + 1} = mag.graphics.style.Stackedplot(Title = options.SecondaryTitle, YLabels = ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], YAxisLocation = "right", Layout = [3, 1], ...
+                    Charts = mag.graphics.chart.Stackedplot(YVariables = ["X", "Y", "Z", "B"], Filter = instrument.Science(1).Quality.isPlottable()));
+            end
 
             if instrument.HasHK && any(instrument.HK.isPlottable())
 
-                expectedInputs{5} = instrument.HK(1);
-                expectedInputs{6} = [ ...
-                    mag.graphics.style.Default(Title = "FIB & ICU Temperatures", YLabel = "T [°C]", Legend = ["FIB", "ICU"], ...
-                    Charts = mag.graphics.chart.Plot(YVariables = ["FIB", "ICU"] + "Temperature"))];
+                arrangement(1) = arrangement(1) + 1;
 
-                expectedInputs{7} = instrument.HK(1);
-                expectedInputs{8} = [ ...
-                    mag.graphics.style.Default(Title = "FOB & ICU Temperatures", YLabel = "T [°C]", YAxisLocation = "right", Legend = ["FOB", "ICU"], ...
-                    Charts = mag.graphics.chart.Plot(YVariables = ["FOB", "ICU"] + "Temperature"))];
+                if instrument.Science(2).HasData
 
-                arrangement = [4, 2];
-            else
-                arrangement = [3, 2];
+                    expectedInputs{end + 1} = instrument.HK(1);
+                    expectedInputs{end + 1} = [ ...
+                        mag.graphics.style.Default(Title = "FIB & ICU Temperatures", YLabel = "T [°C]", Legend = ["FIB", "ICU"], ...
+                        Charts = mag.graphics.chart.Plot(YVariables = ["FIB", "ICU"] + "Temperature"))];
+                end
+
+                if instrument.Science(1).HasData
+
+                    expectedInputs{end + 1} = instrument.HK(1);
+                    expectedInputs{end + 1} = [ ...
+                        mag.graphics.style.Default(Title = "FOB & ICU Temperatures", YLabel = "T [°C]", YAxisLocation = "right", Legend = ["FOB", "ICU"], ...
+                        Charts = mag.graphics.chart.Plot(YVariables = ["FOB", "ICU"] + "Temperature"))];
+                end
             end
 
             switch options.Events
