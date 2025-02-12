@@ -1,5 +1,5 @@
 classdef tPSD < matlab.unittest.TestCase
-% TSPD Unit tests for "mag.PSD" class.
+% TPSD Unit tests for "mag.PSD" class.
 
     properties (TestParameter)
         PropertyName = {struct(Public = "Frequency", Private = "f"), ...
