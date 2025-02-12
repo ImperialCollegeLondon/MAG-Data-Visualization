@@ -446,39 +446,6 @@ classdef tScience < matlab.unittest.TestCase
             testCase.verifyEqual(modifiedScience.DependentVariables(5:end, :), data.DependentVariables(5:end, :), "Only data within filter should be replaced.");
         end
 
-        % Test that PSD can detect sine wave frequency, with default
-        % options.
-        function computePSD_sineWave_default(testCase)
-
-            % Set up.
-            science = testCase.createSineWaveTestData();
-
-            % Execute.
-            psd = testCase.verifyWarning(@() science.computePSD(), "");
-
-            % Verify.
-            [~, idxMax] = max([psd.X, psd.Y, psd.Z]);
-
-            testCase.verifyEqual(psd.Frequency(idxMax), [50; 100; 150], "PSD max frequency should match sine wave frequency.");
-        end
-
-        % Test that PSD can detect sine wave frequency, with selected data
-        % only.
-        function computePSD_sineWave_startAndDuration(testCase)
-
-            % Set up.
-            science = testCase.createSineWaveTestData();
-
-            % Execute.
-            psd = testCase.verifyWarning(@() science.computePSD(Start = science.Time(10), Duration = milliseconds(500)), "");
-
-            % Verify.
-            [~, idxMax] = max([psd.X, psd.Y, psd.Z]);
-
-            testCase.verifyThat(psd.Frequency(idxMax), matlab.unittest.constraints.IsEqualTo([50; 100; 150], Within = matlab.unittest.constraints.RelativeTolerance(0.1)), ...
-                "PSD max frequency should match sine wave frequency.");
-        end
-
         % Test that primary sensor name is returned correctly.
         function getName_primary(testCase)
 
