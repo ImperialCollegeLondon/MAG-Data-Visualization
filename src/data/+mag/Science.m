@@ -120,6 +120,10 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 timeFilter {mag.mixin.Crop.mustBeTimeFilter}
             end
 
+            if ~this.HasData
+                return;
+            end
+
             timePeriod = this.convertToTimeSubscript(timeFilter, this.Time);
             this.Data = this.Data(timePeriod, :);
 
@@ -165,6 +169,10 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 targetFrequency (1, 1) double
             end
 
+            if ~this.HasData
+                return;
+            end
+
             actualFrequency = 1 / seconds(mode(this.dT));
 
             if actualFrequency == targetFrequency
@@ -200,6 +208,10 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 targetFrequency (1, 1) double
             end
 
+            if ~this.HasData
+                return;
+            end
+
             dt = this.dT(this.Quality.isScience());
             this.mustBeConstantRate(milliseconds(dt));
 
@@ -229,6 +241,10 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 this (1, 1) mag.Science
                 numeratorOrFilter (1, :) {mustBeA(numeratorOrFilter, ["double", "digitalFilter"])}
                 denominator (1, :) double = double.empty()
+            end
+
+            if ~this.HasData
+                return;
             end
 
             if isa(numeratorOrFilter, "digitalFilter")
@@ -264,6 +280,10 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 filler (1, 1) double = missing()
             end
 
+            if ~this.HasData
+                return;
+            end
+
             if isa(timeFilter, "duration")
                 timePeriod = timerange(this.Time(1), this.Time(1) + timeFilter, "closed");
             elseif isa(timeFilter, "timerange") || isa(timeFilter, "withtol")
@@ -271,13 +291,6 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             end
 
             this.Data{timePeriod, [this.Settings.X, this.Settings.Y, this.Settings.Z]} = filler;
-        end
-
-        function data = computePSD(this, varargin)
-
-            warning("""computePSD"" will be removed in a future release. With appropriate changes, use ""mag.psd"" instead.");
-
-            data = mag.psd(this, varargin{:});
         end
     end
 

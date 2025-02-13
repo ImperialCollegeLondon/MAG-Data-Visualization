@@ -24,6 +24,12 @@ classdef Timestamp < mag.graphics.view.View
             primaryScience = this.Results.Primary;
             secondaryScience = this.Results.Secondary;
 
+            if ~primaryScience.HasData || ~secondaryScience.HasData
+
+                warning("No data in primary or secondary sensor. Skipping timestamp analysis.");
+                return;
+            end
+
             modeEventCharts = {primaryScience.Events, mag.graphics.style.Default(Title = compose("%s Modes", primarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = primaryScience.Time(end))), ...
                 secondaryScience.Events, mag.graphics.style.Default(Title = compose("%s Modes", secondarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = secondaryScience.Time(end)))};
 
