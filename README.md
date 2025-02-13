@@ -5,12 +5,19 @@
 [![MATLAB Toolbox](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml/badge.svg)](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml)
 [![View MAG Data Visualization Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/169568)
 
-This repository contains utilities for processing and visualizing MAG science and HK data. The supported MATLAB releases are MATLAB R2024a and later. The following MATLAB toolboxes are required to use the toolbox:
+This repository contains utilities for processing and visualizing MAG science and HK data. The supported MATLAB releases are MATLAB R2024a and later.
+
+The following MATLAB toolboxes are required to use the toolbox:
 
 * MATLAB
 * Signal Processing Toolbox
 * Statistics and Machine Learning Toolbox
 * Text Analytics Toolbox
+
+The following external MATLAB libraries are required:
+
+* MATLAB SPICE (MICE): https://naif.jpl.nasa.gov/naif/toolkit_MATLAB.html
+* MATLAB SPDF CDF: https://cdf.gsfc.nasa.gov/
 
 ## Getting Started
 
