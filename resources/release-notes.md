@@ -4,4 +4,5 @@
 
 ## Software
 
+- Add processing step to apply time shift to sensor data
 - Loading of CDF files can deal with timestamps as row vector
