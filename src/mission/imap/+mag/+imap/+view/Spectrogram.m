@@ -113,7 +113,7 @@ classdef Spectrogram < mag.graphics.view.View
         end
 
         function value = getSpectrogramFigureName(this, primary, secondary)
-            value = this.getSpectrogramFigureTitle(primary, secondary) + compose(" Frequency (%s)", this.date2str(primary.MetaData.Timestamp));
+            value = this.getSpectrogramFigureTitle(primary, secondary) + compose(" Spectrogram (%s)", this.date2str(primary.MetaData.Timestamp));
         end
     end
 end

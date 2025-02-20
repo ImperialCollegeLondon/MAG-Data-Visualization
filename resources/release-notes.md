@@ -11,3 +11,4 @@
 - Add processing step to apply time shift to sensor data
 - Loading of CDF files can deal with timestamps as row vector
 - Add more specific link to download MATLAB SPDF CDF in `README`
+- Rename spectrogram figures from "...Frequency..." to "...Spectrogram..."
