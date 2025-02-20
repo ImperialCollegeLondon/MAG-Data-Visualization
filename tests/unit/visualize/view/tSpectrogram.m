@@ -97,7 +97,7 @@ classdef tSpectrogram < MAGViewTestCase
                 testCase
                 instrument (1, 1) mag.imap.Instrument
                 options.Title (1, 1) string = "Burst (64, 8)"
-                options.Name (1, 1) string = "Burst (64, 8) Frequency (%s)"
+                options.Name (1, 1) string = "Burst (64, 8) Spectrogram (%s)"
             end
 
             expectedInputs = {};

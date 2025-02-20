@@ -17,7 +17,7 @@ The following MATLAB toolboxes are required to use the toolbox:
 The following external MATLAB libraries are required:
 
 * MATLAB SPICE (MICE): https://naif.jpl.nasa.gov/naif/toolkit_MATLAB.html
-* MATLAB SPDF CDF: https://cdf.gsfc.nasa.gov/
+* MATLAB SPDF CDF: https://cdf.gsfc.nasa.gov/html/sw_and_docs.html
 
 ## Getting Started
 

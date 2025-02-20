@@ -104,9 +104,9 @@ classdef Spectrogram < mag.graphics.view.View
             value = this.getFrequencyFigureTitle(input1, input2);
 
             if isempty(input1)
-                value = value + compose(" Frequency (%s)", this.date2str(input2.MetaData.Timestamp));
+                value = value + compose(" Spectrogram (%s)", this.date2str(input2.MetaData.Timestamp));
             else
-                value = value + compose(" Frequency (%s)", this.date2str(input1.MetaData.Timestamp));;
+                value = value + compose(" Spectrogram (%s)", this.date2str(input1.MetaData.Timestamp));;
             end
         end
     end

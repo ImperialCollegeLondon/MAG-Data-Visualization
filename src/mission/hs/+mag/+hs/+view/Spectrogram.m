@@ -69,7 +69,7 @@ classdef Spectrogram < mag.graphics.view.View
         end
 
         function value = getFrequencyFigureName(this, science)
-            value = this.getFrequencyFigureTitle(science) + compose(" Frequency (%s)", this.date2str(science.MetaData.Timestamp));
+            value = this.getFrequencyFigureTitle(science) + compose(" Spectrogram (%s)", this.date2str(science.MetaData.Timestamp));
         end
     end
 end
