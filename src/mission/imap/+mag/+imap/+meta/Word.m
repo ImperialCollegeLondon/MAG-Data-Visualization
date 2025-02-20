@@ -69,7 +69,7 @@ classdef Word < mag.imap.meta.Type
             instrumentMetaData.GSE = extractAfter(rawData.GSE, optionalPattern(lettersPattern()));
             instrumentMetaData.Operator = rawData.Operator;
             instrumentMetaData.Description = rawData.Name;
-            instrumentMetaData.Timestamp = datetime(rawData.Date, TimeZone = "UTC", Format = mag.time.Constant.Format) + duration(rawData.Time, InputFormat = "hh:mm");
+            instrumentMetaData.Timestamp = mag.time.decodeDate(rawData.Date) + mag.time.decodeTime(rawData.Time);
 
             % Enhance primary and secondary meta data.
             primarySetup.Model = rawData.FOBModel;
