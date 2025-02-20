@@ -8,6 +8,7 @@
 
 ## Software
 
+- Add support for more date formats when loading IMAP metadata
 - Add processing step to apply time shift to sensor data
 - Add more specific link to download MATLAB SPDF CDF in `README`
 - Add tab-completion for `mag.graphics.visualize`

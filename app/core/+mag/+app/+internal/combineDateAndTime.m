@@ -14,31 +14,9 @@ function dateTime = combineDateAndTime(date, time)
     dateTime = date;
 
     if ~isempty(time)
-        dateTime = dateTime + decodeTime(time);
+        dateTime = dateTime + mag.time.decodeTime(time);
     end
 
     dateTime.Format = mag.time.Constant.Format;
     dateTime.TimeZone = mag.time.Constant.TimeZone;
-end
-
-function time = decodeTime(time)
-
-    formats = ["hh:mm", "hh:mm:ss", "hh:mm:ss.SSS"];
-    conversion = @(f) duration(time, InputFormat = f);
-
-    for f = formats
-
-        try
-
-            time = conversion(f);
-            return;
-        catch exception
-
-            if ~isequal(exception.identifier, "MATLAB:duration:DataMismatchedFormat")
-                exception.rethrow();
-            end
-        end
-    end
-
-    error("Unable to parse '%s' using the formats %s.", time, join(compose("'%s'", formats), ", "));
 end
