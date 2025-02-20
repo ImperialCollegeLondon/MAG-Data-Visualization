@@ -5,7 +5,7 @@ classdef tPSD < MAGViewTestCase
 
         % Test that PSD is generated correctly when start and duration are
         % provided.
-        function psdStartDuration(testCase)
+        function psd_nonDefaultStartDuration(testCase)
 
             % Set up.
             instrument = testCase.createTestInstrument();
@@ -14,6 +14,35 @@ classdef tPSD < MAGViewTestCase
             psdDuration = minutes(5);
 
             [expectedInputs, mockTransformation] = testCase.generateExpectedInputs(instrument, psdStart, psdDuration);
+            expectedOutput = figure();
+
+            [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
+            when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
+
+            % Exercise.
+            view = mag.imap.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
+                Transformation = mockTransformation, Factory = mockFactory);
+
+            view.visualize();
+
+            % Verify.
+            testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
+        end
+
+        % Test that PSD is generated correctly when start and duration are
+        % provided.
+        function psd_tooLongDuration(testCase)
+
+            % Set up.
+            instrument = testCase.createTestInstrument();
+
+            psdStart = instrument.Primary.Time(1);
+            psdDuration = hours(24);
+
+            actualPSDDuration = minutes(9);
+            actualPSDDuration.Format = "hh:mm:ss";
+
+            [expectedInputs, mockTransformation] = testCase.generateExpectedInputs(instrument, psdStart, actualPSDDuration);
             expectedOutput = figure();
 
             [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
@@ -151,6 +180,9 @@ classdef tPSD < MAGViewTestCase
             end
 
             psdStart.Format = "dd-MMM-uuuu HHmmss";
+
+            testCase.addTeardown(@() testCase.verifyEqual(mockTransformation.Start, psdStart, """Start"" property should have been assigned."));
+            testCase.addTeardown(@() testCase.verifyEqual(mockTransformation.Duration, psdDuration, """Duration"" property should have been assigned."));
 
             expectedInputs = [expectedInputs, { ...
                 "Title", compose(options.Title, psdStart, psdDuration), ...
