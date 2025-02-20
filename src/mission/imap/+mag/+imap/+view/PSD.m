@@ -87,7 +87,7 @@ classdef PSD < mag.graphics.view.View
             end
 
             if (this.Duration > (science.Time(end) - transformation.Start))
-                transformation.Duration = science.Time(end) - psdStart;
+                transformation.Duration = science.Time(end) - transformation.Start;
             else
                 transformation.Duration = this.Duration;
             end
