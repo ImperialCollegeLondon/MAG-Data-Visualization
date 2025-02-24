@@ -1,5 +1,5 @@
 classdef tCalibration < MAGAnalysisTestCase
-% TCALIBRATION Unit tests for "Calibration" class.
+% TCALIBRATION Unit tests for "mag.process.Calibration" class.
 
     methods (Test)
 

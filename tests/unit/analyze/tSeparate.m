@@ -1,5 +1,5 @@
 classdef tSeparate < MAGAnalysisTestCase
-% TSEPARATE Unit tests for "mag.process.Separate" classes.
+% TSEPARATE Unit tests for "mag.process.Separate" class.
 
     methods (Test)
 

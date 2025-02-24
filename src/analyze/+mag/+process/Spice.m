@@ -48,15 +48,15 @@ classdef Spice < mag.process.Step
 
             met = data.(this.TimeVariable);
             sclk = met / 2e-5;
-            ttj2000 = cspice_unitim(cspice_sct2e(id, sclk'), 'ET', 'TT')';
+            secondsSinceJ2000 = cspice_unitim(cspice_sct2e(id, sclk'), 'ET', 'TT')';
 
-            utc = epoch + seconds(ttj2000);
+            ttJ2000 = epoch + seconds(secondsSinceJ2000);
 
-            % Convert from UTCLeapSeconds to UTC.
-            utc.TimeZone = mag.time.Constant.TimeZone;
-            utc.Format = mag.time.Constant.Format;
+            % Change time zone from UTCLeapSeconds to UTC.
+            ttJ2000.TimeZone = mag.time.Constant.TimeZone;
+            ttJ2000.Format = mag.time.Constant.Format;
 
-            data.(this.TimeVariable) = utc;
+            data.(this.TimeVariable) = ttJ2000;
         end
     end
 
