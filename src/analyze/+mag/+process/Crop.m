@@ -21,7 +21,7 @@ classdef Crop < mag.process.Step
 
             arguments
                 this
-                data table
+                data tabular
                 ~
             end
 

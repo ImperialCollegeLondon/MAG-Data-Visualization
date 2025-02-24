@@ -1,5 +1,5 @@
 classdef tCompression < MAGAnalysisTestCase
-% TCOMPRESSION Unit tests for "Compression" step.
+% TCOMPRESSION Unit tests for "mag.process.Compression" class.
 
     methods (Test)
 

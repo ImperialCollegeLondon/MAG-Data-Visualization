@@ -1,5 +1,5 @@
 classdef tMissing < MAGAnalysisTestCase
-% TMISSIMG Unit tests for "Missing" step.
+% TMISSIMG Unit tests for "mag.process.Missing" class.
 
     methods (Test)
 

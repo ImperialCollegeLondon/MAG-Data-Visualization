@@ -1,5 +1,5 @@
-classdef tApplyRange < MAGAnalysisTestCase
-% TAPPLYRANGE Unit tests for "applyRange" function.
+classdef tRange < MAGAnalysisTestCase
+% TRANGE Unit tests for "mag.process.Range" class.
 
     properties (TestParameter)
         UnscaledValue = {ones(4, 4), ones(4, 4), ones(4, 4), ones(4, 4), ones(4, 4)}

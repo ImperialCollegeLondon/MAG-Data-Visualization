@@ -2,9 +2,9 @@ classdef Convert < mag.process.Step
 % CONVERT Convert variables to type.
 
     properties
-        % TYPE Type to convert variables to.
-        Type (1, 1) string
-        % VARIABLES Variables to be set to missing.
+        % DATATYPE Data type to convert variables to.
+        DataType (1, 1) string
+        % VARIABLES Variables to be converted to different type.
         Variables (1, :) string
     end
 
@@ -31,7 +31,7 @@ classdef Convert < mag.process.Step
                 return;
             end
 
-            data = convertvars(data, this.Variables, this.Type);
+            data = convertvars(data, this.Variables, this.DataType);
         end
     end
 end

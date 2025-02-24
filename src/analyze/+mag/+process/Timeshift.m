@@ -1,4 +1,4 @@
-classdef Timeshift < mag.process.Step
+classdef TimeShift < mag.process.Step
 % TIMESHIFT Apply time shift to data.
 
     properties
@@ -10,10 +10,10 @@ classdef Timeshift < mag.process.Step
 
     methods
 
-        function this = Timeshift(options)
+        function this = TimeShift(options)
 
             arguments
-                options.?mag.process.Timeshift
+                options.?mag.process.TimeShift
             end
 
             this.assignProperties(options);
@@ -22,7 +22,7 @@ classdef Timeshift < mag.process.Step
         function data = apply(this, data, metaData)
 
             arguments
-                this (1, 1) mag.process.Timeshift
+                this (1, 1) mag.process.TimeShift
                 data timetable
                 metaData (1, 1) mag.meta.Science
             end

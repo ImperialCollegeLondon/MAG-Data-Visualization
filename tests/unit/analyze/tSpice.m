@@ -1,5 +1,5 @@
 classdef tSpice < MAGAnalysisTestCase
-% TSPICE Unit tests for "mag.process.Spice" classes.
+% TSPICE Unit tests for "mag.process.Spice" class.
 
     methods (TestClassSetup)
 
