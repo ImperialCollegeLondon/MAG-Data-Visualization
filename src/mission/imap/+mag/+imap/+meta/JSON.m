@@ -17,7 +17,7 @@ classdef JSON < mag.imap.meta.Provider
 
             [~, ~, extension] = fileparts(fileName);
 
-            supported = isfile(fileName) && ismember(extension, this.Extensions);
+            supported = isfile(fileName) && ismember(extension, this.Extensions) && this.isValidJSON(fileName);
         end
 
         function load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
@@ -61,6 +61,20 @@ classdef JSON < mag.imap.meta.Provider
                 else
                     metadata.(field) = data.(field);
                 end
+            end
+        end
+    end
+    
+    methods (Static, Access = private)
+
+        function valid = isValidJSON(fileName)
+
+            try
+
+                readstruct(fileName);
+                valid = true;
+            catch
+                valid = false;
             end
         end
     end

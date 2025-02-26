@@ -40,6 +40,15 @@ classdef tJSONMetadata < matlab.unittest.TestCase
                 "Nonexistent file should not be supported.");
         end
 
+        % Test that files with invalid JSON are not supported.
+        function isNotSupported_invalidJSON(testCase)
+
+            jsonProvider = mag.imap.meta.JSON();
+
+            testCase.verifyFalse(jsonProvider.isSupported(fullfile(testCase.WorkingDirectory.StartingFolder, "test_data", "invalid.json")), ...
+                "Nonexistent file should not be supported.");
+        end
+
         % Test that metadata is loaded correctly, even when one field
         % (Primary) is empty.
         function load_incompleteMetadata(testCase)
