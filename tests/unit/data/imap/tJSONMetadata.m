@@ -22,7 +22,7 @@ classdef tJSONMetadata < matlab.unittest.TestCase
         function isSupported(testCase, SupportedFileName)
 
             % Set up.
-            writelines("abc", SupportedFileName);
+            writestruct(struct(), SupportedFileName);
 
             % Exercise and verify.
             jsonProvider = mag.imap.meta.JSON();
