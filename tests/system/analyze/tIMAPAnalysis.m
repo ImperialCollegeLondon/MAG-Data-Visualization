@@ -44,7 +44,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
             % Verify.
             testCase.verifySubstring(analysis.EventFileNames, "20240507_111204.html", "Event file names do not match.");
-            testCase.verifySubstring(analysis.MetaDataFileNames, "IMAP - MAG.msg", "Meta data file names do not match.");
+            testCase.verifySubstring(analysis.MetadataFileNames, "IMAP - MAG.msg", "Metadata file names do not match.");
 
             testCase.verifySubstring(analysis.ScienceFileNames(1), "MAGScience-burst-(128,128)-2s-20240507-11h35.csv", "Science file names do not match.");
             testCase.verifySubstring(analysis.ScienceFileNames(2), "MAGScience-burst-(64,8)-4s-20240507-11h33.csv", "Science file names do not match.");
@@ -76,7 +76,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
             % Verify.
             testCase.verifySubstring(analysis.EventFileNames, "20250206_104029.html", "Event file names do not match.");
-            testCase.verifyEmpty(analysis.MetaDataFileNames, "Meta data file names do not match.");
+            testCase.verifyEmpty(analysis.MetadataFileNames, "Metadata file names do not match.");
 
             testCase.verifySubstring(analysis.ScienceFileNames(1), "MAGScience-burst-(128,8)-2s-20250206-10h44.csv", "Science file names do not match.");
             testCase.verifySubstring(analysis.ScienceFileNames(2), "MAGScience-burst-(128,8)-2s-20250206-11h51.csv", "Science file names do not match.");

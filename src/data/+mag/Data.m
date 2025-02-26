@@ -2,8 +2,8 @@ classdef (Abstract) Data < handle & matlab.mixin.Copyable & matlab.mixin.Heterog
 % DATA Abstract base class for MAG science and HK data.
 
     properties (GetAccess = public, SetAccess = protected)
-        % METADATA Meta data.
-        MetaData (1, :) mag.meta.Data
+        % METADATA Metadata.
+        Metadata (1, :) mag.meta.Data
     end
 
     properties (Abstract, Dependent)
@@ -53,7 +53,7 @@ classdef (Abstract) Data < handle & matlab.mixin.Copyable & matlab.mixin.Heterog
         function copiedThis = copyElement(this)
 
             copiedThis = copyElement@matlab.mixin.Copyable(this);
-            copiedThis.MetaData = copy(this.MetaData);
+            copiedThis.Metadata = copy(this.Metadata);
         end
     end
 end

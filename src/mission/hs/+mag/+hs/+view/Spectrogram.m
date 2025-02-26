@@ -38,7 +38,7 @@ classdef Spectrogram < mag.graphics.view.View
                 Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
 
             % Field and spectrogram.
-            charts = this.getFrequencyCharts(science, spectrum, science.MetaData.getDisplay("Sensor"), "left");
+            charts = this.getFrequencyCharts(science, spectrum, science.Metadata.getDisplay("Sensor"), "left");
 
             this.Figures = this.Factory.assemble( ...
                 charts{:}, ...
@@ -65,11 +65,11 @@ classdef Spectrogram < mag.graphics.view.View
         end
 
         function value = getFrequencyFigureTitle(this, science)
-            value = compose("%s (%s)", science.MetaData.getDisplay("Mode"), this.getDataFrequency(science.MetaData));
+            value = compose("%s (%s)", science.Metadata.getDisplay("Mode"), this.getDataFrequency(science.Metadata));
         end
 
         function value = getFrequencyFigureName(this, science)
-            value = this.getFrequencyFigureTitle(science) + compose(" Spectrogram (%s)", this.date2str(science.MetaData.Timestamp));
+            value = this.getFrequencyFigureTitle(science) + compose(" Spectrogram (%s)", this.date2str(science.Metadata.Timestamp));
         end
     end
 end

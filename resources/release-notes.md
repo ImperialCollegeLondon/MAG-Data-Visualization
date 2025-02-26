@@ -2,15 +2,14 @@
 > Starting v7.2.0, [MATLAB SPICE (MICE)](https://naif.jpl.nasa.gov/naif/toolkit_MATLAB.html) is required.
 > Starting v7.2.0, MATLAB R2023b is no longer supported.
 
-## App
+## All
 
-- Fix issue with visualizing PSDs with custom start date
+- Use "metadata" instead of "meta data"
 
 ## Software
 
-- Add support for more date formats when loading IMAP metadata
-- Add processing step to apply time shift to sensor data
-- Add more specific link to download MATLAB SPDF CDF in `README`
-- Add tab-completion for `mag.graphics.visualize`
-- Loading of CDF files can deal with timestamps as row vector
-- Rename spectrogram figures from "...Frequency..." to "...Spectrogram..."
+- Improve logic for loading of metadata for IMAP
+- Add support for IMAP sensor and instrument metadata defined in JSON file
+- Add support for any sensor model name
+- Add calibration for Solar Orbiter sensors
+- Fix typo in `mag.meta.Instrument/Attemps` property (now spelled `Attempts`)

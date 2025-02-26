@@ -43,7 +43,7 @@ classdef PSD < mag.graphics.view.View
             yLine = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
 
             this.Figures = this.Factory.assemble( ...
-                psd, mag.graphics.style.Default(Title = compose("%s PSD", science.MetaData.getDisplay("Sensor")), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]), ...
+                psd, mag.graphics.style.Default(Title = compose("%s PSD", science.Metadata.getDisplay("Sensor")), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]), ...
                 Title = this.getPSDFigureTitle(science, psdStart, psdDuration), ...
                 Name = this.getPSDFigureName(science, psdStart), ...
                 WindowState = "maximized");
@@ -53,11 +53,11 @@ classdef PSD < mag.graphics.view.View
     methods (Access = private)
 
         function value = getPSDFigureTitle(this, science, psdStart, psdDuration)
-            value = compose("Start: %s - Duration: %s - (%s Hz)", this.date2str(psdStart), psdDuration, this.getDataFrequency(science.MetaData));
+            value = compose("Start: %s - Duration: %s - (%s Hz)", this.date2str(psdStart), psdDuration, this.getDataFrequency(science.Metadata));
         end
 
         function value = getPSDFigureName(this, science, psdStart)
-            value = compose("%s (%s Hz) PSD (%s)", science.MetaData.getDisplay("Mode"), this.getDataFrequency(science.MetaData), this.date2str(psdStart));
+            value = compose("%s (%s Hz) PSD (%s)", science.Metadata.getDisplay("Mode"), this.getDataFrequency(science.Metadata), this.date2str(psdStart));
         end
     end
 end

@@ -33,8 +33,8 @@ classdef ScienceCDF < mag.io.in.CDF
                 data (1, 1) mag.Science
             end
 
-            % Extract file meta data.
-            [~, mode, sensor, date, ~] = this.extractFileMetaData(cdfInfo.Filename);
+            % Extract file metadata.
+            [~, mode, sensor, date, ~] = this.extractFileMetadata(cdfInfo.Filename);
 
             % Extract raw data.
             [rawTimestamps, rawField, rawRange] = this.extractRawCDFData(rawData, cdfInfo);
@@ -61,17 +61,17 @@ classdef ScienceCDF < mag.io.in.CDF
             %     quality
             timedData.Properties.VariableContinuity = ["step", "continuous", "continuous", "continuous", "step", "step", "step", "event"];
 
-            % Create mag.Science object with meta data.
-            metaData = mag.meta.Science(Mode = mode, Primary = isequal(sensor, mag.meta.Sensor.FOB), Sensor = sensor, ...
+            % Create mag.Science object with metadata.
+            metadata = mag.meta.Science(Mode = mode, Primary = isequal(sensor, mag.meta.Sensor.FOB), Sensor = sensor, ...
                 Timestamp = datetime(date, InputFormat = "uuuuMMdd", Format = mag.time.Constant.Format, TimeZone = mag.time.Constant.TimeZone));
-            data = mag.Science(timedData, metaData);
+            data = mag.Science(timedData, metadata);
         end
     end
 
     methods (Access = private)
 
-        function [level, mode, sensor, date, version] = extractFileMetaData(this, fileName)
-        % EXTRACTMETADATA Extract meta data information from file name.
+        function [level, mode, sensor, date, version] = extractFileMetadata(this, fileName)
+        % EXTRACTMETADATA Extract metadata information from file name.
 
             details = regexp(fileName, this.FileNamePattern, "names");
             [level, date, version] = deal(details.level, details.date, details.version);

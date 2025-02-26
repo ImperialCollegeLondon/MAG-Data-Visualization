@@ -6,8 +6,8 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
         LocationEditField matlab.ui.control.EditField
         LocationEditFieldLabel matlab.ui.control.Label
         BrowseButton matlab.ui.control.Button
-        MetaDataPatternEditField matlab.ui.control.EditField
-        MetaDataPatternEditFieldLabel matlab.ui.control.Label
+        MetadataPatternEditField matlab.ui.control.EditField
+        MetadataPatternEditFieldLabel matlab.ui.control.Label
         SciencePatternEditField matlab.ui.control.EditField
         SciencePatternEditFieldLabel matlab.ui.control.Label
         HKPatternEditField matlab.ui.control.EditField
@@ -42,17 +42,17 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.BrowseButton.Layout.Column = 3;
             this.BrowseButton.Text = "Browse";
 
-            % Create MetaDataPatternEditFieldLabel.
-            this.MetaDataPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
-            this.MetaDataPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.MetaDataPatternEditFieldLabel.Layout.Row = 2;
-            this.MetaDataPatternEditFieldLabel.Layout.Column = 1;
-            this.MetaDataPatternEditFieldLabel.Text = "Meta data pattern:";
+            % Create MetadataPatternEditFieldLabel.
+            this.MetadataPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
+            this.MetadataPatternEditFieldLabel.HorizontalAlignment = "right";
+            this.MetadataPatternEditFieldLabel.Layout.Row = 2;
+            this.MetadataPatternEditFieldLabel.Layout.Column = 1;
+            this.MetadataPatternEditFieldLabel.Text = "Metadata pattern:";
 
-            % Create MetaDataPatternEditField.
-            this.MetaDataPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.MetaDataPatternEditField.Layout.Row = 2;
-            this.MetaDataPatternEditField.Layout.Column = [2, 3];
+            % Create MetadataPatternEditField.
+            this.MetadataPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
+            this.MetadataPatternEditField.Layout.Row = 2;
+            this.MetadataPatternEditField.Layout.Column = [2, 3];
 
             % Create SciencePatternEditFieldLabel.
             this.SciencePatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
@@ -87,7 +87,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             dummyAnalysis = mag.hs.Analysis();
 
             this.LocationEditField.Value = string.empty();
-            this.MetaDataPatternEditField.Value = join(dummyAnalysis.MetaDataPattern, pathsep());
+            this.MetadataPatternEditField.Value = join(dummyAnalysis.MetadataPattern, pathsep());
             this.SciencePatternEditField.Value = dummyAnalysis.SciencePattern;
             this.HKPatternEditField.Value = join(dummyAnalysis.HKPattern, pathsep());
         end
@@ -104,14 +104,14 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             end
 
             % Retrieve data file patterns.
-            if isempty(this.MetaDataPatternEditField.Value)
-                metaDataPattern = string.empty();
+            if isempty(this.MetadataPatternEditField.Value)
+                metadataPattern = string.empty();
             else
-                metaDataPattern = split(this.MetaDataPatternEditField.Value, pathsep())';
+                metadataPattern = split(this.MetadataPatternEditField.Value, pathsep())';
             end
 
             options = {"Location", this.LocationEditField.Value, ...
-                "MetaDataPattern", metaDataPattern, ...
+                "MetadataPattern", metadataPattern, ...
                 "SciencePattern", this.SciencePatternEditField.Value, ...
                 "HKPattern", this.HKPatternEditField.Value};
         end

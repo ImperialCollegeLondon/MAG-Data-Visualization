@@ -120,9 +120,9 @@ classdef tField < MAGViewTestCase
             % Set up.
             instrument = testCase.createTestInstrument();
 
-            instrument.Science(1).MetaData.DataFrequency = 0.25;
-            instrument.Science(2).MetaData.DataFrequency = 2/3;
-            instrument.Science(2).MetaData.Timestamp = datetime(2024, 3, 14, 15, 9, 27, TimeZone = "UTC");
+            instrument.Science(1).Metadata.DataFrequency = 0.25;
+            instrument.Science(2).Metadata.DataFrequency = 2/3;
+            instrument.Science(2).Metadata.Timestamp = datetime(2024, 3, 14, 15, 9, 27, TimeZone = "UTC");
 
             expectedInputs = testCase.generateExpectedInputs(instrument, Title = "Burst (2/3, 1/4)", Name = "Burst (2/3, 1/4) Time Series (14-Mar-2024 150927)");
             expectedOutput = figure();
@@ -145,8 +145,8 @@ classdef tField < MAGViewTestCase
             % Set up.
             instrument = testCase.createTestInstrument();
 
-            instrument.Science(1).MetaData.Setup = mag.meta.Setup();
-            instrument.Science(2).MetaData.Setup = mag.meta.Setup.empty();
+            instrument.Science(1).Metadata.Setup = mag.meta.Setup();
+            instrument.Science(2).Metadata.Setup = mag.meta.Setup.empty();
 
             expectedInputs = testCase.generateExpectedInputs(instrument, PrimaryTitle = "FIB", SecondaryTitle = "FOB");
             expectedOutput = figure();

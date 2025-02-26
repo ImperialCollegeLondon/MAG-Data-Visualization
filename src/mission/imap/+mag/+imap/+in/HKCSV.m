@@ -32,19 +32,19 @@ classdef HKCSV < mag.io.in.CSV
             end
 
             % Dispatch correct type.
-            data = mag.imap.hk.dispatchHKType(table2timetable(rawData, RowTimes = "t"), this.extractFileMetaData(fileName));
+            data = mag.imap.hk.dispatchHKType(table2timetable(rawData, RowTimes = "t"), this.extractFileMetadata(fileName));
         end
     end
 
     methods (Access = private)
 
-        function metaData = extractFileMetaData(this, fileName)
-        % EXTRACTMETADATA Extract meta data information from file name.
+        function metadata = extractFileMetadata(this, fileName)
+        % EXTRACTMETADATA Extract metadata information from file name.
 
             rawData = regexp(fileName, this.FileNamePattern, "names");
 
             timestamp = datetime(rawData.date + rawData.time, InputFormat = "yyyyMMddHHmmss", TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format);
-            metaData = mag.meta.HK(Type = rawData.type, OutboardSetup = this.SensorSetup(1), InboardSetup = this.SensorSetup(2), Timestamp = timestamp);
+            metadata = mag.meta.HK(Type = rawData.type, OutboardSetup = this.SensorSetup(1), InboardSetup = this.SensorSetup(2), Timestamp = timestamp);
         end
     end
 end

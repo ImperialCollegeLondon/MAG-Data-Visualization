@@ -19,12 +19,12 @@ classdef TimeShift < mag.process.Step
             this.assignProperties(options);
         end
 
-        function data = apply(this, data, metaData)
+        function data = apply(this, data, metadata)
 
             arguments
                 this (1, 1) mag.process.TimeShift
                 data timetable
-                metaData (1, 1) mag.meta.Science
+                metadata (1, 1) mag.meta.Science
             end
 
             if isempty(this.TimeVariable)
@@ -33,8 +33,8 @@ classdef TimeShift < mag.process.Step
                 timeVariable = this.TimeVariable;
             end
 
-            if this.TimeShifts.isKey(metaData.Sensor)
-                timeShift = this.TimeShifts(metaData.Sensor);
+            if this.TimeShifts.isKey(metadata.Sensor)
+                timeShift = this.TimeShifts(metadata.Sensor);
             else
                 timeShift = 0;
             end

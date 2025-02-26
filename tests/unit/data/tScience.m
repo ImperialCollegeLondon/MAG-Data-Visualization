@@ -8,24 +8,24 @@ classdef tScience < matlab.unittest.TestCase
 
     methods (Test)
 
-        % Test that science meta data restricts setting "Model" value.
+        % Test that science metadata restricts setting "Model" value.
         function metadata_model(testCase)
 
             % Set up.
-            metaData = mag.meta.Science();
+            metadata = mag.meta.Science();
 
             % Exercise and verify.
-            testCase.verifyError(@() set(metaData, "Model", "AM2"), ?MException, "Error should be thrown when model name is invalid.");
+            testCase.verifyError(@() set(metadata, "Model", "AM2"), ?MException, "Error should be thrown when model name is invalid.");
         end
 
-        % Test that science meta data restricts setting "FEE" value.
+        % Test that science metadata restricts setting "FEE" value.
         function metadata_fee(testCase)
 
             % Set up.
-            metaData = mag.meta.Science();
+            metadata = mag.meta.Science();
 
             % Exercise and verify.
-            testCase.verifyError(@() set(metaData, "FEE", "FAA2"), ?MException, "Error should be thrown when FEE name is invalid.");
+            testCase.verifyError(@() set(metadata, "FEE", "FAA2"), ?MException, "Error should be thrown when FEE name is invalid.");
         end
 
         % Test that magnetic field magnitude is computed correctly.
@@ -224,7 +224,7 @@ classdef tScience < matlab.unittest.TestCase
             testCase.verifyEmpty(science.IndependentVariable, "All data should be cropped out.");
             testCase.verifyEmpty(science.DependentVariables, "All data should be cropped out.");
 
-            testCase.verifyTrue(ismissing(science.MetaData.Timestamp), "All data should be cropped out.");
+            testCase.verifyTrue(ismissing(science.Metadata.Timestamp), "All data should be cropped out.");
         end
 
         % Test that "resample" method does nothing if no data.
@@ -451,11 +451,11 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.MetaData.Sensor = "FOB";
+            science1.Metadata.Sensor = "FOB";
 
             science2 = testCase.createTestData();
-            science2.MetaData.Primary = true;
-            science2.MetaData.Sensor = "FIB";
+            science2.Metadata.Primary = true;
+            science2.Metadata.Sensor = "FIB";
 
             science = [science1, science2];
 
@@ -469,11 +469,11 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.MetaData.Sensor = "FOB";
+            science1.Metadata.Sensor = "FOB";
 
             science2 = testCase.createTestData();
-            science2.MetaData.Primary = true;
-            science2.MetaData.Sensor = "FIB";
+            science2.Metadata.Primary = true;
+            science2.Metadata.Sensor = "FIB";
 
             science = [science1, science2];
 
@@ -487,12 +487,12 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.MetaData.Primary = false;
-            science1.MetaData.Sensor = "FOB";
+            science1.Metadata.Primary = false;
+            science1.Metadata.Sensor = "FOB";
 
             science2 = testCase.createTestData();
-            science2.MetaData.Primary = false;
-            science2.MetaData.Sensor = "FIB";
+            science2.Metadata.Primary = false;
+            science2.Metadata.Sensor = "FIB";
 
             science = [science1, science2];
 
@@ -506,12 +506,12 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.MetaData.Primary = true;
-            science1.MetaData.Sensor = "FOB";
+            science1.Metadata.Primary = true;
+            science1.Metadata.Sensor = "FOB";
 
             science2 = testCase.createTestData();
-            science2.MetaData.Primary = true;
-            science2.MetaData.Sensor = "FIB";
+            science2.Metadata.Primary = true;
+            science2.Metadata.Sensor = "FIB";
 
             science = [science1, science2];
 
@@ -525,11 +525,11 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.MetaData.Sensor = "FOB";
+            science1.Metadata.Sensor = "FOB";
 
             science2 = testCase.createTestData();
-            science2.MetaData.Primary = true;
-            science2.MetaData.Sensor = "FIB";
+            science2.Metadata.Primary = true;
+            science2.Metadata.Sensor = "FIB";
 
             science = [science1, science2];
 
@@ -542,10 +542,10 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.MetaData.Sensor = "FIB";
+            science1.Metadata.Sensor = "FIB";
 
             science2 = testCase.createTestData();
-            science2.MetaData.Sensor = "FOB";
+            science2.Metadata.Sensor = "FOB";
 
             science = [science1, science2];
 
@@ -560,16 +560,16 @@ classdef tScience < matlab.unittest.TestCase
             % Set up.
             science = testCase.createTestData();
 
-            science.MetaData.DataFrequency = 64;
-            science.MetaData.Mode = "Burst";
-            science.MetaData.Sensor = "FIB";
-            science.MetaData.Setup = mag.meta.Setup(Model = "FM4");
+            science.Metadata.DataFrequency = 64;
+            science.Metadata.Mode = "Burst";
+            science.Metadata.Sensor = "FIB";
+            science.Metadata.Setup = mag.meta.Setup(Model = "FM4");
 
             % Exercise.
             output = evalc("display(science)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "FIB (FM4) in Burst (64)", "Science meta data should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "FIB (FM4) in Burst (64)", "Science metadata should be included in display.");
         end
 
         % Test that displaying a single object displays the correct
@@ -579,16 +579,16 @@ classdef tScience < matlab.unittest.TestCase
             % Set up.
             science = testCase.createTestData();
 
-            science.MetaData.DataFrequency = 64;
-            science.MetaData.Mode = "Burst";
-            science.MetaData.Sensor = "FIB";
-            science.MetaData.Setup = mag.meta.Setup.empty();
+            science.Metadata.DataFrequency = 64;
+            science.Metadata.Mode = "Burst";
+            science.Metadata.Sensor = "FIB";
+            science.Metadata.Setup = mag.meta.Setup.empty();
 
             % Exercise.
             output = evalc("display(science)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "FIB in Burst (64)", "Science meta data should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "FIB in Burst (64)", "Science metadata should be included in display.");
         end
 
         % Test that displaying a single object displays the correct
@@ -598,16 +598,16 @@ classdef tScience < matlab.unittest.TestCase
             % Set up.
             science = testCase.createTestData();
 
-            science.MetaData.DataFrequency = 64;
-            science.MetaData.Mode = "Burst";
-            science.MetaData.Sensor = "FIB";
-            science.MetaData.Setup = mag.meta.Setup();
+            science.Metadata.DataFrequency = 64;
+            science.Metadata.Mode = "Burst";
+            science.Metadata.Sensor = "FIB";
+            science.Metadata.Setup = mag.meta.Setup();
 
             % Exercise.
             output = evalc("display(science)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "FIB in Burst (64)", "Science meta data should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "FIB in Burst (64)", "Science metadata should be included in display.");
         end
 
         % Test that displaying a single object displays the correct
@@ -617,16 +617,16 @@ classdef tScience < matlab.unittest.TestCase
             % Set up.
             science = testCase.createTestData();
 
-            science.MetaData.DataFrequency = 64;
-            science.MetaData.Mode = "Burst";
-            science.MetaData.Sensor = mag.meta.Sensor.empty();
-            science.MetaData.Setup = mag.meta.Setup();
+            science.Metadata.DataFrequency = 64;
+            science.Metadata.Mode = "Burst";
+            science.Metadata.Sensor = mag.meta.Sensor.empty();
+            science.Metadata.Setup = mag.meta.Setup();
 
             % Exercise.
             output = evalc("display(science)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "in Burst (64)", "Science meta data should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "in Burst (64)", "Science metadata should be included in display.");
         end
 
         % Test that displaying heterogeneous arrays does not error.
@@ -655,7 +655,7 @@ classdef tScience < matlab.unittest.TestCase
             testCase.assertSize(science.DependentVariables, size(expectedData), "Data should be cropped as expected.");
             testCase.verifyEqual(science.DependentVariables, expectedData, "Data should be cropped as expected.");
 
-            testCase.verifyEqual(science.MetaData.Timestamp, science.Time(1), "Meta data timestamp should be updated.");
+            testCase.verifyEqual(science.Metadata.Timestamp, science.Time(1), "Metadata timestamp should be updated.");
         end
     end
 

@@ -117,16 +117,16 @@ classdef tScienceCSVIn < MAGIOTestCase
             testCase.assertClass(data, "mag.Science", "Data extracted from CDF should be ""mag.Science"".");
             testCase.assertNumElements(data, 2, "Two and only two science data should be extracted.");
 
-            testCase.verifyEqual(data(1).MetaData.Sensor, ValidFileDetails.PrimarySensor, "Primary sensor should be as expected.");
-            testCase.verifyEqual(data(1).MetaData.DataFrequency, ValidFileDetails.PrimaryDataFrequency, "Primary data frequency should be as expected.");
-            testCase.verifyEqual(data(2).MetaData.Sensor, ValidFileDetails.SecondarySensor, "Secondary sensor should be as expected.");
-            testCase.verifyEqual(data(2).MetaData.DataFrequency, ValidFileDetails.SecondaryDataFrequency, "Secondary data frequency should be as expected.");
+            testCase.verifyEqual(data(1).Metadata.Sensor, ValidFileDetails.PrimarySensor, "Primary sensor should be as expected.");
+            testCase.verifyEqual(data(1).Metadata.DataFrequency, ValidFileDetails.PrimaryDataFrequency, "Primary data frequency should be as expected.");
+            testCase.verifyEqual(data(2).Metadata.Sensor, ValidFileDetails.SecondarySensor, "Secondary sensor should be as expected.");
+            testCase.verifyEqual(data(2).Metadata.DataFrequency, ValidFileDetails.SecondaryDataFrequency, "Secondary data frequency should be as expected.");
 
             for i = 1:2
 
-                testCase.verifyEqual(data(i).MetaData.Mode, ValidFileDetails.Mode, "Mode should be as expected.");
-                testCase.verifyEqual(data(i).MetaData.PacketFrequency, ValidFileDetails.PacketFrequency, "Packet frequency should be as expected.");
-                testCase.verifyEqual(data(i).MetaData.Timestamp, ValidFileDetails.Timestamp, "Timestamp should be as expected.");
+                testCase.verifyEqual(data(i).Metadata.Mode, ValidFileDetails.Mode, "Mode should be as expected.");
+                testCase.verifyEqual(data(i).Metadata.PacketFrequency, ValidFileDetails.PacketFrequency, "Packet frequency should be as expected.");
+                testCase.verifyEqual(data(i).Metadata.Timestamp, ValidFileDetails.Timestamp, "Timestamp should be as expected.");
 
                 testCase.verifySize(data(i).Data, ValidFileDetails.Size, "Science data should be of expected size.");
             end

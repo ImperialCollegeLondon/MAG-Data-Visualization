@@ -7,13 +7,13 @@ classdef tTimeShift < MAGAnalysisTestCase
 
             % Set up.
             data = testCase.createTestData();
-            metaData = mag.meta.Science(Sensor = mag.meta.Sensor.FIB);
+            metadata = mag.meta.Science(Sensor = mag.meta.Sensor.FIB);
 
             dt = milliseconds(1);
 
             % Exercise.
             timeShiftStep = mag.process.TimeShift();
-            processedData = timeShiftStep.apply(data, metaData);
+            processedData = timeShiftStep.apply(data, metadata);
 
             % Verify.
             testCase.verifyEqual(processedData.Time, data.Time, "No time shift should be applied.");
@@ -23,13 +23,13 @@ classdef tTimeShift < MAGAnalysisTestCase
 
             % Set up.
             data = testCase.createTestData();
-            metaData = mag.meta.Science(Sensor = mag.meta.Sensor.FIB);
+            metadata = mag.meta.Science(Sensor = mag.meta.Sensor.FIB);
 
             dt = milliseconds(1);
 
             % Exercise.
-            timeShiftStep = mag.process.TimeShift(TimeShifts = dictionary(metaData.Sensor, dt));
-            processedData = timeShiftStep.apply(data, metaData);
+            timeShiftStep = mag.process.TimeShift(TimeShifts = dictionary(metadata.Sensor, dt));
+            processedData = timeShiftStep.apply(data, metadata);
 
             % Verify.
             testCase.verifyThat(matlab.unittest.constraints.EveryElementOf(processedData.Time - data.Time), ...

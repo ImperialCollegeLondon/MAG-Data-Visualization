@@ -48,11 +48,11 @@ classdef Field < mag.graphics.view.View
     methods (Access = private)
 
         function value = getFigureTitle(this, data)
-            value = compose("%s (%s)", data.MetaData.getDisplay("Mode"), this.getDataFrequency(data.MetaData));
+            value = compose("%s (%s)", data.Metadata.getDisplay("Mode"), this.getDataFrequency(data.Metadata));
         end
 
         function value = getFigureName(this, data)
-            value = compose("%s (%s) Time Series (%s)", data.MetaData.getDisplay("Mode"), this.getDataFrequency(data.MetaData), this.date2str(data.MetaData.Timestamp));
+            value = compose("%s (%s) Time Series (%s)", data.Metadata.getDisplay("Mode"), this.getDataFrequency(data.Metadata), this.date2str(data.Metadata.Timestamp));
         end
     end
 
@@ -60,10 +60,10 @@ classdef Field < mag.graphics.view.View
 
         function value = getFieldTitle(data)
 
-            if isempty(data.MetaData.Setup) || isempty(data.MetaData.Setup.FEE) || isempty(data.MetaData.Setup.Model) || isempty(data.MetaData.Setup.Can)
-                value = data.MetaData.getDisplay("Sensor");
+            if isempty(data.Metadata.Setup) || isempty(data.Metadata.Setup.FEE) || isempty(data.Metadata.Setup.Model) || isempty(data.Metadata.Setup.Can)
+                value = data.Metadata.getDisplay("Sensor");
             else
-                value = compose("%s (%s - %s - %s)", data.MetaData.Sensor, data.MetaData.Setup.FEE, data.MetaData.Setup.Model, data.MetaData.Setup.Can);
+                value = compose("%s (%s - %s - %s)", data.Metadata.Sensor, data.Metadata.Setup.FEE, data.Metadata.Setup.Model, data.Metadata.Setup.Can);
             end
         end
     end

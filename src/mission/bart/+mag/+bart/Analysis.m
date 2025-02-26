@@ -1,4 +1,4 @@
-classdef (Sealed) Analysis < mag.Analysis
+classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of Bartington data.
 
     properties
@@ -138,7 +138,7 @@ classdef (Sealed) Analysis < mag.Analysis
             for sp = this.ScienceProcessing
 
                 for d = [input1Science, input2Science]
-                    d.Data = sp.apply(d.Data, d.MetaData);
+                    d.Data = sp.apply(d.Data, d.Metadata);
                 end
             end
 

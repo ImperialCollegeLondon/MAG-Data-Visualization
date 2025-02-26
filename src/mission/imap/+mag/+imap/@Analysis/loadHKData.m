@@ -15,10 +15,10 @@ function loadHKData(this)
         importStrategy = this.dispatchExtension(extension, "HK");
 
         if ~isempty(this.Results.Science) && ...
-                ~isempty(this.Results.Outboard) && ~isempty(this.Results.Outboard.MetaData) && ...
-                ~isempty(this.Results.Inboard) && ~isempty(this.Results.Inboard.MetaData)
+                ~isempty(this.Results.Outboard) && ~isempty(this.Results.Outboard.Metadata) && ...
+                ~isempty(this.Results.Inboard) && ~isempty(this.Results.Inboard.Metadata)
 
-            importStrategy.SensorSetup = [this.Results.Outboard.MetaData.Setup, this.Results.Inboard.MetaData.Setup];
+            importStrategy.SensorSetup = [this.Results.Outboard.Metadata.Setup, this.Results.Inboard.Metadata.Setup];
         end
 
         hkData = mag.io.import( ...
@@ -34,10 +34,10 @@ function loadHKData(this)
     %% Amend Timerange
 
     % Concentrate on recorded timerange.
-    if ~isempty(this.Results.MetaData) && ~ismissing(this.Results.MetaData.Timestamp)
+    if ~isempty(this.Results.Metadata) && ~ismissing(this.Results.Metadata.Timestamp)
 
         for i = 1:numel(this.Results.HK)
-            this.Results.HK(i).Data = this.Results.HK(i).Data(timerange(this.Results.MetaData.Timestamp, this.Results.HK(i).Time(end), "closed"), :);
+            this.Results.HK(i).Data = this.Results.HK(i).Data(timerange(this.Results.Metadata.Timestamp, this.Results.HK(i).Time(end), "closed"), :);
         end
     end
 end

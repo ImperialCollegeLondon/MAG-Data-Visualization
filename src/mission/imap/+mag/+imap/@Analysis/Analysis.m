@@ -1,4 +1,4 @@
-classdef (Sealed) Analysis < mag.Analysis
+classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of an IMAP data.
 
     properties
@@ -6,9 +6,10 @@ classdef (Sealed) Analysis < mag.Analysis
         Location (1, 1) string {mustBeFolder} = pwd()
         % EVENTPATTERN Pattern of event files.
         EventPattern (1, :) string = fullfile("*", "Event", "*.html")
-        % METADATAPATTERN Pattern of meta data files.
-        MetaDataPattern (1, :) string = ["*.msg", "IMAP-MAG-TE-ICL-058*.xlsx", "IMAP-MAG-TE-ICL-061*.xlsx", ...
-            "IMAP-MAG-TE-ICL-071*.docx", "IMAP-OPS-TE-ICL-001*.docx", "IMAP-OPS-TE-ICL-002*.docx"]
+        % METADATAPATTERN Pattern of metadata files.
+        MetadataPattern (1, :) string = ["imap_setup.json", "*.msg", "IMAP-MAG-TE-ICL-058*.xlsx", ...
+            "IMAP-MAG-TE-ICL-061*.xlsx", "IMAP-MAG-TE-ICL-071*.docx", "IMAP-OPS-TE-ICL-001*.docx", ...
+            "IMAP-OPS-TE-ICL-002*.docx"]
         % SCIENCEPATTERN Pattern of science data files.
         SciencePattern (1, 1) string = "MAGScience-*-(*)-*.csv"
         % IALIRTPATTERN Pattern of I-ALiRT data files.
@@ -55,8 +56,8 @@ classdef (Sealed) Analysis < mag.Analysis
     properties (Dependent)
         % EVENTFILENAMES Files containing event data.
         EventFileNames (1, :) string
-        % METADATAFILENAMES Files containing meta data.
-        MetaDataFileNames (1, :) string
+        % METADATAFILENAMES Files containing metadata.
+        MetadataFileNames (1, :) string
         % SCIENCEFILENAMES Files containing science data.
         ScienceFileNames (1, :) string
         % IALIRTFILENAMES Files containing I-ALiRT data.
@@ -80,8 +81,8 @@ classdef (Sealed) Analysis < mag.Analysis
     properties (Access = private)
         % EVENTFILES Information about files containing event data.
         EventFiles (:, 1) struct
-        % METADATAFILES Information about files containing meta data.
-        MetaDataFiles (:, 1) struct
+        % METADATAFILES Information about files containing metadata.
+        MetadataFiles (:, 1) struct
         % SCIENCEFILES Information about files containing science data.
         ScienceFiles (:, 1) struct
         % IALIRTFILES Information about files containing I-ALiRT data.
@@ -121,8 +122,8 @@ classdef (Sealed) Analysis < mag.Analysis
             value = string(fullfile({this.EventFiles.folder}, {this.EventFiles.name}));
         end
 
-        function value = get.MetaDataFileNames(this)
-            value = string(fullfile({this.MetaDataFiles.folder}, {this.MetaDataFiles.name}));
+        function value = get.MetadataFileNames(this)
+            value = string(fullfile({this.MetadataFiles.folder}, {this.MetadataFiles.name}));
         end
 
         function value = get.ScienceFileNames(this)
@@ -144,8 +145,8 @@ classdef (Sealed) Analysis < mag.Analysis
 
             this.EventFiles = dir(fullfile(this.Location, this.EventPattern));
 
-            metaDataDir = arrayfun(@dir, fullfile(this.Location, this.MetaDataPattern), UniformOutput = false);
-            this.MetaDataFiles = vertcat(metaDataDir{:});
+            metadataDir = arrayfun(@dir, fullfile(this.Location, this.MetadataPattern), UniformOutput = false);
+            this.MetadataFiles = vertcat(metadataDir{:});
 
             this.ScienceFiles = dir(fullfile(this.Location, this.SciencePattern));
 
@@ -162,7 +163,7 @@ classdef (Sealed) Analysis < mag.Analysis
 
             this.loadEventsData();
 
-            [primarySetup, secondarySetup] = this.loadMetaData();
+            [primarySetup, secondarySetup] = this.loadMetadata();
 
             this.loadScienceData(primarySetup, secondarySetup);
 
@@ -232,13 +233,13 @@ classdef (Sealed) Analysis < mag.Analysis
                         continue;
                     end
 
-                    data.Primary.MetaData.Mode = string(primaryEvents{p, "Mode"});
-                    data.Primary.MetaData.DataFrequency = primaryEvents{p, "DataFrequency"};
-                    data.Primary.MetaData.PacketFrequency = primaryEvents{p, "PacketFrequency"};
+                    data.Primary.Metadata.Mode = string(primaryEvents{p, "Mode"});
+                    data.Primary.Metadata.DataFrequency = primaryEvents{p, "DataFrequency"};
+                    data.Primary.Metadata.PacketFrequency = primaryEvents{p, "PacketFrequency"};
 
-                    data.Secondary.MetaData.Mode = string(secondaryEvents{p, "Mode"});
-                    data.Secondary.MetaData.DataFrequency = secondaryEvents{p, "DataFrequency"};
-                    data.Secondary.MetaData.PacketFrequency = secondaryEvents{p, "PacketFrequency"};
+                    data.Secondary.Metadata.Mode = string(secondaryEvents{p, "Mode"});
+                    data.Secondary.Metadata.DataFrequency = secondaryEvents{p, "DataFrequency"};
+                    data.Secondary.Metadata.PacketFrequency = secondaryEvents{p, "PacketFrequency"};
 
                     modes(end + 1) = data; %#ok<AGROW>
                 end
@@ -404,8 +405,8 @@ classdef (Sealed) Analysis < mag.Analysis
         % LOADEVENTSDATA Load events.
         loadEventsData(this)
 
-        % LOADMETADATA Load meta data.
-        [primarySetup, secondarySetup] = loadMetaData(this)
+        % LOADMETADATA Load metadata.
+        [primarySetup, secondarySetup] = loadMetadata(this)
 
         % LOADSCIENCEDATA Load science data.
         loadScienceData(this, primarySetup, secondarySetup)
@@ -474,7 +475,7 @@ classdef (Sealed) Analysis < mag.Analysis
                 results = loadedObject.Results;
 
                 for hk = 1:numel(results.HK)
-                    results.HK(hk) = mag.imap.hk.dispatchHKType(results.HK(hk).Data, results.HK(hk).MetaData);
+                    results.HK(hk) = mag.imap.hk.dispatchHKType(results.HK(hk).Data, results.HK(hk).Metadata);
                 end
             else
 
@@ -515,5 +516,3 @@ classdef (Sealed) Analysis < mag.Analysis
         end
     end
 end
-
-

@@ -22,11 +22,11 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData();
-            metaData = mag.meta.Science(Setup = mag.meta.Setup.empty());
+            metadata = mag.meta.Science(Setup = mag.meta.Setup.empty());
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"]);
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyEqual(calibratedData, uncalibratedData, "Calibrated value should match expectation.");
@@ -38,11 +38,11 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData();
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = string.empty()));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = string.empty()));
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"]);
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyEqual(calibratedData, uncalibratedData, "Calibrated value should match expectation.");
@@ -54,11 +54,11 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData();
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "UM1"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "UM1"));
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"]);
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyEqual(calibratedData, uncalibratedData, "Calibrated value should match expectation.");
@@ -69,7 +69,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData();
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM5"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM5"));
 
             expectedData = uncalibratedData;
             expectedData{:, "x"} = 1.075387;
@@ -78,7 +78,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"]);
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
@@ -90,7 +90,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData(Range = 3 * ones(3, 1));
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM5"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM5"));
 
             expectedData = uncalibratedData;
             expectedData{:, "x"} = 1.014961;
@@ -99,7 +99,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"]);
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
@@ -111,7 +111,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData();
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM5"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM5"));
 
             expectedData = uncalibratedData;
             expectedData{:, "x"} = 1.075432;
@@ -120,7 +120,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cool");
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
@@ -133,7 +133,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData(Range = 2 * ones(3, 1));
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM4"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM4"));
 
             expectedData = uncalibratedData;
             expectedData{:, "x"} = 1.016675;
@@ -142,7 +142,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
@@ -154,7 +154,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "LM2"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "LM2"));
 
             expectedData = uncalibratedData;
             expectedData{:, "x"} = 3;
@@ -163,7 +163,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
@@ -175,7 +175,7 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Set up.
             uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
-            metaData = mag.meta.Science(Setup = mag.meta.Setup(Model = "JM1"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "JM1"));
 
             expectedData = uncalibratedData;
             expectedData{:, "x"} = -2;
@@ -184,7 +184,28 @@ classdef tCalibration < MAGAnalysisTestCase
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
-            calibratedData = calibrationStep.apply(uncalibratedData, metaData);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
+
+            % Verify.
+            testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
+                "Calibrated value should match expectation.");
+        end
+
+        % Verify that correct calibration is selected for Solar Orbiter.
+        function calibration_solo(testCase)
+
+            % Set up.
+            uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "SOLO-OBS-QM"));
+
+            expectedData = uncalibratedData;
+            expectedData{:, "x"} = -2;
+            expectedData{:, "y"} = 1;
+            expectedData{:, "z"} = -3;
+
+            % Exercise.
+            calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
 
             % Verify.
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...

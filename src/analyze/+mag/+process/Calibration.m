@@ -31,21 +31,28 @@ classdef Calibration < mag.process.Step
             this.assignProperties(options);
         end
 
-        function data = apply(this, data, metaData)
+        function data = apply(this, data, metadata)
 
             arguments
                 this
                 data timetable
-                metaData (1, 1) mag.meta.Science
+                metadata (1, 1) mag.meta.Science
             end
 
             ranges = unique(data.(this.RangeVariable));
 
-            if isempty(metaData.Setup) || isempty(metaData.Setup.Model)
+            % Find existing calibration files.
+            calibrationFiles = dir(fullfile(this.FileLocation, "*.txt"));
+
+            availableCalibrations = string(unique(extractBefore(({calibrationFiles.name}), "_")));
+            availableCalibrations(strlength(availableCalibrations) == 0) = [];
+
+            % Use correct calibration for sensor.
+            if isempty(metadata.Setup) || isempty(metadata.Setup.Model)
                 modelName = string.empty();
-            elseif startsWith(metaData.Setup.Model, ["FM4", "FM5", "LM", "JM"])
-                modelName = metaData.Setup.Model;
-            elseif startsWith(metaData.Setup.Model, regexpPattern("E|F"))
+            elseif contains(metadata.Setup.Model, availableCalibrations, IgnoreCase = true)
+                modelName = metadata.Setup.Model;
+            elseif startsWith(metadata.Setup.Model, regexpPattern("E|F"))
                 modelName = "FM5";
             else
                 modelName = string.empty();
@@ -94,11 +101,26 @@ classdef Calibration < mag.process.Step
 
             if ~isfile(fileName)
 
-                fileName = fullfile(this.FileLocation, compose("%s_tany.txt", lower(extract(modelName, lettersPattern()))));
+                patterns = [regexpPattern("[\w\-]+"), lettersPattern()];
 
-                if ~isfile(fileName)
-                    fileName = this.DefaultCalibrationFile;
+                for pattern = patterns
+
+                    value = lower(extract(modelName, pattern));
+
+                    if ~isempty(value)
+                        fileName = fullfile(this.FileLocation, compose("%s_tany.txt", value(1)));
+                    else
+                        fileName = string.empty();
+                    end
+
+                    if isfile(fileName)
+                        return;
+                    end
                 end
+            end
+
+            if ~isfile(fileName)
+                fileName = this.DefaultCalibrationFile;
             end
         end
     end

@@ -43,24 +43,24 @@ classdef Field < mag.graphics.view.View
         function value = getFigureTitle(this, input1, input2)
 
             if isempty(input1)
-                value = compose("Bartington (%s Hz)", this.getDataFrequency(input2.MetaData));
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input2.Metadata));
             elseif isempty(input2)
-                value = compose("Bartington (%s Hz)", this.getDataFrequency(input1.MetaData));
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input1.Metadata));
             else
-                value = compose("Bartington (%s, %s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData));
+                value = compose("Bartington (%s, %s)", this.getDataFrequency(input1.Metadata), this.getDataFrequency(input2.Metadata));
             end
         end
 
         function value = getFigureName(this, input1, input2)
 
             if isempty(input1)
-                value = compose("Bartington (%s Hz) Time Series (%s)", this.getDataFrequency(input2.MetaData), this.date2str(input2.MetaData.Timestamp));
+                value = compose("Bartington (%s Hz) Time Series (%s)", this.getDataFrequency(input2.Metadata), this.date2str(input2.Metadata.Timestamp));
             elseif isempty(input2)
-                value = compose("Bartington (%s Hz) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.date2str(input1.MetaData.Timestamp));
+                value = compose("Bartington (%s Hz) Time Series (%s)", this.getDataFrequency(input1.Metadata), this.date2str(input1.Metadata.Timestamp));
             else
 
-                value = compose("Bartington (%s, %s) Time Series (%s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData), ...
-                    this.date2str(input1.MetaData.Timestamp));
+                value = compose("Bartington (%s, %s) Time Series (%s)", this.getDataFrequency(input1.Metadata), this.getDataFrequency(input2.Metadata), ...
+                    this.date2str(input1.Metadata.Timestamp));
             end
         end
     end

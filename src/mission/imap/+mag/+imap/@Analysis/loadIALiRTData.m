@@ -18,10 +18,10 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
         ProcessingSteps = this.PerFileProcessing);
 
     primary = this.Results.IALiRT.Primary;
-    primary.MetaData.Setup = primarySetup;
+    primary.Metadata.Setup = primarySetup;
 
     secondary = this.Results.IALiRT.Secondary;
-    secondary.MetaData.Setup = secondarySetup;
+    secondary.Metadata.Setup = secondarySetup;
 
     %% Amend Timestamp
 
@@ -37,15 +37,15 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
 
     startTime = min(startTime);
 
-    primary.MetaData.Timestamp = startTime;
-    secondary.MetaData.Timestamp = startTime;
+    primary.Metadata.Timestamp = startTime;
+    secondary.Metadata.Timestamp = startTime;
 
     %% Process Data as a Whole
 
     for ps = this.WholeDataProcessing
 
-        primary.Data = ps.apply(primary.Data, primary.MetaData);
-        secondary.Data = ps.apply(secondary.Data, secondary.MetaData);
+        primary.Data = ps.apply(primary.Data, primary.Metadata);
+        secondary.Data = ps.apply(secondary.Data, secondary.Metadata);
     end
 
     %% Add Mode and Range Change Events
@@ -78,7 +78,7 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
 
     for is = this.IALiRTProcessing
 
-        primary.Data = is.apply(primary.Data, primary.MetaData);
-        secondary.Data = is.apply(secondary.Data, secondary.MetaData);
+        primary.Data = is.apply(primary.Data, primary.Metadata);
+        secondary.Data = is.apply(secondary.Data, secondary.Metadata);
     end
 end

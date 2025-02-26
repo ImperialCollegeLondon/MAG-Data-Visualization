@@ -41,7 +41,7 @@ classdef (Abstract) CDF < mag.io.out.Format
 
     methods (Abstract, Access = protected)
 
-        % GETSKELETONFILE Get skeleton file name containing meta data.
+        % GETSKELETONFILE Get skeleton file name containing metadata.
         fileName = getSkeletonFileName(this)
 
         % GETGLOBALATTRIBUTES Retrieve global attributes of CDF file.

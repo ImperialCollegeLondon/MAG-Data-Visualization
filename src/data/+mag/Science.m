@@ -40,16 +40,16 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
 
     methods
 
-        function this = Science(scienceData, metaData, propertySettings)
+        function this = Science(scienceData, metadata, propertySettings)
 
             arguments
                 scienceData timetable
-                metaData (1, 1) mag.meta.Science
+                metadata (1, 1) mag.meta.Science
                 propertySettings (1, 1) mag.setting.Science = mag.setting.Science()
             end
 
             this.Data = scienceData;
-            this.MetaData = metaData;
+            this.Metadata = metadata;
             this.Settings = propertySettings;
         end
 
@@ -156,9 +156,9 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             end
 
             if isempty(this.Time)
-                this.MetaData.Timestamp = NaT(TimeZone = mag.time.Constant.TimeZone);
+                this.Metadata.Timestamp = NaT(TimeZone = mag.time.Constant.TimeZone);
             else
-                this.MetaData.Timestamp = min(this.Time);
+                this.Metadata.Timestamp = min(this.Time);
             end
         end
 
@@ -198,7 +198,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             resampledData(:, [this.Settings.X, this.Settings.Y, this.Settings.Z]) = xyz;
 
             this.Data = resampledData;
-            this.MetaData.DataFrequency = targetFrequency;
+            this.Metadata.DataFrequency = targetFrequency;
         end
 
         function downsample(this, targetFrequency)
@@ -230,7 +230,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             this.filter(b);
 
             this.Data = downsample(this.Data, decimationFactor);
-            this.MetaData.DataFrequency = targetFrequency;
+            this.Metadata.DataFrequency = targetFrequency;
         end
 
         function filter(this, numeratorOrFilter, denominator)
@@ -309,15 +309,15 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             end
 
             % If no primary sensor is set, assume it's FOB.
-            metaData = [this.MetaData];
-            locPrimary = [metaData.Primary];
+            metadata = [this.Metadata];
+            locPrimary = [metadata.Primary];
 
             switch nnz(locPrimary)
                 case 0
                     primarySensor = mag.meta.Sensor.FOB;
                 case 1
 
-                    sensors = [metaData.Sensor];
+                    sensors = [metadata.Sensor];
                     primarySensor = sensors(locPrimary);
                 otherwise
                     error("One and only one sensor can be primary.");
@@ -354,12 +354,12 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 return;
             end
 
-            metaData = [this.MetaData];
+            metadata = [this.Metadata];
 
             if contains(selected, "board")
-                locSelected = [metaData.Sensor] == ("F" + extract(selected, regexpPattern("O|I")) + "B");
+                locSelected = [metadata.Sensor] == ("F" + extract(selected, regexpPattern("O|I")) + "B");
             else
-                locSelected = [metaData.Primary] == isequal(selected, "Primary");
+                locSelected = [metadata.Primary] == isequal(selected, "Primary");
             end
 
             science = this(locSelected);
@@ -390,14 +390,14 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
 
         function header = getHeader(this)
 
-            if isscalar(this) && ~isempty(this.MetaData)
+            if isscalar(this) && ~isempty(this.Metadata)
 
-                if ~isempty(this.MetaData) && ~isempty(this.MetaData.Sensor) && ~isempty(this.MetaData.Setup) && ~isempty(this.MetaData.Setup.Model)
-                    tag = char(compose(" from %s (%s) in %s (%d)", this.MetaData.Sensor, this.MetaData.Setup.Model, this.MetaData.Mode, this.MetaData.DataFrequency));
-                elseif ~isempty(this.MetaData) && ~isempty(this.MetaData.Sensor)
-                    tag = char(compose(" from %s in %s (%d)", this.MetaData.Sensor, this.MetaData.Mode, this.MetaData.DataFrequency));
+                if ~isempty(this.Metadata) && ~isempty(this.Metadata.Sensor) && ~isempty(this.Metadata.Setup) && ~isempty(this.Metadata.Setup.Model)
+                    tag = char(compose(" from %s (%s) in %s (%d)", this.Metadata.Sensor, this.Metadata.Setup.Model, this.Metadata.Mode, this.Metadata.DataFrequency));
+                elseif ~isempty(this.Metadata) && ~isempty(this.Metadata.Sensor)
+                    tag = char(compose(" from %s in %s (%d)", this.Metadata.Sensor, this.Metadata.Mode, this.Metadata.DataFrequency));
                 else
-                    tag = char(compose(" in %s (%d)", this.MetaData.Mode, this.MetaData.DataFrequency));
+                    tag = char(compose(" in %s (%d)", this.Metadata.Mode, this.Metadata.DataFrequency));
                 end
 
                 className = matlab.mixin.CustomDisplay.getClassNameForHeader(this);

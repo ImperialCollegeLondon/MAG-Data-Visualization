@@ -2,7 +2,7 @@ classdef tInstrument < matlab.mock.TestCase
 % TINSTRUMENT Unit tests for "mag.imap.Instrument" class.
 
     properties (TestParameter)
-        HasProperty = {"HasData", "HasMetaData", "HasScience", "HasHK"}
+        HasProperty = {"HasData", "HasMetadata", "HasScience", "HasHK"}
     end
 
     methods (Test)
@@ -127,8 +127,10 @@ classdef tInstrument < matlab.mock.TestCase
             copiedInstrument = instrument.copy();
 
             % Verify.
+            testCase.verifyEqual(instrument, copiedInstrument, "Copied data should be equal.");
+
             testCase.verifyNotSameHandle(instrument, copiedInstrument, "Copied data should be different instance.");
-            testCase.verifyNotSameHandle(instrument.MetaData, copiedInstrument.MetaData, "Copied data should be different instance.");
+            testCase.verifyNotSameHandle(instrument.Metadata, copiedInstrument.Metadata, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(instrument.Events, copiedInstrument.Events, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(instrument.Primary, copiedInstrument.Primary, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(instrument.Secondary, copiedInstrument.Secondary, "Copied data should be different instance.");
@@ -142,15 +144,15 @@ classdef tInstrument < matlab.mock.TestCase
             % Set up.
             instrument = testCase.createTestData();
 
-            instrument.Primary.MetaData.Mode = "Burst";
-            instrument.Primary.MetaData.DataFrequency = 64;
-            instrument.Secondary.MetaData.DataFrequency = 8;
+            instrument.Primary.Metadata.Mode = "Burst";
+            instrument.Primary.Metadata.DataFrequency = 64;
+            instrument.Secondary.Metadata.DataFrequency = 8;
 
             % Exercise.
             output = evalc("display(instrument)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "in Burst (64, 8)", "Science meta data should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "in Burst (64, 8)", "Science metadata should be included in display.");
         end
 
         % Test that displaying heterogeneous arrays does not error.
@@ -181,7 +183,7 @@ classdef tInstrument < matlab.mock.TestCase
 
             [hk, hkBehavior] = testCase.createMock(?mag.HK, ConstructorInputs = {hkTT, mag.meta.HK(Timestamp = datetime("now", TimeZone = "UTC"))}, Strict = true);
 
-            instrument = mag.imap.Instrument(MetaData = mag.meta.Instrument(), ...
+            instrument = mag.imap.Instrument(Metadata = mag.meta.Instrument(), ...
                 Science = [primary, secondary], ...
                 IALiRT = iALiRT, ...
                 HK = hk);

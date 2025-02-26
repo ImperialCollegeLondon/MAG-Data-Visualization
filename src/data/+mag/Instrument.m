@@ -5,8 +5,8 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
     properties
         % EVENTS Event data.
         Events (1, :) mag.event.Event
-        % METADATA Meta data.
-        MetaData mag.meta.Instrument {mustBeScalarOrEmpty}
+        % METADATA Metadata.
+        Metadata mag.meta.Instrument {mustBeScalarOrEmpty}
         % SCIENCE Science data.
         Science (1, :) mag.Science
         % HK Housekeeping data.
@@ -16,8 +16,8 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
     properties (Dependent, SetAccess = private)
         % HASDATA Logical denoting whether instrument has any data.
         HasData (1, 1) logical
-        % HASMETADATA Logical denoting whether instrument has meta data.
-        HasMetaData (1, 1) logical
+        % HASMETADATA Logical denoting whether instrument has metadata.
+        HasMetadata (1, 1) logical
         % HASSCIENCE Logical denoting whether instrument has science data.
         HasScience (1, 1) logical
         % HASHK Logical denoting whether instrument has HK data.
@@ -38,11 +38,11 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
         end
 
         function hasData = get.HasData(this)
-            hasData = this.HasMetaData || this.HasScience || this.HasHK;
+            hasData = this.HasMetadata || this.HasScience || this.HasHK;
         end
 
-        function hasMetaData = get.HasMetaData(this)
-            hasMetaData = ~isempty(this.MetaData);
+        function hasMetadata = get.HasMetadata(this)
+            hasMetadata = ~isempty(this.Metadata);
         end
 
         function hasScience = get.HasScience(this)
@@ -105,7 +105,7 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
         end
 
         function cropToMatch(this, startTime, endTime)
-        % CROPTOMATCH Crop meta data, events and HK based on science
+        % CROPTOMATCH Crop metadata, events and HK based on science
         % timestamps or specified timestamps.
 
             arguments
@@ -124,9 +124,9 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
             % Filter HK.
             this.HK.crop(timePeriod);
 
-            % Adjust meta data.
-            if ~isempty(this.MetaData)
-                this.MetaData.Timestamp = startTime;
+            % Adjust metadata.
+            if ~isempty(this.Metadata)
+                this.Metadata.Timestamp = startTime;
             end
         end
 
@@ -194,7 +194,7 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
 
             copiedThis = copyElement@matlab.mixin.Copyable(this);
 
-            copiedThis.MetaData = copy(this.MetaData);
+            copiedThis.Metadata = copy(this.Metadata);
             copiedThis.Events = copy(this.Events);
             copiedThis.Science = copy(this.Science);
             copiedThis.HK = copy(this.HK);

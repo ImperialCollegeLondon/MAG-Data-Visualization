@@ -67,9 +67,9 @@ classdef tScienceCDFIn < MAGIOTestCase
             testCase.assertClass(data, "mag.Science", "Data extracted from CDF should be ""mag.Science"".");
             testCase.assertNumElements(data, 1, "One and only one science data should be extracted.");
 
-            testCase.verifyEqual(data.MetaData.Sensor, ValidFileDetails.Sensor, "Sensor should be as expected.");
-            testCase.verifyEqual(data.MetaData.Mode, ValidFileDetails.Mode, "Mode should be as expected.");
-            testCase.verifyEqual(data.MetaData.Timestamp, ValidFileDetails.Timestamp, "Timestamp should be as expected.");
+            testCase.verifyEqual(data.Metadata.Sensor, ValidFileDetails.Sensor, "Sensor should be as expected.");
+            testCase.verifyEqual(data.Metadata.Mode, ValidFileDetails.Mode, "Mode should be as expected.");
+            testCase.verifyEqual(data.Metadata.Timestamp, ValidFileDetails.Timestamp, "Timestamp should be as expected.");
 
             testCase.verifySize(data.Data, [99, 8], "Science data should be of expected size.");
         end

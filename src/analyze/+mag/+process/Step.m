@@ -4,7 +4,7 @@ classdef (Abstract) Step < matlab.mixin.Heterogeneous & mag.mixin.SetGet
     methods (Abstract)
 
         % APPLY Apply processing step.
-        data = apply(this, data, metaData)
+        data = apply(this, data, metadata)
     end
 
     methods (Static, Access = protected)
