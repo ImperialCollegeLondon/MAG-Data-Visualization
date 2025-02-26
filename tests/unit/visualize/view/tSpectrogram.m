@@ -5,7 +5,7 @@ classdef tSpectrogram < MAGViewTestCase
 
         % Test that spectrogram is generated correctly when start and
         % duration are provided.
-        function psdStartDuration(testCase)
+        function spectrogramStartDuration(testCase)
 
             % Set up.
             instrument = testCase.createTestInstrument();
@@ -24,9 +24,9 @@ classdef tSpectrogram < MAGViewTestCase
             testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
         end
 
-        % Test that PSD is generated correctly when only primary sensor is
-        % available.
-        function psd_primaryOnly(testCase)
+        % Test that spectrogram is generated correctly when only primary
+        % sensor is available.
+        function spectrogram_primaryOnly(testCase)
 
             % Set up.
             instrument = testCase.createTestInstrument();
@@ -46,9 +46,9 @@ classdef tSpectrogram < MAGViewTestCase
             testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
         end
 
-        % Test that PSD is generated correctly when only secondary sensor
-        % is available.
-        function psd_secondaryOnly(testCase)
+        % Test that spectrogram is generated correctly when only secondary
+        % sensor is available.
+        function spectrogram_secondaryOnly(testCase)
 
             % Set up.
             instrument = testCase.createTestInstrument();
@@ -68,8 +68,9 @@ classdef tSpectrogram < MAGViewTestCase
             testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
         end
 
-        % Test that PSD is not generated when no science data is available.
-        function psd_noScience(testCase)
+        % Test that spectrogram is not generated when no science data is
+        % available.
+        function spectrogram_noScience(testCase)
 
             % Set up.
             instrument = testCase.createTestInstrument();
