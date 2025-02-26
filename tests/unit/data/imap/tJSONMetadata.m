@@ -46,7 +46,7 @@ classdef tJSONMetadata < matlab.unittest.TestCase
             jsonProvider = mag.imap.meta.JSON();
 
             testCase.verifyFalse(jsonProvider.isSupported(fullfile(testCase.WorkingDirectory.StartingFolder, "test_data", "invalid.json")), ...
-                "Nonexistent file should not be supported.");
+                "Invalid JSON file should not be supported.");
         end
 
         % Test that metadata is loaded correctly, even when one field

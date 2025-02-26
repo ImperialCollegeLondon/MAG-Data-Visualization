@@ -15,9 +15,11 @@ classdef Word < mag.imap.meta.Provider
                 fileName (1, 1) string
             end
 
-            [~, ~, extension] = fileparts(fileName);
+            [~, name, extension] = fileparts(fileName);
 
-            supported = isfile(fileName) && ismember(extension, this.Extensions);
+            supported = isfile(fileName) && ismember(extension, this.Extensions) && ...
+                startsWith(name, "IMAP-MAG-TE-ICL-071" | "IMAP-OPS-TE-ICL-001" | "IMAP-OPS-TE-ICL-002") && ...
+                this.isValidWord(fileName);
         end
 
         function load(~, fileName, instrumentMetadata, primarySetup, secondarySetup)
@@ -33,12 +35,8 @@ classdef Word < mag.imap.meta.Provider
             % Read metadata file.
             % If Word document does not contain table, ignore it.
             importOptions = wordDocumentImportOptions(TableSelector = "//w:tbl[contains(.,'MAG Operator')]");
+
             rawData = readtable(fileName, importOptions);
-
-            if isempty(rawData)
-                return;
-            end
-
             rawData = rows2vars(rawData, VariableNamesSource = 1, VariableNamingRule = "preserve");
 
             % Check if document is for EM.
@@ -83,6 +81,17 @@ classdef Word < mag.imap.meta.Provider
             secondarySetup.FEE = secondaryFEE;
             secondarySetup.Harness = rawData.FIBHarness;
             secondarySetup.Can = rawData.FIBCan;
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function valid = isValidWord(fileName)
+
+            importOptions = wordDocumentImportOptions(TableSelector = "//w:tbl[contains(.,'MAG Operator')]");
+            rawData = readtable(fileName, importOptions);
+
+            valid = ~isempty(rawData);
         end
     end
 end
