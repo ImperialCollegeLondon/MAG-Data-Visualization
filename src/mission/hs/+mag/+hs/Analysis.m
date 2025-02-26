@@ -4,8 +4,8 @@ classdef (Sealed) Analysis < mag.Analysis
     properties
         % LOCATION Location of data to load.
         Location (1, 1) string {mustBeFolder} = pwd()
-        % METADATAPATTERN Pattern of meta data files.
-        MetaDataPattern string {mustBeScalarOrEmpty} = string.empty()
+        % METADATAPATTERN Pattern of metadata files.
+        MetadataPattern string {mustBeScalarOrEmpty} = string.empty()
         % SCIENCEPATTERN Pattern of science data files.
         SciencePattern (1, 1) string = fullfile("science*.csv")
         % HKPATTERN Pattern of housekeeping files.
@@ -26,8 +26,8 @@ classdef (Sealed) Analysis < mag.Analysis
     end
 
     properties (Dependent)
-        % METADATAFILENAMES Files containing meta data.
-        MetaDataFileNames (1, :) string
+        % METADATAFILENAMES Files containing metadata.
+        MetadataFileNames (1, :) string
         % SCIENCEFILENAMES Files containing science data.
         ScienceFileNames (1, :) string
         % HKFILENAMES Files containing HK data.
@@ -40,8 +40,8 @@ classdef (Sealed) Analysis < mag.Analysis
     end
 
     properties (Access = private)
-        % METADATAFILES Information about files containing meta data.
-        MetaDataFiles (:, 1) struct
+        % METADATAFILES Information about files containing metadata.
+        MetadataFiles (:, 1) struct
         % SCIENCEFILES Information about files containing science data.
         ScienceFiles (:, 1) struct
         % HKFILES Information about files containing HK data.
@@ -76,8 +76,8 @@ classdef (Sealed) Analysis < mag.Analysis
             this.assignProperties(options);
         end
 
-        function value = get.MetaDataFileNames(this)
-            value = string(fullfile({this.MetaDataFiles.folder}, {this.MetaDataFiles.name}));
+        function value = get.MetadataFileNames(this)
+            value = string(fullfile({this.MetadataFiles.folder}, {this.MetadataFiles.name}));
         end
 
         function value = get.ScienceFileNames(this)
@@ -98,7 +98,7 @@ classdef (Sealed) Analysis < mag.Analysis
 
             this.Results = mag.Instrument();
 
-            this.loadMetaData();
+            this.loadMetadata();
             this.loadScienceData();
             this.loadHKData();
         end
@@ -150,8 +150,8 @@ classdef (Sealed) Analysis < mag.Analysis
 
     methods (Access = private)
 
-        function loadMetaData(this)
-            this.Results.MetaData = mag.meta.Instrument(Mission = mag.meta.Mission.HelioSwarm);
+        function loadMetadata(this)
+            this.Results.Metadata = mag.meta.Instrument(Mission = mag.meta.Mission.HelioSwarm);
         end
 
         function loadScienceData(this)
@@ -168,7 +168,7 @@ classdef (Sealed) Analysis < mag.Analysis
             for sp = this.ScienceProcessing
 
                 for s = science
-                    s.Data = sp.apply(s.Data, s.MetaData);
+                    s.Data = sp.apply(s.Data, s.Metadata);
                 end
             end
 

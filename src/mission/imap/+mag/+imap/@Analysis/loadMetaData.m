@@ -1,12 +1,12 @@
-function [primarySetup, secondarySetup] = loadMetaData(this)
+function [primarySetup, secondarySetup] = loadMetadata(this)
 
     % Initialize.
-    metaData = mag.meta.Instrument(Mission = mag.meta.Mission.IMAP);
+    metadata = mag.meta.Instrument(Mission = mag.meta.Mission.IMAP);
     primarySetup = mag.meta.Setup();
     secondarySetup = mag.meta.Setup();
 
-    % Load instrument and science meta data.
-    for mdf = this.MetaDataFileNames
+    % Load instrument and science metadata.
+    for mdf = this.MetadataFileNames
 
         [~, ~, extension] = fileparts(mdf);
 
@@ -22,12 +22,12 @@ function [primarySetup, secondarySetup] = loadMetaData(this)
             case cellstr(mag.imap.meta.SID15.Extensions)
                 loader = mag.imap.meta.SID15(FileName = mdf);
             otherwise
-                error("Unsupported meta data extension ""%s"".", extension);
+                error("Unsupported metadata extension ""%s"".", extension);
         end
 
-        [metaData, primarySetup, secondarySetup] = loader.load(metaData, primarySetup, secondarySetup);
+        [metadata, primarySetup, secondarySetup] = loader.load(metadata, primarySetup, secondarySetup);
     end
 
     % Assign value.
-    this.Results.MetaData = metaData;
+    this.Results.Metadata = metadata;
 end

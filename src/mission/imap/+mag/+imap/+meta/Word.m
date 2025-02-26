@@ -1,5 +1,5 @@
 classdef Word < mag.imap.meta.Type
-% WORD Load meta data from Word files.
+% WORD Load metadata from Word files.
 
     properties (Constant)
         Extensions = ".docx"
@@ -19,16 +19,16 @@ classdef Word < mag.imap.meta.Type
 
     methods
 
-        function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
+        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
 
             arguments
                 this (1, 1) mag.imap.meta.Word
-                instrumentMetaData (1, 1) mag.meta.Instrument
+                instrumentMetadata (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
             end
 
-            % Read meta data file.
+            % Read metadata file.
             % If Word document does not contain table, ignore it.
             importOptions = wordDocumentImportOptions(TableSelector = "//w:tbl[contains(.,'MAG Operator')]");
             rawData = readtable(this.FileName, importOptions);
@@ -62,16 +62,16 @@ classdef Word < mag.imap.meta.Type
                 error("Unrecognized table format.");
             end
 
-            % Assign instrument meta data.
-            instrumentMetaData.Model = model;
-            instrumentMetaData.BSW = extractAfter(rawData.BSW, optionalPattern(lettersPattern()));
-            instrumentMetaData.ASW = extractAfter(rawData.ASW, optionalPattern(lettersPattern()));
-            instrumentMetaData.GSE = extractAfter(rawData.GSE, optionalPattern(lettersPattern()));
-            instrumentMetaData.Operator = rawData.Operator;
-            instrumentMetaData.Description = rawData.Name;
-            instrumentMetaData.Timestamp = mag.time.decodeDate(rawData.Date) + mag.time.decodeTime(rawData.Time);
+            % Assign instrument metadata.
+            instrumentMetadata.Model = model;
+            instrumentMetadata.BSW = extractAfter(rawData.BSW, optionalPattern(lettersPattern()));
+            instrumentMetadata.ASW = extractAfter(rawData.ASW, optionalPattern(lettersPattern()));
+            instrumentMetadata.GSE = extractAfter(rawData.GSE, optionalPattern(lettersPattern()));
+            instrumentMetadata.Operator = rawData.Operator;
+            instrumentMetadata.Description = rawData.Name;
+            instrumentMetadata.Timestamp = mag.time.decodeDate(rawData.Date) + mag.time.decodeTime(rawData.Time);
 
-            % Enhance primary and secondary meta data.
+            % Enhance primary and secondary metadata.
             primarySetup.Model = rawData.FOBModel;
             primarySetup.FEE = primaryFEE;
             primarySetup.Harness = rawData.FOBHarness;

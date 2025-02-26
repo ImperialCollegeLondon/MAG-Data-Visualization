@@ -142,7 +142,7 @@ classdef tSpectrogram < MAGViewTestCase
                 end
             end
 
-            startTime = instrument.Primary.MetaData.Timestamp;
+            startTime = instrument.Primary.Metadata.Timestamp;
             startTime.Format = "dd-MMM-uuuu HHmmss";
 
             expectedInputs = [expectedInputs, { ...

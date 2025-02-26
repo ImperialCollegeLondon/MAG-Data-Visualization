@@ -13,7 +13,7 @@ classdef (Abstract, Hidden) Science < mag.graphics.view.View
         function value = getFigureTitle(this, primary, secondary)
 
             if ismissing(this.Title)
-                value = compose("%s (%s, %s)", primary.MetaData.getDisplay("Mode"), this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData));
+                value = compose("%s (%s, %s)", primary.Metadata.getDisplay("Mode"), this.getDataFrequency(primary.Metadata), this.getDataFrequency(secondary.Metadata));
             else
                 value = this.Title;
             end
@@ -22,7 +22,7 @@ classdef (Abstract, Hidden) Science < mag.graphics.view.View
         function value = getFigureName(this, primary, secondary)
 
             if ismissing(this.Name)
-                value = compose("%s (%s, %s) Time Series (%s)", primary.MetaData.getDisplay("Mode"), this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData), this.date2str(primary.MetaData.Timestamp));
+                value = compose("%s (%s, %s) Time Series (%s)", primary.Metadata.getDisplay("Mode"), this.getDataFrequency(primary.Metadata), this.getDataFrequency(secondary.Metadata), this.date2str(primary.Metadata.Timestamp));
             else
                 value = this.Name;
             end
@@ -33,10 +33,10 @@ classdef (Abstract, Hidden) Science < mag.graphics.view.View
 
         function value = getFieldTitle(data)
 
-            if isempty(data.MetaData.Setup) || isempty(data.MetaData.Setup.FEE) || isempty(data.MetaData.Setup.Model) || isempty(data.MetaData.Setup.Can)
-                value = data.MetaData.getDisplay("Sensor");
+            if isempty(data.Metadata.Setup) || isempty(data.Metadata.Setup.FEE) || isempty(data.Metadata.Setup.Model) || isempty(data.Metadata.Setup.Can)
+                value = data.Metadata.getDisplay("Sensor");
             else
-                value = compose("%s (%s - %s - %s)", data.MetaData.Sensor, data.MetaData.Setup.FEE, data.MetaData.Setup.Model, data.MetaData.Setup.Can);
+                value = compose("%s (%s - %s - %s)", data.Metadata.Sensor, data.Metadata.Setup.FEE, data.Metadata.Setup.Model, data.Metadata.Setup.Can);
             end
         end
     end

@@ -3,8 +3,8 @@ classdef Timestamp < mag.process.Step
 
     methods
 
-        function data = apply(this, data, metaData)
-            data.t = this.computeTimeStamp(data{:, ["coarse", "fine"]}, data.sequence, metaData.DataFrequency, metaData.PacketFrequency);
+        function data = apply(this, data, metadata)
+            data.t = this.computeTimeStamp(data{:, ["coarse", "fine"]}, data.sequence, metadata.DataFrequency, metadata.PacketFrequency);
         end
     end
 

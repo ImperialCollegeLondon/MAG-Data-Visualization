@@ -14,8 +14,8 @@ classdef ScienceMAT < mag.io.out.MAT
                 fileName (1, 1) string
             end
 
-            fileName = compose("%s %s (%d)", datestr(data.Science.MetaData.Timestamp, "ddmmyy-hhMM"), ...
-                data.Science.MetaData.Mode, data.Science.MetaData.DataFrequency) + this.Extension; %#ok<DATST>
+            fileName = compose("%s %s (%d)", datestr(data.Science.Metadata.Timestamp, "ddmmyy-hhMM"), ...
+                data.Science.Metadata.Mode, data.Science.Metadata.DataFrequency) + this.Extension; %#ok<DATST>
         end
 
         function exportData = convertToExportFormat(this, data)
@@ -34,7 +34,7 @@ classdef ScienceMAT < mag.io.out.MAT
             exportData.B.Range = data.Science.Range;
             exportData.B.Compression = data.Science.Compression;
             exportData.B.Quality = categorical(string(data.Science.Quality));
-            exportData.B.MetaData = this.flattenStruct(data.Science.MetaData);
+            exportData.B.Metadata = this.flattenStruct(data.Science.Metadata);
         end
     end
 end

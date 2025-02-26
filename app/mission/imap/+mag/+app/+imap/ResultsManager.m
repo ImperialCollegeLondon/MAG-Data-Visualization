@@ -3,8 +3,8 @@ classdef ResultsManager < mag.app.manage.Manager
 
     properties (SetAccess = private)
         ResultsLayout matlab.ui.container.GridLayout
-        MetaDataPanel matlab.ui.container.Panel
-        MetaDataLayout matlab.ui.container.GridLayout
+        MetadataPanel matlab.ui.container.Panel
+        MetadataLayout matlab.ui.container.GridLayout
         InstrumentTextArea matlab.ui.control.TextArea
         PrimaryTextArea matlab.ui.control.TextArea
         SecondaryTextArea matlab.ui.control.TextArea
@@ -19,38 +19,38 @@ classdef ResultsManager < mag.app.manage.Manager
             this.ResultsLayout.ColumnWidth = "1x";
             this.ResultsLayout.RowHeight = ["1x", "3x"];
 
-            % Create MetaDataPanel.
-            this.MetaDataPanel = uipanel(this.ResultsLayout);
-            this.MetaDataPanel.Enable = "off";
-            this.MetaDataPanel.Title = "Meta Data";
-            this.MetaDataPanel.Layout.Row = 1;
-            this.MetaDataPanel.Layout.Column = 1;
+            % Create MetadataPanel.
+            this.MetadataPanel = uipanel(this.ResultsLayout);
+            this.MetadataPanel.Enable = "off";
+            this.MetadataPanel.Title = "Metadata";
+            this.MetadataPanel.Layout.Row = 1;
+            this.MetadataPanel.Layout.Column = 1;
 
-            % Create MetaDataLayout.
-            this.MetaDataLayout = uigridlayout(this.MetaDataPanel);
-            this.MetaDataLayout.ColumnWidth = ["1x", "1x", "1x"];
-            this.MetaDataLayout.RowHeight = "1x";
+            % Create MetadataLayout.
+            this.MetadataLayout = uigridlayout(this.MetadataPanel);
+            this.MetadataLayout.ColumnWidth = ["1x", "1x", "1x"];
+            this.MetadataLayout.RowHeight = "1x";
 
             % Create InstrumentTextArea.
-            this.InstrumentTextArea = uitextarea(this.MetaDataLayout);
+            this.InstrumentTextArea = uitextarea(this.MetadataLayout);
             this.InstrumentTextArea.Editable = "off";
-            this.InstrumentTextArea.Tooltip = "Instrument Meta Data";
+            this.InstrumentTextArea.Tooltip = "Instrument Metadata";
             this.InstrumentTextArea.Placeholder = "Instrument...";
             this.InstrumentTextArea.Layout.Row = 1;
             this.InstrumentTextArea.Layout.Column = 1;
 
             % Create PrimaryTextArea.
-            this.PrimaryTextArea = uitextarea(this.MetaDataLayout);
+            this.PrimaryTextArea = uitextarea(this.MetadataLayout);
             this.PrimaryTextArea.Editable = "off";
-            this.PrimaryTextArea.Tooltip = "Primary Sensor Meta Data";
+            this.PrimaryTextArea.Tooltip = "Primary Sensor Metadata";
             this.PrimaryTextArea.Placeholder = "Primary Sensor...";
             this.PrimaryTextArea.Layout.Row = 1;
             this.PrimaryTextArea.Layout.Column = 2;
 
             % Create SecondaryTextArea.
-            this.SecondaryTextArea = uitextarea(this.MetaDataLayout);
+            this.SecondaryTextArea = uitextarea(this.MetadataLayout);
             this.SecondaryTextArea.Editable = "off";
-            this.SecondaryTextArea.Tooltip = "Secondary Sensor Meta Data";
+            this.SecondaryTextArea.Tooltip = "Secondary Sensor Metadata";
             this.SecondaryTextArea.Placeholder = "Secondary Sensor...";
             this.SecondaryTextArea.Layout.Row = 1;
             this.SecondaryTextArea.Layout.Column = 3;
@@ -61,7 +61,7 @@ classdef ResultsManager < mag.app.manage.Manager
 
         function reset(this)
 
-            this.MetaDataPanel.Enable = "off";
+            this.MetadataPanel.Enable = "off";
 
             this.InstrumentTextArea.Value = char.empty();
             this.PrimaryTextArea.Value = char.empty();
@@ -77,23 +77,23 @@ classdef ResultsManager < mag.app.manage.Manager
 
                 results = model.Analysis.Results;
 
-                instrumentMetaData = compose("%s - BSW: %s - ASW: %s", results.MetaData.Model, results.MetaData.BSW, results.MetaData.ASW);
-                primaryMetaData = compose("%s (%s - %s - %s)", results.Primary.MetaData.getDisplay("Sensor"), results.Primary.MetaData.Setup.FEE, results.Primary.MetaData.Setup.Model, results.Primary.MetaData.Setup.Can);
-                secondaryMetaData = compose("%s (%s - %s - %s)", results.Secondary.MetaData.getDisplay("Sensor"), results.Secondary.MetaData.Setup.FEE, results.Secondary.MetaData.Setup.Model, results.Secondary.MetaData.Setup.Can);
+                instrumentMetadata = compose("%s - BSW: %s - ASW: %s", results.Metadata.Model, results.Metadata.BSW, results.Metadata.ASW);
+                primaryMetadata = compose("%s (%s - %s - %s)", results.Primary.Metadata.getDisplay("Sensor"), results.Primary.Metadata.Setup.FEE, results.Primary.Metadata.Setup.Model, results.Primary.Metadata.Setup.Can);
+                secondaryMetadata = compose("%s (%s - %s - %s)", results.Secondary.Metadata.getDisplay("Sensor"), results.Secondary.Metadata.Setup.FEE, results.Secondary.Metadata.Setup.Model, results.Secondary.Metadata.Setup.Can);
 
-                if ~isempty(instrumentMetaData)
-                    this.InstrumentTextArea.Value = instrumentMetaData;
+                if ~isempty(instrumentMetadata)
+                    this.InstrumentTextArea.Value = instrumentMetadata;
                 end
 
-                if ~isempty(primaryMetaData)
-                    this.PrimaryTextArea.Value = primaryMetaData;
+                if ~isempty(primaryMetadata)
+                    this.PrimaryTextArea.Value = primaryMetadata;
                 end
 
-                if ~isempty(secondaryMetaData)
-                    this.SecondaryTextArea.Value = secondaryMetaData;
+                if ~isempty(secondaryMetadata)
+                    this.SecondaryTextArea.Value = secondaryMetadata;
                 end
 
-                this.MetaDataPanel.Enable = "on";
+                this.MetadataPanel.Enable = "on";
             else
                 this.reset();
             end

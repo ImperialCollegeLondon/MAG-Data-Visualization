@@ -7,8 +7,8 @@ classdef tHKMATOut < MAGIOTestCase
         function getExportFileName(testCase)
 
             % Set up.
-            metaData = mag.meta.HK(Type = "SID15", Timestamp = datetime("now"));
-            data = mag.imap.hk.SID15(timetable.empty(), metaData);
+            metadata = mag.meta.HK(Type = "SID15", Timestamp = datetime("now"));
+            data = mag.imap.hk.SID15(timetable.empty(), metadata);
 
             expectedFileName = compose("%s HK.mat", datetime("now", Format = "ddMMyy-HHmm"));
 
@@ -24,10 +24,10 @@ classdef tHKMATOut < MAGIOTestCase
         function convertToExportFormat(testCase)
 
             % Set up.
-            metaData = mag.meta.HK(Type = "SID15", Timestamp = datetime("now"));
+            metadata = mag.meta.HK(Type = "SID15", Timestamp = datetime("now"));
 
             rawData = timetable([datetime("yesterday"); datetime("today")], [1; 2], [3; 4], VariableNames = ["A", "B"]);
-            data = mag.imap.hk.SID15(rawData, metaData);
+            data = mag.imap.hk.SID15(rawData, metadata);
 
             % Exercise.
             format = mag.imap.out.HKMAT();

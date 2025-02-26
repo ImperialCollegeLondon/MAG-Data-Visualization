@@ -63,7 +63,7 @@ classdef tHK < matlab.unittest.TestCase
                 testCase.verifyEmpty(hk(i).IndependentVariable, "All data should be cropped out.");
                 testCase.verifyEmpty(hk(i).DependentVariables, "All data should be cropped out.");
 
-                testCase.verifyTrue(ismissing(hk(i).MetaData.Timestamp), "All data should be cropped out.");
+                testCase.verifyTrue(ismissing(hk(i).Metadata.Timestamp), "All data should be cropped out.");
             end
         end
 
@@ -201,7 +201,7 @@ classdef tHK < matlab.unittest.TestCase
             output = evalc("display(hk(1))");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "Status HK (STATUS)", "HK meta data should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "Status HK (STATUS)", "HK metadata should be included in display.");
         end
 
         % Test that displaying heterogeneous arrays does not error.
@@ -219,10 +219,10 @@ classdef tHK < matlab.unittest.TestCase
 
             % Set up.
             tt = timetable.empty();
-            metaData = mag.meta.HK(Type = Dispatch.Type);
+            metadata = mag.meta.HK(Type = Dispatch.Type);
 
             % Exercise.
-            hk = mag.imap.hk.dispatchHKType(tt, metaData);
+            hk = mag.imap.hk.dispatchHKType(tt, metadata);
 
             % Verify.
             testCase.verifyClass(hk, Dispatch.Class, "HK data should be dispateched to correct type.");
@@ -245,7 +245,7 @@ classdef tHK < matlab.unittest.TestCase
                 testCase.assertSize(hk(i).DependentVariables, size(expectedData{i}), "Data should be cropped as expected.");
                 testCase.verifyEqual(hk(i).DependentVariables, expectedData{i}, "Data should be cropped as expected.");
 
-                testCase.verifyEqual(hk(i).MetaData.Timestamp, hk(i).Time(1), "Meta data timestamp should be updated.");
+                testCase.verifyEqual(hk(i).Metadata.Timestamp, hk(i).Time(1), "Metadata timestamp should be updated.");
             end
         end
     end

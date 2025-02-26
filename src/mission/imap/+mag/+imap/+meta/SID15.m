@@ -1,5 +1,5 @@
 classdef SID15 < mag.imap.meta.Type
-% SID15 Load meta data from SID15 HK files.
+% SID15 Load metadata from SID15 HK files.
 
     properties (Constant)
         Extensions = ".csv"
@@ -25,11 +25,11 @@ classdef SID15 < mag.imap.meta.Type
 
     methods
 
-        function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
+        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
 
             arguments
                 this (1, 1) mag.imap.meta.SID15
-                instrumentMetaData (1, 1) mag.meta.Instrument
+                instrumentMetadata (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
             end
@@ -49,11 +49,11 @@ classdef SID15 < mag.imap.meta.Type
             fobAttempts = median(rawData{rawData.ISV_FOB_ACTTRIES ~= 0, "ISV_FOB_ACTTRIES"});
             fibAttempts = median(rawData{rawData.ISV_FIB_ACTTRIES ~= 0, "ISV_FIB_ACTTRIES"});
 
-            instrumentMetaData.Attemps = [fobAttempts, fibAttempts];
+            instrumentMetadata.Attemps = [fobAttempts, fibAttempts];
 
-            instrumentMetaData.Timestamp = rawData{1, "SHCOARSE"};
-            instrumentMetaData.Timestamp.TimeZone = mag.time.Constant.TimeZone;
-            instrumentMetaData.Timestamp.Format = mag.time.Constant.Format;
+            instrumentMetadata.Timestamp = rawData{1, "SHCOARSE"};
+            instrumentMetadata.Timestamp.TimeZone = mag.time.Constant.TimeZone;
+            instrumentMetadata.Timestamp.Format = mag.time.Constant.Format;
         end
     end
 end

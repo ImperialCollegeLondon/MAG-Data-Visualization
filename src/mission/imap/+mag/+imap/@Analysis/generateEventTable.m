@@ -14,9 +14,9 @@ function eventTable = generateEventTable(~, data, sensorEvents)
     sensorEvents.Reason = categorical(sensorEvents.Reason);
 
     % Select sensor.
-    sensorName = string(data.MetaData.Sensor);
+    sensorName = string(data.Metadata.Sensor);
 
-    if data.MetaData.Primary
+    if data.Metadata.Primary
         primaryOrSecondary = "Primary";
     else
         primaryOrSecondary = "Secondary";

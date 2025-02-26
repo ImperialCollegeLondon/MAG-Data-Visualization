@@ -7,13 +7,13 @@ classdef (Abstract) Type < mag.mixin.SetGet
     end
 
     properties
-        % FILENAME File containing meta data information.
+        % FILENAME File containing metadata information.
         FileName string {mustBeScalarOrEmpty, mustBeFile}
     end
 
     methods (Abstract)
 
-        % LOAD Load meta data.
-        [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
+        % LOAD Load metadata.
+        [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
     end
 end

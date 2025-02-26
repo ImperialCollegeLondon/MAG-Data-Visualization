@@ -38,17 +38,17 @@ classdef Units < mag.process.Step
 
     methods
 
-        function data = apply(this, data, metaData)
+        function data = apply(this, data, metadata)
 
             arguments
                 this
                 data tabular
-                metaData (1, 1) mag.meta.HK
+                metadata (1, 1) mag.meta.HK
             end
 
-            switch metaData.Type
+            switch metadata.Type
                 case "PW"
-                    data = this.convertPowerEngineeringUnits(data, metaData);
+                    data = this.convertPowerEngineeringUnits(data, metadata);
                 case "SCI"
 
                     for fee = ["FOB", "FIB"]
@@ -60,9 +60,9 @@ classdef Units < mag.process.Step
                             mag.process.Calibration(RangeVariable = fee + "_RNG", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"])];
 
                         if fee == "FOB"
-                            ssu = metaData.OutboardSetup;
+                            ssu = metadata.OutboardSetup;
                         else
-                            ssu = metaData.InboardSetup;
+                            ssu = metadata.InboardSetup;
                         end
 
                         md = mag.meta.Science(Setup = ssu);
@@ -74,7 +74,7 @@ classdef Units < mag.process.Step
 
                 case "SID15"
 
-                    data = this.convertPowerEngineeringUnits(data, metaData);
+                    data = this.convertPowerEngineeringUnits(data, metadata);
 
                     for drt = ["ISV_FOB_DTRDYTM", "ISV_FIB_DTRDYTM"]
                         data{:, drt} = this.convertDataReadyTime(data{:, drt});
@@ -83,14 +83,14 @@ classdef Units < mag.process.Step
                 case {"PROCSTAT", "STATUS"}
                     % nothing to do
                 otherwise
-                    error("Unrecognized HK type ""%s"".", metaData.Type);
+                    error("Unrecognized HK type ""%s"".", metadata.Type);
             end
         end
     end
 
     methods (Access = private)
 
-        function data = convertPowerEngineeringUnits(this, data, metaData)
+        function data = convertPowerEngineeringUnits(this, data, metadata)
         % CONVERTPOWERENGINEERINGUNITS Convert power data from engineering
         % units to scientific units.
 
@@ -104,16 +104,16 @@ classdef Units < mag.process.Step
             end
 
             % Temperature calibration based on FEE.
-            if isempty(metaData.OutboardSetup.FEE)
+            if isempty(metadata.OutboardSetup.FEE)
                 fobFEE = "FEE3";
             else
-                fobFEE = metaData.OutboardSetup.FEE;
+                fobFEE = metadata.OutboardSetup.FEE;
             end
 
-            if isempty(metaData.InboardSetup.FEE)
+            if isempty(metadata.InboardSetup.FEE)
                 fibFEE = "FEE4";
             else
-                fibFEE = metaData.InboardSetup.FEE;
+                fibFEE = metadata.InboardSetup.FEE;
             end
 
             % Convert FOB temperature.

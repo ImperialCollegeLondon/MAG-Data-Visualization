@@ -109,11 +109,11 @@ classdef Spectrogram < mag.graphics.view.View
         end
 
         function value = getSpectrogramFigureTitle(this, primary, secondary)
-            value = compose("%s (%s, %s)", primary.MetaData.getDisplay("Mode"), this.getDataFrequency(primary.MetaData), this.getDataFrequency(secondary.MetaData));
+            value = compose("%s (%s, %s)", primary.Metadata.getDisplay("Mode"), this.getDataFrequency(primary.Metadata), this.getDataFrequency(secondary.Metadata));
         end
 
         function value = getSpectrogramFigureName(this, primary, secondary)
-            value = this.getSpectrogramFigureTitle(primary, secondary) + compose(" Spectrogram (%s)", this.date2str(primary.MetaData.Timestamp));
+            value = this.getSpectrogramFigureTitle(primary, secondary) + compose(" Spectrogram (%s)", this.date2str(primary.Metadata.Timestamp));
         end
     end
 end

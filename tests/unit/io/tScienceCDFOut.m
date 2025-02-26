@@ -15,8 +15,8 @@ classdef tScienceCDFOut < MAGIOTestCase
         function getExportFileName(testCase)
 
             % Set up.
-            metaData = mag.meta.Science(Mode = "Burst", Sensor = "FIB", Timestamp = datetime("now"));
-            data = mag.Science(timetable.empty(), metaData);
+            metadata = mag.meta.Science(Mode = "Burst", Sensor = "FIB", Timestamp = datetime("now"));
+            data = mag.Science(timetable.empty(), metadata);
 
             expectedFileName = compose("imap_mag_l2b_burst-magi_%s_v2.cdf", datetime("today", Format = "yyyyMMdd"));
 
@@ -67,7 +67,7 @@ classdef tScienceCDFOut < MAGIOTestCase
             testCase.verifyEqual(actualExportData.XYZ, expectedExportData.XYZ, "Field should match expectation.");
             testCase.verifyEqual(actualExportData.Range, expectedExportData.Range, "Range should match expectation.");
 
-            testCase.verifyEqual(actualExportData.MetaData, expectedExportData.MetaData, "Meta data should match expectation.");
+            testCase.verifyEqual(actualExportData.Metadata, expectedExportData.Metadata, "Metadata should match expectation.");
         end
     end
 end

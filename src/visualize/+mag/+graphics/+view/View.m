@@ -98,14 +98,14 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
             date.Format = format;
         end
 
-        function dataFrequency = getDataFrequency(metaData)
+        function dataFrequency = getDataFrequency(metadata)
         % GETDATAFREQUENCY Get frequency of science data.
 
             arguments
-                metaData (1, 1) mag.meta.Science
+                metadata (1, 1) mag.meta.Science
             end
 
-            dataFrequency = metaData.getDisplay("DataFrequency");
+            dataFrequency = metadata.getDisplay("DataFrequency");
 
             if ~ismissing(dataFrequency) && (dataFrequency < 1)
 

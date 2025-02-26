@@ -91,11 +91,11 @@ classdef Spectrogram < mag.graphics.view.View
         function value = getFrequencyFigureTitle(this, input1, input2)
 
             if isempty(input1)
-                value = compose("Bartington (%s Hz)", this.getDataFrequency(input2.MetaData));
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input2.Metadata));
             elseif isempty(input2)
-                value = compose("Bartington (%s Hz)", this.getDataFrequency(input1.MetaData));
+                value = compose("Bartington (%s Hz)", this.getDataFrequency(input1.Metadata));
             else
-                value = compose("Bartington (%s, %s)", this.getDataFrequency(input1.MetaData), this.getDataFrequency(input2.MetaData));
+                value = compose("Bartington (%s, %s)", this.getDataFrequency(input1.Metadata), this.getDataFrequency(input2.Metadata));
             end
         end
 
@@ -104,9 +104,9 @@ classdef Spectrogram < mag.graphics.view.View
             value = this.getFrequencyFigureTitle(input1, input2);
 
             if isempty(input1)
-                value = value + compose(" Spectrogram (%s)", this.date2str(input2.MetaData.Timestamp));
+                value = value + compose(" Spectrogram (%s)", this.date2str(input2.Metadata.Timestamp));
             else
-                value = value + compose(" Spectrogram (%s)", this.date2str(input1.MetaData.Timestamp));;
+                value = value + compose(" Spectrogram (%s)", this.date2str(input1.Metadata.Timestamp));;
             end
         end
     end

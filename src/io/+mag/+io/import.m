@@ -25,7 +25,7 @@ function data = import(options)
     for ps = options.ProcessingSteps
 
         for d = data
-            d.Data = ps.apply(d.Data, d.MetaData);
+            d.Data = ps.apply(d.Data, d.Metadata);
         end
     end
 
@@ -55,8 +55,8 @@ function combinedData = combineScience(data)
     combinedData = mag.Science.empty();
 
     % Combine data by sensor.
-    metaData = [data.MetaData];
-    sensors = unique([metaData.Sensor]);
+    metadata = [data.Metadata];
+    sensors = unique([metadata.Sensor]);
 
     if isempty(sensors)
 
@@ -66,18 +66,18 @@ function combinedData = combineScience(data)
 
     for s = sensors
 
-        locSelection = [metaData.Sensor] == s;
+        locSelection = [metadata.Sensor] == s;
 
         selectedData = data(locSelection);
-        selectedMetaData = [selectedData.MetaData];
+        selectedMetadata = [selectedData.Metadata];
 
         td = vertcat(selectedData.Data);
 
-        md = selectedMetaData(1).copy();
-        md.set(Mode = selectedMetaData.getDisplay("Mode", "Hybrid"), ...
-            DataFrequency = selectedMetaData.getDisplay("DataFrequency"), ...
-            PacketFrequency = selectedMetaData.getDisplay("PacketFrequency"), ...
-            Timestamp = min([selectedMetaData.Timestamp]));
+        md = selectedMetadata(1).copy();
+        md.set(Mode = selectedMetadata.getDisplay("Mode", "Hybrid"), ...
+            DataFrequency = selectedMetadata.getDisplay("DataFrequency"), ...
+            PacketFrequency = selectedMetadata.getDisplay("PacketFrequency"), ...
+            Timestamp = min([selectedMetadata.Timestamp]));
 
         combinedData(end + 1) = mag.Science(td, md); %#ok<AGROW>
     end
@@ -96,8 +96,8 @@ function combinedData = combineHK(data)
     combinedData = mag.HK.empty();
 
     % Combine data by sensor.
-    metaData = [data.MetaData];
-    types = unique([metaData.Type]);
+    metadata = [data.Metadata];
+    types = unique([metadata.Type]);
 
     if isempty(types)
 
@@ -107,13 +107,13 @@ function combinedData = combineHK(data)
 
     for t = types
 
-        locSelection = [metaData.Type] == t;
+        locSelection = [metadata.Type] == t;
         selectedData = data(locSelection);
 
         td = vertcat(selectedData.Data);
 
-        md = selectedData(1).MetaData.copy();
-        md.set(Timestamp = min([metaData(locSelection).Timestamp]));
+        md = selectedData(1).Metadata.copy();
+        md.set(Timestamp = min([metadata(locSelection).Timestamp]));
 
         combinedData(end + 1) = mag.imap.hk.dispatchHKType(td, md); %#ok<AGROW>
     end

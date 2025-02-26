@@ -71,14 +71,14 @@ classdef ScienceDAT < mag.io.in.DAT
             end
 
             % Convert to science.
-            metaData = this.detectMetaData(rawData.t);
-            data = mag.Science(rawData, metaData);
+            metadata = this.detectMetadata(rawData.t);
+            data = mag.Science(rawData, metadata);
         end
     end
 
     methods (Access = private)
 
-        function metaData = detectMetaData(this, time)
+        function metadata = detectMetadata(this, time)
 
             switch this.InputType
                 case 1
@@ -94,7 +94,7 @@ classdef ScienceDAT < mag.io.in.DAT
 
             timestamp = min(time);
 
-            metaData = mag.meta.Science(Sensor = sensor, DataFrequency = frequency, Timestamp = timestamp);
+            metadata = mag.meta.Science(Sensor = sensor, DataFrequency = frequency, Timestamp = timestamp);
         end
     end
 end

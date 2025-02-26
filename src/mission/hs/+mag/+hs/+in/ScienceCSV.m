@@ -21,17 +21,17 @@ classdef ScienceCSV < mag.io.in.CSV
 
     methods (Access = private)
 
-        function data = processScience(~, rawData, metaDataOptions)
+        function data = processScience(~, rawData, metadataOptions)
         % PROCESSSCIENCE Process science data.
 
             arguments
                 ~
                 rawData table
-                metaDataOptions.?mag.meta.Science
+                metadataOptions.?mag.meta.Science
             end
 
-            metaDataArgs = namedargs2cell(metaDataOptions);
-            metaData = mag.meta.Science(metaDataArgs{:}, Primary = true);
+            metadataArgs = namedargs2cell(metadataOptions);
+            metadata = mag.meta.Science(metadataArgs{:}, Primary = true);
 
             % Remove variables.
             rawData = removevars(rawData, regexpPattern("uprange_\w"));
@@ -66,7 +66,7 @@ classdef ScienceCSV < mag.io.in.CSV
                 "step", "step", "step", "step", "event"];
 
             % Convert to mag.Science.
-            data = mag.Science(table2timetable(rawData, RowTimes = "time"), metaData);
+            data = mag.Science(table2timetable(rawData, RowTimes = "time"), metadata);
         end
     end
 end

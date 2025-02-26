@@ -23,8 +23,8 @@ classdef ScienceCSV < mag.io.in.CSV
             rawPrimary = rawData(:, regexpPattern(".*(pri|sequence|compression).*"));
             rawSecondary = rawData(:, regexpPattern(".*(sec|sequence|compression).*"));
 
-            % Extract file meta data.
-            [mode, primaryFrequency, secondaryFrequency, packetFrequency, timeStamp] = this.extractFileMetaData(fileName);
+            % Extract file metadata.
+            [mode, primaryFrequency, secondaryFrequency, packetFrequency, timeStamp] = this.extractFileMetadata(fileName);
 
             % Process science data.
             data = [this.processScience(rawPrimary, "pri", Sensor = mag.meta.Sensor.FOB, Mode = mode, DataFrequency = primaryFrequency, PacketFrequency = packetFrequency, Timestamp = timeStamp), ...
@@ -34,12 +34,12 @@ classdef ScienceCSV < mag.io.in.CSV
 
     methods (Access = private)
 
-        function [mode, primaryFrequency, secondaryFrequency, packetFrequency, timeStamp] = extractFileMetaData(this, fileName)
-        % EXTRACTMETADATA Extract meta data information from file name.
+        function [mode, primaryFrequency, secondaryFrequency, packetFrequency, timeStamp] = extractFileMetadata(this, fileName)
+        % EXTRACTMETADATA Extract metadata information from file name.
 
             rawData = regexp(fileName, this.FileNamePattern, "names");
 
-            % If no meta data was found, assume default values.
+            % If no metadata was found, assume default values.
             if isempty(rawData)
 
                 timeStamp = regexp(fileName, "(?<date>\d+)-(?<time>\w+)", "names");
@@ -79,18 +79,18 @@ classdef ScienceCSV < mag.io.in.CSV
             end
         end
 
-        function data = processScience(~, rawData, sensor, metaDataOptions)
+        function data = processScience(~, rawData, sensor, metadataOptions)
         % PROCESSSCIENCE Process science data.
 
             arguments
                 ~
                 rawData table
                 sensor (1, 1) string {mustBeMember(sensor, ["pri", "sec"])}
-                metaDataOptions.?mag.meta.Science
+                metadataOptions.?mag.meta.Science
             end
 
-            metaDataArgs = namedargs2cell(metaDataOptions);
-            metaData = mag.meta.Science(metaDataArgs{:}, Primary = isequal(sensor, "pri"));
+            metadataArgs = namedargs2cell(metadataOptions);
+            metadata = mag.meta.Science(metadataArgs{:}, Primary = isequal(sensor, "pri"));
 
             % Rename variables.
             newVariableNames = ["x", "y", "z", "range", "coarse", "fine"];
@@ -115,7 +115,7 @@ classdef ScienceCSV < mag.io.in.CSV
 
             % Convert timestamps.
             for ps = [mag.process.Missing(Variables = ["x", "y", "z"]), mag.process.Timestamp(), mag.process.Spice(Mission = "IMAP")]
-                rawData = ps.apply(rawData, metaData);
+                rawData = ps.apply(rawData, metadata);
             end
 
             % Add continuity information, for simpler interpolation.
@@ -126,7 +126,7 @@ classdef ScienceCSV < mag.io.in.CSV
                 "continuous", "continuous", "step", "step", "event", "continuous"];
 
             % Convert to mag.Science.
-            data = mag.Science(table2timetable(rawData, RowTimes = "t"), metaData);
+            data = mag.Science(table2timetable(rawData, RowTimes = "t"), metadata);
         end
     end
 end

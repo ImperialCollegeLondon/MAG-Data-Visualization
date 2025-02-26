@@ -39,11 +39,9 @@ classdef tBartingtonAnalysis < matlab.unittest.TestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
 
-            testCase.verifyEqual(analysis.Results.Input1.MetaData.Sensor, mag.meta.Sensor.FOB, "Input 1 should be FOB.");
-            testCase.verifyEqual(analysis.Results.Input2.MetaData.Sensor, mag.meta.Sensor.FIB, "Input 2 should be FIB.");
+            testCase.verifyEqual(analysis.Results.Input1.Metadata.Sensor, mag.meta.Sensor.FOB, "Input 1 should be FOB.");
+            testCase.verifyEqual(analysis.Results.Input2.Metadata.Sensor, mag.meta.Sensor.FIB, "Input 2 should be FIB.");
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
     end
 end
-
-

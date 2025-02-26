@@ -47,7 +47,7 @@ classdef MAGViewTestCase < mag.test.GraphicsTestCase & matlab.mock.TestCase
                 options.AddHK (1, 1) logical = false
             end
 
-            % Create instrument meta data.
+            % Create instrument metadata.
             metaInstrument = mag.meta.Instrument(Mission = "IMAP", ASW = "5.01", BSW = "0.02", GSE = "10.5.4", Model = "FM", Timestamp = datetime("now", TimeZone = "UTC"));
 
             % Create science data.
@@ -63,7 +63,7 @@ classdef MAGViewTestCase < mag.test.GraphicsTestCase & matlab.mock.TestCase
             science2 = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), metaScience2);
 
             % Assemble instrument data.
-            instrument = mag.imap.Instrument(Science = [science1, science2], MetaData = metaInstrument);
+            instrument = mag.imap.Instrument(Science = [science1, science2], Metadata = metaInstrument);
 
             % Create HK.
             if options.AddHK

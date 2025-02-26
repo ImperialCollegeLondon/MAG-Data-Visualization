@@ -56,7 +56,7 @@ function export(this, exportType, options)
     if ~isempty(rangeCycling)
 
         mag.io.export(rangeCycling, Location = options.Location, Format = scienceFormat, ...
-            FileName = compose("%s Range Cycling", datestr(rangeCycling.MetaData.Timestamp, "ddmmyy-hhMM")) + scienceFormat.Extension); %#ok<DATST>
+            FileName = compose("%s Range Cycling", datestr(rangeCycling.Metadata.Timestamp, "ddmmyy-hhMM")) + scienceFormat.Extension); %#ok<DATST>
     end
 
     % Export ramp mode.
@@ -65,7 +65,7 @@ function export(this, exportType, options)
     if ~isempty(rampMode)
 
         mag.io.export(rampMode, Location = options.Location, Format = scienceFormat, ...
-            FileName = compose("%s Ramp Mode", datestr(rampMode.MetaData.Timestamp, "ddmmyy-hhMM")) + scienceFormat.Extension); %#ok<DATST>
+            FileName = compose("%s Ramp Mode", datestr(rampMode.Metadata.Timestamp, "ddmmyy-hhMM")) + scienceFormat.Extension); %#ok<DATST>
     end
 
     % Export HK data.
@@ -77,5 +77,3 @@ function export(this, exportType, options)
         mag.io.export(hk, Location = options.Location, Format = hkFormat);
     end
 end
-
-

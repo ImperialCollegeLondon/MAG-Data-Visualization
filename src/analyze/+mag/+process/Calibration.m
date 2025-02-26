@@ -31,12 +31,12 @@ classdef Calibration < mag.process.Step
             this.assignProperties(options);
         end
 
-        function data = apply(this, data, metaData)
+        function data = apply(this, data, metadata)
 
             arguments
                 this
                 data timetable
-                metaData (1, 1) mag.meta.Science
+                metadata (1, 1) mag.meta.Science
             end
 
             ranges = unique(data.(this.RangeVariable));
@@ -48,11 +48,11 @@ classdef Calibration < mag.process.Step
             availableCalibrations(strlength(availableCalibrations) == 0) = [];
 
             % Use correct calibration for sensor.
-            if isempty(metaData.Setup) || isempty(metaData.Setup.Model)
+            if isempty(metadata.Setup) || isempty(metadata.Setup.Model)
                 modelName = string.empty();
-            elseif contains(metaData.Setup.Model, availableCalibrations, IgnoreCase = true)
-                modelName = metaData.Setup.Model;
-            elseif startsWith(metaData.Setup.Model, regexpPattern("E|F"))
+            elseif contains(metadata.Setup.Model, availableCalibrations, IgnoreCase = true)
+                modelName = metadata.Setup.Model;
+            elseif startsWith(metadata.Setup.Model, regexpPattern("E|F"))
                 modelName = "FM5";
             else
                 modelName = string.empty();

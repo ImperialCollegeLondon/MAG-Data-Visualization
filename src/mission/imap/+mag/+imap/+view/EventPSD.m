@@ -81,7 +81,7 @@ classdef EventPSD < mag.graphics.view.View
 
                     % Add plot.
                     charts = [charts, {psd, ...
-                        mag.graphics.style.Default(Title = this.getFigureTitle(data.MetaData, interestingEvents.Label(i), startTime, duration), ...
+                        mag.graphics.style.Default(Title = this.getFigureTitle(data.Metadata, interestingEvents.Label(i), startTime, duration), ...
                         XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
                         Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine])}]; %#ok<AGROW>
                 end
@@ -100,8 +100,8 @@ classdef EventPSD < mag.graphics.view.View
 
     methods (Access = private)
 
-        function value = getFigureTitle(this, metaData, label, startTime, duration)
-            value = compose("%s %s (%s, %s)", metaData.getDisplay("Sensor"), label, this.date2str(startTime, "dd-MMM-yy HH:mm"), duration);
+        function value = getFigureTitle(this, metadata, label, startTime, duration)
+            value = compose("%s %s (%s, %s)", metadata.getDisplay("Sensor"), label, this.date2str(startTime, "dd-MMM-yy HH:mm"), duration);
         end
     end
 end

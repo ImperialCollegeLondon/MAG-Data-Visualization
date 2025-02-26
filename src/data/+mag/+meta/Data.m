@@ -7,7 +7,7 @@ classdef (Abstract) Data < matlab.mixin.Copyable & matlab.mixin.Heterogeneous & 
     properties
         % DESCRIPTION Description of MAG data.
         Description string {mustBeScalarOrEmpty}
-        % TIMESTAMP Timestamp of meta data.
+        % TIMESTAMP Timestamp of metadata.
         Timestamp (1, 1) datetime = NaT(TimeZone = mag.time.Constant.TimeZone)
     end
 

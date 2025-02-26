@@ -25,8 +25,8 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
             [format, formatBehavior, fileNames, data1, data2] = testCase.createScienceFormat();
 
             [step, stepBehavior] = testCase.createMock(?mag.process.Step, Strict = true);
-            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.MetaData), data1.Data);
-            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.MetaData), data2.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.Metadata), data1.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.Metadata), data2.Data);
 
             % Exercise.
             data = mag.io.import(FileNames = fileNames, Format = format, ProcessingSteps = step);
@@ -49,8 +49,8 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
             [format, formatBehavior, fileNames, data1, data2] = testCase.createScienceFormat(SecondarySensor = "FOB");
 
             [step, stepBehavior] = testCase.createMock(?mag.process.Step, Strict = true);
-            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.MetaData), data1.Data);
-            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.MetaData), data2.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.Metadata), data1.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.Metadata), data2.Data);
 
             % Exercise.
             data = mag.io.import(FileNames = fileNames, Format = format, ProcessingSteps = step);
@@ -73,8 +73,8 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
             [format, formatBehavior, fileNames, data1, data2] = testCase.createHKFormat();
 
             [step, stepBehavior] = testCase.createMock(?mag.process.Step, Strict = true);
-            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.MetaData), data1.Data);
-            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.MetaData), data2.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.Metadata), data1.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.Metadata), data2.Data);
 
             % Exercise.
             data = mag.io.import(FileNames = fileNames, Format = format, ProcessingSteps = step);
@@ -97,8 +97,8 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
             [format, formatBehavior, fileNames, data1, data2] = testCase.createHKFormat(SecondType = "PW");
 
             [step, stepBehavior] = testCase.createMock(?mag.process.Step, Strict = true);
-            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.MetaData), data1.Data);
-            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.MetaData), data2.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.Metadata), data1.Data);
+            testCase.assignOutputsWhen(stepBehavior.apply(data2.Data, data2.Metadata), data2.Data);
 
             % Exercise.
             data = mag.io.import(FileNames = fileNames, Format = format, ProcessingSteps = step);

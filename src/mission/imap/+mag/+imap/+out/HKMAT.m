@@ -14,8 +14,8 @@ classdef HKMAT < mag.io.out.MAT
                 fileName (1, 1) string
             end
 
-            metaData = [data.MetaData];
-            fileName = compose("%s HK", datestr(min([metaData.Timestamp]), "ddmmyy-hhMM")) + this.Extension; %#ok<DATST>
+            metadata = [data.Metadata];
+            fileName = compose("%s HK", datestr(min([metadata.Timestamp]), "ddmmyy-hhMM")) + this.Extension; %#ok<DATST>
         end
 
         function exportData = convertToExportFormat(this, data)

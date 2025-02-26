@@ -1,5 +1,5 @@
 classdef GSEOS < mag.imap.meta.Type
-% GSEOS Load meta data from GSEOS log files.
+% GSEOS Load metadata from GSEOS log files.
 
     properties (Constant)
         Extensions = [".msg", ".log"]
@@ -7,8 +7,8 @@ classdef GSEOS < mag.imap.meta.Type
         Names (1, :) string = ["Type", "Date", "Time", "Source", "A", "B", "Message"]
         % FORMATS Formats to use to load data.
         Formats (1, :) string = ["%C", "%{MM/dd/yy}D", "%{hh:mm:ss.SSS}T", "%C", "%f", "%f", "%q"]
-        % METADATAPATTERN Regex pattern to extract meta data from log.
-        MetaDataPattern (:, 1) string = ["^Test Name: (?<name>.*)$", ...
+        % METADATAPATTERN Regex pattern to extract metadata from log.
+        MetadataPattern (:, 1) string = ["^Test Name: (?<name>.*)$", ...
             "^Operators: (?<operator>.*)$", ...
             "^(?<cpt>.*)$", ...
             "^.*$", ...
@@ -32,11 +32,11 @@ classdef GSEOS < mag.imap.meta.Type
 
     methods
 
-        function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
+        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
 
             arguments
                 this (1, 1) mag.imap.meta.GSEOS
-                instrumentMetaData (1, 1) mag.meta.Instrument
+                instrumentMetadata (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
             end
@@ -56,26 +56,26 @@ classdef GSEOS < mag.imap.meta.Type
             fibAttempts = regexp(messages, "^MAG_HSK_SID15 ISV_FIB_ACTTRIES = (\d+). DN", "once", "tokens", "dotexceptnewline", "lineanchors");
 
             if ~isempty(fobAttempts) && ~isempty(fibAttempts)
-                instrumentMetaData.Attemps = [fobAttempts, fibAttempts];
+                instrumentMetadata.Attemps = [fobAttempts, fibAttempts];
             end
 
-            % Assign instrument meta data.
-            instrumentMetaData.Timestamp = timestamp;
+            % Assign instrument metadata.
+            instrumentMetadata.Timestamp = timestamp;
 
             if contains(messages, "CPT", IgnoreCase = true)
 
                 model = regexp(messages, "^MAG_PROG_BTSUCC HW_MODEL = (.*)$", "tokens", "once", "dotexceptnewline", "lineanchors");
-                genericData = regexp(messages, join(this.MetaDataPattern, "\s*"), "names", "dotexceptnewline", "lineanchors");
+                genericData = regexp(messages, join(this.MetadataPattern, "\s*"), "names", "dotexceptnewline", "lineanchors");
 
                 if isempty(genericData)
                     return;
                 end
 
-                instrumentMetaData.Model = model;
-                instrumentMetaData.BSW = genericData.bsw;
-                instrumentMetaData.ASW = genericData.asw;
-                instrumentMetaData.Operator = genericData.operator;
-                instrumentMetaData.Description = genericData.name;
+                instrumentMetadata.Model = model;
+                instrumentMetadata.BSW = genericData.bsw;
+                instrumentMetadata.ASW = genericData.asw;
+                instrumentMetadata.Operator = genericData.operator;
+                instrumentMetadata.Description = genericData.name;
             end
         end
     end

@@ -3,15 +3,15 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
 
     methods
 
-        function this = HK(hkData, metaData)
+        function this = HK(hkData, metadata)
 
             arguments
                 hkData timetable
-                metaData (1, 1) mag.meta.HK
+                metadata (1, 1) mag.meta.HK
             end
 
             this.Data = hkData;
-            this.MetaData = metaData;
+            this.Metadata = metadata;
         end
 
         function resample(this, targetFrequency)
@@ -54,9 +54,9 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
                 this(i).Data = this(i).Data(timePeriod, :);
 
                 if isempty(this(i).Time)
-                    this(i).MetaData.Timestamp = NaT(TimeZone = mag.time.Constant.TimeZone);
+                    this(i).Metadata.Timestamp = NaT(TimeZone = mag.time.Constant.TimeZone);
                 else
-                    this(i).MetaData.Timestamp = this(i).Time(1);
+                    this(i).Metadata.Timestamp = this(i).Time(1);
                 end
             end
         end
@@ -71,8 +71,8 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
 
             if ~isempty(this)
 
-                hkMetaData = [this.MetaData];
-                hkType = this([hkMetaData.Type] == type);
+                hkMetadata = [this.Metadata];
+                hkType = this([hkMetadata.Type] == type);
             else
                 hkType = mag.HK.empty();
             end
@@ -83,10 +83,10 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
 
         function header = getHeader(this)
 
-            if isscalar(this) && ~isempty(this.MetaData) && ~isempty(this.MetaData.Type)
+            if isscalar(this) && ~isempty(this.Metadata) && ~isempty(this.Metadata.Type)
 
                 className = matlab.mixin.CustomDisplay.getClassNameForHeader(this);
-                tag = char(compose("%s", this.MetaData.Type));
+                tag = char(compose("%s", this.Metadata.Type));
 
                 header = ['  ', className, ' HK (', tag, ') with properties:'];
             else
