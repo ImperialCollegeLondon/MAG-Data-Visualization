@@ -1,4 +1,4 @@
-classdef (Sealed) Analysis < mag.Analysis
+classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of HelioSwarm data.
 
     properties
