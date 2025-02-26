@@ -92,6 +92,8 @@ classdef tIALiRT < matlab.mock.TestCase
             copiedIALiRT = iALiRT.copy();
 
             % Verify.
+            testCase.verifyEqual(iALiRT, copiedIALiRT, "Copied data should be equal.");
+
             testCase.verifyNotSameHandle(iALiRT, copiedIALiRT, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(iALiRT.Primary, copiedIALiRT.Primary, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(iALiRT.Secondary, copiedIALiRT.Secondary, "Copied data should be different instance.");

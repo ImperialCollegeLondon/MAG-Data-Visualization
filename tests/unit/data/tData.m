@@ -218,6 +218,8 @@ classdef tData < matlab.unittest.TestCase
             copiedData = data.copy();
 
             % Verify.
+            testCase.verifyEqual(data, copiedData, "Copied data should be equal.");
+
             testCase.verifyNotSameHandle(data, copiedData, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(data.Metadata, copiedData.Metadata, "Copied data should be different instance.");
         end

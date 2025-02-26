@@ -127,6 +127,8 @@ classdef tInstrument < matlab.mock.TestCase
             copiedInstrument = instrument.copy();
 
             % Verify.
+            testCase.verifyEqual(instrument, copiedInstrument, "Copied data should be equal.");
+
             testCase.verifyNotSameHandle(instrument, copiedInstrument, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(instrument.Metadata, copiedInstrument.Metadata, "Copied data should be different instance.");
             testCase.verifyNotSameHandle(instrument.Events, copiedInstrument.Events, "Copied data should be different instance.");
