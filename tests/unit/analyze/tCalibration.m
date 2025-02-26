@@ -190,5 +190,26 @@ classdef tCalibration < MAGAnalysisTestCase
             testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
                 "Calibrated value should match expectation.");
         end
+
+        % Verify that correct calibration is selected for Solar Orbiter.
+        function calibration_solo(testCase)
+
+            % Set up.
+            uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "SOLO-OBS-QM"));
+
+            expectedData = uncalibratedData;
+            expectedData{:, "x"} = -2;
+            expectedData{:, "y"} = 1;
+            expectedData{:, "z"} = -3;
+
+            % Exercise.
+            calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
+
+            % Verify.
+            testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
+                "Calibrated value should match expectation.");
+        end
     end
 end
