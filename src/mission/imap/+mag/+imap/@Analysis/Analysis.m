@@ -7,8 +7,9 @@ classdef (Sealed) Analysis < mag.Analysis
         % EVENTPATTERN Pattern of event files.
         EventPattern (1, :) string = fullfile("*", "Event", "*.html")
         % METADATAPATTERN Pattern of meta data files.
-        MetaDataPattern (1, :) string = ["*.msg", "IMAP-MAG-TE-ICL-058*.xlsx", "IMAP-MAG-TE-ICL-061*.xlsx", ...
-            "IMAP-MAG-TE-ICL-071*.docx", "IMAP-OPS-TE-ICL-001*.docx", "IMAP-OPS-TE-ICL-002*.docx"]
+        MetaDataPattern (1, :) string = ["imap_setup.json", "*.msg", "IMAP-MAG-TE-ICL-058*.xlsx", ...
+            "IMAP-MAG-TE-ICL-061*.xlsx", "IMAP-MAG-TE-ICL-071*.docx", "IMAP-OPS-TE-ICL-001*.docx", ...
+            "IMAP-OPS-TE-ICL-002*.docx"]
         % SCIENCEPATTERN Pattern of science data files.
         SciencePattern (1, 1) string = "MAGScience-*-(*)-*.csv"
         % IALIRTPATTERN Pattern of I-ALiRT data files.
@@ -515,5 +516,3 @@ classdef (Sealed) Analysis < mag.Analysis
         end
     end
 end
-
-

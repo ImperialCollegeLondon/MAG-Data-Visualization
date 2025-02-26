@@ -11,6 +11,8 @@ function [primarySetup, secondarySetup] = loadMetaData(this)
         [~, ~, extension] = fileparts(mdf);
 
         switch extension
+            case cellstr(mag.imap.meta.JSON.Extensions)
+                loader = mag.imap.meta.JSON(FileName = mdf);
             case cellstr(mag.imap.meta.GSEOS.Extensions)
                 loader = mag.imap.meta.GSEOS(FileName = mdf);
             case cellstr(mag.imap.meta.Excel.Extensions)
