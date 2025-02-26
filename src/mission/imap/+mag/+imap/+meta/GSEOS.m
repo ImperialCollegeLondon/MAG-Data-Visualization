@@ -58,7 +58,7 @@ classdef GSEOS < mag.imap.meta.Provider
             fibAttempts = regexp(messages, "^MAG_HSK_SID15 ISV_FIB_ACTTRIES = (\d+). DN", "once", "tokens", "dotexceptnewline", "lineanchors");
 
             if ~isempty(fobAttempts) && ~isempty(fibAttempts)
-                instrumentMetadata.Attemps = [fobAttempts, fibAttempts];
+                instrumentMetadata.Attempts = [fobAttempts, fibAttempts];
             end
 
             % Assign instrument metadata.

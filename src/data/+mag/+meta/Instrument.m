@@ -15,7 +15,7 @@ classdef Instrument < mag.meta.Data
         % OPERATOR Operator running experiment.
         Operator string {mustBeScalarOrEmpty}
         % ATTEMPTS Number of attempts to start FOB and FIB.
-        Attemps (1, 2) double = NaN(1, 2)
+        Attempts (1, 2) double = NaN(1, 2)
     end
 
     methods

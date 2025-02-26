@@ -12,3 +12,4 @@
 - Add support for IMAP sensor and instrument metadata defined in JSON file
 - Add support for any sensor model name
 - Add calibration for Solar Orbiter sensors
+- Fix typo in `mag.meta.Instrument/Attemps` property (now spelled `Attempts`)

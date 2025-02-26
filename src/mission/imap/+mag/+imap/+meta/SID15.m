@@ -60,7 +60,7 @@ classdef SID15 < mag.imap.meta.Provider
             fobAttempts = median(rawData{rawData.ISV_FOB_ACTTRIES ~= 0, "ISV_FOB_ACTTRIES"});
             fibAttempts = median(rawData{rawData.ISV_FIB_ACTTRIES ~= 0, "ISV_FIB_ACTTRIES"});
 
-            instrumentMetadata.Attemps = [fobAttempts, fibAttempts];
+            instrumentMetadata.Attempts = [fobAttempts, fibAttempts];
 
             instrumentMetadata.Timestamp = rawData{1, "SHCOARSE"};
             instrumentMetadata.Timestamp.TimeZone = mag.time.Constant.TimeZone;

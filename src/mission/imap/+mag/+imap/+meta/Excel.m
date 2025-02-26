@@ -73,7 +73,7 @@ classdef Excel < mag.imap.meta.Provider
             instrumentMetadata.Model = extract(rawData{4, "Var3"}, regexpPattern("[LEF]M"));
             instrumentMetadata.BSW = rawData{5, "Var3"};
             instrumentMetadata.ASW = rawData{5, "Var7"};
-            instrumentMetadata.Attemps = [attempts.fob, attempts.fib];
+            instrumentMetadata.Attempts = [attempts.fob, attempts.fib];
             instrumentMetadata.Operator = rawData{3, "Var3"};
             instrumentMetadata.Description = rawData{6, "Var7"};
             instrumentMetadata.Timestamp = datetime(rawData{6, "Var3"}, TimeZone = "UTC", Format = mag.time.Constant.Format) + ...
