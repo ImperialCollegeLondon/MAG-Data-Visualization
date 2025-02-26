@@ -17,7 +17,7 @@ classdef Word < mag.imap.meta.Type
         end
     end
 
-    methods (Hidden)
+    methods
 
         function [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
 

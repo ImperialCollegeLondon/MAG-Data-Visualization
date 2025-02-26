@@ -11,7 +11,7 @@ classdef (Abstract) Type < mag.mixin.SetGet
         FileName string {mustBeScalarOrEmpty, mustBeFile}
     end
 
-    methods (Abstract, Hidden)
+    methods (Abstract)
 
         % LOAD Load meta data.
         [instrumentMetaData, primarySetup, secondarySetup] = load(this, instrumentMetaData, primarySetup, secondarySetup)
