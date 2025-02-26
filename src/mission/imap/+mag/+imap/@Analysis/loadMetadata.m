@@ -1,7 +1,7 @@
 function [primarySetup, secondarySetup] = loadMetadata(this)
 
     % Initialize.
-    metadata = mag.meta.Instrument(Mission = mag.meta.Mission.IMAP);
+    instrumentMetadata = mag.meta.Instrument(Mission = mag.meta.Mission.IMAP);
     primarySetup = mag.meta.Setup();
     secondarySetup = mag.meta.Setup();
 
@@ -19,12 +19,12 @@ function [primarySetup, secondarySetup] = loadMetadata(this)
 
             if mdp.isSupported(mdf)
 
-                mdp.load(mdf, metadata, primarySetup, secondarySetup);
+                mdp.load(mdf, instrumentMetadata, primarySetup, secondarySetup);
                 break;
             end
         end
     end
 
     % Assign value.
-    this.Results.Metadata = metadata;
+    this.Results.Metadata = instrumentMetadata;
 end
