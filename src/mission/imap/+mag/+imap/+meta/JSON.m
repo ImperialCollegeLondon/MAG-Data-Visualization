@@ -32,15 +32,21 @@ classdef JSON < mag.imap.meta.Provider
 
             data = readstruct(fileName, FileType = "json", AllowComments = true, AllowTrailingCommas = true);
 
-            this.applyMetadata(instrumentMetadata, data.Instrument);
-            this.applyMetadata(primarySetup, data.Primary);
-            this.applyMetadata(secondarySetup, data.Secondary);
+            this.applyMetadata(instrumentMetadata, data, "Instrument");
+            this.applyMetadata(primarySetup, data, "Primary");
+            this.applyMetadata(secondarySetup, data, "Secondary");
         end
     end
 
     methods (Access = private)
 
-        function applyMetadata(this, metadata, data)
+        function applyMetadata(this, metadata, topLevelData, topLevelField)
+
+            if isfield(topLevelData, topLevelField)
+                data = topLevelData.(topLevelField);
+            else
+                return;
+            end
 
             fields = string(fieldnames(data))';
 
@@ -51,7 +57,7 @@ classdef JSON < mag.imap.meta.Provider
                 end
 
                 if isstruct(data.(field))
-                    this.applyMetadata(metadata.(field), data.(field));
+                    this.applyMetadata(metadata.(field), data, field);
                 else
                     metadata.(field) = data.(field);
                 end
