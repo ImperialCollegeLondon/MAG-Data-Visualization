@@ -1,7 +1,8 @@
-classdef SID15 < mag.imap.meta.Type
+classdef SID15 < mag.imap.meta.Provider
 % SID15 Load metadata from SID15 HK files.
 
-    properties (Constant)
+    properties (Constant, Access = private)
+        % EXTENSIONS Extensions supported.
         Extensions = ".csv"
     end
 
@@ -21,21 +22,31 @@ classdef SID15 < mag.imap.meta.Type
 
             this.assignProperties(options);
         end
-    end
 
-    methods
-
-        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
+        function supported = isSupported(this, fileName)
 
             arguments
                 this (1, 1) mag.imap.meta.SID15
+                fileName (1, 1) string
+            end
+
+            [~, ~, extension] = fileparts(fileName);
+
+            supported = isfile(fileName) && ismember(extension, this.Extensions);
+        end
+
+        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
+
+            arguments
+                this (1, 1) mag.imap.meta.SID15
+                fileName (1, 1) string {mustBeFile}
                 instrumentMetadata (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
             end
 
             % Load data.
-            dataStore = tabularTextDatastore(this.FileName, TextType = "string", FileExtensions = this.Extensions, SelectedVariableNames = ["SHCOARSE", "ISV_FOB_ACTTRIES", "ISV_FIB_ACTTRIES"]);
+            dataStore = tabularTextDatastore(fileName, TextType = "string", FileExtensions = this.Extensions, SelectedVariableNames = ["SHCOARSE", "ISV_FOB_ACTTRIES", "ISV_FIB_ACTTRIES"]);
             rawData = dataStore.readall(UseParallel = mag.internal.useParallel());
 
             rawData = sortrows(rawData, "SHCOARSE");

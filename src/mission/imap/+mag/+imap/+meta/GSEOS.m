@@ -1,7 +1,8 @@
-classdef GSEOS < mag.imap.meta.Type
+classdef GSEOS < mag.imap.meta.Provider
 % GSEOS Load metadata from GSEOS log files.
 
-    properties (Constant)
+    properties (Constant, Access = private)
+        % EXTENSIONS Extensions supported.
         Extensions = [".msg", ".log"]
         % NAMES Variable names to use to load data.
         Names (1, :) string = ["Type", "Date", "Time", "Source", "A", "B", "Message"]
@@ -20,28 +21,29 @@ classdef GSEOS < mag.imap.meta.Type
 
     methods
 
-        function this = GSEOS(options)
-
-            arguments
-                options.?mag.imap.meta.GSEOS
-            end
-
-            this.assignProperties(options);
-        end
-    end
-
-    methods
-
-        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
+        function supported = isSupported(this, fileName)
 
             arguments
                 this (1, 1) mag.imap.meta.GSEOS
+                fileName (1, 1) string
+            end
+
+            [~, ~, extension] = fileparts(fileName);
+
+            supported = isfile(fileName) && ismember(extension, this.Extensions);
+        end
+
+        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
+
+            arguments
+                this (1, 1) mag.imap.meta.GSEOS
+                fileName (1, 1) string {mustBeFile}
                 instrumentMetadata (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
             end
 
-            dataStore = tabularTextDatastore(this.FileName, FileExtensions = this.Extensions, TextType = "string", VariableNames = this.Names, TextscanFormats = this.Formats);
+            dataStore = tabularTextDatastore(fileName, FileExtensions = this.Extensions, TextType = "string", VariableNames = this.Names, TextscanFormats = this.Formats);
             rawData = dataStore.readall(UseParallel = mag.internal.useParallel());
 
             if isempty(rawData)

@@ -1,7 +1,8 @@
-classdef Excel < mag.imap.meta.Type
+classdef Excel < mag.imap.meta.Provider
 % EXCEL Load metadata from Excel files.
 
-    properties (Constant)
+    properties (Constant, Access = private)
+        % EXTENSIONS Extensions supported.
         Extensions = ".xlsx"
         % ACTIVATIONPATTERN Regex pattern to extract number of attempts to
         % start up the sensors.
@@ -12,22 +13,23 @@ classdef Excel < mag.imap.meta.Type
 
     methods
 
-        function this = Excel(options)
-
-            arguments
-                options.?mag.imap.meta.Excel
-            end
-
-            this.assignProperties(options);
-        end
-    end
-
-    methods
-
-        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
+        function supported = isSupported(this, fileName)
 
             arguments
                 this (1, 1) mag.imap.meta.Excel
+                fileName (1, 1) string
+            end
+
+            [~, ~, extension] = fileparts(fileName);
+
+            supported = isfile(fileName) && ismember(extension, this.Extensions);
+        end
+
+        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
+
+            arguments
+                this (1, 1) mag.imap.meta.Excel
+                fileName (1, 1) string {mustBeFile}
                 instrumentMetadata (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
@@ -36,7 +38,7 @@ classdef Excel < mag.imap.meta.Type
             % Read metadata file.
             importOptions = spreadsheetImportOptions(NumVariables = 9, VariableTypes = repmat("string", 1, 9), Sheet = "Sheet1");
 
-            rawData = readtable(this.FileName, importOptions);
+            rawData = readtable(fileName, importOptions);
             rawData = rmmissing(rawData, 1, MinNumMissing = size(rawData, 2));
             rawData = rmmissing(rawData, 2, MinNumMissing = size(rawData, 1));
 

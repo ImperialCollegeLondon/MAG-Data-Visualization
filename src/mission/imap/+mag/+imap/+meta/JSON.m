@@ -1,34 +1,36 @@
-classdef JSON < mag.imap.meta.Type
+classdef JSON < mag.imap.meta.Provider
 % JSON Load metadata from JSON files.
 
-    properties (Constant)
+    properties (Constant, Access = private)
+        % EXTENSIONS Extensions supported.
         Extensions = ".json"
     end
 
     methods
 
-        function this = JSON(options)
-
-            arguments
-                options.?mag.imap.meta.JSON
-            end
-
-            this.assignProperties(options);
-        end
-    end
-
-    methods
-
-        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, instrumentMetadata, primarySetup, secondarySetup)
+        function supported = isSupported(this, fileName)
 
             arguments
                 this (1, 1) mag.imap.meta.JSON
+                fileName (1, 1) string
+            end
+
+            [~, ~, extension] = fileparts(fileName);
+
+            supported = isfile(fileName) && ismember(extension, this.Extensions);
+        end
+
+        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
+
+            arguments
+                this (1, 1) mag.imap.meta.JSON
+                fileName (1, 1) string {mustBeFile}
                 instrumentMetadata (1, 1) mag.meta.Instrument
                 primarySetup (1, 1) mag.meta.Setup
                 secondarySetup (1, 1) mag.meta.Setup
             end
 
-            data = readstruct(this.FileName, FileType = "json", AllowComments = true, AllowTrailingCommas = true);
+            data = readstruct(fileName, FileType = "json", AllowComments = true, AllowTrailingCommas = true);
 
             this.applyMetadata(instrumentMetadata, data.Instrument);
             this.applyMetadata(primarySetup, data.Primary);
@@ -45,7 +47,7 @@ classdef JSON < mag.imap.meta.Type
             for field = fields
 
                 if ~isprop(metadata, field)
-                    error("Invalid field ""%s"" in JSON file ""%s"".", field, this.FileName);
+                    error("Invalid field ""%s"" in JSON file ""%s"".", field, fileName);
                 end
 
                 if isstruct(data.(field))
