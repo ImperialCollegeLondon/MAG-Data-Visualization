@@ -4,4 +4,5 @@
 
 ## Software
 
-- Support any sensor model name
+- Add calibration for Solar Orbiter sensors
+- Add support for any sensor model name

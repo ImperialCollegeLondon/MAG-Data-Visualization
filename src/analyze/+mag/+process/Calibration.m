@@ -41,9 +41,16 @@ classdef Calibration < mag.process.Step
 
             ranges = unique(data.(this.RangeVariable));
 
+            % Find existing calibration files.
+            calibrationFiles = dir(fullfile(this.FileLocation, "*.txt"));
+
+            availableCalibrations = string(unique(extractBefore(({calibrationFiles.name}), "_")));
+            availableCalibrations(strlength(availableCalibrations) == 0) = [];
+
+            % Use correct calibration for sensor.
             if isempty(metaData.Setup) || isempty(metaData.Setup.Model)
                 modelName = string.empty();
-            elseif startsWith(metaData.Setup.Model, ["FM4", "FM5", "LM", "JM"])
+            elseif contains(metaData.Setup.Model, availableCalibrations, IgnoreCase = true)
                 modelName = metaData.Setup.Model;
             elseif startsWith(metaData.Setup.Model, regexpPattern("E|F"))
                 modelName = "FM5";
@@ -94,11 +101,26 @@ classdef Calibration < mag.process.Step
 
             if ~isfile(fileName)
 
-                fileName = fullfile(this.FileLocation, compose("%s_tany.txt", lower(extract(modelName, lettersPattern()))));
+                patterns = [regexpPattern("[\w\-]+"), lettersPattern()];
 
-                if ~isfile(fileName)
-                    fileName = this.DefaultCalibrationFile;
+                for pattern = patterns
+
+                    value = lower(extract(modelName, pattern));
+
+                    if ~isempty(value)
+                        fileName = fullfile(this.FileLocation, compose("%s_tany.txt", value(1)));
+                    else
+                        fileName = string.empty();
+                    end
+
+                    if isfile(fileName)
+                        return;
+                    end
                 end
+            end
+
+            if ~isfile(fileName)
+                fileName = this.DefaultCalibrationFile;
             end
         end
     end
