@@ -7,6 +7,6 @@ classdef (Abstract) Provider < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         supported = isSupported(this, fileName)
 
         % LOAD Load metadata.
-        [instrumentMetadata, primarySetup, secondarySetup] = load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
+        load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
     end
 end

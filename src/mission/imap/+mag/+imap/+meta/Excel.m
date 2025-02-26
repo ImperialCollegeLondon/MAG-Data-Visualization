@@ -25,7 +25,7 @@ classdef Excel < mag.imap.meta.Provider
             supported = isfile(fileName) && ismember(extension, this.Extensions);
         end
 
-        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
+        function load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
 
             arguments
                 this (1, 1) mag.imap.meta.Excel

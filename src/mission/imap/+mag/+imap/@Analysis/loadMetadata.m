@@ -19,7 +19,7 @@ function [primarySetup, secondarySetup] = loadMetadata(this)
 
             if mdp.isSupported(mdf)
 
-                [metadata, primarySetup, secondarySetup] = mdp.load(mdf, metadata, primarySetup, secondarySetup);
+                mdp.load(mdf, metadata, primarySetup, secondarySetup);
                 break;
             end
         end

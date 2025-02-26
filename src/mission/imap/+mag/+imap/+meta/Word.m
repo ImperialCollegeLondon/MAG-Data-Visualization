@@ -20,7 +20,7 @@ classdef Word < mag.imap.meta.Provider
             supported = isfile(fileName) && ismember(extension, this.Extensions);
         end
 
-        function [instrumentMetadata, primarySetup, secondarySetup] = load(~, fileName, instrumentMetadata, primarySetup, secondarySetup)
+        function load(~, fileName, instrumentMetadata, primarySetup, secondarySetup)
 
             arguments
                 ~

@@ -33,14 +33,14 @@ classdef GSEOS < mag.imap.meta.Provider
             supported = isfile(fileName) && ismember(extension, this.Extensions);
         end
 
-        function [instrumentMetadata, primarySetup, secondarySetup] = load(this, fileName, instrumentMetadata, primarySetup, secondarySetup)
+        function load(this, fileName, instrumentMetadata, ~, ~)
 
             arguments
                 this (1, 1) mag.imap.meta.GSEOS
                 fileName (1, 1) string {mustBeFile}
                 instrumentMetadata (1, 1) mag.meta.Instrument
-                primarySetup (1, 1) mag.meta.Setup
-                secondarySetup (1, 1) mag.meta.Setup
+                ~
+                ~
             end
 
             dataStore = tabularTextDatastore(fileName, FileExtensions = this.Extensions, TextType = "string", VariableNames = this.Names, TextscanFormats = this.Formats);
