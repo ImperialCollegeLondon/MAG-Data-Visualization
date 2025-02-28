@@ -1,6 +1,13 @@
 classdef tCalibration < MAGAnalysisTestCase
 % TCALIBRATION Unit tests for "mag.process.Calibration" class.
 
+    properties (TestParameter)
+        SensorDetails = {struct(Name = "LM2", Expected = [3, -1, -2]), ...
+            struct(Name = "JM1", Expected = [-2, 1, 3]), ...
+            struct(Name = "SOLO-OBS-QM", Expected = [-2, 1, -3]), ...
+            struct(Name = "MTT", Expected = [-1, -2, -3])}
+    end
+
     methods (Test)
 
         % Load all calibration test files, and make sure none of the values
@@ -149,80 +156,15 @@ classdef tCalibration < MAGAnalysisTestCase
                 "Calibrated value should match expectation.");
         end
 
-        % Verify that correct calibration is selected for lab models.
-        function calibration_labModel(testCase)
+        % Verify that correct calibration is selected for specific models.
+        function calibration_specificSensor(testCase, SensorDetails)
 
             % Set up.
             uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
-            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "LM2"));
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = SensorDetails.Name));
 
             expectedData = uncalibratedData;
-            expectedData{:, "x"} = 3;
-            expectedData{:, "y"} = -1;
-            expectedData{:, "z"} = -2;
-
-            % Exercise.
-            calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
-            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
-
-            % Verify.
-            testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
-                "Calibrated value should match expectation.");
-        end
-
-        % Verify that correct calibration is selected for JMAG.
-        function calibration_jmag(testCase)
-
-            % Set up.
-            uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
-            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "JM1"));
-
-            expectedData = uncalibratedData;
-            expectedData{:, "x"} = -2;
-            expectedData{:, "y"} = 1;
-            expectedData{:, "z"} = 3;
-
-            % Exercise.
-            calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
-            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
-
-            % Verify.
-            testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
-                "Calibrated value should match expectation.");
-        end
-
-        % Verify that correct calibration is selected for Solar Orbiter.
-        function calibration_solo(testCase)
-
-            % Set up.
-            uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
-            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "SOLO-OBS-QM"));
-
-            expectedData = uncalibratedData;
-            expectedData{:, "x"} = -2;
-            expectedData{:, "y"} = 1;
-            expectedData{:, "z"} = -3;
-
-            % Exercise.
-            calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
-            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
-
-            % Verify.
-            testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
-                "Calibrated value should match expectation.");
-        end
-
-        % Verify that correct calibration is selected for MTT sensor.
-        function calibration_mtt(testCase)
-
-            % Set up.
-            uncalibratedData = testCase.createTestData(Time = datetime("now"), XYZ = [1, 2, 3], Range = 0, Sequence = 1);
-            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "MTT"));
-
-            expectedData = uncalibratedData;
-            expectedData{:, "x"} = -1;
-            expectedData{:, "y"} = -2;
-            expectedData{:, "z"} = -3;
+            expectedData{:, ["x", "y", "z"]} = SensorDetails.Expected;
 
             % Exercise.
             calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"], Temperature = "Cold");
