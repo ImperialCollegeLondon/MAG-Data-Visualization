@@ -4,4 +4,5 @@
 
 ## Software
 
+- Show any available sensor metadata in IMAP field figure
 - Add calibration for MTT sensor

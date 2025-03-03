@@ -22,5 +22,20 @@ classdef Setup < mag.mixin.SetGet & mag.mixin.Struct
 
             this.assignProperties(options);
         end
+
+        function value = string(this)
+
+            value = string.empty();
+            properties = ["Model", "FEE", "Can"];
+
+            for p = properties
+
+                if ~isempty(p)
+                    value = [value, this.(p)]; %#ok<AGROW>
+                end
+            end
+
+            value = join(value, " - ");
+        end
     end
 end
