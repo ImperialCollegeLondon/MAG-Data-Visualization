@@ -26,7 +26,7 @@ classdef Setup < mag.mixin.SetGet & mag.mixin.Struct
         function value = string(this)
 
             value = string.empty();
-            properties = ["Model", "FEE", "Can"];
+            properties = ["FEE", "Model", "Can"];
 
             for p = properties
 
