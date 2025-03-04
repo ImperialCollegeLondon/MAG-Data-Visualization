@@ -7,6 +7,8 @@ classdef AT < mag.app.Control & mag.app.mixin.Filter
 
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
+        CheckBoxLayout matlab.ui.container.GridLayout
+        TimestampCheckBox matlab.ui.control.CheckBox
         SpectrogramCheckBox matlab.ui.control.CheckBox
         PSDCheckBox matlab.ui.control.CheckBox
         PSDStartDatePicker matlab.ui.control.DatePicker
@@ -23,16 +25,24 @@ classdef AT < mag.app.Control & mag.app.mixin.Filter
             % Filter.
             this.addFilterButtons(this.Layout, StartFilterRow = 1);
 
-            % Spectrogram.
-            this.SpectrogramCheckBox = uicheckbox(this.Layout, Value = 1, ...
+            % Check-boxes.
+            this.CheckBoxLayout = uigridlayout(this.Layout, [1, 3], ColumnWidth = ["fit", "fit", "fit"]);
+            this.CheckBoxLayout.Layout.Row = 2;
+            this.CheckBoxLayout.Layout.Column = [2, 3];
+
+            this.TimestampCheckBox = uicheckbox(this.CheckBoxLayout, Value = 0, ...
+                Text = "Timestamp analysis");
+            this.TimestampCheckBox.Layout.Row = 1;
+            this.TimestampCheckBox.Layout.Column = 1;
+
+            this.SpectrogramCheckBox = uicheckbox(this.CheckBoxLayout, Value = 1, ...
                 Text = "Spectrogram");
-            this.SpectrogramCheckBox.Layout.Row = 2;
+            this.SpectrogramCheckBox.Layout.Row = 1;
             this.SpectrogramCheckBox.Layout.Column = 2;
 
-            % PSD.
-            this.PSDCheckBox = uicheckbox(this.Layout, Value = 1, Text = "PSD", ...
+            this.PSDCheckBox = uicheckbox(this.CheckBoxLayout, Value = 1, Text = "PSD", ...
                 ValueChangedFcn = @(~, ~) this.psdCheckboxChanged());
-            this.PSDCheckBox.Layout.Row = 2;
+            this.PSDCheckBox.Layout.Row = 1;
             this.PSDCheckBox.Layout.Column = 3;
 
             % PSD start date.
@@ -86,7 +96,7 @@ classdef AT < mag.app.Control & mag.app.mixin.Filter
             command = mag.app.Command(Functional = @mag.imap.view.sftPlots, ...
                 PositionalArguments = {results}, ...
                 NamedArguments = struct(Filter = startFilter, PSDStart = psdStartTime, PSDDuration = psdDuration, ...
-                Spectrogram = this.SpectrogramCheckBox.Value));
+                Spectrogram = this.SpectrogramCheckBox.Value, TimestampAnalysis = this.TimestampCheckBox.Value));
         end
     end
 

@@ -9,6 +9,7 @@ function figures = sftPlots(analysis, options)
         options.PSDDuration (1, 1) duration = hours(1)
         options.Spectrogram (1, 1) logical = true
         options.SeparateModes (1, 1) logical = true
+        options.TimestampAnalysis (1, 1) logical = false
     end
 
     arguments (Output)
@@ -65,7 +66,9 @@ function figures = sftPlots(analysis, options)
     views(end + 1) = mag.imap.view.Comparison(croppedAnalysis.Results);
 
     % Show timestamp analysis.
-    views(end + 1) = mag.imap.view.Timestamp(analysis.Results);
+    if options.TimestampAnalysis
+        views(end + 1) = mag.imap.view.Timestamp(analysis.Results);
+    end
 
     % Show HK.
     views(end + 1) = mag.imap.view.HK(analysis.Results);
@@ -73,5 +76,3 @@ function figures = sftPlots(analysis, options)
     % Generate figures.
     figures = views.visualizeAll();
 end
-
-
