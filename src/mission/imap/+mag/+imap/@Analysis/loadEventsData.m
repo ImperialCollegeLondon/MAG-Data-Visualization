@@ -214,14 +214,43 @@ function loadEventsData(this)
             end
         end
 
-        if ~isempty(correction)
+        if ~isempty(correction) && isfinite(correction)
             e.CommandTimestamp = e.CommandTimestamp + mean(correction);
+        end
+    end
+
+    %% Sort
+
+    events = sort(events);
+
+    %% Set Default Modes
+
+    defaults = dictionary( ...
+        PrimaryNormalRate = 2, ...
+        SecondaryNormalRate = 2, ...
+        PacketNormalFrequency = 32, ...
+        PrimaryBurstRate = 64, ...
+        SecondaryBurstRate = 8, ...
+        PacketBurstFrequency = 4);
+
+    for e = events
+
+        if isa(e, "mag.event.ModeChange") && ismember(e.Mode, [mag.meta.Mode.Burst, mag.meta.Mode.Normal])
+
+            for k = defaults.keys'
+
+                if ismissing(e.(k))
+                    e.(k) = defaults(k);
+                end
+            end
+
+            break; % only correct first one
         end
     end
 
     %% Assign Value
 
-    this.Results.Events = sort(events);
+    this.Results.Events = events;
 end
 
 function eventDetails = processModeChangeDetails(eventDetails)
