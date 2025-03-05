@@ -4,4 +4,9 @@
 
 ## App
 
-- Make IMAP timestamp analysis plots optional (selectable with checkbox)
+- (IMAP) Make timestamp analysis plots optional (selectable with checkbox)
+
+## Software
+
+- (IMAP) Set default Normal and Burst modes when not specified in first mode change (`UNCHANGED`)
+- (IMAP) Fix issue with identifying correction for event completion
