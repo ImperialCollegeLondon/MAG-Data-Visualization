@@ -6,6 +6,8 @@ classdef PSD < mag.graphics.view.View
         Start (1, 1) datetime = NaT(TimeZone = "UTC")
         % DURATION Duration of PSD plot.
         Duration (1, 1) duration = hours(1)
+        % SYNCYAXES Sync y-axes.
+        SyncYAxes (1, 1) logical = false
     end
 
     methods
@@ -46,6 +48,7 @@ classdef PSD < mag.graphics.view.View
                 psd, mag.graphics.style.Default(Title = compose("%s PSD", science.Metadata.getDisplay("Sensor")), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]), ...
                 Title = this.getPSDFigureTitle(science, psdStart, psdDuration), ...
                 Name = this.getPSDFigureName(science, psdStart), ...
+                LinkYAxes = this.SyncYAxes, ...
                 WindowState = "maximized");
         end
     end
