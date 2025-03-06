@@ -6,6 +6,8 @@ classdef PSD < mag.graphics.view.View
         Start (1, 1) datetime = NaT(TimeZone = "UTC")
         % DURATION Duration of PSD plot.
         Duration (1, 1) duration = hours(1)
+        % SYNCYAXES Sync y-axes.
+        SyncYAxes (1, 1) logical = false
     end
 
     methods
@@ -60,6 +62,7 @@ classdef PSD < mag.graphics.view.View
                 Title = this.getPSDFigureTitle(input1, input2, psdStart, psdDuration), ...
                 Name = this.getPSDFigureName(input1, input2, psdStart), ...
                 Arrangement = [numPSD, 1], ...
+                LinkYAxes = this.SyncYAxes, ...
                 WindowState = "maximized");
         end
     end

@@ -4,6 +4,7 @@
 
 ## App
 
+- (Bartington, HelioSwarm, IMAP) Add option to sync y-axis in PSD plots
 - (IMAP) Make timestamp analysis plots optional (selectable with checkbox)
 
 ## Software
