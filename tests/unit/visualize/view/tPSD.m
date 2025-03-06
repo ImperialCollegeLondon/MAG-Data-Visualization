@@ -112,6 +112,32 @@ classdef tPSD < MAGViewTestCase
             testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
         end
 
+        % Test that PSD is generated correctly when selecting to sync the
+        % y-axes.
+        function psd_syncYAxes(testCase)
+
+            % Set up.
+            instrument = testCase.createTestInstrument();
+
+            psdStart = instrument.Primary.Time(1);
+            psdDuration = minutes(5);
+
+            [expectedInputs, mockTransformation] = testCase.generateExpectedInputs(instrument, psdStart, psdDuration, SyncYAxes = true);
+            expectedOutput = figure();
+
+            [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
+            when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
+
+            % Exercise.
+            view = mag.imap.view.PSD(instrument, Start = psdStart, Duration = psdDuration, SyncYAxes = true, ...
+                Transformation = mockTransformation, Factory = mockFactory);
+
+            view.visualize();
+
+            % Verify.
+            testCase.verifyEqual(view.Figures, expectedOutput, "Returned figure should match expectation.");
+        end
+
         % Test that PSD is not generated when no science data is available.
         function psd_noScience(testCase)
 
@@ -144,6 +170,7 @@ classdef tPSD < MAGViewTestCase
                 psdDuration (1, 1) duration
                 options.Title (1, 1) string = "Start: %s - Duration: %s - (64, 8)"
                 options.Name (1, 1) string = "Burst (64, 8) PSD (%s)"
+                options.SyncYAxes (1, 1) logical = false
             end
 
             expectedInputs = {};
@@ -188,6 +215,7 @@ classdef tPSD < MAGViewTestCase
                 "Title", compose(options.Title, psdStart, psdDuration), ...
                 "Name", compose(options.Name, psdStart), ...
                 "Arrangement", arrangement, ...
+                "LinkYAxes", options.SyncYAxes, ...
                 "WindowState", "maximized"}];
         end
     end
