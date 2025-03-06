@@ -119,6 +119,9 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
                 return;
             end
 
+            makePanelVisible = onCleanup(@() set(this.VisualizationOptionsPanel, Visible = "on"));
+            this.VisualizationOptionsPanel.Visible = "off";
+
             this.SelectedControl = this.VisualizationTypeListBox.ItemsData(this.VisualizationTypeListBox.ValueIndex);
             this.SelectedControl.instantiate(this.VisualizationOptionsPanel);
         end
