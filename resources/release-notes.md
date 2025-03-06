@@ -5,6 +5,7 @@
 ## App
 
 - (Bartington, HelioSwarm, IMAP) Add option to sync y-axis in PSD plots
+- (Bartington, HelioSwarm, IMAP) "Close Figures" button disables after being pressed, even when there are no figures to close
 - (IMAP) Make timestamp analysis plots optional (selectable with checkbox)
 
 ## Software
