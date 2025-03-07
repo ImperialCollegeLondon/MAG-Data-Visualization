@@ -89,24 +89,24 @@ classdef ModeChange < mag.event.Event
                 RowTimes = [this.Timestamp], VariableNames = ["Mode", "PrimaryNormalRate", "SecondaryNormalRate", "PacketNormalFrequency", "PrimaryBurstRate", "SecondaryBurstRate", "PacketBurstFrequency", "Duration", "Label"]);
         end
 
-        function timestamp = getTimestamp(this)
+        % function timestamp = getTimestamp(this)
 
-            arguments
-                this mag.event.ModeChange {mustBeScalarOrEmpty}
-            end
+        %     arguments
+        %         this mag.event.ModeChange {mustBeScalarOrEmpty}
+        %     end
 
-            if isempty(this)
+        %     if isempty(this)
 
-                timestamp = mag.time.emptyTime();
-                return;
-            end
+        %         timestamp = mag.time.emptyTime();
+        %         return;
+        %     end
 
-            timestamp = this.ModeChangeTimestamp;
+        %     timestamp = this.ModeChangeTimestamp;
 
-            if ismissing(timestamp)
-                timestamp = getTimestamp@mag.event.Event(this);
-            end
-        end
+        %     if ismissing(timestamp)
+        %         timestamp = getTimestamp@mag.event.Event(this);
+        %     end
+        % end
     end
 end
 
