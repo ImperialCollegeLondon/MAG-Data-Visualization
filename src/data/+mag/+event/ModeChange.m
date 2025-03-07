@@ -95,12 +95,6 @@ classdef ModeChange < mag.event.Event
         %         this mag.event.ModeChange {mustBeScalarOrEmpty}
         %     end
 
-        %     if isempty(this)
-
-        %         timestamp = mag.time.emptyTime();
-        %         return;
-        %     end
-
         %     timestamp = this.ModeChangeTimestamp;
 
         %     if ismissing(timestamp)
