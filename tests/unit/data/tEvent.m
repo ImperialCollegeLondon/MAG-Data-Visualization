@@ -261,13 +261,13 @@ classdef tEvent < matlab.unittest.TestCase
         end
 
         % Test that when event is empty, it returns an empty timestamp.
-        function getTimestamps_empty(testCase)
+        function getTimestamp_empty(testCase)
 
             % Set up.
             event = mag.event.Event.empty();
 
             % Exercise.
-            timestamp = event.getTimestamps();
+            timestamp = event.Timestamp;
 
             % Verify.
             testCase.assertClass(timestamp, "datetime", "Timestamp should be ""datetime"".");
