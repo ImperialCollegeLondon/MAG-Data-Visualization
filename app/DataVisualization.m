@@ -295,9 +295,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
                 close(app.Figures(isValidFigures));
-
-                app.Figures = matlab.ui.Figure.empty();
             end
+
+            % Force UI to refresh, even if no figures were closed.
+            app.Figures = matlab.ui.Figure.empty();
         end
 
         function createComponents(app)
