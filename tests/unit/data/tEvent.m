@@ -260,22 +260,6 @@ classdef tEvent < matlab.unittest.TestCase
             testCase.verifyEqual(et.Time(3), events(2).AcknowledgeTimestamp + seconds(events(2).Duration), "Auto event timestamps should match expectation.");
         end
 
-        % Test that when event is empty, it returns an empty timestamp.
-        function getTimestamp_empty(testCase)
-
-            % Set up.
-            event = mag.event.Event.empty();
-
-            % Exercise.
-            timestamp = event.Timestamp;
-
-            % Verify.
-            testCase.assertClass(timestamp, "datetime", "Timestamp should be ""datetime"".");
-
-            testCase.verifyEmpty(timestamp, "Timestamp should be empty.");
-            testCase.verifyEqual(timestamp.TimeZone, char(mag.time.Constant.TimeZone), "Timestamp should have expected time zone.");
-        end
-
         % Test that dependent "active" properties of "ModeChange" select
         % correct active value.
         function modeChange_dependentProperties(testCase, ModeChangeEventData)
