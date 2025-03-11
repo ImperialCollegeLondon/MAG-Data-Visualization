@@ -22,7 +22,7 @@ jobs:
           release: ${{ matrix.release }}
           products: MATLAB_Test Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox
       - name: Download CDF support package
-        uses: robinraju/release-downloader@v1.11
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: ImperialCollegeLondon/MATLAB-SPDF-CDF
           tag: v3.9.0
@@ -31,7 +31,7 @@ jobs:
           tarBall: false
           zipBall: false
       - name: Download SPICE support package
-        uses: robinraju/release-downloader@v1.11
+        uses: robinraju/release-downloader@v1.12
         with:
           repository: ImperialCollegeLondon/MATLAB-SPICE
           tag: N0067
