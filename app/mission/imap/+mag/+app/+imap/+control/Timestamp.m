@@ -1,9 +1,8 @@
-classdef IALiRT < mag.app.Control & mag.app.mixin.StartEndDate
-% IALIRT View-controller for generating "mag.imap.view.Field" for I-ALiRT
-% data.
+classdef Timestamp < mag.app.Control & mag.app.mixin.StartEndDate
+% TIMESTAMP View-controller for generating "mag.imap.view.Timestamp".
 
     properties (Constant)
-        Name = "I-ALiRT"
+        Name = "Timestamp"
     end
 
     properties (SetAccess = private)
@@ -21,17 +20,7 @@ classdef IALiRT < mag.app.Control & mag.app.mixin.StartEndDate
         end
 
         function supported = isSupported(~, results)
-
-            if ~isa(results, "mag.imap.Instrument")
-
-                supported = false;
-                return;
-            end
-
-            iALiRT = results.IALiRT;
-
-            supported = iALiRT.HasScience && (~isempty(iALiRT.Primary) && iALiRT.Primary.HasData) || ...
-                (~isempty(iALiRT.Secondary) && iALiRT.Secondary.HasData);
+            supported = isa(results, "mag.imap.Instrument") && results.HasScience;
         end
 
         function command = getVisualizeCommand(this, results)
@@ -46,12 +35,10 @@ classdef IALiRT < mag.app.Control & mag.app.mixin.StartEndDate
             end
 
             [startTime, endTime] = this.getStartEndTimes();
-
             results = mag.app.internal.cropResults(results, startTime, endTime);
-            iALiRT = mag.imap.Instrument(Science = results.IALiRT.Science);
 
-            command = mag.app.Command(Functional = @(varargin) mag.imap.view.Field(varargin{:}).visualizeAll(), ...
-                PositionalArguments = {iALiRT});
+            command = mag.app.Command(Functional = @(varargin) mag.imap.view.Timestamp(varargin{:}).visualizeAll(), ...
+                PositionalArguments = {results});
         end
     end
 end
