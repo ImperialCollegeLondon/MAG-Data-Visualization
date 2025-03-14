@@ -30,8 +30,8 @@ classdef IALiRT < mag.app.Control & mag.app.mixin.StartEndDate
 
             iALiRT = results.IALiRT;
 
-            supported = iALiRT.HasScience && (~isempty(iALiRT.Primary) && iALiRT.Primary.HasData) || ...
-                (~isempty(iALiRT.Secondary) && iALiRT.Secondary.HasData);
+            supported = ~isempty(iALiRT) && iALiRT.HasScience && ...
+                ((~isempty(iALiRT.Primary) && iALiRT.Primary.HasData) || (~isempty(iALiRT.Secondary) && iALiRT.Secondary.HasData));
         end
 
         function command = getVisualizeCommand(this, results)
