@@ -4,12 +4,6 @@
 
 ## App
 
-- (Bartington, HelioSwarm, IMAP) Add option to sync y-axis in PSD plots
-- (Bartington, HelioSwarm, IMAP) "Close Figures" button disables after being pressed, even when there are no figures to close
-- (IMAP) Add view for I-ALiRT data and timestamp analysis
-- (IMAP) Make timestamp analysis plots optional (selectable with checkbox)
-
-## Software
-
-- (IMAP) Set default Normal and Burst modes when not specified in first mode change (`UNCHANGED`)
-- (IMAP) Fix issue with identifying correction for event completion
+- (Bartington, HelioSwarm, IMAP) Add warning pop-up when no data is detected
+- (Bartington, HelioSwarm, IMAP) Fix issue with "Export" and "Visualize" tabs being enabled when there is no data
+- (IMAP) Fix issue with I-ALiRT view issuing a warning when I-ALiRT is empty
