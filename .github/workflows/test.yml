@@ -48,7 +48,7 @@ jobs:
         with:
           tasks: check test
       - name: Report results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         if: success() || failure()
         with:
           name: MATLAB Test Results (${{ matrix.release }})
