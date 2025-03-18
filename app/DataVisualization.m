@@ -185,7 +185,14 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function modelChangedCallback(app, model, ~)
 
-            status = matlab.lang.OnOffSwitchState(model.HasAnalysis);
+            hasModel = model.HasAnalysis;
+            hasData = hasModel && (model.Analysis.Results.HasScience || model.Analysis.Results.HasHK);
+
+            if hasModel && ~hasData
+                app.AppNotificationHandler.displayAlert("No HK or science data detected.", "No Data", "warning");
+            end
+
+            status = matlab.lang.OnOffSwitchState(hasData);
 
             [app.ExportFormatDropDown.Enable, app.ExportButton.Enable, app.ExportSettingsPanel.Enable, ...
                 app.ShowFiguresButton.Enable] = deal(status);
