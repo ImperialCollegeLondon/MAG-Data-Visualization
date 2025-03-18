@@ -186,7 +186,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function modelChangedCallback(app, model, ~)
 
             hasModel = model.HasAnalysis;
-            hasData = model.HasAnalysis && (model.Analysis.Results.HasScience || model.Analysis.Results.HasHK);
+            hasData = hasModel && (model.Analysis.Results.HasScience || model.Analysis.Results.HasHK);
 
             if hasModel && ~hasData
                 app.AppNotificationHandler.displayAlert("No HK or science data detected.", "No Data", "warning");
