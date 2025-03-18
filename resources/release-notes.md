@@ -4,6 +4,5 @@
 
 ## App
 
-- (Bartington, HelioSwarm, IMAP) Add warning pop-up when no data is detected
-- (Bartington, HelioSwarm, IMAP) Fix issue with "Export" and "Visualize" tabs being enabled when there is no data
-- (IMAP) Fix issue with I-ALiRT view issuing a warning when I-ALiRT is empty
+- (Bartington, HelioSwarm, IMAP) Add results preview for science data
+- (IMAP) Show any available metadata for sensor setup
