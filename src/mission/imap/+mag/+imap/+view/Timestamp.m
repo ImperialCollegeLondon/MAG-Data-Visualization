@@ -30,8 +30,8 @@ classdef Timestamp < mag.graphics.view.View
                 return;
             end
 
-            modeEventCharts = {primaryScience.Events, mag.graphics.style.Default(Title = compose("%s Modes", primarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = primaryScience.Time(end))), ...
-                secondaryScience.Events, mag.graphics.style.Default(Title = compose("%s Modes", secondarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = secondaryScience.Time(end)))};
+            modeEventCharts = {primaryScience.Events, mag.graphics.style.Default(Title = compose("%s Modes", primarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = primaryScience.Time(end))), ...
+                secondaryScience.Events, mag.graphics.style.Default(Title = compose("%s Modes", secondarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = secondaryScience.Time(end)))};
 
             % Plot difference in primary/secondary science timestamps.
             this.Figures(1) = this.Factory.assemble( ...
