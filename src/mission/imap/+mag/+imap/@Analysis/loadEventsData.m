@@ -201,45 +201,52 @@ function loadEventsData(this)
 
         correction = duration.empty();
 
-        ae = acknowledgeEvents([acknowledgeEvents.timestamp] >= e.CommandTimestamp);
-        ce = completedEvents([completedEvents.timestamp] >= e.CommandTimestamp);
-
         % Remove responses to subsequent commands of the same type.
         similarSubsequentEvents = events(([events.Type] == e.Type) & ([events.SubType] == e.SubType) & ([events.CommandTimestamp] > e.CommandTimestamp));
 
         % Find acknowledgment time.
-        if ~isempty(ae) && isfield(ae, "type") && isfield(ae, "subtype")
+        if ~isempty(acknowledgeEvents)
 
-            if ~isempty(similarSubsequentEvents)
-                ae = ae([ae.timestamp] < similarSubsequentEvents(1).CommandTimestamp);
-            end
+            ae = acknowledgeEvents([acknowledgeEvents.timestamp] >= e.CommandTimestamp);
 
-            ae = ae((str2double([ae.type]) == e.Type) & (str2double([ae.subtype]) == e.SubType));
+            if ~isempty(ae) && isfield(ae, "type") && isfield(ae, "subtype")
 
-            if isempty(ae)
-                e.AcknowledgeTimestamp = e.CommandTimestamp;
-            else
+                if ~isempty(similarSubsequentEvents)
+                    ae = ae([ae.timestamp] < similarSubsequentEvents(1).CommandTimestamp);
+                end
 
-                e.AcknowledgeTimestamp = ae(1).coarse;
-                correction(end + 1) = ae(1).coarse - ae(1).timestamp; %#ok<AGROW>
+                ae = ae((str2double([ae.type]) == e.Type) & (str2double([ae.subtype]) == e.SubType));
+
+                if isempty(ae)
+                    e.AcknowledgeTimestamp = e.CommandTimestamp;
+                else
+
+                    e.AcknowledgeTimestamp = ae(1).coarse;
+                    correction(end + 1) = ae(1).coarse - ae(1).timestamp; %#ok<AGROW>
+                end
             end
         end
 
         % Find completion time.
-        if ~isempty(ce) && isfield(ce, "type") && isfield(ce, "subtype")
+        if ~isempty(completedEvents)
 
-            if ~isempty(similarSubsequentEvents)
-                ce = ce([ce.timestamp] < similarSubsequentEvents(1).CommandTimestamp);
-            end
+            ce = completedEvents([completedEvents.timestamp] >= e.CommandTimestamp);
 
-            ce = ce((str2double([ce.type]) == e.Type) & (str2double([ce.subtype]) == e.SubType));
+            if ~isempty(ce) && isfield(ce, "type") && isfield(ce, "subtype")
 
-            if isempty(ce)
-                e.CompleteTimestamp = e.AcknowledgeTimestamp;
-            else
+                if ~isempty(similarSubsequentEvents)
+                    ce = ce([ce.timestamp] < similarSubsequentEvents(1).CommandTimestamp);
+                end
 
-                e.CompleteTimestamp = ce(1).coarse;
-                correction(end + 1) = ce(1).coarse - ce(1).timestamp; %#ok<AGROW>
+                ce = ce((str2double([ce.type]) == e.Type) & (str2double([ce.subtype]) == e.SubType));
+
+                if isempty(ce)
+                    e.CompleteTimestamp = e.AcknowledgeTimestamp;
+                else
+
+                    e.CompleteTimestamp = ce(1).coarse;
+                    correction(end + 1) = ce(1).coarse - ce(1).timestamp; %#ok<AGROW>
+                end
             end
         end
 
