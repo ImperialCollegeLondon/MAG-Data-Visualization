@@ -44,12 +44,16 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         AppNotificationHandler mag.app.internal.AppNotificationHandler {mustBeScalarOrEmpty}
     end
 
-    properties (SetObservable, Access = private)
-        Figures (1, :) matlab.ui.Figure
+    properties (Access = private)
+        Mission mag.meta.Mission {mustBeScalarOrEmpty}
     end
 
     properties (Dependent, Access = private)
         ResultsLocation (1, 1) string {mustBeFolder}
+    end
+
+    properties (SetObservable, Access = private)
+        Figures (1, :) matlab.ui.Figure
     end
 
     methods
@@ -130,7 +134,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing mission..."); %#ok<NASGU>
             end
 
-            switch mission
+            app.Mission = mission;
+
+            switch app.Mission
                 case mag.meta.Mission.Bartington
                     app.Provider = mag.app.bart.Provider();
                 case mag.meta.Mission.HelioSwarm
@@ -140,7 +146,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 case mag.meta.Mission.SolarOrbiter
                     error("Solar Orbiter mission not yet supported.");
                 otherwise
-                    error("Unknown mission ""%s"".", mission);
+                    error("Unknown mission ""%s"".", app.Mission);
             end
 
             % Set managers.
@@ -163,23 +169,18 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
             app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
 
-            app.UIFigure.Name = app.getAppName(mission);
+            app.UIFigure.Name = app.getAppName();
         end
     end
 
     methods (Access = private)
 
-        function name = getAppName(app, mission)
+        function name = getAppName(app)
 
-            arguments
-                app
-                mission string {mustBeScalarOrEmpty} = string.empty()
-            end
-
-            if isempty(mission)
+            if isempty(app.Mission)
                 name = app.AppName;
             else
-                name = compose("%s (%s)", app.AppName, mission);
+                name = compose("%s (%s)", app.AppName, app.Mission);
             end
         end
 
@@ -238,9 +239,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             switch format
                 case "Workspace"
 
-                    if evalin("base", "exist(""analysis"", ""var"")")
+                    variableName = app.createMissionSpecificVariable();
 
-                        selectedOption = uiconfirm(app.UIFigure, "Variable <code>analysis</code> already exists in the MATLAB Workspace." + ...
+                    if evalin("base", compose("exist(""%s"", ""var"")", variableName))
+
+                        selectedOption = uiconfirm(app.UIFigure, compose("Variable <code>%s</code> already exists in the MATLAB Workspace.", variableName) + ...
                             " Would you like to overwrite it?", "Variable Already Exists", Interpreter = "html");
 
                         if ~isequal(selectedOption, "OK")
@@ -248,14 +251,19 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                         end
                     end
 
-                    analysis = app.Model.Analysis.copy();
-                    assignin("base", "analysis", analysis);
-                    return;
+                    assignin("base", variableName, eval(variableName));
                 case "MAT (Full Analysis)"
 
-                    analysis = app.Model.Analysis;
-                    save(fullfile(app.ResultsLocation, "Data.mat"), "analysis");
-                    return;
+                    fileName = fullfile(app.ResultsLocation, "Data.mat");
+                    variableName = app.createMissionSpecificVariable();
+
+                    if isfile(fileName)
+                        options = {"-append"};
+                    else
+                        options = {};
+                    end
+
+                    save(fileName, variableName, options{:});
                 case cellstr(app.ExportManager.SupportedFormats)
 
                     try
@@ -462,6 +470,15 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.CloseFiguresButton.Layout.Row = 1;
             app.CloseFiguresButton.Layout.Column = 4;
             app.CloseFiguresButton.Text = ["Close"; "Figures"];
+        end
+    end
+
+    methods (Hidden, Access = private)
+
+        function variableName = createMissionSpecificVariable(app)
+
+            variableName = lower(string(app.Mission)) + "Analysis";
+            assignin("caller", variableName, app.Model.Analysis.copy());
         end
     end
 
