@@ -8,3 +8,7 @@
 - (Bartington, HelioSwarm, IMAP) Increase app area size by 30 %
 - (Bartington, HelioSwarm, IMAP) Exported results are named after the selected mission (e.g., `imapAnalysis` instead of `analysis`)
 - (IMAP) Show any available metadata for sensor setup
+
+## Software
+
+- (IMAP) Fix issue when no acknowledge or completion events are available in logs
