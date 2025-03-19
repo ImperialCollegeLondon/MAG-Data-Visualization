@@ -246,20 +246,20 @@ classdef tField < MAGViewTestCase
                 case "Compression"
 
                     arrangement(1) = arrangement(1) + 1;
-                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Compression", YLabel = "compressed [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression")), ...
-                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Compression", YLabel = "compressed [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression"))}];
+                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Compression", YLabel = "compressed [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Compression")), ...
+                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Compression", YLabel = "compressed [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Compression"))}];
 
                 case "Mode"
 
                     arrangement(1) = arrangement(1) + 1;
-                    expectedInputs = [expectedInputs, {instrument.Primary.Events, mag.graphics.style.Default(Title = "FIB Modes", YLabel = "mode [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Primary.Time(end))), ...
-                        instrument.Secondary.Events, mag.graphics.style.Default(Title = "FOB Modes", YLabel = "mode [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Secondary.Time(end)))}];
+                    expectedInputs = [expectedInputs, {instrument.Primary.Events, mag.graphics.style.Default(Title = "FIB Modes", YLabel = "mode [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Primary.Time(end))), ...
+                        instrument.Secondary.Events, mag.graphics.style.Default(Title = "FOB Modes", YLabel = "mode [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Secondary.Time(end)))}];
 
                 case "Range"
 
                     arrangement(1) = arrangement(1) + 1;
-                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Ranges", YLabel = "range [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25)), ...
-                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Ranges", YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))}];
+                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Ranges", YLabel = "range [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25)), ...
+                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Ranges", YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))}];
             end
 
             expectedInputs = [expectedInputs, { ...

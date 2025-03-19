@@ -91,20 +91,20 @@ classdef Field < mag.imap.view.Science
                     case "Compression"
 
                         numEvents = numEvents + 1;
-                        ed = {primary, mag.graphics.style.Default(Title = compose("%s Compression", primarySensor), YLabel = "compressed [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression")), ...
-                            secondary, mag.graphics.style.Default(Title = compose("%s Compression", secondarySensor), YLabel = "compressed [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Compression"))};
+                        ed = {primary, mag.graphics.style.Default(Title = compose("%s Compression", primarySensor), YLabel = "compressed [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Compression")), ...
+                            secondary, mag.graphics.style.Default(Title = compose("%s Compression", secondarySensor), YLabel = "compressed [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Compression"))};
 
                     case "Mode"
 
                         numEvents = numEvents + 1;
-                        ed = {primary.Events, mag.graphics.style.Default(Title = compose("%s Modes", primarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = primary.Time(end))), ...
-                            secondary.Events, mag.graphics.style.Default(Title = compose("%s Modes", secondarySensor), YLabel = "mode [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "DataFrequency", EndTime = secondary.Time(end)))};
+                        ed = {primary.Events, mag.graphics.style.Default(Title = compose("%s Modes", primarySensor), YLabel = "mode [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = primary.Time(end))), ...
+                            secondary.Events, mag.graphics.style.Default(Title = compose("%s Modes", secondarySensor), YLabel = "mode [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = secondary.Time(end)))};
 
                     case "Range"
 
                         numEvents = numEvents + 1;
-                        ed = {primary, mag.graphics.style.Default(Title = compose("%s Ranges", primarySensor), YLabel = "range [-]", YLimits = "manual", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25)), ...
-                            secondary, mag.graphics.style.Default(Title = compose("%s Ranges", secondarySensor), YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.graphics.chart.custom.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))};
+                        ed = {primary, mag.graphics.style.Default(Title = compose("%s Ranges", primarySensor), YLabel = "range [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25)), ...
+                            secondary, mag.graphics.style.Default(Title = compose("%s Ranges", secondarySensor), YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))};
 
                     otherwise
                         error("Unrecognized event ""%s"".", e);

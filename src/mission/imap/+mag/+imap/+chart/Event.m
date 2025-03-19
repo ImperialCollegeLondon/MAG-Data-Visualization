@@ -1,5 +1,5 @@
 classdef Event < mag.graphics.chart.Chart
-% EVENT Custom chart for plotting of events.
+% EVENT Custom chart for plotting IMAP events.
 
     properties
         % EVENTOFINTEREST Event name to plot.
@@ -19,7 +19,7 @@ classdef Event < mag.graphics.chart.Chart
         function this = Event(options)
 
             arguments
-                options.?mag.graphics.chart.custom.Event
+                options.?mag.imap.chart.Event
             end
 
             this.assignProperties(options);
@@ -28,7 +28,7 @@ classdef Event < mag.graphics.chart.Chart
         function graph = plot(this, data, axes, ~)
 
             arguments (Input)
-                this (1, 1) mag.graphics.chart.custom.Event
+                this (1, 1) mag.imap.chart.Event
                 data {mustBeA(data, ["mag.Science", "timetable"])}
                 axes (1, 1) matlab.graphics.axis.Axes
                 ~
