@@ -5,4 +5,5 @@
 ## App
 
 - (Bartington, HelioSwarm, IMAP) Add results preview for science data
+- (Bartington, HelioSwarm, IMAP) Increase app area size by 30 %
 - (IMAP) Show any available metadata for sensor setup

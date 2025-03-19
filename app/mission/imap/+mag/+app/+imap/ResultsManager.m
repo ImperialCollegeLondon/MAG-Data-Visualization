@@ -17,7 +17,7 @@ classdef ResultsManager < mag.app.manage.ResultsManager
             % Create layout.
             this.ResultsLayout = uigridlayout(parent);
             this.ResultsLayout.ColumnWidth = "1x";
-            this.ResultsLayout.RowHeight = ["1x", "4x"];
+            this.ResultsLayout.RowHeight = ["1x", "4.5x"];
 
             % Create metadata.
             this.MetadataPanel = uipanel(this.ResultsLayout);

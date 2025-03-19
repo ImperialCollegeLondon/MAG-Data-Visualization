@@ -62,7 +62,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Create figure and other UI components.
             app.UIFigure = uifigure();
-            app.UIFigure.Position = [100, 100, 694, 429];
+            app.UIFigure.Position = [100, 100, 800, 495];
             app.UIFigure.Name = app.getAppName();
             app.UIFigure.Resize = "off";
 
