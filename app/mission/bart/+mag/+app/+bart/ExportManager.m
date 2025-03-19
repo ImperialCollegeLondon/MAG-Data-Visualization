@@ -18,7 +18,7 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
             this.ExportSettingsLayout.ColumnWidth = "1x";
             this.ExportSettingsLayout.RowHeight = ["1x", "1x"];
 
-            uilabel(this.ExportSettingsLayout, Text = "Not available for Bartington yet.", HorizontalAlignment = "center", VerticalAlignment = "center");
+            uilabel(this.ExportSettingsLayout, Text = "No export options for Bartington yet.", HorizontalAlignment = "center", VerticalAlignment = "center");
 
             % Reset.
             this.reset();

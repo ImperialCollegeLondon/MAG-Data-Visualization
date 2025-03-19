@@ -1,4 +1,4 @@
-classdef ResultsManager < mag.app.manage.Manager
+classdef ResultsManager < mag.app.manage.ResultsManager
 % RESULTSMANAGER Manager for results of IMAP analysis.
 
     properties (SetAccess = private)
@@ -14,24 +14,22 @@ classdef ResultsManager < mag.app.manage.Manager
 
         function instantiate(this, parent)
 
-            % Create ResultsLayout.
+            % Create layout.
             this.ResultsLayout = uigridlayout(parent);
             this.ResultsLayout.ColumnWidth = "1x";
-            this.ResultsLayout.RowHeight = ["1x", "3x"];
+            this.ResultsLayout.RowHeight = ["1x", "4x"];
 
-            % Create MetadataPanel.
+            % Create metadata.
             this.MetadataPanel = uipanel(this.ResultsLayout);
             this.MetadataPanel.Enable = "off";
             this.MetadataPanel.Title = "Metadata";
             this.MetadataPanel.Layout.Row = 1;
             this.MetadataPanel.Layout.Column = 1;
 
-            % Create MetadataLayout.
             this.MetadataLayout = uigridlayout(this.MetadataPanel);
             this.MetadataLayout.ColumnWidth = ["1x", "1x", "1x"];
             this.MetadataLayout.RowHeight = "1x";
 
-            % Create InstrumentTextArea.
             this.InstrumentTextArea = uitextarea(this.MetadataLayout);
             this.InstrumentTextArea.Editable = "off";
             this.InstrumentTextArea.Tooltip = "Instrument Metadata";
@@ -39,7 +37,6 @@ classdef ResultsManager < mag.app.manage.Manager
             this.InstrumentTextArea.Layout.Row = 1;
             this.InstrumentTextArea.Layout.Column = 1;
 
-            % Create PrimaryTextArea.
             this.PrimaryTextArea = uitextarea(this.MetadataLayout);
             this.PrimaryTextArea.Editable = "off";
             this.PrimaryTextArea.Tooltip = "Primary Sensor Metadata";
@@ -47,7 +44,6 @@ classdef ResultsManager < mag.app.manage.Manager
             this.PrimaryTextArea.Layout.Row = 1;
             this.PrimaryTextArea.Layout.Column = 2;
 
-            % Create SecondaryTextArea.
             this.SecondaryTextArea = uitextarea(this.MetadataLayout);
             this.SecondaryTextArea.Editable = "off";
             this.SecondaryTextArea.Tooltip = "Secondary Sensor Metadata";
@@ -55,17 +51,24 @@ classdef ResultsManager < mag.app.manage.Manager
             this.SecondaryTextArea.Layout.Row = 1;
             this.SecondaryTextArea.Layout.Column = 3;
 
+            % Create science preview.
+            this.instantiateSciencePreview(this.ResultsLayout, Row = 2);
+
             % Reset.
             this.reset();
         end
 
         function reset(this)
 
+            % Metadata.
             this.MetadataPanel.Enable = "off";
 
             this.InstrumentTextArea.Value = char.empty();
             this.PrimaryTextArea.Value = char.empty();
             this.SecondaryTextArea.Value = char.empty();
+
+            % Science preview.
+            this.resetSciencePreview();
         end
     end
 
@@ -77,9 +80,10 @@ classdef ResultsManager < mag.app.manage.Manager
 
                 results = model.Analysis.Results;
 
+                % Metadata.
                 instrumentMetadata = compose("%s - BSW: %s - ASW: %s", results.Metadata.Model, results.Metadata.BSW, results.Metadata.ASW);
-                primaryMetadata = compose("%s (%s - %s - %s)", results.Primary.Metadata.getDisplay("Sensor"), results.Primary.Metadata.Setup.FEE, results.Primary.Metadata.Setup.Model, results.Primary.Metadata.Setup.Can);
-                secondaryMetadata = compose("%s (%s - %s - %s)", results.Secondary.Metadata.getDisplay("Sensor"), results.Secondary.Metadata.Setup.FEE, results.Secondary.Metadata.Setup.Model, results.Secondary.Metadata.Setup.Can);
+                primaryMetadata = compose("%s (%s)", results.Primary.Metadata.getDisplay("Sensor"), string(results.Primary.Metadata.Setup));
+                secondaryMetadata = compose("%s (%s)", results.Secondary.Metadata.getDisplay("Sensor"), string(results.Secondary.Metadata.Setup));
 
                 if ~isempty(instrumentMetadata)
                     this.InstrumentTextArea.Value = instrumentMetadata;
@@ -94,6 +98,11 @@ classdef ResultsManager < mag.app.manage.Manager
                 end
 
                 this.MetadataPanel.Enable = "on";
+
+                % Science preview.
+                if results.Primary.HasData && results.Secondary.HasData
+                    this.plotSensorPreview(results.Primary.Data, results.Secondary.Data, LegendLabels = ["Primary", "Secondary"]);
+                end
             else
                 this.reset();
             end
