@@ -93,6 +93,32 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
+
+        % Test that analysis of S/C test returns expected results.
+        function scTestAnalysis(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("sc_test");
+
+            % Exercise.
+            analysis = mag.imap.Analysis.start(Location = pwd());
+
+            % Verify.
+            testCase.verifySubstring(analysis.EventFileNames, "20250324_140003.html", "Event file names do not match.");
+            testCase.verifySubstring(analysis.MetadataFileNames, "imap_setup.json", "Metadata file names do not match.");
+
+            testCase.verifySubstring(analysis.ScienceFileNames(1), "MAGScience-normal-(2,2)-32s-20250324-16h50.csv", "Science file names do not match.");
+            testCase.verifyEmpty(analysis.IALiRTFileNames, "I-ALiRT file names do not match.");
+
+            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_conf.MAG_HSK_SID15_20250324_135949.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{2}, "idle_export_proc.MAG_HSK_PROCSTAT_20250324_135949.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{3}, "idle_export_pwr.MAG_HSK_PW_20250324_135949.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{4}, "idle_export_sci.MAG_HSK_SCI_20250324_135949.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20250324_135949.csv", "HK file names do not match.");
+
+            testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
+            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+        end
     end
 
     methods (Access = private)
