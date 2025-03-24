@@ -43,9 +43,11 @@ classdef (Abstract) TimeSeries < mag.Data & mag.mixin.Crop & mag.mixin.Signal
     methods (Sealed)
 
         function value = isPlottable(this)
+        % ISPLOTTABLE Determine whether data can be plotted. There must be
+        % more than one data point.
 
             arguments
-                this (1, :) mag.TimeSeries
+                this mag.TimeSeries
             end
 
             if isempty(this)
