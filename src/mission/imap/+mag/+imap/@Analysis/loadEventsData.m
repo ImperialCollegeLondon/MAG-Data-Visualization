@@ -92,25 +92,28 @@ function loadEventsData(this)
 
     %% Mode Transition Events
 
-    locTransition = [rawEvents.command] == "MAG_PROG_MTRAN";
+    if ~isempty(events)
 
-    for te = rawEvents(locTransition)
+        locTransition = [rawEvents.command] == "MAG_PROG_MTRAN";
 
-        responsePattern = getResponsePattern(te.details);
-        eventDetails = regexp(te.details, responsePattern, "names", "all");
+        for te = rawEvents(locTransition)
 
-        modeChangeTimestamp = datetime(te.timestamp, Format = eventTimeFormat, TimeZone = "UTC");
-        matchingEvents = events((double([events.Mode]) == str2double(eventDetails.curr)) & ...
-            ([events.CommandTimestamp] <= modeChangeTimestamp));
+            responsePattern = getResponsePattern(te.details);
+            eventDetails = regexp(te.details, responsePattern, "names", "all");
 
-        if ~isempty(matchingEvents)
+            modeChangeTimestamp = datetime(te.timestamp, Format = eventTimeFormat, TimeZone = "UTC");
+            matchingEvents = events((double([events.Mode]) == str2double(eventDetails.curr)) & ...
+                ([events.CommandTimestamp] <= modeChangeTimestamp));
 
-            matchingEvents = sort(matchingEvents);
+            if ~isempty(matchingEvents)
 
-            if ismissing(matchingEvents(end).ModeChangeTimestamp)
-                matchingEvents(end).ModeChangeTimestamp = modeChangeTimestamp;
-            else
-                % TODO: could be an automated transition
+                matchingEvents = sort(matchingEvents);
+
+                if ismissing(matchingEvents(end).ModeChangeTimestamp)
+                    matchingEvents(end).ModeChangeTimestamp = modeChangeTimestamp;
+                else
+                    % TODO: could be an automated transition
+                end
             end
         end
     end
