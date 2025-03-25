@@ -1,4 +1,4 @@
-classdef tIMAPField < MAGControllerTestCase
+classdef tIMAPField < mag.test.ViewControllerTestCase
 % TIMAPFIELD Unit tests for "mag.app.imap.control.Field" class.
 
     methods (Test)
