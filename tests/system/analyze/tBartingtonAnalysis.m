@@ -20,7 +20,7 @@ classdef tBartingtonAnalysis < matlab.unittest.TestCase
 
         function copyDataToWorkingDirectory(testCase)
 
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "test_data", "bart"), fullfile(testCase.WorkingDirectory.Folder));
+            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "..", "test_data", "bart"), fullfile(testCase.WorkingDirectory.Folder));
             testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
         end
     end
