@@ -1,5 +1,5 @@
-classdef tAppExport < AppTestCase
-% TAPPEXPORT System tests for exporting "DataVisualization" results.
+classdef tExport < AppTestCase
+% TEXPORT System tests for exporting "DataVisualization" results.
 
     properties (Access = private)
         App DataVisualization {mustBeScalarOrEmpty}
