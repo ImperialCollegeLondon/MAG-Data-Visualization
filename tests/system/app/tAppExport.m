@@ -16,6 +16,10 @@ classdef tAppExport < AppTestCase
 
     methods (TestClassSetup)
 
+        function skipOnGitHub(testCase)
+            skipOnGitHub@AppTestCase(testCase);
+        end
+
         function initializeApp(testCase, TestDetails)
 
             testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
