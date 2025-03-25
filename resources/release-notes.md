@@ -11,5 +11,6 @@
 
 ## Software
 
+- (IMAP) I-ALiRT with only one sensor is still valid
 - (IMAP) Fix issue when no acknowledge or completion events are available in logs
 - (IMAP) Fix issue in detecting transition events when no science events are detected

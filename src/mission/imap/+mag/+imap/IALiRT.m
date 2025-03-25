@@ -33,7 +33,7 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
         end
 
         function hasData = get.HasScience(this)
-            hasData = ~isempty(this.Science) && all([this.Science.HasData]);
+            hasData = ~isempty(this.Science) && any([this.Science.HasData]);
         end
 
         function primary = get.Primary(this)

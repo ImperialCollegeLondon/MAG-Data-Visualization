@@ -31,7 +31,7 @@ classdef tIALiRT < matlab.mock.TestCase
             iALiRT = mag.imap.IALiRT(Science = [primary, secondary]);
 
             % Exercise and verify.
-            testCase.verifyFalse(iALiRT.HasData, """HasData"" property should be ""false"".");
+            testCase.verifyTrue(iALiRT.HasData, """HasData"" property should be ""true"".");
         end
 
         % Test that "HasData" property returns "false" when secondary has
@@ -45,7 +45,7 @@ classdef tIALiRT < matlab.mock.TestCase
             iALiRT = mag.imap.IALiRT(Science = [primary, secondary]);
 
             % Exercise and verify.
-            testCase.verifyFalse(iALiRT.HasData, """HasData"" property should be ""false"".");
+            testCase.verifyTrue(iALiRT.HasData, """HasData"" property should be ""true"".");
         end
 
         % Test that "crop" method calls method of underlying science data.
