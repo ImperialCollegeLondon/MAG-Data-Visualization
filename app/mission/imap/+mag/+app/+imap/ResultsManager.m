@@ -102,6 +102,10 @@ classdef ResultsManager < mag.app.manage.ResultsManager
                 % Science preview.
                 if results.Primary.HasData && results.Secondary.HasData
                     this.plotSensorPreview(results.Primary.Data, results.Secondary.Data, LegendLabels = ["Primary", "Secondary"]);
+                elseif results.Primary.HasData
+                    this.plotSensorPreview(results.Primary.Data, LegendLabels = "Primary");
+                elseif results.Secondary.HasData
+                    this.plotSensorPreview(results.Secondary.Data, LegendLabels = "Secondary");
                 end
             else
                 this.reset();

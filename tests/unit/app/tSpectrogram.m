@@ -1,4 +1,4 @@
-classdef tSpectrogram < MAGControllerTestCase
+classdef tSpectrogram < mag.test.ViewControllerTestCase
 % TSPECTROGRAM Unit tests for "mag.app.control.Spectrogram" class.
 
     methods (Test)

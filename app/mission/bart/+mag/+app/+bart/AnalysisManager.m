@@ -91,9 +91,9 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             location = this.LocationEditField.Value;
 
             if isempty(location)
-                error("Location is empty.");
+                error("mag:app:emptyLocation", "Location is empty.");
             elseif ~isfolder(location)
-                error("Location ""%s"" does not exist.", location);
+                error("mag:app:nonexistentLocation", "Location ""%s"" does not exist.", location);
             end
 
             options = {"Location", this.LocationEditField.Value, ...

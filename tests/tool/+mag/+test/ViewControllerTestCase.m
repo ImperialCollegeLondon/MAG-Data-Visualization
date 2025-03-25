@@ -1,5 +1,5 @@
-classdef (Abstract) MAGControllerTestCase < mag.test.GraphicsTestCase
-% MAGCONTROLLERTESTCASE Base class for all view-controller tests.
+classdef (Abstract) ViewControllerTestCase < mag.test.GraphicsTestCase
+% VIEWCONTROLLERTESTCASE Base class for all view-controller tests.
 
     properties (Constant, Access = protected)
         DynamicPlaceholder (1, 1) string = "dynamic (default)";

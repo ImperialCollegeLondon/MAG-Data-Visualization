@@ -101,7 +101,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.copyDataToWorkingDirectory("sc_test");
 
             % Exercise.
-            analysis = mag.imap.Analysis.start(Location = pwd());
+            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "");
 
             % Verify.
             testCase.verifySubstring(analysis.EventFileNames, "20250324_140003.html", "Event file names do not match.");
@@ -125,7 +125,7 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
         function copyDataToWorkingDirectory(testCase, testFolder)
 
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "test_data", "imap", testFolder), fullfile(testCase.WorkingDirectory.Folder));
+            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "..", "test_data", "imap", testFolder), fullfile(testCase.WorkingDirectory.Folder));
             testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
         end
     end

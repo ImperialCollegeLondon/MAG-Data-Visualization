@@ -1,6 +1,11 @@
 classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
+    properties (Constant)
+        ExportWorkspace (1, 1) string = "Workspace"
+        ExportMAT (1, 1) string = "MAT (Full Analysis)"
+    end
+
     properties (Constant, Access = private)
         AppName (1, 1) string = "MAG Data Visualization App"
     end
@@ -11,10 +16,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         TabGroup matlab.ui.container.TabGroup
         AnalyzeTab matlab.ui.container.Tab
         AnalyzeLayout matlab.ui.container.GridLayout
-        VersionLabel matlab.ui.control.Label
-        ResetButton matlab.ui.control.Button
-        ProcessDataButton matlab.ui.control.Button
         AnalyzeSettingsPanel matlab.ui.container.Panel
+        VersionLabel matlab.ui.control.Label
+        ProcessDataButton matlab.ui.control.Button
+        ResetButton matlab.ui.control.Button
         ResultsTab matlab.ui.container.Tab
         ExportTab matlab.ui.container.Tab
         ExportLayout matlab.ui.container.GridLayout
@@ -34,6 +39,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     end
 
     properties (SetAccess = private)
+        SelectMissionDialog mag.app.internal.SelectMissionDialog {mustBeScalarOrEmpty}
+        Mission mag.meta.Mission {mustBeScalarOrEmpty}
         Provider mag.app.Provider {mustBeScalarOrEmpty}
         Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
         ToolbarManager mag.app.manage.ToolbarManager {mustBeScalarOrEmpty}
@@ -42,10 +49,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ExportManager mag.app.manage.ExportManager {mustBeScalarOrEmpty}
         VisualizationManager mag.app.manage.VisualizationManager {mustBeScalarOrEmpty}
         AppNotificationHandler mag.app.internal.AppNotificationHandler {mustBeScalarOrEmpty}
-    end
-
-    properties (Access = private)
-        Mission mag.meta.Mission {mustBeScalarOrEmpty}
     end
 
     properties (Dependent, Access = private)
@@ -122,13 +125,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             % Ask which mission to load, if not provided.
             if isempty(mission)
 
-                selectMissionDialog = mag.app.internal.SelectMissionDialog(app.UIFigure);
-                mission = selectMissionDialog.waitForSelection();
+                app.SelectMissionDialog = mag.app.internal.SelectMissionDialog(app.UIFigure);
+                mission = app.SelectMissionDialog.waitForSelection();
 
-                if selectMissionDialog.Aborted
+                if app.SelectMissionDialog.Aborted
                     error("User aborted.");
                 else
-                    selectMissionDialog.delete();
+                    app.SelectMissionDialog.delete();
                 end
 
                 closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing mission..."); %#ok<NASGU>
@@ -237,7 +240,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             format = app.ExportFormatDropDown.Value;
 
             switch format
-                case "Workspace"
+                case app.ExportWorkspace
 
                     variableName = app.createMissionSpecificVariable();
 
@@ -252,7 +255,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     end
 
                     assignin("base", variableName, eval(variableName));
-                case "MAT (Full Analysis)"
+                case app.ExportMAT
 
                     fileName = fullfile(app.ResultsLocation, "Data.mat");
                     variableName = app.createMissionSpecificVariable();
@@ -398,11 +401,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Create ExportFormatDropDown.
             app.ExportFormatDropDown = uidropdown(app.ExportButtonsLayout);
-            app.ExportFormatDropDown.Items = ["Workspace", "MAT (Full Analysis)", app.ExportManager.SupportedFormats];
+            app.ExportFormatDropDown.Items = [app.ExportWorkspace, app.ExportMAT, app.ExportManager.SupportedFormats];
             app.ExportFormatDropDown.Enable = "off";
             app.ExportFormatDropDown.Layout.Row = 1;
             app.ExportFormatDropDown.Layout.Column = 4;
-            app.ExportFormatDropDown.Value = "Workspace";
+            app.ExportFormatDropDown.Value = app.ExportWorkspace;
 
             % Create ExportButton.
             app.ExportButton = uibutton(app.ExportButtonsLayout, "push");

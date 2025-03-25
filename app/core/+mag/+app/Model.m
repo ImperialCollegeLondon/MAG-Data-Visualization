@@ -6,7 +6,7 @@ classdef (Abstract) Model < mag.mixin.SetGet
         AnalysisChanged
     end
 
-    properties (SetAccess = protected)
+    properties (SetAccess = private)
         % ANALYSIS Analysis results.
         Analysis mag.Analysis {mustBeScalarOrEmpty} = mag.imap.Analysis.empty()
     end

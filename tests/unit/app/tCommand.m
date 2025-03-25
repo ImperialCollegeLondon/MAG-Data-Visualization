@@ -64,5 +64,16 @@ classdef tCommand < matlab.unittest.TestCase
             testCase.verifyEqual(args, {2, 'like', uint16(1)}, "Arguments should match expectation.");
             testCase.verifyEqual(value, uint16(ones(2)), "Returned value should match expectation.");
         end
+
+        % Test that number of in- and outputs can be extracted.
+        function narginout(testCase)
+
+            % Set up.
+            command = mag.app.Command(Functional = @ones);
+
+            % Exercise and verify.
+            testCase.verifyEqual(command.NArgIn, -1, "Number of input argument should match expectation.");
+            testCase.verifyEqual(command.NArgOut, 1, "Number of output argument should match expectation.");
+        end
     end
 end

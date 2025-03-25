@@ -1,6 +1,7 @@
 {
     "Instrument": {
         "Mission": "IMAP",
+        "Model": "FM",
         "BSW": "2.04",
         "ASW": "4.05",
         "GSE": "17.5"
@@ -9,12 +10,12 @@
         "FEE": "FEE3",
         "Model": "FM5",
         "Harness": "S/C",
-        "Can", "None"
+        "Can": "None"
     },
     "Secondary": {
         "FEE": "FEE4",
         "Model": "FM4",
         "Harness": "S/C",
-        "Can", "None"
+        "Can": "None"
     }
 }
