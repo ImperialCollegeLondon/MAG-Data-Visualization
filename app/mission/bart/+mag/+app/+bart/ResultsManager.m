@@ -36,6 +36,10 @@ classdef ResultsManager < mag.app.manage.ResultsManager
 
                 if results.Input1.HasData && results.Input2.HasData
                     this.plotSensorPreview(results.Input1.Data, results.Input2.Data, LegendLabels = ["Input1", "Input2"]);
+                elseif results.Input1.HasData
+                    this.plotSensorPreview(results.Input1.Data, LegendLabels = "Input1");
+                elseif results.Input2.HasData
+                    this.plotSensorPreview(results.Input2.Data, LegendLabels = "Input2");
                 end
             else
                 this.reset();
