@@ -1,7 +1,7 @@
 classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
-    properties
+    properties (Constant)
         ExportWorkspace (1, 1) string = "Workspace"
         ExportMAT (1, 1) string = "MAT (Full Analysis)"
     end
