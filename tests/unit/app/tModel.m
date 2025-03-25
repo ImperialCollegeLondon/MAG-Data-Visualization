@@ -56,6 +56,7 @@ classdef tModel < mag.test.ViewControllerTestCase
 
             testCase.verifyError(@() model.load(workingDirectory.Folder), ?MException, ...
                 "Error should be thrown when no valid analysis exists.");
+
             testCase.verifyFalse(model.HasAnalysis, "Analysis should not be loaded.");
             testCase.verifyFalse(testCase.EventTriggered, "Event should not trigger when no analysis change.");
         end

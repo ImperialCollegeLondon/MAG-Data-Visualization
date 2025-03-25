@@ -2,6 +2,7 @@ classdef tCalibration < MAGAnalysisTestCase
 % TCALIBRATION Unit tests for "mag.process.Calibration" class.
 
     properties (TestParameter)
+        FallbackSensor = {"EM2", "FM1"}
         SensorDetails = {struct(Name = "LM2", Expected = [3, -1, -2]), ...
             struct(Name = "JM1", Expected = [-2, 1, 3]), ...
             struct(Name = "SOLO-OBS-QM", Expected = [-2, 1, -3]), ...
@@ -77,6 +78,28 @@ classdef tCalibration < MAGAnalysisTestCase
             % Set up.
             uncalibratedData = testCase.createTestData();
             metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = "FM5"));
+
+            expectedData = uncalibratedData;
+            expectedData{:, "x"} = 1.075387;
+            expectedData{:, "y"} = 0.001632 + 1.047678;
+            expectedData{:, "z"} = -0.001174 - 0.004159 + 1.053048;
+
+            % Exercise.
+            calibrationStep = mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"]);
+            calibratedData = calibrationStep.apply(uncalibratedData, metadata);
+
+            % Verify.
+            testCase.verifyThat(calibratedData, matlab.unittest.constraints.IsEqualTo(expectedData, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-10)), ...
+                "Calibrated value should match expectation.");
+        end
+
+        % Verify that fallback calibration is selected for EM and FM
+        % sensors.
+        function calibration_fallbackSensor(testCase, FallbackSensor)
+
+            % Set up.
+            uncalibratedData = testCase.createTestData();
+            metadata = mag.meta.Science(Setup = mag.meta.Setup(Model = FallbackSensor));
 
             expectedData = uncalibratedData;
             expectedData{:, "x"} = 1.075387;
