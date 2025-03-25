@@ -1,7 +1,7 @@
 classdef (Abstract) ResultsManager < mag.app.manage.Manager
 % RESULTSMANAGER Manager for results components.
 
-    properties (Access = protected)
+    properties (SetAccess = protected)
         SciencePreviewPanel matlab.ui.container.Panel
         StackedChartPreview matlab.graphics.chart.StackedLineChart
     end
