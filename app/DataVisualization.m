@@ -1,6 +1,11 @@
 classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 % DATAVISUALIZATION App for processing, exporting and visualizing MAG data.
 
+    properties
+        ExportWorkspace (1, 1) string = "Workspace"
+        ExportMAT (1, 1) string = "MAT (Full Analysis)"
+    end
+
     properties (Constant, Access = private)
         AppName (1, 1) string = "MAG Data Visualization App"
     end
@@ -235,7 +240,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             format = app.ExportFormatDropDown.Value;
 
             switch format
-                case "Workspace"
+                case app.ExportWorkspace
 
                     variableName = app.createMissionSpecificVariable();
 
@@ -250,7 +255,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     end
 
                     assignin("base", variableName, eval(variableName));
-                case "MAT (Full Analysis)"
+                case app.ExportMAT
 
                     fileName = fullfile(app.ResultsLocation, "Data.mat");
                     variableName = app.createMissionSpecificVariable();
@@ -396,11 +401,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             % Create ExportFormatDropDown.
             app.ExportFormatDropDown = uidropdown(app.ExportButtonsLayout);
-            app.ExportFormatDropDown.Items = ["Workspace", "MAT (Full Analysis)", app.ExportManager.SupportedFormats];
+            app.ExportFormatDropDown.Items = [app.ExportWorkspace, app.ExportMAT, app.ExportManager.SupportedFormats];
             app.ExportFormatDropDown.Enable = "off";
             app.ExportFormatDropDown.Layout.Row = 1;
             app.ExportFormatDropDown.Layout.Column = 4;
-            app.ExportFormatDropDown.Value = "Workspace";
+            app.ExportFormatDropDown.Value = app.ExportWorkspace;
 
             % Create ExportButton.
             app.ExportButton = uibutton(app.ExportButtonsLayout, "push");

@@ -1,6 +1,12 @@
 classdef ToolbarManager < mag.app.manage.Manager
 % TOOLBARMANAGER Manager for toolbar components.
 
+    properties (Constant)
+        DebugErrorID (1, 1) string = "Error ID"
+        DebugErrorSource (1, 1) string = "Error Source"
+        DebugCancel (1, 1) string = "Cancel"
+    end
+
     properties (SetAccess = private)
         Toolbar matlab.ui.container.Toolbar
         MissionPushTool matlab.ui.container.toolbar.PushTool
@@ -135,13 +141,13 @@ classdef ToolbarManager < mag.app.manage.Manager
                 return;
             end
 
-            selection = uiconfirm(this.App.UIFigure, "Select debugging type.", "Debug Type", Icon = "question", Options = ["Error ID", "Error Source", "Cancel"], ...
-                DefaultOption = "Error ID", CancelOption = "Cancel");
+            selection = uiconfirm(this.App.UIFigure, "Select debugging type.", "Debug Type", Icon = "question", Options = [this.DebugErrorID, this.DebugErrorSource, this.DebugCancel], ...
+                DefaultOption = this.DebugErrorID, CancelOption = this.DebugCancel);
 
             switch selection
-                case "Error ID"
+                case this.DebugErrorID
                     mag.internal.stopIfException(this.PreviousError.identifier);
-                case "Error Source"
+                case this.DebugErrorSource
 
                     stack = this.PreviousError.stack;
                     dbstop("in", stack(1).file, "at", num2str(stack(1).line));

@@ -42,7 +42,7 @@ classdef tExport < AppTestCase
             variableName = compose("%sAnalysis", lower(testCase.Mission));
 
             testCase.choose(testCase.App.ExportTab);
-            testCase.choose(testCase.App.ExportFormatDropDown, "Workspace");
+            testCase.choose(testCase.App.ExportFormatDropDown, DataVisualization.ExportWorkspace);
 
             % Exercise.
             testCase.addTeardown(@() evalin("base", compose("clearvars('%s')", variableName)));
@@ -58,7 +58,7 @@ classdef tExport < AppTestCase
             variableName = compose("%sAnalysis", lower(testCase.Mission));
 
             testCase.choose(testCase.App.ExportTab);
-            testCase.choose(testCase.App.ExportFormatDropDown, "Workspace");
+            testCase.choose(testCase.App.ExportFormatDropDown, DataVisualization.ExportWorkspace);
 
             % Exercise.
             testCase.addTeardown(@() evalin("base", compose("clearvars('%s')", variableName)));
@@ -78,7 +78,7 @@ classdef tExport < AppTestCase
             exportFile = fullfile(exportFolder, "Data.mat");
 
             testCase.choose(testCase.App.ExportTab);
-            testCase.choose(testCase.App.ExportFormatDropDown, "MAT (Full Analysis)");
+            testCase.choose(testCase.App.ExportFormatDropDown, DataVisualization.ExportMAT);
 
             % Exercise.
             testCase.addTeardown(@() rmdir(exportFolder, "s"));
@@ -107,7 +107,7 @@ classdef tExport < AppTestCase
             save(exportFile, "anotherAnalysis");
 
             testCase.choose(testCase.App.ExportTab);
-            testCase.choose(testCase.App.ExportFormatDropDown, "MAT (Full Analysis)");
+            testCase.choose(testCase.App.ExportFormatDropDown, DataVisualization.ExportMAT);
 
             % Exercise.
             testCase.addTeardown(@() rmdir(exportFolder, "s"));
