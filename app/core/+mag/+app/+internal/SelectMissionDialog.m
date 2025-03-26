@@ -86,11 +86,11 @@ classdef SelectMissionDialog < handle
             imap = mag.meta.Mission.IMAP;
 
             this.MissionDropDown = uidropdown(this.PanelLayout);
-            this.MissionDropDown.Items = string(enumeration(imap));
+            this.MissionDropDown.Items = [enumeration(imap).DisplayName];
             this.MissionDropDown.ItemsData = enumeration(imap);
             this.MissionDropDown.Layout.Row = 1;
             this.MissionDropDown.Layout.Column = 2;
-            this.MissionDropDown.Value = string(imap);
+            this.MissionDropDown.Value = imap.DisplayName;
 
             % Create SelectButton.
             this.SelectButton = uibutton(this.PanelLayout, "push");

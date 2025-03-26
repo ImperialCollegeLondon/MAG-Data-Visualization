@@ -147,9 +147,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 case mag.meta.Mission.IMAP
                     app.Provider = mag.app.imap.Provider();
                 case mag.meta.Mission.SolarOrbiter
-                    error("Solar Orbiter mission not yet supported.");
+                    error("%s mission not yet supported.", app.Mission.DisplayName);
                 otherwise
-                    error("Unknown mission ""%s"".", app.Mission);
+                    error("Unknown mission %s.", app.Mission.DisplayName);
             end
 
             % Set managers.
@@ -183,7 +183,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             if isempty(app.Mission)
                 name = app.AppName;
             else
-                name = compose("%s (%s)", app.AppName, app.Mission);
+                name = compose("%s (%s)", app.AppName, app.Mission.DisplayName);
             end
         end
 
