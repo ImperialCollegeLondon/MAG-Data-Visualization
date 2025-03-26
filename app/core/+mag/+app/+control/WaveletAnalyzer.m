@@ -83,17 +83,16 @@ classdef WaveletAnalyzer < mag.app.Control
             selectedSignal = string(this.SignalDropDown.Value);
 
             data = results.(selectedInput);
-            propertyName = selectedInput + "_" + selectedSignal;
 
+            if ~data.isPlottable()
+                error("mag:app:emptySignal", "Not enough data for plotting ""%s"".", selectedInput);
+            end
+
+            propertyName = selectedInput + "_" + selectedSignal;
             selectedData = timetable(data.Time - data.Time(1), data.(selectedSignal), VariableNames = propertyName);
 
-            if ~isregular(selectedData)
-
-                frequencies = 1 ./ seconds(data.dT);
-                warning("Resampling data as not uniformely sampled (%.3f ± %.3g Hz).", mode(frequencies), std(frequencies, 0, "omitmissing"));
-
-                selectedData = resample(selectedData);
-            end
+            selectedData = mag.app.internal.removeNonFiniteData(selectedData);
+            selectedData = mag.app.internal.resampleIrregularData(selectedData);
 
             switch this.AppDropDown.Value
                 case "Signal Analyzer"
