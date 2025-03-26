@@ -6,12 +6,13 @@
 
 - (Bartington, HelioSwarm, IMAP) Add results preview for science data
 - (Bartington, HelioSwarm, IMAP) Increase app area size by 30 %
-- (Bartington, HelioSwarm, IMAP) Exported results are named after the selected mission (e.g., `imapAnalysis` instead of `analysis`)
+- (Bartington, HelioSwarm, IMAP) Exported results are named after the selected mission (`bartAnalysis`, `hsAnalysis`, and `imapAnalysis` instead of `analysis`)
 - (IMAP) Show any available metadata for sensor setup
 - Add UI tests for Bartington, HelioSwarm, and IMAP
 
 ## Software
 
+- (Bartington, HelioSwarm, IMAP) Add display and short names for missions in `mag.meta.Mission`
 - (IMAP) I-ALiRT with only one sensor is still valid
 - (IMAP) Fix issue when no acknowledge or completion events are available in logs
 - (IMAP) Fix issue in detecting transition events when no science events are detected
