@@ -1,14 +1,28 @@
 classdef Mission
 % MISSION Enumeration for mission name.
 
+    properties
+        DisplayName (1, 1) string = ""
+        ShortName (1, 1) string = ""
+    end
+
+    methods
+
+        function enum = Mission(displayName, shortName)
+
+            enum.DisplayName = displayName;
+            enum.ShortName = shortName;
+        end
+    end
+
     enumeration
         % BARTINGTON Bartington reference.
-        Bartington
+        Bartington ("Bartington", "Bart")
         % HELIOSWARM HelioSwarm mission.
-        HelioSwarm
+        HelioSwarm ("HelioSwarm", "HS")
         % IMAP IMAP mission.
-        IMAP
+        IMAP ("IMAP", "IMAP")
         % SOLARORBITER Solar Orbiter mission.
-        SolarOrbiter
+        SolarOrbiter ("Solar Orbiter", "SO")
     end
 end

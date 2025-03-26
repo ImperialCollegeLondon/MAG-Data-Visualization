@@ -3,15 +3,15 @@ classdef tExport < AppTestCase
 
     properties (Access = private)
         App DataVisualization {mustBeScalarOrEmpty}
-        Mission (1, 1) string
+        Mission (1, 1) mag.meta.Mission
         WorkingDirectory (1, 1) matlab.unittest.fixtures.WorkingFolderFixture
     end
 
     properties (ClassSetupParameter)
         TestDetails = {
-            struct(Folder = "bart", Mission = "Bartington"), ...
-            struct(Folder = "hs", Mission = "HelioSwarm"), ...
-            struct(Folder = "imap/full_analysis", Mission = "IMAP")}
+            struct(Folder = "bart", Mission = mag.meta.Mission.Bartington), ...
+            struct(Folder = "hs", Mission = mag.meta.Mission.HelioSwarm), ...
+            struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP)}
     end
 
     methods (TestClassSetup)
@@ -39,7 +39,7 @@ classdef tExport < AppTestCase
         function exportToWorkspace(testCase)
 
             % Set up.
-            variableName = compose("%sAnalysis", lower(testCase.Mission));
+            variableName = compose("%sAnalysis", lower(testCase.Mission.ShortName));
 
             testCase.choose(testCase.App.ExportTab);
             testCase.choose(testCase.App.ExportFormatDropDown, DataVisualization.ExportWorkspace);
@@ -55,7 +55,7 @@ classdef tExport < AppTestCase
         function exportToWorkspace_overwrite(testCase)
 
             % Set up.
-            variableName = compose("%sAnalysis", lower(testCase.Mission));
+            variableName = compose("%sAnalysis", lower(testCase.Mission.ShortName));
 
             testCase.choose(testCase.App.ExportTab);
             testCase.choose(testCase.App.ExportFormatDropDown, DataVisualization.ExportWorkspace);
@@ -73,7 +73,7 @@ classdef tExport < AppTestCase
         function exportToMATFile(testCase)
 
             % Set up.
-            variableName = compose("%sAnalysis", lower(testCase.Mission));
+            variableName = compose("%sAnalysis", lower(testCase.Mission.ShortName));
             exportFolder = fullfile(testCase.WorkingDirectory.Folder, compose("Results (v%s)", mag.version()));
             exportFile = fullfile(exportFolder, "Data.mat");
 
@@ -97,7 +97,7 @@ classdef tExport < AppTestCase
         function exportToMATFile_append(testCase)
 
             % Set up.
-            variableName = compose("%sAnalysis", lower(testCase.Mission));
+            variableName = compose("%sAnalysis", lower(testCase.Mission.ShortName));
             exportFolder = fullfile(testCase.WorkingDirectory.Folder, compose("Results (v%s)", mag.version()));
             exportFile = fullfile(exportFolder, "Data.mat");
 
