@@ -480,7 +480,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function variableName = createMissionSpecificVariable(app)
 
-            variableName = lower(string(app.Mission)) + "Analysis";
+            variableName = lower(app.Mission.ShortName) + "Analysis";
             assignin("caller", variableName, app.Model.Analysis.copy());
         end
     end
