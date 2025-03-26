@@ -11,22 +11,9 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
 
             supportedVisualizations = [mag.app.control.Field(@mag.bart.view.Field), ...
                 mag.app.control.PSD(@mag.bart.view.PSD), ...
-                mag.app.control.SignalAnalyzer(["Input1", "Input2"]), ...
                 mag.app.control.Spectrogram(@mag.bart.view.Spectrogram), ...
+                mag.app.control.SignalAnalyzer(["Input1", "Input2"]), ...
                 mag.app.control.WaveletAnalyzer(["Input1", "Input2"])];
-        end
-
-        function figures = visualize(this, analysis)
-
-            command = this.SelectedControl.getVisualizeCommand(analysis.Results);
-
-            if command.NArgOut == 0
-
-                command.call();
-                figures = matlab.ui.Figure.empty();
-            else
-                figures = command.call();
-            end
         end
     end
 end

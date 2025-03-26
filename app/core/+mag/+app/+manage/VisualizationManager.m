@@ -53,15 +53,26 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
 
             delete(this.VisualizationOptionsPanel.Children);
         end
+
+        function figures = visualize(this, analysis)
+        % VISUALIZE Visualize analysis using selected view.
+
+            command = this.SelectedControl.getVisualizeCommand(analysis.Results);
+
+            if command.NArgOut == 0
+
+                command.call();
+                figures = matlab.ui.Figure.empty();
+            else
+                figures = command.call();
+            end
+        end
     end
 
     methods (Abstract)
 
         % GETSUPPORTEDVISUALIZATIONS Retrieve supported visualization classes.
         supportedVisualizations = getSupportedVisualizations(this, model)
-
-        % VISUALIZE Visualize analysis using selected view.
-        figures = visualize(this, analysis)
     end
 
     methods (Access = protected)

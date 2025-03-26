@@ -11,13 +11,9 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
 
             supportedVisualizations = [mag.app.control.Field(@mag.hs.view.Field), ...
                 mag.app.control.PSD(@mag.hs.view.PSD), ...
-                mag.app.control.Spectrogram(@mag.hs.view.Spectrogram)];
-        end
-
-        function figures = visualize(this, analysis)
-
-            command = this.SelectedControl.getVisualizeCommand(analysis.Results);
-            figures = command.call();
+                mag.app.control.Spectrogram(@mag.hs.view.Spectrogram), ...
+                mag.app.control.SignalAnalyzer("Science"), ...
+                mag.app.control.WaveletAnalyzer("Science")];
         end
     end
 end
