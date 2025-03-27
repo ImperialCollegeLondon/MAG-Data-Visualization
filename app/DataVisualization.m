@@ -129,7 +129,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 mission = app.SelectMissionDialog.waitForSelection();
 
                 if app.SelectMissionDialog.Aborted
-                    error("User aborted.");
+                    error("mag:app:abort", "User aborted.");
                 else
                     app.SelectMissionDialog.delete();
                 end
@@ -146,10 +146,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     app.Provider = mag.app.hs.Provider();
                 case mag.meta.Mission.IMAP
                     app.Provider = mag.app.imap.Provider();
-                case mag.meta.Mission.SolarOrbiter
-                    error("%s mission not yet supported.", app.Mission.DisplayName);
                 otherwise
-                    error("Unknown mission %s.", app.Mission.DisplayName);
+                    error("mag:app:unsupportedMission", "%s mission not supported.", app.Mission.DisplayName);
             end
 
             % Set managers.

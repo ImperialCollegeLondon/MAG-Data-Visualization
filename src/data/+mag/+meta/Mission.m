@@ -2,8 +2,8 @@ classdef Mission
 % MISSION Enumeration for mission name.
 
     properties
-        DisplayName (1, 1) string = ""
-        ShortName (1, 1) string = ""
+        DisplayName (1, 1) string
+        ShortName (1, 1) string
     end
 
     methods
