@@ -6,5 +6,5 @@
 
 # Software
 
-- (IMAP) Improve flexibility for decoding different data formats
+- (IMAP) Improve flexibility for decoding different date formats in Word documents
 - (IMAP) Fix issues with reading GSEOS message file
