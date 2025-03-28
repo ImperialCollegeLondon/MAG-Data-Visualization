@@ -6,3 +6,7 @@
 
 - (HelioSwarm, IMAP) Add support for Signal Analyzer and Wavelet Analyzer
 - (Bartington, HelioSwarm, IMAP) Add support for non-finite signals in Signal Analyzer and Wavelet Analyzer
+
+# Software
+
+- (IMAP) Improve flexibility for decoding different data formats
