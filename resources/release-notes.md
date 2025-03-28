@@ -10,3 +10,4 @@
 # Software
 
 - (IMAP) Improve flexibility for decoding different data formats
+- (IMAP) Fix issues with reading GSEOS message file
