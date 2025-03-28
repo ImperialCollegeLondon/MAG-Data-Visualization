@@ -16,7 +16,9 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
                 mag.app.imap.control.Timestamp(), ...
                 mag.app.imap.control.HK(), ...
                 mag.app.control.PSD(@mag.imap.view.PSD), ...
-                mag.app.control.Spectrogram(@mag.imap.view.Spectrogram)];
+                mag.app.control.Spectrogram(@mag.imap.view.Spectrogram), ...
+                mag.app.control.SignalAnalyzer(["Outboard", "Inboard"]), ...
+                mag.app.control.WaveletAnalyzer(["Outboard", "Inboard"])];
         end
 
         function figures = visualize(this, analysis)
@@ -28,7 +30,14 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
             end
 
             command = this.SelectedControl.getVisualizeCommand(args{:});
-            figures = command.call();
+
+            if command.NArgOut == 0
+
+                command.call();
+                figures = matlab.ui.Figure.empty();
+            else
+                figures = command.call();
+            end
         end
     end
 end

@@ -68,7 +68,13 @@ classdef SignalAnalyzer < mag.app.Control
             selectedSignal = string(this.SignalDropDown.Value);
 
             data = results.(selectedInput);
+
+            if ~data.isPlottable()
+                error("mag:app:emptySignal", "Not enough data for plotting ""%s"".", selectedInput);
+            end
+
             selectedData = timetable(data.Time - data.Time(1), data.(selectedSignal), VariableNames = selectedInput + "_" + selectedSignal);
+            selectedData = mag.app.internal.removeNonFiniteData(selectedData);
 
             command = mag.app.Command(Functional = @signalAnalyzer, ...
                 PositionalArguments = {selectedData});
