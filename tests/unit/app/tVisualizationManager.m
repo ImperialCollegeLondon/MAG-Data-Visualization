@@ -26,7 +26,7 @@ classdef tVisualizationManager < mag.test.ViewControllerTestCase
 
         % Test that "visualize" throws an error when no control is
         % selected.
-        function visualiza_noSelection(testCase, VisualzationClass)
+        function visualize_noSelection(testCase, VisualzationClass)
 
             % Set up.
             panel = testCase.createTestPanel();
