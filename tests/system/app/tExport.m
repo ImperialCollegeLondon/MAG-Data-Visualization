@@ -18,10 +18,6 @@ classdef tExport < AppTestCase
 
         function initializeApp(testCase, TestDetails)
 
-            if ~isempty(getenv("GITHUB_ACTIONS"))
-                return;
-            end
-
             testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
             testCase.copyDataToWorkingDirectory(testCase.WorkingDirectory, TestDetails.Folder);
 
