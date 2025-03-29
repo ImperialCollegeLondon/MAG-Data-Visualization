@@ -58,6 +58,10 @@ classdef tVisualize < AppTestCase
         % Test that showing figures is supported.
         function showFigures(testCase, TestDetails)
 
+            % Set up.
+            testCase.verifyFalse(testCase.App.SaveFiguresButton.Enable, """Save Figures"" button should be disabled.");
+            testCase.verifyFalse(testCase.App.CloseFiguresButton.Enable, """Close Figures"" button should be disabled.");
+
             % Exercise.
             for view = string(testCase.App.VisualizationManager.VisualizationTypeListBox.Items)
 
@@ -72,6 +76,9 @@ classdef tVisualize < AppTestCase
             end
 
             % Verify.
+            testCase.verifyTrue(testCase.App.SaveFiguresButton.Enable, """Save Figures"" button should be enabled.");
+            testCase.verifyTrue(testCase.App.CloseFiguresButton.Enable, """Close Figures"" button should be enabled.");
+
             testCase.verifyNumElements(testCase.App.Figures, TestDetails.NumShownFigures, "Figures should be generated.");
         end
 
@@ -98,10 +105,17 @@ classdef tVisualize < AppTestCase
         % Test that closing figures is supported.
         function closeFigures(testCase)
 
+            % Set up.
+            testCase.verifyTrue(testCase.App.SaveFiguresButton.Enable, """Save Figures"" button should be enabled.");
+            testCase.verifyTrue(testCase.App.CloseFiguresButton.Enable, """Close Figures"" button should be enabled.");
+
             % Exercise.
             testCase.press(testCase.App.CloseFiguresButton);
 
             % Verify.
+            testCase.verifyFalse(testCase.App.SaveFiguresButton.Enable, """Save Figures"" button should be disabled.");
+            testCase.verifyFalse(testCase.App.CloseFiguresButton.Enable, """Close Figures"" button should be disabled.");
+
             testCase.verifyEmpty(testCase.App.Figures, "Figures should be closed.");
         end
     end
