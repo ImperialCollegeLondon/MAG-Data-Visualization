@@ -156,9 +156,11 @@ function loadEventsData(this)
     if ~isempty(acknowledgeEvents)
 
         responsePattern = getResponsePattern(acknowledgeEvents(1).details);
-
         acknowledgedId = regexp([acknowledgeEvents.details], responsePattern, "names", "all");
-        acknowledgedId = [acknowledgedId{:}];
+
+        if iscell(acknowledgedId)
+            acknowledgedId = [acknowledgedId{:}];
+        end
 
         for i = string(fieldnames(acknowledgedId))'
             [acknowledgeEvents.(i)] = acknowledgedId.(i);
