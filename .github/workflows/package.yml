@@ -9,7 +9,7 @@ jobs:
 
   package:
     name: Package MATLAB Toolbox
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
