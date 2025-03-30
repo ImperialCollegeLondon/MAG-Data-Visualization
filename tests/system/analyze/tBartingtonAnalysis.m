@@ -27,11 +27,7 @@ classdef tBartingtonAnalysis < AnalysisTestCase
             testCase.verifyEqual(analysis.Results.Input1.Metadata.Sensor, mag.meta.Sensor.FOB, "Input 1 should be FOB.");
             testCase.verifyEqual(analysis.Results.Input2.Metadata.Sensor, mag.meta.Sensor.FIB, "Input 2 should be FIB.");
 
-            if mag.test.isGitHub()
-                testCase.log("Skip comparison with baseline on GitHub CI runner.");
-            else
-                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
-            end
+            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
     end
 end
