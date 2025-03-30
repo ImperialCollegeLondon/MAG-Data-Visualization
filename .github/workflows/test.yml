@@ -12,16 +12,10 @@ jobs:
     strategy:
       matrix:
         release: ["R2024a", "R2024b"]
-    env:
-      DISPLAY: :0
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-      - name: Install Xvfb (virtual display)
-        run: |
-          sudo apt-get install -y xvfb
-          sudo Xvfb $DISPLAY -screen 0 1920x1080x24 &
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2.3.1
         with:
