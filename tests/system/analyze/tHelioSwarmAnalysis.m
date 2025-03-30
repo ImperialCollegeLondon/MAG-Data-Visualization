@@ -1,15 +1,8 @@
-classdef tHelioSwarmAnalysis < matlab.unittest.TestCase
+classdef tHelioSwarmAnalysis < AnalysisTestCase
 % THELIOSWARMANALYSIS Tests for HelioSwarm analysis flow.
 
     properties (Access = private)
         WorkingDirectory (1, 1) matlab.unittest.fixtures.WorkingFolderFixture
-    end
-
-    methods (TestClassSetup)
-
-        function useMATLABR2024bOrAbove(testCase)
-            testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
-        end
     end
 
     methods (TestMethodSetup)

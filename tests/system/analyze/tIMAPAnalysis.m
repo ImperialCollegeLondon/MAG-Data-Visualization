@@ -1,4 +1,4 @@
-classdef tIMAPAnalysis < matlab.unittest.TestCase
+classdef tIMAPAnalysis < AnalysisTestCase
 % TIMAPANALYSIS Tests for IMAP analysis flow.
 
     properties (Access = private)
@@ -9,10 +9,6 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
         function checkMICEToolbox(testCase)
             testCase.assumeTrue(exist("mice", "file") == 3, "MICE Toolbox not installed. Test skipped.");
-        end
-
-        function useMATLABR2024bOrAbove(testCase)
-            testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
         end
     end
 
