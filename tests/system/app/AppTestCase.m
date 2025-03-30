@@ -1,6 +1,13 @@
 classdef (Abstract) AppTestCase < matlab.uitest.TestCase & mag.test.GraphicsTestCase
 % APPTESTCASE Base class for all MAG app tests.
 
+    methods (TestClassSetup)
+
+        function useMATLABR2024bOrAbove(testCase)
+            testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
+        end
+    end
+
     methods (Access = protected)
 
         function copyDataToWorkingDirectory(testCase, workingDirectory, testFolder)
