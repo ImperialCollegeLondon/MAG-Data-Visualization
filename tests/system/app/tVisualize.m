@@ -21,6 +21,10 @@ classdef tVisualize < AppTestCase
 
         function initializeApp(testCase, TestDetails)
 
+            if matlabRelease().Release < "R2024b"
+                return;
+            end
+
             testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
             testCase.copyDataToWorkingDirectory(testCase.WorkingDirectory, TestDetails.Folder);
 
