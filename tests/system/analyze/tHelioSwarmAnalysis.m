@@ -1,15 +1,7 @@
 classdef tHelioSwarmAnalysis < AnalysisTestCase
 % THELIOSWARMANALYSIS Tests for HelioSwarm analysis flow.
 
-    properties (Access = private)
-        WorkingDirectory (1, 1) matlab.unittest.fixtures.WorkingFolderFixture
-    end
-
     methods (TestMethodSetup)
-
-        function setUpWorkingDirectory(testCase)
-            testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
-        end
 
         function copyDataToWorkingDirectory(testCase)
 
@@ -32,7 +24,11 @@ classdef tHelioSwarmAnalysis < AnalysisTestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
 
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
         end
     end
 end
