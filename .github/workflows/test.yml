@@ -56,6 +56,7 @@ jobs:
           path: 'results.xml'
           working-directory: 'artifacts'
           reporter: java-junit
+          use-actions-summary: 'false'
       - name: Report coverage
         uses: 5monkeys/cobertura-action@master
         if: matrix.release == 'R2024b'
