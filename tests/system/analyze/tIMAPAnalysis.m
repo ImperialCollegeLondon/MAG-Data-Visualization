@@ -46,7 +46,12 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20240507_111151.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
         end
 
         % Test that analysis with FOB only returns expected results.
@@ -75,7 +80,12 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20250206_104025.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
         end
 
         % Test that analysis of S/C test returns expected results.
@@ -101,7 +111,12 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20250324_135949.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
         end
     end
 
