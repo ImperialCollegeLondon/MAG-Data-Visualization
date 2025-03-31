@@ -6,6 +6,7 @@
 
 # Software
 
+- (IMAP) Add CPU idle percentage to HK plots
 - (IMAP) Field figure names includes selected events
 - (IMAP) Improve flexibility for decoding different date formats in Word documents
 - (IMAP) Do not crop HK if there is no science with `mag.Instrument/crop`
