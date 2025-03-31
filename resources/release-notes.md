@@ -7,6 +7,7 @@
 # Software
 
 - (IMAP) Improve flexibility for decoding different date formats in Word documents
+- (IMAP) Field figure names includes selected events
 - (IMAP) Do not crop HK if there is no science with `mag.Instrument/crop`
 - (IMAP) Fix issues with reading GSEOS message file
 - (IMAP) Fix issue with loading analysis with a single acknowledge event

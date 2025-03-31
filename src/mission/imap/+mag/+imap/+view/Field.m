@@ -50,6 +50,18 @@ classdef Field < mag.imap.view.Science
         end
     end
 
+    methods (Access = protected)
+
+        function value = getFigureName(this, primary, secondary)
+
+            value = getFigureName@mag.imap.view.Science(this, primary, secondary);
+
+            if ~isempty(value) && ismissing(this.Name) && ~isempty(this.Events)
+                value = compose("%s - Events: %s", value, join(this.Events, ", "));
+            end
+        end
+    end
+
     methods (Access = private)
 
         function [numScience, scienceData] = getScienceData(this, primary, secondary)
