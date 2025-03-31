@@ -15,12 +15,12 @@ function [primarySetup, secondarySetup] = loadMetadata(this)
     % Load instrument and science metadata.
     for mdf = this.MetadataFileNames
 
-        for mdp = metadataProviders
+        for mdp = flip(metadataProviders)
 
             if mdp.isSupported(mdf)
 
                 mdp.load(mdf, instrumentMetadata, primarySetup, secondarySetup);
-                break;
+                continue;
             end
         end
     end
