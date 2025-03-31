@@ -1,5 +1,5 @@
 name: MATLAB Tests
-on: 
+on:
   push: {}
   pull_request:
     types: [ready_for_review]
