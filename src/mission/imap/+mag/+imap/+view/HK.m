@@ -122,19 +122,21 @@ classdef HK < mag.graphics.view.View
             end
 
             % Processor HK.
-            sid15 = this.Results.HK.getHKType("SID15");
+            status = this.Results.HK.getHKType("STATUS");
             procStat = this.Results.HK.getHKType("PROCSTAT");
+            sid15 = this.Results.HK.getHKType("SID15");
 
-            if sid15.isPlottable() && procStat.isPlottable()
+            if status.isPlottable() && procStat.isPlottable() && sid15.isPlottable()
 
                 drt = sid15.get("FOBDataReadyTime", "FIBDataReadyTime");
                 drt = timetable(sid15.Time, 1000 * (drt(:, 1) - drt(:, 2)), VariableNames = "Difference");
 
                 this.Figures(end + 1) = this.Factory.assemble( ...
+                    status, mag.graphics.style.Default(Title = "CPU Usage", YLabel = "idle [%]", Charts = mag.graphics.chart.Plot(YVariables = "CPUIdle")), ...
                     procStat, mag.graphics.style.Default(Title = "Messages in Queue", YLabel = "n [-]", Legend = ["FOB", "FIB"], Charts = [mag.graphics.chart.Plot(YVariables = "FOBQueueNumMSG"), mag.graphics.chart.Plot(YVariables = "FIBQueueNumMSG")]), ...
                     drt, mag.graphics.style.Default(Title = "Data Ready Time", YLabel = "\Delta Data Ready Time [ms]", Charts = mag.graphics.chart.Plot(YVariables = "Difference")), ...
                     Name = "Processor Stats", ...
-                    Arrangement = [2, 1], ...
+                    Arrangement = [3, 1], ...
                     LinkXAxes = true);
             end
         end
