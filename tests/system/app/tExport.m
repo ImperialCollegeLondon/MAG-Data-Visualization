@@ -85,13 +85,9 @@ classdef tExport < AppTestCase
             testCase.assertTrue(isfile(exportFile), "Export file should exist.");
 
             exportedResults = load(exportFile);
-            testCase.assertThat(exportedResults, mag.test.constraint.IsField(variableName), "Analysis should be exported.");
 
-            if mag.test.isGitHub()
-                testCase.log("Skip comparison with baseline on GitHub CI runner.");
-            else
-                testCase.verifyEqualsBaseline(exportedResults.(variableName).Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
-            end
+            testCase.assertThat(exportedResults, mag.test.constraint.IsField(variableName), "Analysis should be exported.");
+            testCase.verifyEqualsBaseline(exportedResults.(variableName).Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
 
         function exportToMATFile_append(testCase)
@@ -122,11 +118,7 @@ classdef tExport < AppTestCase
             testCase.verifyThat(exportedResults, mag.test.constraint.IsField("anotherAnalysis"), "Other analysis should still exist.");
             testCase.assertThat(exportedResults, mag.test.constraint.IsField(variableName), "Analysis should be exported.");
 
-            if mag.test.isGitHub()
-                testCase.log("Skip comparison with baseline on GitHub CI runner.");
-            else
-                testCase.verifyEqualsBaseline(exportedResults.(variableName).Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
-            end
+            testCase.verifyEqualsBaseline(exportedResults.(variableName).Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
     end
 end

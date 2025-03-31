@@ -23,12 +23,7 @@ classdef tHelioSwarmAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.HKFileNames, "hk_packets.csv", "Science file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-
-            if mag.test.isGitHub()
-                testCase.log("Skip comparison with baseline on GitHub CI runner.");
-            else
-                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
-            end
+            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
     end
 end
