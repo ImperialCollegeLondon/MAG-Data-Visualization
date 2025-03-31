@@ -21,7 +21,7 @@ classdef tVisualize < AppTestCase
 
         function initializeApp(testCase, TestDetails)
 
-            if ~isempty(getenv("GITHUB_ACTIONS"))
+            if matlabRelease().Release < "R2024b"
                 return;
             end
 

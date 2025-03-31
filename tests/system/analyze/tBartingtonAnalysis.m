@@ -1,22 +1,7 @@
-classdef tBartingtonAnalysis < matlab.unittest.TestCase
+classdef tBartingtonAnalysis < AnalysisTestCase
 % TBARTINGTONANALYSIS Tests for Bartington analysis flow.
 
-    properties (Access = private)
-        WorkingDirectory (1, 1) matlab.unittest.fixtures.WorkingFolderFixture
-    end
-
-    methods (TestClassSetup)
-
-        function useMATLABR2024bOrAbove(testCase)
-            testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
-        end
-    end
-
     methods (TestMethodSetup)
-
-        function setUpWorkingDirectory(testCase)
-            testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
-        end
 
         function copyDataToWorkingDirectory(testCase)
 
@@ -41,6 +26,7 @@ classdef tBartingtonAnalysis < matlab.unittest.TestCase
 
             testCase.verifyEqual(analysis.Results.Input1.Metadata.Sensor, mag.meta.Sensor.FOB, "Input 1 should be FOB.");
             testCase.verifyEqual(analysis.Results.Input2.Metadata.Sensor, mag.meta.Sensor.FIB, "Input 2 should be FIB.");
+
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
         end
     end

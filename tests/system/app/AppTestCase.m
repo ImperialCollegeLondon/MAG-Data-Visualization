@@ -1,16 +1,10 @@
-classdef (Abstract) AppTestCase < matlab.uitest.TestCase
+classdef (Abstract) AppTestCase < matlab.uitest.TestCase & mag.test.GraphicsTestCase
 % APPTESTCASE Base class for all MAG app tests.
 
     methods (TestClassSetup)
 
-        % Skip tests on GitHub CI runner.
-        function skipOnGitHub(testCase)
-            testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
-        end
-
-        % Close all figures opened by test.
-        function closeTestFigures(testCase)
-            testCase.applyFixture(mag.test.fixture.CleanupFigures());
+        function useMATLABR2024bOrAbove(testCase)
+            testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
         end
     end
 
@@ -29,6 +23,8 @@ classdef (Abstract) AppTestCase < matlab.uitest.TestCase
             end
 
             app = DataVisualization(varargin{:});
+            app.UIFigure.Visible = "on";
+
             testCase.addTeardown(@() delete(app));
         end
 

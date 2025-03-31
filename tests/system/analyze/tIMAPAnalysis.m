@@ -1,30 +1,14 @@
-classdef tIMAPAnalysis < matlab.unittest.TestCase
+classdef tIMAPAnalysis < AnalysisTestCase
 % TIMAPANALYSIS Tests for IMAP analysis flow.
 
-    properties (Access = private)
-        WorkingDirectory (1, 1) matlab.unittest.fixtures.WorkingFolderFixture
-    end
-
     methods (TestClassSetup)
-
-        function skipOnGitHub(testCase)
-            testCase.assumeTrue(isempty(getenv("GITHUB_ACTIONS")), "Tests cannot run on GitHub CI runner.");
-        end
 
         function checkMICEToolbox(testCase)
             testCase.assumeTrue(exist("mice", "file") == 3, "MICE Toolbox not installed. Test skipped.");
         end
-
-        function useMATLABR2024bOrAbove(testCase)
-            testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
-        end
     end
 
     methods (TestMethodSetup)
-
-        function setUpWorkingDirectory(testCase)
-            testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
-        end
 
         function suppressWarnings(testCase)
             testCase.applyFixture(matlab.unittest.fixtures.SuppressedWarningsFixture("MATLAB:class:EnumerationValueChanged"));
@@ -62,7 +46,12 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20240507_111151.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
         end
 
         % Test that analysis with FOB only returns expected results.
@@ -91,7 +80,12 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20250206_104025.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
         end
 
         % Test that analysis of S/C test returns expected results.
@@ -117,7 +111,12 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20250324_135949.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
-            testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
         end
     end
 
