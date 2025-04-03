@@ -13,6 +13,7 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
         EventsTree matlab.ui.container.CheckBoxTree
+        OverrideNameField matlab.ui.control.EditField
     end
 
     methods
@@ -36,6 +37,15 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
             for e = this.SupportedEvents
                 uitreenode(this.EventsTree, Text = e);
             end
+
+            % Override name.
+            overrideNameLabel = uilabel(this.Layout, Text = "Override name:");
+            overrideNameLabel.Layout.Row = 5;
+            overrideNameLabel.Layout.Column = 1;
+
+            this.OverrideNameField = uieditfield(this.Layout, Placeholder = "Spike 1");
+            this.OverrideNameField.Layout.Row = 5;
+            this.OverrideNameField.Layout.Column = [2, 3];
         end
 
         function supported = isSupported(~, results)
@@ -63,11 +73,17 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
                 events = {this.EventsTree.CheckedNodes.Text};
             end
 
+            if isempty(this.OverrideNameField.Value)
+                overrideName = missing();
+            else
+                overrideName = this.OverrideNameField.Value;
+            end
+
             results = mag.app.internal.cropResults(results, startTime, endTime);
 
             command = mag.app.Command(Functional = @(varargin) mag.imap.view.Field(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
-                NamedArguments = struct(Events = string(events)));
+                NamedArguments = struct(Events = string(events), Name = overrideName));
         end
     end
 end
