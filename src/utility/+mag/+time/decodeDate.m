@@ -11,6 +11,7 @@ function date = decodeDate(date)
 
     formats = ["dd-MMM-yyyy", "dd-MM-yyyy", "yyyy-MMM-dd", "yyyy-MM-dd"];
     formats = horzcat(formats, replace(formats, "-", "/"));
+    formats = horzcat(formats, replace(formats, "-", " "));
 
     conversion = @(f) datetime(date, InputFormat = f);
 
