@@ -3,6 +3,7 @@ classdef tHK < matlab.unittest.TestCase
 
     properties (TestParameter)
         HKTypes = {"SID15", "Processor", "Power", "Status", "Science"}
+        Sensor = {"FOB", "FIB"}
         Dispatch = {struct(Type = "SID15", Class = "mag.imap.hk.SID15"), ...
             struct(Type = "PROCSTAT", Class = "mag.imap.hk.Processor"), ...
             struct(Type = "PW", Class = "mag.imap.hk.Power"), ...
@@ -165,6 +166,41 @@ classdef tHK < matlab.unittest.TestCase
             for p = properties([properties.Dependent] & cellfun(@(x) isequal(x, "public"), {properties.GetAccess}))'
                 hk.(p.Name);
             end
+        end
+
+        % Test that sensor activation tries are retrieved correctly, when
+        % the variable exists in the SID15 timetable.
+        function sid15IsActive_fieldExists(testCase, Sensor)
+
+            % Set up.
+            propertyValue = [false; true];
+
+            data = timetable(mag.test.DataTestUtilities.Time(1:2), propertyValue, VariableNames = "ICV_" + Sensor + "_ISACT");
+            data.Properties.DimensionNames{1} = 't';
+
+            % Exercise.
+            sid15 = mag.imap.hk.SID15(data, mag.meta.HK());
+
+            % Verify.
+            testCase.verifyEqual(sid15.(Sensor + "Active"), propertyValue, "Sensor activation status should match expectation.");
+        end
+
+        % Test that sensor activation tries are retrieved correctly, when
+        % the variable does not exist in the SID15 timetable.
+        function sid15IsActive_fieldDoesNotExists(testCase, Sensor)
+
+            % Set up.
+            data = timetable(mag.test.DataTestUtilities.Time(1:2), [1; 2], VariableNames = "NotActivationRelated");
+            data.Properties.DimensionNames{1} = 't';
+
+            % Exercise.
+            sid15 = mag.imap.hk.SID15(data, mag.meta.HK());
+
+            % Verify.
+            actualValue = sid15.(Sensor + "Active");
+
+            testCase.verifyNumElements(actualValue, 2, "Sensor activation should have as many values as timestamp.");
+            testCase.verifyThat(actualValue, mag.test.constraint.IsMissing(), "Sensor activation status should be missing.");
         end
 
         % Test that displaying a deleted handle does not error.
