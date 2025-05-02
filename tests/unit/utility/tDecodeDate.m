@@ -6,8 +6,20 @@ classdef tDecodeDate < matlab.unittest.TestCase
     end
 
     properties (TestParameter)
-        ValidDate = {"25-Jun-2025",  "25-06-2025", "2025-Jun-25", "2025-06-25", "25/Jun/2025",  "25/06/2025", "2025/Jun/25", "2025/06/25"}
+        ValidDate
         InvalidDate = {"01.02.2003", "12-13-2014"}
+    end
+
+    methods (Static, TestParameterDefinition)
+
+        function ValidDate = initializeValidDate()
+
+            ValidDate = ["25-Jun-2025",  "25-06-2025",  "25-6-2025", "2025-Jun-25", "2025-06-25", "2025-6-25"];
+            ValidDate = horzcat(ValidDate, replace(ValidDate, "-", "/"));
+            ValidDate = horzcat(ValidDate, replace(ValidDate, "-", " "));
+
+            ValidDate = cellstr(ValidDate);
+        end
     end
 
     methods (Test)
