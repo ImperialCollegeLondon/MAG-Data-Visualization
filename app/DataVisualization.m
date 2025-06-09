@@ -242,7 +242,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
                     variableName = app.createMissionSpecificVariable();
 
-                    if evalin("base", compose("exist(""%s"", ""var"")", variableName))
+                    if evalin("base", compose("exist(""%s"", ""var"")", variableName)) %#ok<EVALIN>
 
                         selectedOption = uiconfirm(app.UIFigure, compose("Variable <code>%s</code> already exists in the MATLAB Workspace.", variableName) + ...
                             " Would you like to overwrite it?", "Variable Already Exists", Interpreter = "html");

@@ -9,8 +9,6 @@ classdef tTimeShift < MAGAnalysisTestCase
             data = testCase.createTestData();
             metadata = mag.meta.Science(Sensor = mag.meta.Sensor.FIB);
 
-            dt = milliseconds(1);
-
             % Exercise.
             timeShiftStep = mag.process.TimeShift();
             processedData = timeShiftStep.apply(data, metadata);

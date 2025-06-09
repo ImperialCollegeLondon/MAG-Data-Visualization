@@ -1,22 +1,29 @@
 function plan = buildfile()
 % BUILDFILE File invoked by automated build.
 
-    project = matlab.project.currentProject();
-
-    if isempty(project) || ~isequal(project.Name, "MAG Data Visualization")
-
-        project = matlab.project.loadProject("MAGDataVisualization.prj");
-        restore = onCleanup(@() project.close());
-    end
-
     % Create a plan from task functions.
     plan = buildplan();
+
+    % Get current project.
+    if isMATLABReleaseOlderThan("R2025a")
+
+        project = matlab.project.currentProject();
+
+        if isempty(project) || ~isequal(project.Name, "MAG Data Visualization")
+
+            project = matlab.project.loadProject("MAGDataVisualization.prj");
+            restoreProject = onCleanup(@() project.close());
+        end
+    else
+        project = plan.Project;
+    end
 
     % Add the "check" task to identify code issues.
     sourceFolders = ["app", "src"];
 
     plan("check") = matlab.buildtool.tasks.CodeIssuesTask(sourceFolders, ...
-        IncludeSubfolders = true);
+        IncludeSubfolders = true, ...
+        Results = fullfile("artifacts/issues.sarif"));
 
     % Add the "test" task to run tests.
     testFolders = ["tests/system", "tests/unit"];

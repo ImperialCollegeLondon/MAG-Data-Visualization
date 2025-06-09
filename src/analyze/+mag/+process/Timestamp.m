@@ -21,7 +21,7 @@ classdef Timestamp < mag.process.Step
             end
 
             arguments (Output)
-                time (:, 1) double %{mustBeIncreasing}
+                time (:, 1) double
             end
 
             % Remove discontinuities in sequence number.
@@ -54,12 +54,5 @@ classdef Timestamp < mag.process.Step
             timeStamp = coarseAndFineTime(:, 1) + (coarseAndFineTime(:, 2) / double(intmax("uint16")));
             time = timeStamp + timeOffset;
         end
-    end
-end
-
-function mustBeIncreasing(value)
-
-    if ~all(diff(value) > 0)
-        error("Value should be increasing.");
     end
 end
