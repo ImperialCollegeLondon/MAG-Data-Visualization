@@ -3,6 +3,7 @@
 - (All) Add support for more date formats for metadata readers
 - (All) Add support for specifying `LegendOrientation`
 - (IMAP) Add sensor activation attempts and activation status to SID15 (`mag.imap.hk.SID15`)
+- (IMAP) Fix issue where events for a sensor with no data are still being shown
 
 ## Project
 

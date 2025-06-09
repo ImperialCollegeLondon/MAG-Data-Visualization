@@ -122,12 +122,20 @@ classdef Field < mag.imap.view.Science
                         error("Unrecognized event ""%s"".", e);
                 end
 
+                if ~primary.HasData
+                    ed(1:2) = [];
+                end
+
+                if ~secondary.HasData
+                    ed(end-1:end) = [];
+                end
+
                 eventData = [eventData, ed]; %#ok<AGROW>
             end
         end
 
         function [numHK, hkData] = getHKData(this, pwrHK, primary, secondary, primarySensor, secondarySensor)
-    
+
             numHK = 0;
             hkData = {};
 
@@ -139,9 +147,9 @@ classdef Field < mag.imap.view.Science
                     hkData = [hkData, {pwrHK, ...
                         mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", primarySensor), YLabel = this.TLabel, Legend = [primarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [primarySensor, "ICU"] + "Temperature"))}];
                 end
-    
+
                 if ~isempty(secondary) && secondary.HasData
-    
+
                     numHK = 1;
                     hkData = [hkData, {pwrHK, ...
                         mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", secondarySensor), YLabel = this.TLabel, YAxisLocation = "right", Legend = [secondarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [secondarySensor, "ICU"] + "Temperature"))}];
