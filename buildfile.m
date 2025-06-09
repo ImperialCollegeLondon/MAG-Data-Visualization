@@ -1,14 +1,6 @@
 function plan = buildfile()
 % BUILDFILE File invoked by automated build.
 
-    project = matlab.project.currentProject();
-
-    if isempty(project) || ~isequal(project.Name, "MAG Data Visualization")
-
-        project = matlab.project.loadProject("MAGDataVisualization.prj");
-        restore = onCleanup(@() project.close());
-    end
-
     % Create a plan from task functions.
     plan = buildplan();
 
@@ -16,7 +8,8 @@ function plan = buildfile()
     sourceFolders = ["app", "src"];
 
     plan("check") = matlab.buildtool.tasks.CodeIssuesTask(sourceFolders, ...
-        IncludeSubfolders = true);
+        IncludeSubfolders = true, ...
+        Results = fullfile("artifacts/issues.sarif"));
 
     % Add the "test" task to run tests.
     testFolders = ["tests/system", "tests/unit"];
@@ -29,7 +22,7 @@ function plan = buildfile()
 
     % Add the "package" task to create toolbox.
     plan("package") = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
-        ProjectRoot = project.RootFolder, ...
+        ProjectRoot = plan.Project.RootFolder, ...
         ToolboxPath = fullfile("artifacts/MAG Data Visualization.mltbx"));
 
     % Add the "clean" task to delete output of all tasks.
