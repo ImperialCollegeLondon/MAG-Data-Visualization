@@ -69,3 +69,8 @@ jobs:
           minimum_coverage: 80
           skip_covered: true
           report_name: Coverage Report (${{ matrix.release }})
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        if: matrix.release == 'R2025a'
+        with:
+          sarif_file: artifacts/issues.sarif
