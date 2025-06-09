@@ -1,7 +1,7 @@
 classdef Excel < mag.imap.meta.Provider
 % EXCEL Load metadata from Excel files.
 
-    properties (Constant, Access = private)
+    properties (Constant)
         % EXTENSIONS Extensions supported.
         Extensions = ".xlsx"
         % ACTIVATIONPATTERN Regex pattern to extract number of attempts to
