@@ -106,7 +106,7 @@ classdef Spectrogram < mag.graphics.view.View
             if isempty(input1)
                 value = value + compose(" Spectrogram (%s)", this.date2str(input2.Metadata.Timestamp));
             else
-                value = value + compose(" Spectrogram (%s)", this.date2str(input1.Metadata.Timestamp));;
+                value = value + compose(" Spectrogram (%s)", this.date2str(input1.Metadata.Timestamp));
             end
         end
     end

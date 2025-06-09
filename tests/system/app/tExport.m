@@ -1,5 +1,6 @@
 classdef tExport < AppTestCase
 % TEXPORT System tests for exporting "DataVisualization" results.
+%#ok<*EVALIN>
 
     properties (Access = private)
         App DataVisualization {mustBeScalarOrEmpty}

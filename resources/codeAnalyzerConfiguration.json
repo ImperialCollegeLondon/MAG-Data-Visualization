@@ -1,0 +1,115 @@
+{
+    // Configuration File Information
+    "name": "MAG Lab Guidelines",
+    "description": "MAG Lab MATLAB style guidelines",
+    "author": "Michele Facchinelli",
+    "schemaVersion": "1.1.0",
+    "guidelineVersion": "1.0.0",
+
+    // New and Modified Checks
+    "checks":
+    {
+        // ======================================
+        // Enable additional Code Analyzer checks
+        // ======================================
+        "EVALIN":
+        {
+            "rule":
+            {
+                "template": "functionCall",
+                "functionNames": "evalin"
+            },
+            "severity": "error",
+            "messageText": "Do not use evalin.",
+            "enabled": true
+        },
+        "VARNAME":
+        {
+            "rule":
+            {
+                "template": "variableName",
+                "variableNames": ["size", "error", "length", "max", "isa", "nargin" , "numel" , "nargout" ,"isequal" , "zeros" , "true" ,"false" ,"fullfile" ,"find", "get"]
+            },
+            "severity": "warning",
+            "messageText": "Avoid using function names for variables.",
+            "enabled": true
+        },
+        "LLMNC":
+        {
+            // Disallow very long lines (too many characters)
+            "severity": "error",
+            "limit": 1000,
+            "enabled": true
+        },
+        "FCNOL":
+        {
+            // Disallow too many outputs
+            "severity": "error",
+            "messageText": "Too many outputs.",
+            "limit": 15,
+            "enabled": true
+        },
+        // =================================================
+        // Increase severity of default Code Analyzer checks
+        // =================================================
+        "GVMIS":
+        {
+            // Do not use global variables
+            "severity": "error"
+        },
+        "EVLCS":
+        {
+            // "eval" family of functions is slow and unclear
+            "severity": "error"
+        },
+        "NOANS":
+        {
+            // Do not use "ans" as a variable
+            "severity": "error"
+        },
+        "CHAIN":
+        {
+            // Chained logical operations like "a > b > c" are usually a bug
+            //     For scalars, it should be: "(a > b) && (b > c)"
+            //     For arrays, it should be: "(a > b) & (b > c)"
+            "severity": "error"
+        }
+    },
+
+    // Naming Conventions
+    "naming":
+    {
+        // ============================================================
+        // Enable naming conventions for different types of identifiers
+        // ============================================================
+        "property": {
+            "casing": "UpperCamelCase",
+        },
+        "function": {
+            "casing": "lowerCamelCase",
+        },
+        "class": {
+            "casing": "UpperCamelCase",
+        },
+        "method": {
+            "casing": ["lowercase", "lowerCamelCase"],
+            "regularExpression": "^([a-z]+|[a-z]+([A-Z][a-z0-9]*)*)$"
+        },
+        "localFunction": {
+            "casing": "lowerCamelCase",
+        },
+        "nestedFunction": {
+            "casing": "lowerCamelCase",
+        },
+        "event": {
+            "casing": "UpperCamelCase",
+        },
+        "enumeration": {
+            "casing": "UpperCamelCase",
+            "regularExpression": "^([A-Z][a-z0-9]+)$"
+        },
+        "variable": {
+            "casing": ["lowercase", "lowerCamelCase"],
+        }
+    }
+}
