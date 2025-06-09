@@ -5,7 +5,7 @@ function plan = buildfile()
     plan = buildplan();
 
     % Get current project.
-    if isMATLABReleaseOlderThan("R2024b")
+    if isMATLABReleaseOlderThan("R2025a")
 
         project = matlab.project.currentProject();
 
