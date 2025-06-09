@@ -15,7 +15,7 @@ jobs:
     name: Run MATLAB Tests
     strategy:
       matrix:
-        release: ["R2024a", "R2024b"]
+        release: ["R2024a", "R2024b", "R2025a"]
     runs-on: windows-latest
     steps:
       - name: Check out repository
@@ -63,7 +63,7 @@ jobs:
           use-actions-summary: 'false'
       - name: Report coverage
         uses: 5monkeys/cobertura-action@master
-        if: matrix.release == 'R2024b'
+        if: matrix.release == 'R2025a'
         with:
           path: 'artifacts/coverage.xml'
           minimum_coverage: 80
