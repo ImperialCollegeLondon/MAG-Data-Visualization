@@ -83,33 +83,33 @@
         // Enable naming conventions for different types of identifiers
         // ============================================================
         "property": {
-            "casing": "UpperCamelCase",
+            "casing": "UpperCamelCase"
         },
         "function": {
-            "casing": "lowerCamelCase",
+            "casing": "lowerCamelCase"
         },
         "class": {
-            "casing": "UpperCamelCase",
+            "casing": "UpperCamelCase"
         },
         "method": {
             "casing": ["lowercase", "lowerCamelCase"],
             "regularExpression": "^([a-z]+|[a-z]+([A-Z][a-z0-9]*)*)$"
         },
         "localFunction": {
-            "casing": "lowerCamelCase",
+            "casing": "lowerCamelCase"
         },
         "nestedFunction": {
-            "casing": "lowerCamelCase",
+            "casing": "lowerCamelCase"
         },
         "event": {
-            "casing": "UpperCamelCase",
+            "casing": "UpperCamelCase"
         },
         "enumeration": {
             "casing": "UpperCamelCase",
             "regularExpression": "^([A-Z][a-z0-9]+)$"
         },
         "variable": {
-            "casing": ["lowercase", "lowerCamelCase"],
+            "casing": ["lowercase", "lowerCamelCase"]
         }
     }
 }
