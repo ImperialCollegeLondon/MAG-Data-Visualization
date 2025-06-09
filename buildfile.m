@@ -4,6 +4,20 @@ function plan = buildfile()
     % Create a plan from task functions.
     plan = buildplan();
 
+    % Get current project.
+    if isMATLABReleaseOlderThan("R2024b")
+
+        project = matlab.project.currentProject();
+
+        if isempty(project) || ~isequal(project.Name, "MAG Data Visualization")
+
+            project = matlab.project.loadProject("MAGDataVisualization.prj");
+            restoreProject = onCleanup(@() project.close());
+        end
+    else
+        project = plan.Project;
+    end
+
     % Add the "check" task to identify code issues.
     sourceFolders = ["app", "src"];
 
@@ -22,7 +36,7 @@ function plan = buildfile()
 
     % Add the "package" task to create toolbox.
     plan("package") = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
-        ProjectRoot = plan.Project.RootFolder, ...
+        ProjectRoot = project.RootFolder, ...
         ToolboxPath = fullfile("artifacts/MAG Data Visualization.mltbx"));
 
     % Add the "clean" task to delete output of all tasks.
