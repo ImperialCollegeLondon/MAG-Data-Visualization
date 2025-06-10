@@ -53,7 +53,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.MetadataPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text", Enable = "off");
             this.MetadataPatternEditField.Layout.Row = 2;
             this.MetadataPatternEditField.Layout.Column = [2, 3];
-            this.MetadataPatternEditField.Placeholder = "Currently unsupported for HelioSwarm";
+            this.MetadataPatternEditField.Placeholder = "Not supported for HelioSwarm yet";
 
             % Create SciencePatternEditFieldLabel.
             this.SciencePatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
