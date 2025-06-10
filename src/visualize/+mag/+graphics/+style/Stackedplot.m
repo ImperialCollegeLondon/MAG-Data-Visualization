@@ -17,7 +17,7 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
 
             arguments
                 options.?mag.graphics.style.Stackedplot
-                options.Charts (1, 1) mag.graphics.chart.Stackedplot
+                options.Charts (1, :) mag.graphics.chart.Stackedplot
                 options.LegendLocation (1, 1) string {mustBeMember(options.LegendLocation, ["north", "south", "east", "west"])} = "south"
             end
 
@@ -53,7 +53,7 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
 
             if ~isempty(this.YLabels)
 
-                for i = 1:numel(axes)
+                for i = 1:numel(this.YLabels)
                     l(i) = ylabel(axes(i), this.YLabels(i));
                 end
             end

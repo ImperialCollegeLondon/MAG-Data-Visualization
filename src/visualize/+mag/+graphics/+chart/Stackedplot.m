@@ -42,13 +42,25 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
                 error("Mismatch in number of colors for number of plots.");
             end
 
+            % Check if layout already has a stack layout.
+            existingGraphics = layout.Children;
+
+            if isempty(existingGraphics) || ~isequal(existingGraphics(1).Type, "tiledlayout")
+                stackLayout = tiledlayout(layout, Ny, 1, TileSpacing = "tight", Padding = "tight", Layout = axes.Layout);
+            else
+                stackLayout = existingGraphics(1);
+            end
+
             % Create custom stacked plot.
             graph = matlab.graphics.chart.primitive.Line.empty(0, Ny);
-            stackLayout = tiledlayout(layout, Ny, 1, TileSpacing = "tight", Padding = "tight", Layout = axes.Layout);
 
             for y = 1:Ny
 
-                ax = nexttile(stackLayout);
+                ax = nexttile(stackLayout, y);
+
+                hold(ax, "on");
+                resetAxesHold = onCleanup(@() hold(ax, "off"));
+
                 graph(y) = plot(ax, xData, yData(:, y), this.MarkerStyle{:}, this.LineCustomization{:}, Color = this.Colors(y, :));
 
                 if this.EventsVisible && ~isempty(data.Properties.Events)

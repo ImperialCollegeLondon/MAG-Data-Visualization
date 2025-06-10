@@ -8,6 +8,87 @@ classdef tStackedplot < MarkerSupportTestCase
 
     methods (Test)
 
+        % Test that stackedplot charts can view more than one line per
+        % axis.
+        function stackedplotWithMultipleLines(testCase)
+
+            % Set up.
+            data = testCase.createTestDataWithEvents(SetDuration = false, SetEndTime = false);
+
+            chart1 = mag.graphics.chart.Stackedplot(YVariables = ["A", "B", "C"]);
+            chart2 = mag.graphics.chart.Stackedplot(YVariables = ["C", "A", "B"]);
+
+            % Exercise.
+            f = mag.graphics.visualize(data, mag.graphics.style.Stackedplot(Charts = [chart1, chart2]));
+            testCase.addTeardown(@() close(f));
+
+            % Verify.
+            % The chart should only return the main objects, but the figure
+            % should also show two vertical lines per plot.
+            testCase.assertTrue(isvalid(f), "Figure should be valid.");
+
+            tl = f.Children.Children(1);
+            testCase.assertClass(tl, "matlab.graphics.layout.TiledChartLayout", "Child should be a tiled layout.");
+
+            axes = mag.test.getAllAxes(tl);
+            graph = [axes.Children];
+
+            testCase.assertSize(graph, [2, 3], "Number of graphs should match expectation.");
+            testCase.assertClass(graph, "matlab.graphics.chart.primitive.Line", "Graphs should be lines.");
+
+            testCase.verifyEqual(graph(1, 1).YData, data.B', "Graph data should match.");
+            testCase.verifyEqual(graph(1, 2).YData, data.A', "Graph data should match.");
+            testCase.verifyEqual(graph(1, 3).YData, data.C', "Graph data should match.");
+            testCase.verifyEqual(graph(2, 1).YData, data.C', "Graph data should match.");
+            testCase.verifyEqual(graph(2, 2).YData, data.B', "Graph data should match.");
+            testCase.verifyEqual(graph(2, 3).YData, data.A', "Graph data should match.");
+        end
+
+        % Test that multiple stackedplot can be independent of each other.
+        function multipleIndependentStackedplots(testCase)
+
+            % Set up.
+            data = testCase.createTestDataWithEvents(SetDuration = false, SetEndTime = false);
+
+            chart1 = mag.graphics.chart.Stackedplot(YVariables = ["A", "B", "C"]);
+            chart2 = mag.graphics.chart.Stackedplot(YVariables = ["C", "A", "B"]);
+
+            % Exercise.
+            f = mag.graphics.visualize(data, [mag.graphics.style.Stackedplot(Charts = chart1), mag.graphics.style.Stackedplot(Charts = chart2)]);
+            testCase.addTeardown(@() close(f));
+
+            % Verify.
+            % The chart should only return the main objects, but the figure
+            % should also show two vertical lines per plot.
+            testCase.assertTrue(isvalid(f), "Figure should be valid.");
+
+            tl1 = f.Children.Children(1);
+            testCase.assertClass(tl1, "matlab.graphics.layout.TiledChartLayout", "Child should be a tiled layout.");
+
+            axes1 = mag.test.getAllAxes(tl1);
+            graph1 = [axes1.Children];
+
+            testCase.assertSize(graph1, [1, 3], "Number of graphs should match expectation.");
+            testCase.assertClass(graph1, "matlab.graphics.chart.primitive.Line", "Graphs should be lines.");
+
+            testCase.verifyEqual(graph1(1).YData, data.B', "Graph data should match.");
+            testCase.verifyEqual(graph1(2).YData, data.A', "Graph data should match.");
+            testCase.verifyEqual(graph1(3).YData, data.C', "Graph data should match.");
+
+            tl2 = f.Children.Children(3);
+            testCase.assertClass(tl2, "matlab.graphics.layout.TiledChartLayout", "Child should be a tiled layout.");
+
+            axes2 = mag.test.getAllAxes(tl2);
+            graph2 = [axes2.Children];
+
+            testCase.assertSize(graph2, [1, 3], "Number of graphs should match expectation.");
+            testCase.assertClass(graph2, "matlab.graphics.chart.primitive.Line", "Graphs should be lines.");
+
+            testCase.verifyEqual(graph2(1).YData, data.C', "Graph data should match.");
+            testCase.verifyEqual(graph2(2).YData, data.B', "Graph data should match.");
+            testCase.verifyEqual(graph2(3).YData, data.A', "Graph data should match.");
+        end
+
         % Test that instantaneous events are correctly displayed on the
         % stackedplot.
         function instantaneousEvents(testCase)

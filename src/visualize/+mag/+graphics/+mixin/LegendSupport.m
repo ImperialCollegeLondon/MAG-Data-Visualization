@@ -6,6 +6,8 @@ classdef (Abstract, HandleCompatible) LegendSupport
         Legend (1, :) string = string.empty()
         % LEGENDLOCATION Location of legend.
         LegendLocation (1, 1) string = "best"
+        % LEGENDORIENTATION Orientation of legend.
+        LegendOrientation (1, 1) string = "vertical"
     end
 
     methods (Access = protected)
@@ -17,7 +19,7 @@ classdef (Abstract, HandleCompatible) LegendSupport
             if isempty(this.Legend)
                 l = matlab.graphics.illustration.Legend.empty();
             else
-                l = legend(axes, this.Legend, Location = this.LegendLocation);
+                l = legend(axes, this.Legend, Location = this.LegendLocation, Orientation = this.LegendOrientation);
             end
         end
     end
