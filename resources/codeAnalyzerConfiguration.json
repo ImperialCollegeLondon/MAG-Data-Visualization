@@ -28,7 +28,7 @@
             "rule":
             {
                 "template": "variableName",
-                "variableNames": ["size", "error", "length", "max", "isa", "nargin" , "numel" , "nargout" ,"isequal" , "zeros" , "true" ,"false" ,"fullfile" ,"find", "get"]
+                "variableNames": ["size", "error", "length", "max", "isa", "nargin", "numel", "nargout", "isequal", "zeros", "true", "false", "fullfile", "find", "get"]
             },
             "severity": "warning",
             "messageText": "Avoid using function names for variables.",
