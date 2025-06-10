@@ -105,8 +105,7 @@
             "casing": "UpperCamelCase"
         },
         "enumeration": {
-            "casing": "UpperCamelCase",
-            "regularExpression": "^([A-Z][a-z0-9]+)$"
+            "casing": "UpperCamelCase"
         },
         "variable": {
             "casing": ["lowercase", "lowerCamelCase"]
