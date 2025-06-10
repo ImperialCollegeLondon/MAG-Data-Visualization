@@ -34,7 +34,7 @@ classdef ScienceCSV < mag.io.in.CSV
             metadata = mag.meta.Science(metadataArgs{:}, Primary = true);
 
             % Remove variables.
-            rawData = removevars(rawData, regexpPattern("uprange_\w"));
+            rawData = removevars(rawData, regexpPattern("\w_saturation"));
 
             % Add compression and quality flags.
             if ismember("compression", rawData.Properties.VariableNames)
