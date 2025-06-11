@@ -28,11 +28,19 @@ classdef DefaultFactory < mag.graphics.factory.Factory
             % Force MATLAB to finish opening any previous figure.
             drawnow();
 
+            % In MATLAB R2025a and above, force figures in the figures
+            % container.
+            if matlabRelease().Release >= "R2025a"
+                windowStyle = "docked";
+            else
+                windowStyle = "normal";
+            end
+
             % Create and populate figure.
             % Make sure figure is hidden while being populated, and only
             % shown, if requested, at the end.
-            f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, Visible = "off");
-            setVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
+            f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, WindowStyle = windowStyle, Visible = "off");
+            resetVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
 
             if mag.internal.isThemeable(f)
                 f.Theme = options.Theme;
