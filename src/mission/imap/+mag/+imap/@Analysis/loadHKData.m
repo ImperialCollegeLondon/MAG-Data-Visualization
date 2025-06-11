@@ -31,7 +31,7 @@ function loadHKData(this)
         end
     end
 
-    %% Amend Timerange
+    %% Amend Time Range
 
     % Concentrate on recorded timerange.
     if ~isempty(this.Results.Metadata) && ~ismissing(this.Results.Metadata.Timestamp)

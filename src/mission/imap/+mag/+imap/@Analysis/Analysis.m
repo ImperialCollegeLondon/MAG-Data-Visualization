@@ -161,9 +161,9 @@ classdef Analysis < mag.Analysis
 
             this.Results = mag.imap.Instrument();
 
-            this.loadEventsData();
-
             [primarySetup, secondarySetup] = this.loadMetadata();
+
+            this.loadEventsData();
 
             this.loadScienceData(primarySetup, secondarySetup);
 
