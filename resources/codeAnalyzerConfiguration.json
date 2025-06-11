@@ -4,7 +4,7 @@
     "description": "MAG Lab MATLAB style guidelines",
     "author": "Michele Facchinelli",
     "schemaVersion": "1.1.0",
-    "guidelineVersion": "1.0.0",
+    "guidelineVersion": "1.0.1",
 
     // New and Modified Checks
     "checks":
@@ -28,7 +28,7 @@
             "rule":
             {
                 "template": "variableName",
-                "variableNames": ["size", "error", "length", "max", "isa", "nargin" , "numel" , "nargout" ,"isequal" , "zeros" , "true" ,"false" ,"fullfile" ,"find", "get"]
+                "variableNames": ["size", "error", "length", "max", "isa", "nargin", "numel", "nargout", "isequal", "zeros", "true", "false", "fullfile", "find", "get"]
             },
             "severity": "warning",
             "messageText": "Avoid using function names for variables.",
@@ -105,8 +105,7 @@
             "casing": "UpperCamelCase"
         },
         "enumeration": {
-            "casing": "UpperCamelCase",
-            "regularExpression": "^([A-Z][a-z0-9]+)$"
+            "casing": "UpperCamelCase"
         },
         "variable": {
             "casing": ["lowercase", "lowerCamelCase"]
