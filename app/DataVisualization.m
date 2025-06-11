@@ -224,7 +224,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
                 manager.reset();
-            end            
+            end
         end
 
         function exportButtonPushed(app)

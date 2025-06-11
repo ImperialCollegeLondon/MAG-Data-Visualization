@@ -82,18 +82,18 @@ classdef tDataVisualization < AppTestCase
         end
 
         % function selectMission(testCase, ValidMission)
-        % 
+        %
         %     % Set up.
         %     app = testCase.createAppWithCleanup(ValidMission);
-        % 
+        %
         %     % Exercise.
         %     testCase.press(app.ToolbarManager.MissionPushTool);
-        % 
+        %
         %     testCase.assertNotEmpty(app.SelectMissionDialog, "Mission selection dialog should not be empty.");
-        % 
+        %
         %     testCase.choose(app.SelectMissionDialog.MissionDropDown, ValidMission);
         %     testCase.press(app.SelectMissionDialog.SelectButton);
-        % 
+        %
         %     % Verify.
         %     testCase.verifyEqual(app.Mission, ValidMission, "Mission should be selected.");
         % end

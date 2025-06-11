@@ -52,7 +52,7 @@ classdef tIMAPField < mag.test.ViewControllerTestCase
 
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Events"), """Events"" should be a named argument.");
             testCase.verifyEmpty(command.NamedArguments.Events, """Events"" should be empty when none selected.");
-            
+
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Name"), """Name"" should be a named argument.");
             testCase.verifyTrue(ismissing(command.NamedArguments.Name), """Name"" should match expectation.");
         end
@@ -79,7 +79,7 @@ classdef tIMAPField < mag.test.ViewControllerTestCase
 
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Events"), """Events"" should be a named argument.");
             testCase.verifyEqual(command.NamedArguments.Events, "Mode", """Events"" should match expectation.");
-            
+
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Name"), """Name"" should be a named argument.");
             testCase.verifyTrue(ismissing(command.NamedArguments.Name), """Name"" should match expectation.");
         end
@@ -106,7 +106,7 @@ classdef tIMAPField < mag.test.ViewControllerTestCase
 
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Events"), """Events"" should be a named argument.");
             testCase.verifyEqual(command.NamedArguments.Events, ["Compression", "Range"], """Events"" should match expectation.");
-            
+
             testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField("Name"), """Name"" should be a named argument.");
             testCase.verifyTrue(ismissing(command.NamedArguments.Name), """Name"" should match expectation.");
         end

@@ -1,21 +1,21 @@
 {
     "Instrument": {
-        "Mission": "IMAP",
-        "Model": "FM",
-        "BSW": "2.04",
         "ASW": "4.05",
-        "GSE": "17.5"
+        "BSW": "2.04",
+        "GSE": "17.5",
+        "Mission": "IMAP",
+        "Model": "FM"
     },
     "Primary": {
+        "Can": "None",
         "FEE": "FEE3",
-        "Model": "FM5",
         "Harness": "S/C",
-        "Can": "None"
+        "Model": "FM5"
     },
     "Secondary": {
+        "Can": "None",
         "FEE": "FEE4",
-        "Model": "FM4",
         "Harness": "S/C",
-        "Can": "None"
+        "Model": "FM4"
     }
 }

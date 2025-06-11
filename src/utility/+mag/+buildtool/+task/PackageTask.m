@@ -73,7 +73,7 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
         function matlabPath = getMATLABPath()
 
             matlabPath = string(split(path(), pathsep()));
-            
+
             locMAG = contains(matlabPath, "MAG-Data-Visualization") & contains(matlabPath, ["app", "src"]);
             matlabPath = matlabPath(locMAG);
         end
