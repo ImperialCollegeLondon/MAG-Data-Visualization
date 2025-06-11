@@ -10,6 +10,11 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pre-commit/action@v3.0.1
 
   test:
     name: Run MATLAB Tests
