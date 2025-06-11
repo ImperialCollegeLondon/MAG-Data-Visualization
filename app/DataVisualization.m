@@ -68,10 +68,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
 
             % Create figure and other UI components.
-            app.UIFigure = uifigure();
-            app.UIFigure.Position = [100, 100, 800, 495];
-            app.UIFigure.Name = app.getAppName();
-            app.UIFigure.Resize = "off";
+            app.UIFigure = uifigure(Name = app.getAppName(), Position = [100, 100, 800, 495], Resize = "off");
 
             pathToAppIcons = fullfile(fileparts(mfilename("fullpath")), "icons");
             app.ToolbarManager = mag.app.manage.ToolbarManager(app, pathToAppIcons);
