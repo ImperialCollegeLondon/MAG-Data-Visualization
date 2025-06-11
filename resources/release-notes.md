@@ -1,3 +1,7 @@
+## App
+
+- (IMAP) CPT view settings must match pattern only once finished typing (not while typing)
+
 ## Software
 
 - (IMAP) Events recorded before the start of a test are discarded
