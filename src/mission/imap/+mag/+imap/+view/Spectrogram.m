@@ -90,7 +90,7 @@ classdef Spectrogram < mag.graphics.view.View
 
             transformation.FrequencyLimits = this.FrequencyLimits;
             transformation.FrequencyPoints = this.FrequencyPoints;
-            transformation.Normalize = this.Normalize; 
+            transformation.Normalize = this.Normalize;
             transformation.Window = this.Window;
             transformation.Overlap = this.Overlap;
 

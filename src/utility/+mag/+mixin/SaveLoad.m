@@ -15,7 +15,7 @@ classdef (Abstract, HandleCompatible) SaveLoad
     methods (Hidden)
 
         function savedObject = saveobj(this)
-            
+
             savedObject = this;
             savedObject.OriginalVersion = this.Version;
         end

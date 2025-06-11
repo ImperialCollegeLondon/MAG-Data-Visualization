@@ -34,7 +34,7 @@ classdef IsField < matlab.unittest.constraints.Constraint & mag.mixin.SetGet & .
             end
         end
     end
-    
+
     methods (Hidden, Access = protected)
 
         function args = getInputArguments(constraint)

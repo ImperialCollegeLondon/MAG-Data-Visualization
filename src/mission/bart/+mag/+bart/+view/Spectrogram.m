@@ -68,7 +68,7 @@ classdef Spectrogram < mag.graphics.view.View
             end
 
             if ~isempty(input2) && input2.HasData
-    
+
                 input2Spectrum = mag.spectrogram(input2, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
                     Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
 
