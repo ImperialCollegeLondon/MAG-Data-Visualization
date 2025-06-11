@@ -156,7 +156,7 @@ classdef Spectrogram < mag.transform.Transformation
                 window = [];
             end
 
-            if overlap >= numel(y)
+            if overlap >= (numel(y) / 2)
                 overlap = [];
             end
 
