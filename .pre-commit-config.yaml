@@ -12,11 +12,6 @@ repos:
       - id: pretty-format-json
         args: [--autofix, --indent, "4"]
         exclude: resources/codeAnalyzerConfiguration.json|tests/unit/data/imap/test_data/invalid.json
-  - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.5
-    hooks:
-      - id: remove-tabs
-        files: (?<!\.msg)$
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: "0.33.0"
     hooks:
