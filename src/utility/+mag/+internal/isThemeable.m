@@ -1,7 +1,7 @@
 function value = isThemeable(figure)
 % ISTHEMEABLE Determine whether figure is themeable (i.e., if setting
 % dark/light mode is supported).
-    
+
     arguments (Input)
         figure (1, 1) matlab.ui.Figure
     end

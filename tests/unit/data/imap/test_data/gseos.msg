@@ -13,14 +13,14 @@ Info	05/07/24	10:11:49.490	Net	0	1	Server connection: NET_OASIS_RECV_INST_TLM ha
 Info	05/07/24	10:11:49.490	Net	0	1	Server connection: NET_OASIS_CMD_DECODER_STATUS has been started.
 Info	05/07/24	10:11:49.490	Net	0	1	Server connection: NET_OASIS_SEND_SCE_CMD has been started.
 Info	05/07/24	10:11:49.525	Binary Writer	0	1	Binary Writer: "CCSDS_FRAG_TLM" started.
-Info	05/07/24	10:11:50.437	Version	0	1	
+Info	05/07/24	10:11:50.437	Version	0	1
 Info	05/07/24	10:11:50.437	Version	0	1	Version Control Information
 Info	05/07/24	10:11:50.437	Version	0	1	----------------------------------------------------------------------
 Info	05/07/24	10:11:50.437	Version	0	1	GSEOS:         8.1.1497
 Info	05/07/24	10:11:50.437	Version	0	1	Python:        3.7.7 (default, Jun 19 2020, 21:06:32) [MSC v.1900 64 bit (AMD64)]
 Info	05/07/24	10:11:50.437	Version	0	1	ExcelLoad:     4.4.047
 Info	05/07/24	10:11:50.437	Version	0	1	IMAP - MAG:
-Info	05/07/24	10:11:50.437	Version	0	1	
+Info	05/07/24	10:11:50.437	Version	0	1
 Info	05/07/24	10:11:50.437	Version	0	1	Spreadsheet Version Information
 Info	05/07/24	10:11:50.437	Version	0	1	----------------------------------------------------------------------
 Info	05/07/24	10:11:50.437	Version	0	1	IMAP_Common\TLM_SC.xls (Release: 2024-04-17 Rev: 1.0) converted: Mon Apr 22 14:06:13 2024
@@ -30,7 +30,7 @@ Info	05/07/24	10:11:50.437	Version	0	1	Instruments\MAG_Common\TLM_MAG_SCI.xls (R
 Info	05/07/24	10:11:50.437	Version	0	1	Instruments\MAG_Common\TLM_MAG_decoders.xls (Release: 0000-00-00 Rev: 0.0) converted: Wed Apr 24 10:08:16 2024
 Info	05/07/24	10:11:50.437	Version	0	1	Instruments\MAG_Common\TLM_MAG_soloScience.xls (Release: 0000-00-00 Rev: 0.0) converted: Wed Apr 24 10:08:23 2024
 Info	05/07/24	10:11:50.437	Version	0	1	----------------------------------------------------------------------
-Info	05/07/24	10:11:50.437	Version	0	1	
+Info	05/07/24	10:11:50.437	Version	0	1
 Info	05/07/24	10:11:50.602	IMAP_Bios	0	1	Loading IMAP SCE interface.
 Info	05/07/24	10:11:50.602	Message	0	1	Setting Message Filter: Error reading from pipeOut:*, ERROR, OKBios, 0.
 Info	05/07/24	10:11:50.813	OKBios	0	1	Initializing device: XEM1

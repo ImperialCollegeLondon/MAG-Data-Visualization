@@ -1,16 +1,4 @@
 {
-    "files.exclude": {
-        "**/._*": true,
-        "**/*.*~": true,
-        "**/*.asv": true,
-        "**/*~": true
-    },
-    "search.exclude": {
-        "**/._*": true,
-        "**/*.*~": true,
-        "**/*.asv": true,
-        "**/*~": true
-    },
     "cSpell.words": [
         "AGROW",
         "Bartington",
@@ -24,5 +12,17 @@
         "SOLARORBITER",
         "Stackedplot",
         "SUPPORTEDEVENTS"
-    ]
+    ],
+    "files.exclude": {
+        "**/*.*~": true,
+        "**/*.asv": true,
+        "**/*~": true,
+        "**/._*": true
+    },
+    "search.exclude": {
+        "**/*.*~": true,
+        "**/*.asv": true,
+        "**/*~": true,
+        "**/._*": true
+    }
 }

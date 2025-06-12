@@ -16,15 +16,17 @@ The following MATLAB toolboxes are required to use the toolbox:
 
 The following external MATLAB libraries are required:
 
-* MATLAB SPICE (MICE): https://naif.jpl.nasa.gov/naif/toolkit_MATLAB.html
-* MATLAB SPDF CDF: https://cdf.gsfc.nasa.gov/html/sw_and_docs.html
+* MATLAB SPICE (MICE): <https://naif.jpl.nasa.gov/naif/toolkit_MATLAB.html>
+* MATLAB SPDF CDF: <https://cdf.gsfc.nasa.gov/html/sw_and_docs.html>
 
 ## Getting Started
 
 The toolbox adds to the path many functions and classes that can be used for data processing and visualization. These can be found under the `mag` namespace; you can use tab-completion to see what is available:
+
 ``` matlab
 mag.<TAB>
 ```
+
 In the sections below you can find more information about some of the functionalities.
 
 ## User Manual
@@ -33,7 +35,7 @@ See [internal documentation](https://imperialcollege.atlassian.net/wiki/spaces/P
 
 ## Development
 
-When developing new features or fixing issues, create a new branch. After finishing development, make sure to write tests to cover any new changes. 
+When developing new features or fixing issues, create a new branch. After finishing development, make sure to write tests to cover any new changes.
 
 To change the version of the toolbox, modify the `MAG_DATA_VISUALIZATION_VERSION` variable in `.env`. This will automatically updated the toolbox version and create a new release with the correct tag.
 Also, update the contents of the `resources/release-notes.md` file by detailing what has changed in the new version.

@@ -7,14 +7,14 @@ Info	03/06/24	21:58:00.190	GSEOS	0	1	*******************************************
 Info	03/06/24	21:58:00.463	Net	0	1	Server connection: pytest_recv_tlm has been started.
 Info	03/06/24	21:58:00.463	Net	0	1	Server connection: pytest_send_tc has been started.
 Info	03/06/24	21:58:00.480	Binary Writer	0	1	Binary Writer: "CCSDS_FRAG_TLM" started.
-Info	03/06/24	21:58:00.760	Version	0	1	
+Info	03/06/24	21:58:00.760	Version	0	1
 Info	03/06/24	21:58:00.760	Version	0	1	Version Control Information
 Info	03/06/24	21:58:00.760	Version	0	1	----------------------------------------------------------------------
 Info	03/06/24	21:58:00.760	Version	0	1	GSEOS:         8.1.1491
 Info	03/06/24	21:58:00.760	Version	0	1	Python:        3.7.7 (default, Jun 19 2020, 21:06:32) [MSC v.1900 64 bit (AMD64)]
 Info	03/06/24	21:58:00.760	Version	0	1	ExcelLoad:     4.2.042
 Info	03/06/24	21:58:00.760	Version	0	1	IMAP - MAG:
-Info	03/06/24	21:58:00.760	Version	0	1	
+Info	03/06/24	21:58:00.760	Version	0	1
 Info	03/06/24	21:58:00.760	Version	0	1	Spreadsheet Version Information
 Info	03/06/24	21:58:00.760	Version	0	1	----------------------------------------------------------------------
 Info	03/06/24	21:58:00.760	Version	0	1	Instruments\MAG_Common\CMD_MAG.xls (Release: 2023-09-01 Rev: None) converted: Fri Jan 26 13:52:03 2024
@@ -22,7 +22,7 @@ Info	03/06/24	21:58:00.760	Version	0	1	Instruments\MAG_Common\TLM_MAG.xls (Relea
 Info	03/06/24	21:58:00.760	Version	0	1	Instruments\MAG_Common\TLM_MAG_SCI.xls (Release: 2023-09-01 Rev: 1.0) converted: Mon Dec 11 14:54:19 2023
 Info	03/06/24	21:58:00.760	Version	0	1	Instruments\MAG_Common\TLM_MAG_decoders.xls (Release: 0000-00-00 Rev: 0.0) converted: Fri Feb  9 14:20:08 2024
 Info	03/06/24	21:58:00.760	Version	0	1	----------------------------------------------------------------------
-Info	03/06/24	21:58:00.760	Version	0	1	
+Info	03/06/24	21:58:00.760	Version	0	1
 Info	03/06/24	21:58:00.805	IMAP_Bios	0	1	Loading IMAP SCE interface.
 Info	03/06/24	21:58:00.805	Message	0	1	Setting Message Filter: Error reading from pipeOut:*, ERROR, OKBios, 0.
 Info	03/06/24	21:58:00.842	OKBios	0	1	Initializing device: XEM1

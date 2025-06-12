@@ -1,0 +1,23 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-json
+        exclude: resources/codeAnalyzerConfiguration.json|tests/unit/data/imap/test_data/invalid.json
+      - id: check-toml
+      - id: check-yaml
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: trailing-whitespace
+      - id: pretty-format-json
+        args: [--autofix, --indent, "4"]
+        exclude: resources/codeAnalyzerConfiguration.json|tests/unit/data/imap/test_data/invalid.json
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: "0.33.0"
+    hooks:
+      - id: check-github-workflows
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.45.0
+    hooks:
+      - id: markdownlint-fix
+        args: [--ignore, LICENSE.md, --disable, MD013]
