@@ -170,6 +170,8 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
             locTimedCommand = ~ismissing(eventtableThis.Duration) & (eventtableThis.Duration ~= 0);
             idxTimedCommand = find(locTimedCommand);
 
+            autoEventtable = this.generateEmptyEventtable();
+
             for i = idxTimedCommand(:)'
 
                 autoEvent = eventtableThis(i, :);
@@ -184,10 +186,16 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
                     autoEvent.Label = compose("Burst (%d, %d)", autoEvent.PrimaryBurstRate, autoEvent.SecondaryBurstRate);
                 end
 
-                eventtableThis = [eventtableThis; autoEvent]; %#ok<AGROW>
+                % If the time of automated event is after the next event,
+                % correct it.
+                if (i < height(eventtableThis)) && (autoEvent.Time >= eventtableThis(i + 1, :).Time)
+                    autoEvent.Time = eventtableThis(i + 1, :).Time - mag.time.Constant.Eps;
+                end
+
+                autoEventtable = [autoEventtable; autoEvent]; %#ok<AGROW>
             end
 
-            eventtableThis = sortrows(eventtableThis);
+            eventtableThis = sortrows([eventtableThis; autoEventtable]);
             eventtableThis = eventtable(eventtableThis, EventLabelsVariable = "Label");
 
             eventtableThis = this.fillMissingDetails(eventtableThis);

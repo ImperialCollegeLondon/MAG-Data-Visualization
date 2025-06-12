@@ -4,6 +4,7 @@ function savePlots(figures, location, options)
     arguments
         figures (1, :) matlab.ui.Figure
         location (1, 1) string = "results"
+        options.Resolution (1, 1) double = 300
         options.ColonReplacement (1, 1) string = ""
         options.DotReplacement (1, 1) string = "_"
         options.SlashReplacement (1, 1) string = "_"
@@ -21,22 +22,21 @@ function savePlots(figures, location, options)
 
     mustBeFolder(location);
 
+    figures = figures(isvalid(figures));
+
     for f = figures
 
-        if isvalid(f)
+        name = replace(f.Name, [":", ".", "/", "\", """"], [options.ColonReplacement, options.DotReplacement, options.SlashReplacement, options.SlashReplacement, options.QuoteReplacement]);
+        name = fullfile(location, name);
 
-            name = replace(f.Name, [":", ".", "/", "\", """"], [options.ColonReplacement, options.DotReplacement, options.SlashReplacement, options.SlashReplacement, options.QuoteReplacement]);
-            name = fullfile(location, name);
+        exportgraphics(f, fullfile(name + ".png"), Resolution = options.Resolution);
 
-            exportgraphics(f, fullfile(name + ".png"), Resolution = 300);
+        if options.SaveAsFig
 
-            if options.SaveAsFig
-
-                try
-                    savefig(f, name);
-                catch exception
-                    warning("Could not save figure ""%s"":\n%s", f.Name, exception.message);
-                end
+            try
+                savefig(f, name);
+            catch exception
+                warning("Could not save figure ""%s"":\n%s", f.Name, exception.message);
             end
         end
     end

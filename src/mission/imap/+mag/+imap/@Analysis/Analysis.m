@@ -251,8 +251,8 @@ classdef Analysis < mag.Analysis
 
             arguments (Input)
                 this (1, 1) mag.imap.Analysis
-                options.PrimaryPattern (1, :) double = [2, 64, 4, 64, 4, 128]
-                options.SecondaryPattern (1, :) double = [2, 8, 1, 64, 4, 128]
+                options.PrimaryPattern (1, :) double = [2, 64, 2, 4, 64, 4, 4, 128]
+                options.SecondaryPattern (1, :) double = [2, 8, 2, 1, 64, 1, 4, 128]
             end
 
             arguments (Output)
@@ -455,6 +455,12 @@ classdef Analysis < mag.Analysis
                 end
             end
         end
+    end
+
+    methods (Hidden, Static)
+
+        % FINDMODECHANGES Improve estimate of mode change times.
+        eventData = findModeChanges(data, eventData, name)
     end
 
     methods (Hidden, Sealed, Static)
