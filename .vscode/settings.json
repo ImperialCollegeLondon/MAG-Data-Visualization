@@ -12,6 +12,7 @@
         "**/*~": true
     },
     "cSpell.words": [
+        "AGROW",
         "Bartington",
         "cspice",
         "downsample",
@@ -20,6 +21,8 @@
         "IMAP",
         "Plottable",
         "signedness",
-        "SOLARORBITER"
+        "SOLARORBITER",
+        "Stackedplot",
+        "SUPPORTEDEVENTS"
     ]
 }
