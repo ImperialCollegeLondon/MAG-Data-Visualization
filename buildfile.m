@@ -1,21 +1,13 @@
 function plan = buildfile()
 % BUILDFILE File invoked by automated build.
 
-    % Create a plan from task functions.
     plan = buildplan();
 
-    % Get current project.
-    if isMATLABReleaseOlderThan("R2025a")
+    % Open package if not already open.
+    package = matlab.mpm.Package(fileparts(mfilename("fullpath")));
 
-        project = matlab.project.currentProject();
-
-        if isempty(project) || ~isequal(project.Name, "MAG Data Visualization")
-
-            project = matlab.project.loadProject("MAGDataVisualization.prj");
-            restoreProject = onCleanup(@() project.close());
-        end
-    else
-        project = plan.Project;
+    if ~package.Installed
+        mpminstall(package, Authoring = true, InPlace = true, Prompt = false);
     end
 
     % Add the "check" task to identify code issues.
@@ -36,7 +28,7 @@ function plan = buildfile()
 
     % Add the "package" task to create toolbox.
     plan("package") = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
-        ProjectRoot = project.RootFolder, ...
+        PackageRoot = plan.RootFolder, ...
         ToolboxPath = fullfile("artifacts/MAG Data Visualization.mltbx"));
 
     % Add the "clean" task to delete output of all tasks.

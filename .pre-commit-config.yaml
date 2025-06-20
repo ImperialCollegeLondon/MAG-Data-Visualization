@@ -11,7 +11,7 @@ repos:
       - id: trailing-whitespace
       - id: pretty-format-json
         args: [--autofix, --indent, "4"]
-        exclude: resources/codeAnalyzerConfiguration.json|tests/unit/data/imap/test_data/invalid.json
+        exclude: resources/codeAnalyzerConfiguration.json|resources/mpackage.json|tests/unit/data/imap/test_data/invalid.json
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: "0.33.0"
     hooks:
