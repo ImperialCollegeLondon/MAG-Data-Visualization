@@ -1,0 +1,16 @@
+{
+    "mw.desktop.quickAccess": {
+        "items": [
+            {
+                "action": {
+                    "callback": "DataVisualization",
+                    "description": "Open MAG Data Visualization App",
+                    "icon": "../icons/mag.png",
+                    "text": "Data Visualization App"
+                },
+                "name": "mag.ui.DataVisualization",
+                "type": "PushButton"
+            }
+        ]
+    }
+}
