@@ -11,28 +11,10 @@ function v = version()
     if isempty(ver)
 
         location = fileparts(mfilename("fullpath"));
-        fileName = fullfile(location, "../../../.env");
+        root = fullfile(location, "../../../");
 
-        if isfile(fileName)
-
-            env = loadenv(fileName);
-
-            if env.isKey("MAG_DATA_VISUALIZATION_VERSION")
-                ver = env("MAG_DATA_VISUALIZATION_VERSION");
-            else
-                error("Could not determine version from "".env"" file.");
-            end
-        else
-
-            addOns = matlab.addons.installedAddons();
-            locMAG = addOns.Name == "MAG Data Visualization";
-
-            if any(locMAG) && (nnz(locMAG) == 1)
-                ver = addOns{locMAG, "Version"};
-            else
-                error("Could not determine version from AddOns.");
-            end
-        end
+        package = matlab.mpm.Package(root);
+        ver = package.Version;
     end
 
     v = ver;
