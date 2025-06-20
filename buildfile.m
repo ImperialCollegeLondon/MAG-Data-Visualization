@@ -4,10 +4,12 @@ function plan = buildfile()
     plan = buildplan();
 
     % Open package if not already open.
-    package = matlab.mpm.Package(fileparts(mfilename("fullpath")));
+    package = matlab.mpm.Package(plan.RootFolder);
 
     if ~package.Installed
-        mpminstall(package, InPlace = true, Temporary = true, Prompt = false);
+
+        originalPath = addpath(fullfile(plan.RootFolder, "src", "utility"));
+        restorePath = onCleanup(@() path(originalPath));
     end
 
     % Add the "check" task to identify code issues.
