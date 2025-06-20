@@ -19,8 +19,7 @@ jobs:
           release: R2025a
       - name: Load version from package
         run: |
-          version=$(jq -r '.version' resources/mpackage.json)
-          echo "MAG_DATA_VISUALIZATION_VERSION=${version}" >> $GITHUB_ENV
+          echo "MAG_DATA_VISUALIZATION_VERSION=$(jq -r .version resources/mpackage.json)" >> $GITHUB_ENV
       - name: Validate version with tag
         run: |
           if [ "v${{ env.MAG_DATA_VISUALIZATION_VERSION }}" != "${{ github.ref_name }}" ]; then

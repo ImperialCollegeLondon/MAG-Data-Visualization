@@ -15,6 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pre-commit/action@v3.0.1
+      - name: TEST Load version from package
+        run: |
+          echo "MAG_DATA_VISUALIZATION_VERSION=$(jq -r .version resources/mpackage.json)" >> $GITHUB_ENV
 
   test:
     name: Run MATLAB Tests
@@ -27,8 +30,7 @@ jobs:
         uses: actions/checkout@v4
       - name: TEST Load version from package
         run: |
-          version=$(jq -r '.version' resources/mpackage.json)
-          echo "MAG_DATA_VISUALIZATION_VERSION=${version}" >> $GITHUB_ENV
+          echo "MAG_DATA_VISUALIZATION_VERSION=$(jq -r .version resources/mpackage.json)" >> $GITHUB_ENV
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2.5.0
         with:
