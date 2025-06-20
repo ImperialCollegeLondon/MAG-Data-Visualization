@@ -7,7 +7,7 @@ function plan = buildfile()
     package = matlab.mpm.Package(fileparts(mfilename("fullpath")));
 
     if ~package.Installed
-        mpminstall(package, Authoring = true, InPlace = true, Prompt = false);
+        mpminstall(package, InPlace = true, Temporary = true, Prompt = false);
     end
 
     % Add the "check" task to identify code issues.
