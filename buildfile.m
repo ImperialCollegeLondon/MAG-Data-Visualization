@@ -3,7 +3,7 @@ function plan = buildfile()
 
     plan = buildplan();
 
-    if isMATLABReleaseOlderThan("R2024b")
+    if isMATLABReleaseOlderThan("R2025a")
 
         % Brute-force add all folders to the path.
         originalPath = addpath(genpath(plan.RootFolder));
