@@ -5,6 +5,11 @@ function plan = buildfile()
 
     if isMATLABReleaseOlderThan("R2024b")
 
+        % Brute-force add all folders to the path.
+        originalPath = addpath(genpath(plan.RootFolder));
+        restorePath = onCleanup(@() path(originalPath));
+    else
+
         % Open package if not already open.
         package = matlab.mpm.Package(plan.RootFolder);
 
@@ -13,11 +18,6 @@ function plan = buildfile()
             originalPath = addpath(fullfile(plan.RootFolder, [package.Folders.Path]));
             restorePath = onCleanup(@() path(originalPath));
         end
-    else
-
-        % Brute-force add all folders to the path.
-        originalPath = addpath(genpath(plan.RootFolder));
-        restorePath = onCleanup(@() path(originalPath));
     end
 
     % Add the "check" task to identify code issues.
