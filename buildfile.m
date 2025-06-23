@@ -5,18 +5,18 @@ function plan = buildfile()
 
     if isMATLABReleaseOlderThan("R2025a")
 
+        warning("mag:buildtool:path", "MATLAB release ""%s"" not supported for development purposes." + ...
+            "Adding all folders to the path for testing purposes.", matlabRelease().Release);
+
         % Brute-force add all folders to the path.
-        originalPath = addpath(genpath(plan.RootFolder));
-        restorePath = onCleanup(@() path(originalPath));
+        addpath(genpath(plan.RootFolder));
     else
 
         % Open package if not already open.
         package = matlab.mpm.Package(plan.RootFolder);
 
         if ~package.Installed
-
-            originalPath = addpath(join(fullfile(plan.RootFolder, [package.Folders.Path]), pathsep()));
-            restorePath = onCleanup(@() path(originalPath));
+            mpminstall(package, Authoring = true, Temporary = true, Prompt = false);
         end
     end
 
@@ -35,6 +35,10 @@ function plan = buildfile()
         IncludeSubfolders = true, ...
         TestResults = fullfile("artifacts/results.xml"), ...
         CodeCoverageResults = fullfile("artifacts/coverage.xml"));
+
+    if ~isMATLABReleaseOlderThan("R2025a")
+        plan("test").RunOnlyImpactedTests = true;
+    end
 
     % Add the "package" task to create toolbox.
     plan("package") = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
