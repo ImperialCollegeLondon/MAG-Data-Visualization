@@ -15,7 +15,7 @@ function plan = buildfile()
 
         if ~package.Installed
 
-            originalPath = addpath(fullfile(plan.RootFolder, [package.Folders.Path]));
+            originalPath = addpath(join(fullfile(plan.RootFolder, [package.Folders.Path]), pathsep()));
             restorePath = onCleanup(@() path(originalPath));
         end
     end
