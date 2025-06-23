@@ -8,7 +8,7 @@ function plan = buildfile()
 
     if ~package.Installed
 
-        originalPath = addpath(fullfile(plan.RootFolder, "src", "utility"));
+        originalPath = addpath(fullfile(plan.RootFolder, [package.Folders.Path]));
         restorePath = onCleanup(@() path(originalPath));
     end
 
