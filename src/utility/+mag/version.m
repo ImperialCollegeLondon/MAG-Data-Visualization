@@ -13,8 +13,15 @@ function v = version()
         location = fileparts(mfilename("fullpath"));
         root = fullfile(location, "../../../");
 
-        package = matlab.mpm.Package(root);
-        ver = package.Version;
+        if isMATLABReleaseOlderThan("R2025a")
+
+            package = readstruct(fullfile(root, "resources", "mpackage.json"));
+            ver = package.version;
+        else
+
+            package = matlab.mpm.Package(root);
+            ver = package.Version;
+        end
     end
 
     v = ver;
