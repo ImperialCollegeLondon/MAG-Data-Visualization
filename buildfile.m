@@ -5,7 +5,7 @@ function plan = buildfile()
 
     if isMATLABReleaseOlderThan("R2025a")
 
-        warning("mag:buildtool:path", "MATLAB release ""%s"" not supported for development purposes." + ...
+        warning("mag:buildtool:path", "MATLAB release ""%s"" not supported for development purposes. " + ...
             "Adding all folders to the path for testing purposes.", matlabRelease().Release);
 
         % Brute-force add all folders to the path.
@@ -16,7 +16,7 @@ function plan = buildfile()
         package = matlab.mpm.Package(plan.RootFolder);
 
         if ~package.Installed
-            mpminstall(package, Authoring = true, Temporary = true, Prompt = false);
+            addpath(join(fullfile(plan.RootFolder, [package.Folders.Path]), pathsep()));
         end
     end
 
