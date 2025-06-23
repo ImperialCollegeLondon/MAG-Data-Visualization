@@ -4,7 +4,7 @@ classdef (Abstract) AppTestCase < matlab.uitest.TestCase & mag.test.GraphicsTest
     methods (TestClassSetup)
 
         function useMATLABR2024bOrAbove(testCase)
-            testCase.assumeTrue(matlabRelease().Release >= "R2024b", "Only MATLAB older than R2024b is supported for this test.");
+            testCase.assumeFalse(isMATLABReleaseOlderThan("R2024b"), "Only MATLAB R2024b or later is supported for this test.");
         end
     end
 

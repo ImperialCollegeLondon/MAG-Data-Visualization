@@ -9,6 +9,13 @@ classdef tToolbox < matlab.unittest.TestCase
         Version = {"1.0.1", "2.3.1"}
     end
 
+    methods (TestClassSetup)
+
+        function useMATLABR2025aOrAbove(testCase)
+            testCase.assumeFalse(isMATLABReleaseOlderThan("R2025a"), "Only MATLAB R2025a or later is supported for this test.");
+        end
+    end
+
     methods (Test)
 
         % Test that toolbox can be packaged.
