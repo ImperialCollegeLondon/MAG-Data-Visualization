@@ -70,7 +70,7 @@ classdef SignalAnalyzer < mag.app.Control
             data = results.(selectedInput);
 
             if ~data.isPlottable()
-                error("mag:app:emptySignal", "Not enough data for plotting ""%s"".", selectedInput);
+                error("mag:app:EmptySignal", "Not enough data for plotting ""%s"".", selectedInput);
             end
 
             selectedData = timetable(data.Time - data.Time(1), data.(selectedSignal), VariableNames = selectedInput + "_" + selectedSignal);

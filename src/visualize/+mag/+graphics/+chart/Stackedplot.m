@@ -38,8 +38,12 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
 
             Ny = width(yData);
 
-            if isempty(this.Colors) || (Ny > size(this.Colors, 1))
+            if height(this.Colors) == 1
+                colors = repmat(this.Colors, Ny, 1);
+            elseif isempty(this.Colors) || (Ny > height(this.Colors))
                 error("Mismatch in number of colors for number of plots.");
+            else
+                colors = this.Colors;
             end
 
             % Check if layout already has a stack layout.
@@ -61,7 +65,7 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
                 hold(ax, "on");
                 resetAxesHold = onCleanup(@() hold(ax, "off"));
 
-                graph(y) = plot(ax, xData, yData(:, y), this.MarkerStyle{:}, this.LineCustomization{:}, Color = this.Colors(y, :));
+                graph(y) = plot(ax, xData, yData(:, y), this.MarkerStyle{:}, this.LineCustomization{:}, Color = colors(y, :));
 
                 if this.EventsVisible && ~isempty(data.Properties.Events)
                     this.addEventsData(ax, data);

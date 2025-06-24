@@ -91,6 +91,10 @@ classdef ToolbarManager < mag.app.manage.Manager
 
         function unlock(this)
 
+            if ~isvalid(this) || ~isvalid(this.Toolbar)
+                return;
+            end
+
             [this.MissionPushTool.Enable, this.ImportPushTool.Enable, ...
                 this.DebugToggleTool.Enable, this.HelpPushTool.Enable] = deal(true);
         end

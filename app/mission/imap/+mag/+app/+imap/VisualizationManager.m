@@ -24,7 +24,7 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
         function figures = visualize(this, analysis)
 
             if isempty(this.SelectedControl)
-                error("mag:app:noViewSelected", "No view selected.");
+                error("mag:app:NoViewSelected", "No view selected.");
             end
 
             if isa(this.SelectedControl, "mag.app.imap.control.AT") || isa(this.SelectedControl, "mag.app.imap.control.CPT")

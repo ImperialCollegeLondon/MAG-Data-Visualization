@@ -99,7 +99,7 @@ classdef CPT < mag.app.Control & mag.app.mixin.Filter
             pattern = asManyOfPattern(digitsPattern() + optionalPattern(characterListPattern(",") + whitespacePattern()));
 
             if ~matches(value, pattern)
-                error("mag:app:invalidPattern", "Value must match the pattern ""1, 2, 3"".");
+                error("mag:app:InvalidPattern", "Value must match the pattern ""1, 2, 3"".");
             end
         end
     end
@@ -115,5 +115,3 @@ classdef CPT < mag.app.Control & mag.app.mixin.Filter
         end
     end
 end
-
-

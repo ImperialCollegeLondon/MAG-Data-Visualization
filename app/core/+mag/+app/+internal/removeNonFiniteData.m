@@ -13,7 +13,7 @@ function data = removeNonFiniteData(data)
 
     if any(locNonFinite, "all")
 
-        warning("mag:app:nonFiniteData", "Removing non-finite data.");
+        warning("mag:app:NonFiniteData", "Removing non-finite data.");
         data(any(locNonFinite, 2), :) = [];
     end
 end

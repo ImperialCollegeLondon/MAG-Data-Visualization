@@ -75,7 +75,7 @@ classdef tSignalAnalyzer < mag.test.ViewControllerTestCase
             expectedData = expectedData([1, 3:4, 6:end], :);
 
             % Exercise.
-            command = testCase.verifyWarning(@() signalAnalyzer.getVisualizeCommand(results), "mag:app:nonFiniteData", ...
+            command = testCase.verifyWarning(@() signalAnalyzer.getVisualizeCommand(results), "mag:app:NonFiniteData", ...
                 "Warning should be issued when removing non-finite data.");
 
             % Verify.
@@ -98,7 +98,7 @@ classdef tSignalAnalyzer < mag.test.ViewControllerTestCase
             results = mag.bart.Instrument();
 
             % Exercise and verify.
-            testCase.verifyError(@() signalAnalyzer.getVisualizeCommand(results), "mag:app:emptySignal", ...
+            testCase.verifyError(@() signalAnalyzer.getVisualizeCommand(results), "mag:app:EmptySignal", ...
                 "Error should be thrown when there is no data to plot.");
         end
     end
