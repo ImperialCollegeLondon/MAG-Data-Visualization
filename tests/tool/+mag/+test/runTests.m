@@ -1,4 +1,5 @@
 function testResults = runTests()
+% RUNTESTS Run all MAG tests with coverage.
 
     root = mfilename("fullpath");
     root = fullfile(fileparts(root), "..", "..", "..");
