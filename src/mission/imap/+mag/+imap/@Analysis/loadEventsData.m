@@ -292,7 +292,7 @@ function loadEventsData(this)
     %% Amend Time Range
 
     % Concentrate on recorded timerange.
-    if ~isempty(this.Results.Metadata) && ~ismissing(this.Results.Metadata.Timestamp)
+    if ~isempty(events) && ~isempty(this.Results.Metadata) && ~ismissing(this.Results.Metadata.Timestamp)
         events = events([events.Timestamp] > this.Results.Metadata.Timestamp);
     end
 

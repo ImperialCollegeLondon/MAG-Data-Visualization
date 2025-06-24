@@ -8,6 +8,7 @@
 
 - (All) Add `mag.mixin.TimeSeriesOperationSupport` for simplified operations support
 - (All) Fix issues with colors and legends for multiple stackedplots
+- (IMAP) Fix cropping of events when no events are loaded
 - (IMAP) Check there is data before enabling auto-compression event in `mag.imap.view.Field`
 
 ## Package
