@@ -1,5 +1,5 @@
-classdef AppNotificationHandler < handle
-% APPNOTIFICATIONHANDLER Handle notifications for app components.
+classdef NotificationHandler < handle
+% NOTIFICATIONHANDLER Handle notifications for app components.
 
     properties (Access = private)
         UIFigure matlab.ui.Figure {mustBeScalarOrEmpty}
@@ -8,7 +8,7 @@ classdef AppNotificationHandler < handle
 
     methods
 
-        function this = AppNotificationHandler(uiFigure, toolbarManager)
+        function this = NotificationHandler(uiFigure, toolbarManager)
 
             this.UIFigure = uiFigure;
             this.ToolbarManager = toolbarManager;

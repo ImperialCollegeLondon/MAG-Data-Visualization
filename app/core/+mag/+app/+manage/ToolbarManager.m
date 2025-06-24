@@ -119,7 +119,7 @@ classdef ToolbarManager < mag.app.manage.Manager
 
         function importPushToolClicked(this)
 
-            closeProgressBar = this.App.AppNotificationHandler.overlayProgressBar("Importing..."); %#ok<NASGU>
+            closeProgressBar = this.App.NotificationHandler.overlayProgressBar("Importing..."); %#ok<NASGU>
             [file, folder] = uigetfile("*.mat", "Import Analysis");
 
             if ~isequal(file, 0) && ~isequal(folder, 0)
@@ -127,9 +127,9 @@ classdef ToolbarManager < mag.app.manage.Manager
                 try
 
                     this.App.Model.load(fullfile(folder, file));
-                    this.App.AppNotificationHandler.displayAlert("Analysis successfully imported.", "Import Complete", "success");
+                    this.App.NotificationHandler.displayAlert("Analysis successfully imported.", "Import Complete", "success");
                 catch exception
-                    this.App.AppNotificationHandler.displayAlert(exception);
+                    this.App.NotificationHandler.displayAlert(exception);
                 end
             end
         end
@@ -141,7 +141,7 @@ classdef ToolbarManager < mag.app.manage.Manager
             if isempty(this.PreviousError)
 
                 this.DebugToggleTool.State = "off";
-                this.App.AppNotificationHandler.displayAlert("No error found.", "No Errors", "warning");
+                this.App.NotificationHandler.displayAlert("No error found.", "No Errors", "warning");
                 return;
             end
 
@@ -170,7 +170,7 @@ classdef ToolbarManager < mag.app.manage.Manager
 
             web("https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/issues/new/choose");
 
-            this.App.AppNotificationHandler.displayAlert("Create issue on GitHub to share feedback, report issues and ask questions.", ...
+            this.App.NotificationHandler.displayAlert("Create issue on GitHub to share feedback, report issues and ask questions.", ...
                 "Create GitHub Issue", "info");
         end
     end

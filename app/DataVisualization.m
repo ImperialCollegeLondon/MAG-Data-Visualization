@@ -48,7 +48,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ResultsManager mag.app.manage.Manager {mustBeScalarOrEmpty}
         ExportManager mag.app.manage.ExportManager {mustBeScalarOrEmpty}
         VisualizationManager mag.app.manage.VisualizationManager {mustBeScalarOrEmpty}
-        AppNotificationHandler mag.app.internal.AppNotificationHandler {mustBeScalarOrEmpty}
+        NotificationHandler mag.app.internal.NotificationHandler {mustBeScalarOrEmpty}
     end
 
     properties (SetObservable, SetAccess = private)
@@ -74,7 +74,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ToolbarManager = mag.app.manage.ToolbarManager(app, pathToAppIcons);
             app.ToolbarManager.instantiate(app.UIFigure);
 
-            app.AppNotificationHandler = mag.app.internal.AppNotificationHandler(app.UIFigure, app.ToolbarManager);
+            app.NotificationHandler = mag.app.internal.NotificationHandler(app.UIFigure, app.ToolbarManager);
 
             % Initialize app based on mission.
             try
@@ -131,7 +131,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     app.SelectMissionDialog.delete();
                 end
 
-                closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Initializing mission..."); %#ok<NASGU>
+                closeProgressBar = app.NotificationHandler.overlayProgressBar("Initializing mission..."); %#ok<NASGU>
             end
 
             app.Mission = mission;
@@ -188,7 +188,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             hasData = hasModel && (model.Analysis.Results.HasScience || model.Analysis.Results.HasHK);
 
             if hasModel && ~hasData
-                app.AppNotificationHandler.displayAlert("No HK or science data detected.", "No Data", "warning");
+                app.NotificationHandler.displayAlert("No HK or science data detected.", "No Data", "warning");
             end
 
             status = matlab.lang.OnOffSwitchState(hasData);
@@ -205,13 +205,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function processDataButtonPushed(app)
 
-            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Processing data..."); %#ok<NASGU>
+            closeProgressBar = app.NotificationHandler.overlayProgressBar("Processing data..."); %#ok<NASGU>
             restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
             try
                 app.Model.analyze(app.AnalysisManager.getAnalysisOptions());
             catch exception
-                app.AppNotificationHandler.displayAlert(exception);
+                app.NotificationHandler.displayAlert(exception);
             end
         end
 
@@ -229,7 +229,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function exportButtonPushed(app)
 
-            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Exporting..."); %#ok<NASGU>
+            closeProgressBar = app.NotificationHandler.overlayProgressBar("Exporting..."); %#ok<NASGU>
             restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
             format = app.ExportFormatDropDown.Value;
@@ -267,34 +267,34 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     try
                         app.Model.export(app.ExportManager.getExportOptions(format, app.ResultsLocation));
                     catch exception
-                        app.AppNotificationHandler.displayAlert(exception);
+                        app.NotificationHandler.displayAlert(exception);
                     end
                 otherwise
-                    app.AppNotificationHandler.displayAlert(compose("Unrecognized export format option ""%s"".", format));
+                    app.NotificationHandler.displayAlert(compose("Unrecognized export format option ""%s"".", format));
             end
         end
 
         function showFiguresButtonPushed(app)
 
-            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Plotting data..."); %#ok<NASGU>
+            closeProgressBar = app.NotificationHandler.overlayProgressBar("Plotting data..."); %#ok<NASGU>
             restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
             try
                 app.Figures = [app.Figures, app.VisualizationManager.visualize(app.Model.Analysis)];
             catch exception
-                app.AppNotificationHandler.displayAlert(exception);
+                app.NotificationHandler.displayAlert(exception);
             end
         end
 
         function saveFiguresButtonPushed(app)
 
-            closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Saving figures..."); %#ok<NASGU>
+            closeProgressBar = app.NotificationHandler.overlayProgressBar("Saving figures..."); %#ok<NASGU>
             restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
             try
                 mag.graphics.savePlots(app.Figures, app.ResultsLocation);
             catch exception
-                app.AppNotificationHandler.displayAlert(exception);
+                app.NotificationHandler.displayAlert(exception);
             end
         end
 
@@ -304,7 +304,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             if ~isempty(app.Figures) && any(isValidFigures)
 
-                closeProgressBar = app.AppNotificationHandler.overlayProgressBar("Closing figures..."); %#ok<NASGU>
+                closeProgressBar = app.NotificationHandler.overlayProgressBar("Closing figures..."); %#ok<NASGU>
                 restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
 
                 close(app.Figures(isValidFigures));
