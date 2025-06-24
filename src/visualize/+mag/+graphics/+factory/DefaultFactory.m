@@ -30,10 +30,10 @@ classdef DefaultFactory < mag.graphics.factory.Factory
 
             % In MATLAB R2025a and above, force figures in the figures
             % container.
-            if matlabRelease().Release >= "R2025a"
-                windowStyle = "docked";
-            else
+            if isMATLABReleaseOlderThan("R2025a")
                 windowStyle = "normal";
+            else
+                windowStyle = "docked";
             end
 
             % Create and populate figure.
