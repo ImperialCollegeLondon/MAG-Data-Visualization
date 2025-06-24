@@ -93,13 +93,15 @@ classdef CPT < mag.app.Control & mag.app.mixin.Filter
 
     methods (Access = private)
 
-        function validatePattern(~, changingData)
+        function validatePattern(~, changedData)
 
-            value = changingData.Value;
+            value = changedData.Value;
             pattern = asManyOfPattern(digitsPattern() + optionalPattern(characterListPattern(",") + whitespacePattern()));
 
             if ~matches(value, pattern)
-                error("mag:app:InvalidPattern", "Value must match the pattern ""1, 2, 3"".");
+
+                [~, figure] = gcbo();
+                uialert(figure, "Value must match the pattern ""1, 2, 3"".", "Invalid Pattern");
             end
         end
     end

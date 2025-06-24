@@ -2,6 +2,7 @@
 
 - (All) Add shortcut to open app from toolbar (quick access)
 - (All) Fix errors when closing app during mission selection
+- (IMAP) Replace `error` with `uialert` for CPT view when mode or range patterns are incorrect
 
 ## Software
 
