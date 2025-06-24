@@ -1,12 +1,8 @@
 ## App
 
-- (HelioSwarm) Add support for visualizing Range events with field
+- (All) Add shortcut to open app from toolbar (quick access)
 
-## Software
+## Package
 
-- (All) Add option to specify PNG resolution when saving figures
-- (IMAP) Improve estimation of mode change events
-
-## Project
-
-- Add pre-commit configuration
+- Add MATLAB package definition
+- Remove MATLAB project definition

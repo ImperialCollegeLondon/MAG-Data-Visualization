@@ -1,21 +1,23 @@
 function plan = buildfile()
 % BUILDFILE File invoked by automated build.
 
-    % Create a plan from task functions.
     plan = buildplan();
 
-    % Get current project.
     if isMATLABReleaseOlderThan("R2025a")
 
-        project = matlab.project.currentProject();
+        warning("mag:buildtool:path", "MATLAB release ""%s"" not supported for development purposes. " + ...
+            "Adding all folders to the path for testing purposes.", matlabRelease().Release);
 
-        if isempty(project) || ~isequal(project.Name, "MAG Data Visualization")
-
-            project = matlab.project.loadProject("MAGDataVisualization.prj");
-            restoreProject = onCleanup(@() project.close());
-        end
+        % Brute-force add all folders to the path.
+        addpath(genpath(plan.RootFolder));
     else
-        project = plan.Project;
+
+        % Open package if not already open.
+        package = matlab.mpm.Package(plan.RootFolder);
+
+        if ~package.Installed
+            addpath(join(fullfile(plan.RootFolder, [package.Folders.Path]), pathsep()));
+        end
     end
 
     % Add the "check" task to identify code issues.
@@ -34,9 +36,13 @@ function plan = buildfile()
         TestResults = fullfile("artifacts/results.xml"), ...
         CodeCoverageResults = fullfile("artifacts/coverage.xml"));
 
+    if ~isMATLABReleaseOlderThan("R2025a")
+        plan("test").RunOnlyImpactedTests = true;
+    end
+
     % Add the "package" task to create toolbox.
     plan("package") = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
-        ProjectRoot = project.RootFolder, ...
+        PackageRoot = plan.RootFolder, ...
         ToolboxPath = fullfile("artifacts/MAG Data Visualization.mltbx"));
 
     % Add the "clean" task to delete output of all tasks.
