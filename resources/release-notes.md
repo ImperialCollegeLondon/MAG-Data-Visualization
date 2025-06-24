@@ -3,6 +3,10 @@
 - (All) Add shortcut to open app from toolbar (quick access)
 - (All) Fix errors when closing app during mission selection
 
+## Software
+
+- (IMAP) Check there is data before enabling auto-compression event in `mag.imap.view.Field`
+
 ## Package
 
 - Add MATLAB package definition

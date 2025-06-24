@@ -93,7 +93,10 @@ classdef Field < mag.imap.view.Science
 
             selectedEvents = this.Events;
 
-            if isempty(selectedEvents) && (any(diff(primary.Compression) ~= 0) || any(diff(secondary.Compression) ~= 0))
+            if isempty(selectedEvents) && ...
+                ((primary.HasData && any(diff(primary.Compression) ~= 0)) || ...
+                (secondary.HasData && any(diff(secondary.Compression) ~= 0)))
+
                 selectedEvents = "Compression";
             end
 
