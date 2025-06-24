@@ -60,7 +60,7 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
         % VISUALIZE Visualize analysis using selected view.
 
             if isempty(this.SelectedControl)
-                error("mag:app:noViewSelected", "No view selected.");
+                error("mag:app:NoViewSelected", "No view selected.");
             end
 
             command = this.SelectedControl.getVisualizeCommand(analysis.Results);

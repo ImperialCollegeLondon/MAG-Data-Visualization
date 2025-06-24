@@ -14,7 +14,7 @@ function data = resampleIrregularData(data)
         dt = diff(data.Properties.RowTimes);
         frequencies = 1 ./ seconds(dt);
 
-        warning("mag:app:nonFiniteData", "Resampling data as not uniformely sampled (%.3f ± %.3g Hz).", mode(frequencies), std(frequencies, 0, "omitmissing"));
+        warning("mag:app:NonFiniteData", "Resampling data as not uniformly sampled (%.3f ± %.3g Hz).", mode(frequencies), std(frequencies, 0, "omitmissing"));
 
         data = resample(data);
     end

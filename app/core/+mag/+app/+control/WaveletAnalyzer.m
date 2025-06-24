@@ -85,7 +85,7 @@ classdef WaveletAnalyzer < mag.app.Control
             data = results.(selectedInput);
 
             if ~data.isPlottable()
-                error("mag:app:emptySignal", "Not enough data for plotting ""%s"".", selectedInput);
+                error("mag:app:EmptySignal", "Not enough data for plotting ""%s"".", selectedInput);
             end
 
             propertyName = selectedInput + "_" + selectedSignal;

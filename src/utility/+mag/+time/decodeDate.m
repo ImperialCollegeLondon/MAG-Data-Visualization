@@ -32,5 +32,5 @@ function date = decodeDate(date)
         end
     end
 
-    error("mag:time:parseError", "Unable to parse date '%s' using the formats %s.", date, join(compose("'%s'", formats), ", "));
+    error("mag:time:ParseError", "Unable to parse date '%s' using the formats %s.", date, join(compose("'%s'", formats), ", "));
 end

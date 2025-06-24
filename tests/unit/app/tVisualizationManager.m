@@ -35,7 +35,7 @@ classdef tVisualizationManager < mag.test.ViewControllerTestCase
             manager.instantiate(panel);
 
             % Exercise and verify.
-            testCase.verifyError(@() manager.visualize([]), "mag:app:noViewSelected", ...
+            testCase.verifyError(@() manager.visualize([]), "mag:app:NoViewSelected", ...
                 "Error should be thrown when no view is selected.");
         end
     end

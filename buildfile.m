@@ -5,7 +5,7 @@ function plan = buildfile()
 
     if isMATLABReleaseOlderThan("R2025a")
 
-        warning("mag:buildtool:path", "MATLAB release ""%s"" not supported for development purposes. " + ...
+        warning("mag:buildtool:Path", "MATLAB release ""%s"" not supported for development purposes. " + ...
             "Adding all folders to the path for testing purposes.", matlabRelease().Release);
 
         % Brute-force add all folders to the path.

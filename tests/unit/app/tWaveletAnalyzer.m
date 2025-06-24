@@ -103,7 +103,7 @@ classdef tWaveletAnalyzer < mag.test.ViewControllerTestCase
             results = mag.bart.Instrument();
 
             % Exercise and verify.
-            testCase.verifyError(@() waveletAnalyzer.getVisualizeCommand(results), "mag:app:emptySignal", ...
+            testCase.verifyError(@() waveletAnalyzer.getVisualizeCommand(results), "mag:app:EmptySignal", ...
                 "Error should be thrown when there is no data to plot.");
         end
     end
