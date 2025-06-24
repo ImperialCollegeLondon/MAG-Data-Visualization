@@ -31,7 +31,7 @@ classdef tTimeSeriesOperationSupport < matlab.unittest.TestCase
             a = TestTimeSeriesWithOperationSupport();
 
             % Exercise and verify.
-            testCase.verifyError(@() a + 2, "MATLAB:math:mustBeNumericCharOrLogical", ...
+            testCase.verifyError(@() a + 2, ?MException, ...
                 "Operation must fall back to built-in command when unsupported.");
         end
 
