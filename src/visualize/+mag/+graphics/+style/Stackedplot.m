@@ -49,17 +49,17 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
             xlabel(axes, this.XLabel);
             xlim(axes, this.XLimits);
 
-            l = matlab.graphics.primitive.Text.empty(0, numel(axes));
+            t = matlab.graphics.primitive.Text.empty(0, numel(axes));
 
             if ~isempty(this.YLabels)
 
                 for i = 1:numel(this.YLabels)
-                    l(i) = ylabel(axes(i), this.YLabels(i));
+                    t(i) = ylabel(axes(i), this.YLabels(i));
                 end
             end
 
             if this.RotateLabels
-                [l.Rotation] = deal(0);
+                [t.Rotation] = deal(0);
             end
 
             ylim(axes, this.YLimits);
@@ -72,7 +72,7 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
             this.applyGridStyle(axes);
 
             % Add legend.
-            l = this.applyLegendStyle(axes);
+            l = this.applyLegendStyle(axes(1));
 
             if ~isempty(l)
                 l.Layout.Tile = this.LegendLocation;
