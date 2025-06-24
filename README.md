@@ -35,6 +35,12 @@ See [internal documentation](https://imperialcollege.atlassian.net/wiki/spaces/P
 
 ## Development
 
+To get started, clone this repository and install the package for development:
+
+``` matlab
+mpminstall(pwd(), Authoring = true);
+```
+
 When developing new features or fixing issues, create a new branch. After finishing development, make sure to write tests to cover any new changes.
 
 To change the version of the toolbox, modify the package definition file in `resources/mpackage.json`. This will automatically update the toolbox version and create a new toolbox with the correct version.
