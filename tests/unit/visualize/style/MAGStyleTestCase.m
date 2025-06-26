@@ -1,4 +1,4 @@
-classdef (Abstract) MAGStyleTestCase < mag.test.GraphicsTestCase
+classdef (Abstract) MAGStyleTestCase < mag.test.case.GraphicsTestCase
 % MAGSTYLETESTCASE Base class for all axes styles that support extra
 % properties.
 

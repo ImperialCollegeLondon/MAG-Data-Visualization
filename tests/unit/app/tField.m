@@ -1,4 +1,4 @@
-classdef tField < mag.test.ViewControllerTestCase
+classdef tField < mag.test.case.ViewControllerTestCase
 % TFIELD Unit tests for "mag.app.control.Field" class.
 
     methods (Test)

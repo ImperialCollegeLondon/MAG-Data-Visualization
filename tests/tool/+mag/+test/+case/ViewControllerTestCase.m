@@ -1,4 +1,4 @@
-classdef (Abstract) ViewControllerTestCase < mag.test.GraphicsTestCase
+classdef (Abstract) ViewControllerTestCase < mag.test.case.GraphicsTestCase
 % VIEWCONTROLLERTESTCASE Base class for all view-controller tests.
 
     properties (Constant, Access = protected)

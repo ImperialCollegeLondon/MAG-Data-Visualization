@@ -1,4 +1,4 @@
-classdef tModel < mag.test.ViewControllerTestCase
+classdef tModel < mag.test.case.ViewControllerTestCase
 % TMODEL Unit tests for "mag.app.Model" classes.
 
     properties (Access = private)

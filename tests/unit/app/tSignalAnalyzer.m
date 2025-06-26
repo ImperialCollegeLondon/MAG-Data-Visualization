@@ -1,4 +1,4 @@
-classdef tSignalAnalyzer < mag.test.ViewControllerTestCase
+classdef tSignalAnalyzer < mag.test.case.ViewControllerTestCase
 % TSIGNALANALYZER Unit tests for "mag.app.control.SignalAnalyzer" class.
 
     properties (TestParameter)

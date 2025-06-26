@@ -1,4 +1,4 @@
-classdef tWaveletAnalyzer < mag.test.ViewControllerTestCase
+classdef tWaveletAnalyzer < mag.test.case.ViewControllerTestCase
 % TWAVELETANALYZER Unit tests for "mag.app.control.WaveletAnalyzer" class.
 
     properties (TestParameter)

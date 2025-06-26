@@ -1,4 +1,4 @@
-classdef (Abstract) MAGChartTestCase < mag.test.GraphicsTestCase
+classdef (Abstract) MAGChartTestCase < mag.test.case.GraphicsTestCase
 % MAGCHARTTESTCASE Base class for all MAG chart tests.
 
     properties (Constant)

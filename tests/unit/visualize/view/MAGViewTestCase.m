@@ -1,4 +1,4 @@
-classdef MAGViewTestCase < mag.test.GraphicsTestCase & matlab.mock.TestCase
+classdef MAGViewTestCase < mag.test.case.GraphicsTestCase & matlab.mock.TestCase
 % MAGVIEWTESTCASE Base class for all MAG view tests.
 
     methods (Access = protected)
