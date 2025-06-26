@@ -1,4 +1,4 @@
-classdef tCPT < mag.test.ViewControllerTestCase & matlab.uitest.TestCase
+classdef tCPT < mag.test.case.UITestCase & mag.test.case.ViewControllerTestCase
 % TCPT Unit tests for "mag.app.imap.control.CPT" class.
 
     properties (TestParameter)
