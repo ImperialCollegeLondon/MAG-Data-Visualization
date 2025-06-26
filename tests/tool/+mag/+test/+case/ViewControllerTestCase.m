@@ -1,4 +1,4 @@
-classdef (Abstract) ViewControllerTestCase < mag.test.GraphicsTestCase
+classdef (Abstract) ViewControllerTestCase < mag.test.case.GraphicsTestCase
 % VIEWCONTROLLERTESTCASE Base class for all view-controller tests.
 
     properties (Constant, Access = protected)
@@ -7,10 +7,15 @@ classdef (Abstract) ViewControllerTestCase < mag.test.GraphicsTestCase
 
     methods (Access = protected)
 
-        function panel = createTestPanel(testCase)
+        function panel = createTestPanel(testCase, options)
         % CREATETESTPANEL Create "uipanel" to add controls to.
 
-            f = uifigure();
+            arguments
+                testCase
+                options.VisibleOverride (1, 1) matlab.lang.OnOffSwitchState = "off"
+            end
+
+            f = uifigure(Visible = options.VisibleOverride);
             panel = uipanel(f, Position = [1, 1, f.InnerPosition(3:4)]);
 
             testCase.addTeardown(@() close(f));

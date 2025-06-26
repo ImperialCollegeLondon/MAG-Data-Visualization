@@ -1,4 +1,4 @@
-classdef tPSD < mag.test.ViewControllerTestCase
+classdef tPSD < mag.test.case.ViewControllerTestCase
 % TPSD Unit tests for "mag.app.control.PSD" class.
 
     methods (Test)
