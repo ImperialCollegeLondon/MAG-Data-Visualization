@@ -14,6 +14,10 @@ classdef tToolbox < matlab.unittest.TestCase
         function useMATLABR2025aOrAbove(testCase)
             testCase.assumeFalse(isMATLABReleaseOlderThan("R2025a"), "Only MATLAB R2025a or later is supported for this test.");
         end
+
+        function checkMATLABPackage(testCase)
+            testCase.assumeEmpty(mpmlist(mag.buildtool.task.PackageTask.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
+        end
     end
 
     methods (Test)
@@ -46,10 +50,10 @@ classdef tToolbox < matlab.unittest.TestCase
             testCase.assertTrue(isfile(task.ToolboxArtifact.Path), "Toolbox should be generated.");
 
             matlab.addons.install(task.ToolboxArtifact.Path);
-            testCase.addTeardown(@() matlab.addons.uninstall("MAG Data Visualization"));
+            testCase.addTeardown(@() matlab.addons.uninstall(mag.buildtool.task.PackageTask.ToolboxName));
 
             addOns = matlab.addons.installedAddons();
-            locMAG = addOns.Name == "MAG Data Visualization";
+            locMAG = addOns.Name == mag.internal.getPackageDetails("DisplayName");
 
             testCase.verifyEqual(addOns{locMAG, "Version"}, mag.version(), "Toolbox version should be equal to MAG version.");
         end
