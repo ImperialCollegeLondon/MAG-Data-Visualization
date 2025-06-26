@@ -9,12 +9,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
-# "write" access for checks/pull-request needed by 5monkeys/cobertura-action to
-# post coverage stats in PR comments.
-permissions:
-  checks: write
-  pull-requests: write
-
 jobs:
   qa:
     runs-on: ubuntu-latest
