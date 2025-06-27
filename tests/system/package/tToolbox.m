@@ -16,7 +16,12 @@ classdef tToolbox < matlab.unittest.TestCase
         end
 
         function checkMATLABPackage(testCase)
-            testCase.assumeEmpty(mpmlist(mag.buildtool.task.PackageTask.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
+
+            % MATLAB will still execute this method, even if the above
+            % check fails.
+            if ~isMATLABReleaseOlderThan("R2025a")
+                testCase.assumeEmpty(mpmlist(mag.buildtool.task.PackageTask.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
+            end
         end
     end
 
