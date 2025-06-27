@@ -9,19 +9,7 @@ function v = version()
     persistent ver;
 
     if isempty(ver)
-
-        location = fileparts(mfilename("fullpath"));
-        root = fullfile(location, "../../../");
-
-        if isMATLABReleaseOlderThan("R2025a")
-
-            package = readstruct(fullfile(root, "resources", "mpackage.json"));
-            ver = package.version;
-        else
-
-            package = matlab.mpm.Package(root);
-            ver = package.Version;
-        end
+        ver = mag.internal.getPackageDetails("Version");
     end
 
     v = ver;

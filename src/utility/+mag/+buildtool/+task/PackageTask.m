@@ -1,6 +1,10 @@
 classdef (Sealed) PackageTask < matlab.buildtool.Task
 % PACKAGETASK Package code into toolbox.
 
+    properties (Constant)
+        ToolboxName (1, 1) string = mag.internal.getPackageDetails("DisplayName")
+    end
+
     properties (Constant, Access = private)
         ToolboxUUID (1, 1) string = "69962df8-e93e-47cd-a1d6-766ad3e9da8a"
     end
@@ -49,10 +53,10 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
             end
 
             toolboxOptions = matlab.addons.toolbox.ToolboxOptions(task.PackageRoot, task.ToolboxUUID, ...
-                ToolboxName = "MAG Data Visualization", ...
+                ToolboxName = task.ToolboxName, ...
                 ToolboxVersion = version, ...
-                Description = "Source code for MAG Data Visualization toolbox.", ...
-                ToolboxFiles = fullfile(task.PackageRoot, ["app", "src"]), ...
+                Description = mag.internal.getPackageDetails("Description"), ...
+                ToolboxFiles = task.getToolboxFiles(), ...
                 ToolboxMatlabPath = task.getMATLABPath(), ...
                 ToolboxImageFile = fullfile(task.PackageRoot, "icons", "logo.png"), ...
                 OutputFile = task.ToolboxPath, ...
@@ -67,13 +71,23 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
         end
     end
 
+    methods (Access = private)
+
+        function files = getToolboxFiles(task)
+
+            files = fullfile(task.PackageRoot, ["app", "src", ...
+                fullfile("resources", "extensions.json"), ...
+                fullfile("icons", "mag.png")]);
+        end
+    end
+
     methods (Static, Access = private)
 
         function matlabPath = getMATLABPath()
 
             matlabPath = string(split(path(), pathsep()));
 
-            locMAG = contains(matlabPath, "MAG-Data-Visualization") & contains(matlabPath, ["app", "src"]);
+            locMAG = contains(matlabPath, "MAG-Data-Visualization") & ~contains(matlabPath, "tests");
             matlabPath = matlabPath(locMAG);
         end
     end
