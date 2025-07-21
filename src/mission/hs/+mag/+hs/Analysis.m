@@ -20,7 +20,7 @@ classdef Analysis < mag.Analysis
         % SCIENCEPROCESSING Steps needed to process only strictly science
         % data.
         ScienceProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"], ExtraScaling = 1 / 2^8)]
+            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"], ExtraScaling = (1 / 2^8) * (15/16)^2)]
         % HKPROCESSING Steps needed to process imported HK data.
         HKProcessing (1, :) mag.process.Step = mag.process.Step.empty()
     end
