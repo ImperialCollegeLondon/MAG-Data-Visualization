@@ -7,7 +7,7 @@ classdef (Abstract) Axes < matlab.mixin.Heterogeneous & mag.mixin.SetGet
         % XLIMITS Limits of x-axis.
         XLimits {mustBeA(XLimits, ["string", "double"]), mustBeVector(XLimits)} = "tight"
         % YLIMITS Limits of y-axis.
-        YLimits {mustBeA(YLimits, ["string", "double"]), mustBeVector(YLimits)} = "padded"
+        YLimits {mustBeA(YLimits, ["string", "double"])} = "padded"
         % LAYOUT Array describing the size of the plot on the
         % "tiledlayout".
         Layout (1, 2) double = [1, 1]
