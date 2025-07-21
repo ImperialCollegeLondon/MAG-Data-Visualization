@@ -37,7 +37,9 @@ function loadHKData(this)
     if ~isempty(this.Results.Metadata) && ~ismissing(this.Results.Metadata.Timestamp)
 
         for i = 1:numel(this.Results.HK)
-            this.Results.HK(i).Data = this.Results.HK(i).Data(timerange(this.Results.Metadata.Timestamp, this.Results.HK(i).Time(end), "closed"), :);
+            if this.Results.HK(i).HasData
+                this.Results.HK(i).Data = this.Results.HK(i).Data(timerange(this.Results.Metadata.Timestamp, this.Results.HK(i).Time(end), "closed"), :);
+            end
         end
     end
 end

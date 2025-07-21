@@ -42,14 +42,16 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
             % Disable parent axes and retrieve real ones.
             axes.Visible = "off";
 
-            axes = [graph.Parent];
+            axes = unique([graph.Parent], "stable");
             linkaxes(axes, "x");
+
+            Ny = numel(axes);
 
             % Set axes properties.
             xlabel(axes, this.XLabel);
             xlim(axes, this.XLimits);
 
-            t = matlab.graphics.primitive.Text.empty(0, numel(axes));
+            t = matlab.graphics.primitive.Text.empty(0, Ny);
 
             if ~isempty(this.YLabels)
 
@@ -62,7 +64,18 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
                 [t.Rotation] = deal(0);
             end
 
-            ylim(axes, this.YLimits);
+            if height(this.YLimits) == 1
+                yLimits = repmat(this.YLimits, Ny, 1);
+            elseif isempty(this.YLimits) || (Ny ~= height(this.YLimits))
+                error("Mismatch in number of y-limits for number of plots.");
+            else
+                yLimits = this.YLimits;
+            end
+
+            for i = 1:Ny
+                ylim(axes(i), yLimits(i, :));
+            end
+
             set(axes, YAxisLocation = this.YAxisLocation);
 
             if ~isempty(this.Title)
