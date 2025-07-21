@@ -6,7 +6,15 @@ function details = getPackageDetails(fieldName)
     end
 
     root = fullfile(fileparts(mfilename("fullpath")), "../../../../");
-    details = readstruct(fullfile(root, "resources", "mpackage.json"));
+    package = fullfile(root, "resources", "mpackage.json");
+
+    if ~isfile(package)
+
+        details = [];
+        return;
+    end
+
+    details = readstruct(package);
 
     if ~isempty(fieldName)
 

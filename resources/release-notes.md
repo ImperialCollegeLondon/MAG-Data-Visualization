@@ -1,3 +1,3 @@
 ## Package
 
-- Add missing files (MATLAB extensions and related icons)
+- Version is retrieved correctly for installed packages
