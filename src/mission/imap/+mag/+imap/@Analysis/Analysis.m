@@ -455,6 +455,35 @@ classdef Analysis < mag.Analysis
                 end
             end
         end
+
+        function importStrategy = dispatchExtension(this, extension, type)
+        % DISPATCHEXTENSION Dispatch extension to correct I/O strategy.
+
+            arguments (Input)
+                this (1, 1) mag.imap.Analysis
+                extension
+                type (1, 1) string {mustBeMember(type, ["Science", "HK"])}
+            end
+
+            arguments (Output)
+                importStrategy (1, 1) mag.io.in.Format
+            end
+
+            switch extension
+                case mag.io.in.CSV.Extension
+
+                    format = "CSV";
+                    args = {"Metadata", this.Results.Metadata};
+                case mag.io.in.CDF.Extension
+
+                    format = "CDF";
+                    args = {"CDFSettings", mag.io.CDFSettings(Field = "vectors", Range = "vectors")};
+                otherwise
+                    error("Unsupported extension ""%s"" for science data import.", extension);
+            end
+
+            importStrategy = feval("mag.imap.in." + type + format, args{:});
+        end
     end
 
     methods (Hidden, Static)
@@ -488,37 +517,6 @@ classdef Analysis < mag.Analysis
                 error("Cannot retrieve ""mag.imap.Analysis"" from ""%s"". Data needs to be reprocessed:" + newline() + newline() + ...
                     ">> mag.imap.Analysis.start(Location = ""%s"")", class(object), object.Location);
             end
-        end
-    end
-
-    methods (Static, Access = private)
-
-        function importStrategy = dispatchExtension(extension, type)
-        % DISPATCHEXTENSION Dispatch extension to correct I/O strategy.
-
-            arguments (Input)
-                extension
-                type (1, 1) string {mustBeMember(type, ["Science", "HK"])}
-            end
-
-            arguments (Output)
-                importStrategy (1, 1) mag.io.in.Format
-            end
-
-            switch extension
-                case mag.io.in.CSV.Extension
-
-                    format = "CSV";
-                    args = {};
-                case mag.io.in.CDF.Extension
-
-                    format = "CDF";
-                    args = {"CDFSettings", mag.io.CDFSettings(Field = "vectors", Range = "vectors")};
-                otherwise
-                    error("Unsupported extension ""%s"" for science data import.", extension);
-            end
-
-            importStrategy = feval("mag.imap.in." + type + format, args{:});
         end
     end
 end

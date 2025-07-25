@@ -1,5 +1,23 @@
 classdef JSON < mag.imap.meta.Provider
 % JSON Load metadata from JSON files.
+%
+% Example JSON file:
+%
+%    {
+%        "Instrument": {
+%            "Mission": "SolarOrbiter",
+%        },
+%        "Primary": {
+%            "Model": "MTT",
+%            "Harness": "SOLO FOB Harness",
+%            "Can": "Bottom Can"
+%        },
+%        "Secondary": {
+%            "Model": "SOLO-IBS-FS",
+%            "Harness": "SOLO FIB Harness",
+%            "Can": "Top Can"
+%        }
+%    }
 
     properties (Constant, Access = private)
         % EXTENSIONS Extensions supported.

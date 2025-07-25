@@ -1,4 +1,4 @@
-classdef ScienceCSV < mag.io.in.CSV
+classdef ScienceCSV < mag.imap.in.IMAPCSV
 % SCIENCECSV Format IMAP science data for CSV import.
 
     properties (Constant, Access = private)
@@ -6,6 +6,15 @@ classdef ScienceCSV < mag.io.in.CSV
     end
 
     methods
+
+        function this = ScienceCSV(options)
+
+            arguments
+                options.?mag.imap.in.ScienceCSV
+            end
+
+            this.assignProperties(options);
+        end
 
         function data = process(this, rawData, fileName)
 
@@ -79,11 +88,11 @@ classdef ScienceCSV < mag.io.in.CSV
             end
         end
 
-        function data = processScience(~, rawData, sensor, metadataOptions)
+        function data = processScience(this, rawData, sensor, metadataOptions)
         % PROCESSSCIENCE Process science data.
 
             arguments
-                ~
+                this (1, 1) mag.imap.in.ScienceCSV
                 rawData table
                 sensor (1, 1) string {mustBeMember(sensor, ["pri", "sec"])}
                 metadataOptions.?mag.meta.Science
@@ -114,7 +123,7 @@ classdef ScienceCSV < mag.io.in.CSV
             rawData.quality = repmat(mag.meta.Quality.Regular, height(rawData), 1);
 
             % Convert timestamps.
-            for ps = [mag.process.Missing(Variables = ["x", "y", "z"]), mag.process.Timestamp(), mag.process.Spice(Mission = "IMAP")]
+            for ps = [mag.process.Missing(Variables = ["x", "y", "z"]), mag.process.Timestamp(), this.getTimeConversionStep()]
                 rawData = ps.apply(rawData, metadata);
             end
 

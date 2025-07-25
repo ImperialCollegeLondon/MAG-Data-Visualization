@@ -41,6 +41,16 @@ classdef Spice < mag.process.Step
                 datetime(cspice_et2utc(cspice_unitim(0, 'TT', 'ET'), 'ISOC', 9) + "Z", TimeZone = "UTCLeapSeconds"));
         end
 
+        function supported = isSupported(this, mission)
+
+            arguments
+                this (1, 1) mag.process.Spice
+                mission (1, 1) mag.meta.Mission = this.Mission
+            end
+
+            supported = this.SpacecraftIDs.isKey(mission) && this.SpacecraftEpochs.isKey(mission);
+        end
+
         function data = apply(this, data, ~)
 
             id = this.SpacecraftIDs(this.Mission);
