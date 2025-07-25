@@ -1,4 +1,4 @@
-classdef HKCSV < mag.io.in.CSV
+classdef HKCSV < mag.imap.in.IMAPCSV
 % HKCSV Format IMAP HK data for CSV import.
 
     properties (Constant, Access = private)
@@ -12,10 +12,19 @@ classdef HKCSV < mag.io.in.CSV
 
     methods
 
+        function this = HKCSV(options)
+
+            arguments
+                options.?mag.imap.in.HKCSV
+            end
+
+            this.assignProperties(options);
+        end
+
         function data = process(this, rawData, fileName)
 
             arguments (Input)
-                this
+                this (1, 1) mag.imap.in.HKCSV
                 rawData table
                 fileName (1, 1) string
             end
@@ -27,7 +36,7 @@ classdef HKCSV < mag.io.in.CSV
             rawData = renamevars(rawData, "SHCOARSE", "t");
 
             % Convert timestamps.
-            for ps = [mag.process.Spice(Mission = "IMAP")]
+            for ps = [this.getTimeConversionStep()]
                 rawData = ps.apply(rawData, mag.meta.HK());
             end
 

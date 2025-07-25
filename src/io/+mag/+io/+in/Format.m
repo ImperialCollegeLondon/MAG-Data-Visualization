@@ -13,6 +13,6 @@ classdef (Abstract) Format < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
         % PROCESS Process raw data and convert to common data
         % format.
-        data = process(this, rawData, varargin)
+        data = process(this, rawData, details)
     end
 end
