@@ -1,4 +1,4 @@
-classdef (Abstract) Step < matlab.mixin.Heterogeneous & mag.mixin.SetGet
+classdef (Abstract) Step < matlab.mixin.Copyable & matlab.mixin.Heterogeneous & mag.mixin.SetGet
 % STEP Abstract class to capture a processing step for MAG science data.
 
     methods (Abstract)
@@ -11,7 +11,7 @@ classdef (Abstract) Step < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
         function sequence = correctSequence(sequence)
         % CORRECTSEQUENCE Find where sequence number restarts, and remove
-        % discountinuity.
+        % discontinuity.
 
             deltaSequence = diff(sequence);
             idxSequenceReset = find(deltaSequence < 0);

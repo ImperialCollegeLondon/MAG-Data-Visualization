@@ -1,4 +1,3 @@
-## Software
+## App
 
-- (All) Do not use SPICE for missions that do not support it
-- (Test) Add utility to find difference in two objects
+- (HelioSwarm) Select data input type (UART or iDPU)
