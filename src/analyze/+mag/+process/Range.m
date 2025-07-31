@@ -1,16 +1,13 @@
 classdef Range < mag.process.Step
 % RANGE Apply scale factor based on range value.
 
-    properties (Constant)
-        % SCALEFACTORS Scale factor for each supported range.
-        ScaleFactors (1, 4) double = [2.13618, 0.072, 0.01854, 0.00453]
-    end
-
     properties
         % RANGEVARIABLE Name of range variable.
         RangeVariable (1, 1) string
         % VARIABLES Variables to be converted using range information.
         Variables (1, :) string
+        % SCALEFACTORS Scale factor for each supported range.
+        ScaleFactors (1, 4) double {mustBePositive} = [2.13618, 0.072, 0.01854, 0.00453]
         % EXTRASCALING Extra scaling factor.
         ExtraScaling (1, 1) double = 1
     end

@@ -10,9 +10,9 @@ classdef tExport < AppTestCase
 
     properties (ClassSetupParameter)
         TestDetails = {
-            struct(Folder = "bart", Mission = mag.meta.Mission.Bartington), ...
-            struct(Folder = "hs", Mission = mag.meta.Mission.HelioSwarm), ...
-            struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP)}
+            struct(Folder = "bart", Mission = mag.meta.Mission.Bartington, Setup = []), ...
+            struct(Folder = "hs", Mission = mag.meta.Mission.HelioSwarm, Setup = @tExport.helioSwarmSetup), ...
+            struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP, Setup = [])}
     end
 
     methods (TestClassSetup)
@@ -27,6 +27,11 @@ classdef tExport < AppTestCase
 
             testCase.choose(testCase.App.AnalyzeTab);
             testCase.type(testCase.App.AnalysisManager.LocationEditField, testCase.WorkingDirectory.Folder);
+
+            if ~isempty(TestDetails.Setup)
+                TestDetails.Setup(testCase, testCase.App);
+            end
+
             testCase.press(testCase.App.ProcessDataButton);
         end
     end
@@ -128,6 +133,13 @@ classdef tExport < AppTestCase
             else
                 testCase.verifyEqualsBaseline(exportedResults.(variableName).Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
             end
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function helioSwarmSetup(testCase, app)
+            testCase.choose(app.AnalysisManager.InputSourceDropDown, string(mag.hs.meta.InputSource.iDPU));
         end
     end
 end

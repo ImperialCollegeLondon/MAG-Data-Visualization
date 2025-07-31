@@ -6,6 +6,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
         LocationEditField matlab.ui.control.EditField
         LocationEditFieldLabel matlab.ui.control.Label
         BrowseButton matlab.ui.control.Button
+        InputSourceDropDown matlab.ui.control.DropDown
         MetadataPatternEditField matlab.ui.control.EditField
         MetadataPatternEditFieldLabel matlab.ui.control.Label
         SciencePatternEditField matlab.ui.control.EditField
@@ -42,41 +43,54 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.BrowseButton.Layout.Column = 3;
             this.BrowseButton.Text = "Browse";
 
+            % Create InputSourceDropDown.
+            source = mag.hs.meta.InputSource.UART;
+
+            sourceLabel = uilabel(this.AnalyzeSettingsLayout, Text = "Input source:", HorizontalAlignment = "right");
+            sourceLabel.Layout.Row = 2;
+            sourceLabel.Layout.Column = 1;
+
+            this.InputSourceDropDown = uidropdown(this.AnalyzeSettingsLayout);
+            this.InputSourceDropDown.Items = string(enumeration(source));
+            this.InputSourceDropDown.ItemsData = enumeration(source);
+            this.InputSourceDropDown.Layout.Row = 2;
+            this.InputSourceDropDown.Layout.Column = [2, 3];
+
             % Create MetadataPatternEditFieldLabel.
             this.MetadataPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.MetadataPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.MetadataPatternEditFieldLabel.Layout.Row = 2;
+            this.MetadataPatternEditFieldLabel.Layout.Row = 3;
             this.MetadataPatternEditFieldLabel.Layout.Column = 1;
             this.MetadataPatternEditFieldLabel.Text = "Metadata pattern:";
 
             % Create MetadataPatternEditField.
             this.MetadataPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text", Enable = "off");
-            this.MetadataPatternEditField.Layout.Row = 2;
+            this.MetadataPatternEditField.Layout.Row = 3;
             this.MetadataPatternEditField.Layout.Column = [2, 3];
             this.MetadataPatternEditField.Placeholder = "Not supported for HelioSwarm yet";
 
             % Create SciencePatternEditFieldLabel.
             this.SciencePatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.SciencePatternEditFieldLabel.HorizontalAlignment = "right";
-            this.SciencePatternEditFieldLabel.Layout.Row = 3;
+            this.SciencePatternEditFieldLabel.Layout.Row = 4;
             this.SciencePatternEditFieldLabel.Layout.Column = 1;
             this.SciencePatternEditFieldLabel.Text = "Science pattern:";
 
             % Create SciencePatternEditField.
             this.SciencePatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.SciencePatternEditField.Layout.Row = 3;
+            this.SciencePatternEditField.Layout.Row = 4;
             this.SciencePatternEditField.Layout.Column = [2, 3];
 
             % Create HKPatternEditFieldLabel.
             this.HKPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.HKPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.HKPatternEditFieldLabel.Layout.Row = 4;
+            this.HKPatternEditFieldLabel.Layout.Row = 5;
             this.HKPatternEditFieldLabel.Layout.Column = 1;
             this.HKPatternEditFieldLabel.Text = "HK pattern:";
 
             % Create HKPatternEditField.
             this.HKPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.HKPatternEditField.Layout.Row = 4;
+            this.HKPatternEditField.Layout.Row = 5;
             this.HKPatternEditField.Layout.Column = [2, 3];
 
             % Reset.
@@ -112,6 +126,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             end
 
             options = {"Location", this.LocationEditField.Value, ...
+                "InputSource", this.InputSourceDropDown.Value, ...
                 "MetadataPattern", metadataPattern, ...
                 "SciencePattern", this.SciencePatternEditField.Value, ...
                 "HKPattern", this.HKPatternEditField.Value};

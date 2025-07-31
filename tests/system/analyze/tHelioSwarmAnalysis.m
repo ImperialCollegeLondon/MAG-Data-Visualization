@@ -16,7 +16,7 @@ classdef tHelioSwarmAnalysis < AnalysisTestCase
         function fullAnalysis(testCase)
 
             % Exercise.
-            analysis = mag.hs.Analysis.start(Location = pwd());
+            analysis = mag.hs.Analysis.start(Location = pwd(), InputSource = "iDPU");
 
             % Verify.
             testCase.verifySubstring(analysis.ScienceFileNames, "science_packets.csv", "Science file names do not match.");

@@ -4,6 +4,8 @@ classdef Analysis < mag.Analysis
     properties
         % LOCATION Location of data to load.
         Location (1, 1) string {mustBeFolder} = pwd()
+        % INPUTSOURCE Data input source.
+        InputSource (1, 1) mag.hs.meta.InputSource = mag.hs.meta.InputSource.UART
         % METADATAPATTERN Pattern of metadata files.
         MetadataPattern string {mustBeScalarOrEmpty} = string.empty()
         % SCIENCEPATTERN Pattern of science data files.
@@ -20,7 +22,7 @@ classdef Analysis < mag.Analysis
         % SCIENCEPROCESSING Steps needed to process only strictly science
         % data.
         ScienceProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"], ExtraScaling = (1 / 2^8) * (15/16)^2)]
+            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"])]
         % HKPROCESSING Steps needed to process imported HK data.
         HKProcessing (1, :) mag.process.Step = mag.process.Step.empty()
     end
@@ -164,6 +166,24 @@ classdef Analysis < mag.Analysis
                 FileNames = this.ScienceFileNames, ...
                 Format = mag.hs.in.ScienceCSV(), ...
                 ProcessingSteps = this.PerFileProcessing);
+
+            % Customize range scale factors based on input source.
+            scienceProcessing = this.ScienceProcessing.copy();
+            rangeLoc = arrayfun(@(x) isa(x, "mag.process.Range"), scienceProcessing);
+
+            if any(rangeLoc)
+
+                rangeStep = scienceProcessing(rangeLoc);
+
+                switch this.InputSource
+                    case mag.hs.meta.InputSource.UART
+                        rangeStep.ExtraScaling = (1 / 2^8);
+                    case mag.hs.meta.InputSource.iDPU
+                        rangeStep.ExtraScaling = (1 / 2^8) * (15/16)^2;
+                end
+
+                this.ScienceProcessing = scienceProcessing;
+            end
 
             for sp = this.ScienceProcessing
 
