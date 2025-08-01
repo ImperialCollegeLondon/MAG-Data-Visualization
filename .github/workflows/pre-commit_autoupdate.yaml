@@ -3,6 +3,10 @@ name: Pre-Commit Auto-Update
 on:
   schedule:
     - cron: "0 0 1 * *" # midnight every first of the month
+  workflow_call: {}
+
+permissions:
+  pull-requests: write
 
 jobs:
   auto-update:
