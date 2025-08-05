@@ -62,8 +62,14 @@ classdef ScienceCSV < mag.io.in.CSV
             % Property order:
             %     time, x, y, z, range, compression, compression width,
             %     quality
-            rawData.Properties.VariableContinuity = ["continuous", "continuous", "continuous", "continuous", ...
-                "step", "step", "step", "step", "event"];
+            continuity = repmat(matlab.tabular.Continuity.unset, 1, width(rawData));
+            variableNames = rawData.Properties.VariableNames;
+
+            continuity(ismember(variableNames, ["time", "x", "y", "z"])) = matlab.tabular.Continuity.continuous;
+            continuity(ismember(variableNames, ["range", "compression", "compression_width", "data_type"])) = matlab.tabular.Continuity.step;
+            continuity(ismember(variableNames, "quality")) = matlab.tabular.Continuity.event;
+
+            rawData.Properties.VariableContinuity = continuity;
 
             % Convert to mag.Science.
             data = mag.Science(table2timetable(rawData, RowTimes = "time"), metadata);
