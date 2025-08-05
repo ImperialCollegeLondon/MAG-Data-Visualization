@@ -14,7 +14,8 @@ function details = getPackageDetails(fieldName)
         return;
     end
 
-    details = readstruct(package);
+    details = fileread(package);
+    details = jsondecode(details);
 
     if ~isempty(fieldName)
 

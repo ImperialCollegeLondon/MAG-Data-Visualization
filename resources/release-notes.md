@@ -1,3 +1,3 @@
-## App
+## Software
 
-- (HelioSwarm) Select data input type (UART or iDPU)
+- (All) Fix `mag.version` returning the version in the wrong format
