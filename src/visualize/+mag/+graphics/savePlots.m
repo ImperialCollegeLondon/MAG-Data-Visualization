@@ -4,7 +4,7 @@ function savePlots(figures, location, options)
     arguments
         figures (1, :) matlab.ui.Figure
         location (1, 1) string = "results"
-        options.Resolution (1, 1) double = 300
+        options.Resolution (1, 1) double = mag.internal.ToolboxSettings.getSettingValue("FigureResolution")
         options.ColonReplacement (1, 1) string = ""
         options.DotReplacement (1, 1) string = "_"
         options.SlashReplacement (1, 1) string = "_"
