@@ -15,7 +15,7 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
     this.Results.IALiRT.Science = mag.io.import( ...
         FileNames = this.IALiRTFileNames, ...
         Format = importStrategy, ...
-        ProcessingSteps = this.PerFileProcessing);
+        ProcessingSteps = this.Processing.PerFileSteps);
 
     primary = this.Results.IALiRT.Primary;
     primary.Metadata.Setup = primarySetup;
@@ -42,7 +42,7 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
 
     %% Process Data as a Whole
 
-    for ps = this.WholeDataProcessing
+    for ps = this.Processing.WholeDataSteps
 
         primary.Data = ps.apply(primary.Data, primary.Metadata);
         secondary.Data = ps.apply(secondary.Data, secondary.Metadata);
@@ -76,7 +76,7 @@ function loadIALiRTData(this, primarySetup, secondarySetup)
 
     %% Process I-ALiRT Data
 
-    for is = this.IALiRTProcessing
+    for is = this.Processing.IALiRTSteps
 
         primary.Data = is.apply(primary.Data, primary.Metadata);
         secondary.Data = is.apply(secondary.Data, secondary.Metadata);

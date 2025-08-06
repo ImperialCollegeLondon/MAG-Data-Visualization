@@ -6,6 +6,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
         LocationEditField matlab.ui.control.EditField
         LocationEditFieldLabel matlab.ui.control.Label
         BrowseButton matlab.ui.control.Button
+        LevelDropDown matlab.ui.control.DropDown
         MetadataPatternEditField matlab.ui.control.EditField
         MetadataPatternEditFieldLabel matlab.ui.control.Label
         EventPatternEditField matlab.ui.control.EditField
@@ -25,7 +26,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             % Create AnalyzeSettingsLayout.
             this.AnalyzeSettingsLayout = uigridlayout(parent);
             this.AnalyzeSettingsLayout.ColumnWidth = ["fit", "1x", "fit"];
-            this.AnalyzeSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x", "1x", "1x"];
+            this.AnalyzeSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x", "1x", "1x", "1x"];
 
             % Create LocationEditFieldLabel.
             this.LocationEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
@@ -46,64 +47,77 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.BrowseButton.Layout.Column = 3;
             this.BrowseButton.Text = "Browse";
 
+            % Create LevelDropDown.
+            supportedLevels = [mag.imap.meta.Level.L1a, mag.imap.meta.Level.L1b];
+
+            levelLabel = uilabel(this.AnalyzeSettingsLayout, Text = "Level:", HorizontalAlignment = "right");
+            levelLabel.Layout.Row = 2;
+            levelLabel.Layout.Column = 1;
+
+            this.LevelDropDown = uidropdown(this.AnalyzeSettingsLayout);
+            this.LevelDropDown.Items = string(supportedLevels);
+            this.LevelDropDown.ItemsData = supportedLevels;
+            this.LevelDropDown.Layout.Row = 2;
+            this.LevelDropDown.Layout.Column = [2, 3];
+
             % Create EventPatternEditFieldLabel.
             this.EventPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.EventPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.EventPatternEditFieldLabel.Layout.Row = 2;
+            this.EventPatternEditFieldLabel.Layout.Row = 3;
             this.EventPatternEditFieldLabel.Layout.Column = 1;
             this.EventPatternEditFieldLabel.Text = "Event pattern:";
 
             % Create EventPatternEditField.
             this.EventPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.EventPatternEditField.Layout.Row = 2;
+            this.EventPatternEditField.Layout.Row = 3;
             this.EventPatternEditField.Layout.Column = [2, 3];
 
             % Create MetadataPatternEditFieldLabel.
             this.MetadataPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.MetadataPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.MetadataPatternEditFieldLabel.Layout.Row = 3;
+            this.MetadataPatternEditFieldLabel.Layout.Row = 4;
             this.MetadataPatternEditFieldLabel.Layout.Column = 1;
             this.MetadataPatternEditFieldLabel.Text = "Metadata pattern:";
 
             % Create MetadataPatternEditField.
             this.MetadataPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.MetadataPatternEditField.Layout.Row = 3;
+            this.MetadataPatternEditField.Layout.Row = 4;
             this.MetadataPatternEditField.Layout.Column = [2, 3];
 
             % Create SciencePatternEditFieldLabel.
             this.SciencePatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.SciencePatternEditFieldLabel.HorizontalAlignment = "right";
-            this.SciencePatternEditFieldLabel.Layout.Row = 4;
+            this.SciencePatternEditFieldLabel.Layout.Row = 5;
             this.SciencePatternEditFieldLabel.Layout.Column = 1;
             this.SciencePatternEditFieldLabel.Text = "Science pattern:";
 
             % Create SciencePatternEditField.
             this.SciencePatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.SciencePatternEditField.Layout.Row = 4;
+            this.SciencePatternEditField.Layout.Row = 5;
             this.SciencePatternEditField.Layout.Column = [2, 3];
 
             % Create IALiRTPatternEditFieldLabel.
             this.IALiRTPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.IALiRTPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.IALiRTPatternEditFieldLabel.Layout.Row = 5;
+            this.IALiRTPatternEditFieldLabel.Layout.Row = 6;
             this.IALiRTPatternEditFieldLabel.Layout.Column = 1;
             this.IALiRTPatternEditFieldLabel.Text = "I-ALiRT pattern:";
 
             % Create IALiRTPatternEditField.
             this.IALiRTPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.IALiRTPatternEditField.Layout.Row = 5;
+            this.IALiRTPatternEditField.Layout.Row = 6;
             this.IALiRTPatternEditField.Layout.Column = [2, 3];
 
             % Create HKPatternEditFieldLabel.
             this.HKPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
             this.HKPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.HKPatternEditFieldLabel.Layout.Row = 6;
+            this.HKPatternEditFieldLabel.Layout.Row = 7;
             this.HKPatternEditFieldLabel.Layout.Column = 1;
             this.HKPatternEditFieldLabel.Text = "HK pattern:";
 
             % Create HKPatternEditField.
             this.HKPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.HKPatternEditField.Layout.Row = 6;
+            this.HKPatternEditField.Layout.Row = 7;
             this.HKPatternEditField.Layout.Column = [2, 3];
 
             % Reset.
@@ -153,6 +167,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             end
 
             options = {"Location", this.LocationEditField.Value, ...
+                "Level", this.LevelDropDown.Value, ...
                 "EventPattern", eventPattern, ...
                 "MetadataPattern", metadataPattern, ...
                 "SciencePattern", this.SciencePatternEditField.Value, ...

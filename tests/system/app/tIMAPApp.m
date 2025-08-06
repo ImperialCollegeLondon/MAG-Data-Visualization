@@ -42,6 +42,41 @@ classdef tIMAPApp < AppTestCase
             testCase.resetApp(app);
         end
 
+        % Test that L1b analysis workflow is supported.
+        function analyze_l1bWorkflow(testCase)
+
+            testCase.assumeTrue(exist("spdfcdfinfo", "file") == 2, "SPDF CDF Toolbox not installed. Test skipped.");
+
+            % Set up.
+            workingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
+            testCase.copyDataToWorkingDirectory(workingDirectory, "imap/l1b_cdf");
+
+            expectedViews = ["AT/SFT", "CPT", "Field", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"];
+
+            app = testCase.createAppWithCleanup("IMAP");
+
+            % Exercise and verify processing.
+            testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
+            testCase.choose(app.AnalysisManager.LevelDropDown, string(mag.imap.meta.Level.L1b));
+            testCase.type(app.AnalysisManager.SciencePatternEditField, fullfile("data", "imap", "mag", "l1b", "*", "*", "*.cdf"));
+
+            testCase.press(app.ProcessDataButton);
+
+            testCase.verifyAppUIElementStatus(app, "on");
+            testCase.verifyTrue(app.ResultsManager.MetadataPanel.Enable, "Metadata panel should be enabled.");
+            testCase.verifyTrue(app.ResultsManager.SciencePreviewPanel.Enable, "Science preview should be enabled.");
+            testCase.verifyNotEmpty(app.ResultsManager.StackedChartPreview, "Science preview should be populated.");
+
+            testCase.verifyEqual(app.ResultsManager.InstrumentTextArea.Value, cellstr("FM - BSW: 2.04 - ASW: 4.05"));
+            testCase.verifyEqual(app.ResultsManager.PrimaryTextArea.Value, cellstr("FOB (FEE3 - FM5 - None)"));
+            testCase.verifyEqual(app.ResultsManager.SecondaryTextArea.Value, cellstr("FIB (FEE4 - FM4 - None)"));
+
+            testCase.verifyEqual(app.VisualizationManager.VisualizationTypeListBox.Items, cellstr(expectedViews));
+
+            % Exercise and verify reset.
+            testCase.resetApp(app);
+        end
+
         % Test that invalid location throws an error.
         function invalidLocation(testCase, InvalidLocation)
 

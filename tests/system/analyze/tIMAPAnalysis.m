@@ -118,6 +118,46 @@ classdef tIMAPAnalysis < AnalysisTestCase
                 testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
             end
         end
+
+        % Test that analysis of L1b CDF files returns expected results.
+        function l1bCDFTestAnalysis(testCase)
+
+            testCase.assumeTrue(exist("spdfcdfinfo", "file") == 2, "SPDF CDF Toolbox not installed. Test skipped.");
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("l1b_cdf");
+
+            options = {"Location", pwd(), ...
+                "Level", mag.imap.meta.Level.L1b, ...
+                "SciencePattern", fullfile("data", "imap", "mag", "l1b", "*", "*", "*.cdf")};
+
+            % Exercise.
+            analysis = mag.imap.Analysis.start(options{:});
+
+            % Verify.
+            testCase.verifyEmpty(analysis.EventFileNames, "Event file names do not match.");
+            testCase.verifySubstring(analysis.MetadataFileNames, "imap_setup.json", "Metadata file names do not match.");
+
+            testCase.verifySubstring(analysis.ScienceFileNames(1), "imap_mag_l1b_burst-magi_20250421_v007.cdf", "Science file names do not match.");
+            testCase.verifySubstring(analysis.ScienceFileNames(2), "imap_mag_l1b_burst-mago_20250421_v007.cdf", "Science file names do not match.");
+            testCase.verifySubstring(analysis.ScienceFileNames(3), "imap_mag_l1b_norm-magi_20250421_v007.cdf", "Science file names do not match.");
+            testCase.verifySubstring(analysis.ScienceFileNames(4), "imap_mag_l1b_norm-mago_20250421_v007.cdf", "Science file names do not match.");
+            testCase.verifyEmpty(analysis.IALiRTFileNames, "I-ALiRT file names do not match.");
+
+            testCase.verifyEmpty(analysis.HKFileNames{1}, "HK file names do not match.");
+            testCase.verifyEmpty(analysis.HKFileNames{2}, "HK file names do not match.");
+            testCase.verifyEmpty(analysis.HKFileNames{3}, "HK file names do not match.");
+            testCase.verifyEmpty(analysis.HKFileNames{4}, "HK file names do not match.");
+            testCase.verifyEmpty(analysis.HKFileNames{5}, "HK file names do not match.");
+
+            testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
+
+            if mag.test.isGitHub()
+                testCase.log("Skip comparison with baseline on GitHub CI runner.");
+            else
+                testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
+            end
+        end
     end
 
     methods (Access = private)
