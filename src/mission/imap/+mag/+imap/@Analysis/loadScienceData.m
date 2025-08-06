@@ -13,7 +13,7 @@ function loadScienceData(this, primarySetup, secondarySetup)
     this.Results.Science = mag.io.import( ...
         FileNames = this.ScienceFileNames, ...
         Format = importStrategy, ...
-        ProcessingSteps = this.PerFileProcessing);
+        ProcessingSteps = this.Processing.PerFileSteps);
 
     primary = this.Results.Primary;
     primary.Metadata.Setup = primarySetup;
@@ -58,7 +58,7 @@ function loadScienceData(this, primarySetup, secondarySetup)
 
     %% Process Data as a Whole
 
-    for wds = this.WholeDataProcessing
+    for wds = this.Processing.WholeDataSteps
 
         primary.Data = wds.apply(primary.Data, primary.Metadata);
         secondary.Data = wds.apply(secondary.Data, secondary.Metadata);
@@ -85,7 +85,7 @@ function loadScienceData(this, primarySetup, secondarySetup)
         [secondaryRampMetadata.DataFrequency, secondaryRampMetadata.PacketFrequency] = deal(0.25, 4);
 
         % Process ramp mode.
-        for rs = this.RampProcessing
+        for rs = this.Processing.RampSteps
 
             primaryRampMode = rs.apply(primaryRampMode, primaryRampMetadata);
             secondaryRampMode = rs.apply(secondaryRampMode, secondaryRampMetadata);
@@ -100,14 +100,14 @@ function loadScienceData(this, primarySetup, secondarySetup)
 
     if primary.HasData
 
-        for ss = this.ScienceProcessing
+        for ss = this.Processing.ScienceSteps
             primary.Data = ss.apply(primary.Data, primary.Metadata);
         end
     end
 
     if secondary.HasData
 
-        for ss = this.ScienceProcessing
+        for ss = this.Processing.ScienceSteps
             secondary.Data = ss.apply(secondary.Data, secondary.Metadata);
         end
     end

@@ -20,37 +20,8 @@ classdef Analysis < mag.Analysis
             fullfile("*", "Export", "idle_export_pwr.*.csv"), ...
             fullfile("*", "Export", "idle_export_sci.*.csv"), ...
             fullfile("*", "Export", "idle_export_stat.*.csv")]
-        % PERFILEPROCESSING Steps needed to process single files of data.
-        PerFileProcessing (1, :) mag.process.Step = [ ...
-            mag.process.AllZero(Variables = ["coarse", "fine", "x", "y", "z"]), ...
-            mag.process.SignedInteger(CompressionVariable = "compression", Variables = ["x", "y", "z"]), ...
-            mag.process.Separate(DiscriminationVariable = "t", LargeDiscriminateThreshold = minutes(1), QualityVariable = "quality", Variables = ["x", "y", "z"])]
-        % WHOLEDATAPROCESSING Steps needed to process all of imported data.
-        WholeDataProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Sort(), ...
-            mag.process.Duplicates()]
-        % SCIENCEPROCESSING Steps needed to process only strictly science
-        % data.
-        ScienceProcessing (1, :) mag.process.Step = [
-            mag.process.EventFilter(OnModeChange = [0, 1], OnRangeChange = [-1, 5]), ...
-            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"]), ...
-            mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"]), ...
-            mag.process.Compression(CompressionVariable = "compression", CompressionWidthVariable = "compression_width", Variables = ["x", "y", "z"])]
-        % IALIRTPROCESSING Steps needed to process only I-ALiRT data.
-        IALiRTProcessing (1, :) mag.process.Step = [
-            mag.process.EventFilter(OnRangeChange = [0, 1]), ...
-            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"]), ...
-            mag.process.Calibration(RangeVariable = "range", Variables = ["x", "y", "z"])]
-        % RAMPPROCESSING Steps needed to process only ramp mode data.
-        RampProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Unwrap(Variables = ["x", "y", "z"]), ...
-            mag.process.Ramp()]
-        % HKPROCESSING Steps needed to process imported HK data.
-        HKProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Units(), ...
-            mag.process.Duplicates(), ...
-            mag.process.Separate(DiscriminationVariable = "t", LargeDiscriminateThreshold = minutes(5), QualityVariable = string.empty(), Variables = "*"), ...
-            mag.process.Sort()]
+        % PROCESSING Processing steps for each phase.
+        Processing (1, 1) mag.imap.Processing
     end
 
     properties (Dependent)
@@ -93,14 +64,18 @@ classdef Analysis < mag.Analysis
 
     methods (Static)
 
-        function analysis = start(options)
+        function analysis = start(analysisOptions, startOptions)
 
             arguments
-                options.?mag.imap.Analysis
+                analysisOptions.?mag.imap.Analysis
+                startOptions.Level (1, 1) mag.imap.meta.Level = mag.imap.meta.Level.L1a
             end
 
-            args = namedargs2cell(options);
+            args = namedargs2cell(analysisOptions);
             analysis = mag.imap.Analysis(args{:});
+
+            % Apply processing steps based on the level.
+            analysis.Processing = mag.imap.Processing.getStepsForLevel(startOptions.Level);
 
             analysis.detect();
             analysis.load();
