@@ -54,7 +54,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             levelLabel.Layout.Row = 2;
             levelLabel.Layout.Column = 1;
 
-            this.LevelDropDown = uidropdown(this.AnalyzeSettingsLayout);
+            this.LevelDropDown = uidropdown(this.AnalyzeSettingsLayout, Tooltip = "Level L1b might require a change in the ""Science pattern"" setting (e.g., ""data/imap/mag/l1b/*/*/*.cdf"").");
             this.LevelDropDown.Items = string(supportedLevels);
             this.LevelDropDown.ItemsData = supportedLevels;
             this.LevelDropDown.Layout.Row = 2;
