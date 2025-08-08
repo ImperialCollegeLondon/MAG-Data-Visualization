@@ -2,12 +2,12 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 % DATETIMERANGESLIDER Slider for range of datetimes (start and end times).
 
     properties (Access = private, Transient, NonCopyable)
-        GridLayout            matlab.ui.container.GridLayout
-        Slider                matlab.ui.control.RangeSlider
-        EndTimeEditField      matlab.ui.control.EditField
-        StartTimeEditField    matlab.ui.control.EditField
-        EndDatePicker         matlab.ui.control.DatePicker
-        StartDatePicker       matlab.ui.control.DatePicker
+        GridLayout matlab.ui.container.GridLayout
+        Slider matlab.ui.control.RangeSlider
+        StartDatePicker matlab.ui.control.DatePicker
+        StartTimeField matlab.ui.control.EditField
+        EndDatePicker matlab.ui.control.DatePicker
+        EndTimeField matlab.ui.control.EditField
     end
 
     properties (SetObservable)
@@ -26,20 +26,16 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
         function comp = DatetimeRangeSlider(varargin)
 
-            arguments (Repeating)
-                varargin
-            end
-
             comp = comp@matlab.ui.componentcontainer.ComponentContainer(varargin{:});
             comp.addlistener("Limits", "PostSet", @comp.limitsValueChanged);
         end
 
         function startDate = get.StartTime(comp)
-            startDate = mag.app.internal.combineDateAndTime(comp.StartDatePicker.Value, comp.StartTimeEditField.Value);
+            startDate = mag.app.internal.combineDateAndTime(comp.StartDatePicker.Value, comp.StartTimeField.Value);
         end
 
         function endDate = get.EndTime(comp)
-            endDate = mag.app.internal.combineDateAndTime(comp.EndDatePicker.Value, comp.EndTimeEditField.Value);
+            endDate = mag.app.internal.combineDateAndTime(comp.EndDatePicker.Value, comp.EndTimeField.Value);
         end
 
         function reset(comp)
@@ -83,7 +79,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             end
 
             if ~success
-                comp.StartTimeEditField.Value = event.PreviousValue;
+                comp.StartTimeField.Value = event.PreviousValue;
             end
         end
 
@@ -105,7 +101,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             end
 
             if ~success
-                comp.EndTimeEditField.Value = event.PreviousValue;
+                comp.EndTimeField.Value = event.PreviousValue;
             end
         end
 
@@ -120,13 +116,13 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             startDate = dateRange * (value(1) / sliderRange) + comp.Limits(1);
 
             comp.StartDatePicker.Value = dateshift(startDate, "start", "day");
-            comp.StartTimeEditField.Value = string(startDate, "HH:mm:ss.SSS");
+            comp.StartTimeField.Value = string(startDate, "HH:mm:ss.SSS");
 
             % Set end datetime.
             endDate = dateRange * (value(2) / sliderRange) + comp.Limits(1);
 
             comp.EndDatePicker.Value = dateshift(endDate, "start", "day");
-            comp.EndTimeEditField.Value = string(endDate, "HH:mm:ss.SSS");
+            comp.EndTimeField.Value = string(endDate, "HH:mm:ss.SSS");
         end
     end
 
@@ -173,9 +169,9 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
         function updateSliderRange(comp)
 
             comp.StartDatePicker.Value = dateshift(comp.Limits(1), "start", "day");
-            comp.StartTimeEditField.Value = string(comp.Limits(1), "HH:mm:ss.SSS");
+            comp.StartTimeField.Value = string(comp.Limits(1), "HH:mm:ss.SSS");
             comp.EndDatePicker.Value = dateshift(comp.Limits(2), "start", "day");
-            comp.EndTimeEditField.Value = string(comp.Limits(2), "HH:mm:ss.SSS");
+            comp.EndTimeField.Value = string(comp.Limits(2), "HH:mm:ss.SSS");
 
             comp.Slider.Limits = [0, 100];
             comp.Slider.MajorTicks = 0:20:100;
@@ -234,18 +230,18 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             comp.EndDatePicker.ValueChangedFcn = @comp.endDatePickerValueChanged;
 
             % Create StartTimeEditField
-            comp.StartTimeEditField = uieditfield(comp.GridLayout, "text");
-            comp.StartTimeEditField.Placeholder = "HH:mm:ss.SSS";
-            comp.StartTimeEditField.Layout.Row = 2;
-            comp.StartTimeEditField.Layout.Column = 4;
-            comp.StartTimeEditField.ValueChangedFcn = @comp.startTimeEditFieldValueChanged;
+            comp.StartTimeField = uieditfield(comp.GridLayout, "text");
+            comp.StartTimeField.Placeholder = "HH:mm:ss.SSS";
+            comp.StartTimeField.Layout.Row = 2;
+            comp.StartTimeField.Layout.Column = 4;
+            comp.StartTimeField.ValueChangedFcn = @comp.startTimeEditFieldValueChanged;
 
             % Create EndTimeEditField
-            comp.EndTimeEditField = uieditfield(comp.GridLayout, "text");
-            comp.EndTimeEditField.Placeholder = "HH:mm:ss.SSS";
-            comp.EndTimeEditField.Layout.Row = 2;
-            comp.EndTimeEditField.Layout.Column = 8;
-            comp.EndTimeEditField.ValueChangedFcn = @comp.endTimeEditFieldValueChanged;
+            comp.EndTimeField = uieditfield(comp.GridLayout, "text");
+            comp.EndTimeField.Placeholder = "HH:mm:ss.SSS";
+            comp.EndTimeField.Layout.Row = 2;
+            comp.EndTimeField.Layout.Column = 8;
+            comp.EndTimeField.ValueChangedFcn = @comp.endTimeEditFieldValueChanged;
 
             % Create Slider
             comp.Slider = uislider(comp.GridLayout, "range");

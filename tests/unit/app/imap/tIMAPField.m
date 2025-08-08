@@ -8,13 +8,18 @@ classdef tIMAPField < mag.test.case.ViewControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
+
+            model = mag.app.imap.Model();
+            model.analyze({});
+
             field = mag.app.imap.control.Field();
+            field.Model = model;
 
             % Exercise.
             field.instantiate(panel);
 
             % Verify.
-            testCase.verifyStartEndDateButtons(field, StartDateRow = 1, EndDateRow = 2);
+            testCase.verifyStartEndDateButtons(field);
 
             testCase.assertNotEmpty(field.EventsTree, "Events tree should not be empty.");
             testCase.assertNumElements(field.EventsTree.Children, 3, "Events tree should have 3 children.");
@@ -39,7 +44,11 @@ classdef tIMAPField < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.imap.Model();
+            model.analyze({});
+
             field = mag.app.imap.control.Field();
+            field.Model = model;
             field.instantiate(panel);
 
             results = mag.imap.Instrument();
@@ -64,7 +73,11 @@ classdef tIMAPField < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.imap.Model();
+            model.analyze({});
+
             field = mag.app.imap.control.Field();
+            field.Model = model;
             field.instantiate(panel);
 
             field.EventsTree.CheckedNodes = field.EventsTree.Children(2);
@@ -91,7 +104,11 @@ classdef tIMAPField < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.imap.Model();
+            model.analyze({});
+
             field = mag.app.imap.control.Field();
+            field.Model = model;
             field.instantiate(panel);
 
             field.EventsTree.CheckedNodes = [field.EventsTree.Children(1), field.EventsTree.Children(3)];
@@ -118,7 +135,11 @@ classdef tIMAPField < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.imap.Model();
+            model.analyze({});
+
             field = mag.app.imap.control.Field();
+            field.Model = model;
             field.instantiate(panel);
 
             field.OverrideNameField.Value = "Test Name";
