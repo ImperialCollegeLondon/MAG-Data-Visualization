@@ -14,6 +14,8 @@ classdef (Abstract) Model < mag.mixin.SetGet
     properties (Dependent, SetAccess = private)
         % HASANALYSIS Logical denoting whether analysis is available.
         HasAnalysis (1, 1) logical
+        % TIMERANGE Time range for analysis.
+        TimeRange (1, 2) datetime
     end
 
     methods (Abstract)
@@ -35,6 +37,15 @@ classdef (Abstract) Model < mag.mixin.SetGet
 
         function value = get.HasAnalysis(this)
             value = ~isempty(this.Analysis) && ~isempty(this.Analysis.Results);
+        end
+
+        function range = get.TimeRange(this)
+
+            if this.HasAnalysis && ~isempty(this.Analysis.Results)
+                range = this.Analysis.Results.TimeRange;
+            else
+                range = mag.time.emptyTime(0, 2);
+            end
         end
     end
 

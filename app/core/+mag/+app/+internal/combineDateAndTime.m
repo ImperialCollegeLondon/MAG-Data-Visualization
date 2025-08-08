@@ -13,7 +13,7 @@ function dateTime = combineDateAndTime(date, time)
 
     dateTime = date;
 
-    if ~isempty(time)
+    if ~isempty(time) && (strlength(time) > 0)
         dateTime = dateTime + mag.time.decodeTime(time);
     end
 

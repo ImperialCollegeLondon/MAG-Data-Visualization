@@ -15,11 +15,11 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
 
             % Create ExportSettingsLayout.
             this.ExportSettingsLayout = uigridlayout(parent);
-            this.ExportSettingsLayout.ColumnWidth = ["1x", "2x", "2x"];
+            this.ExportSettingsLayout.ColumnWidth = ["1x", "1x", "1x"];
             this.ExportSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x"];
 
             % Start and end dates.
-            this.addStartEndDateButtons(this.ExportSettingsLayout, StartDateRow = 1, EndDateRow = 2);
+            this.addStartEndDateButtons(this.ExportSettingsLayout);
 
             % Reset.
             this.reset();
@@ -32,9 +32,7 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
         function options = getExportOptions(this, format, location)
 
             format = extractBefore(format, " ");
-
-            startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
-            endTime = mag.app.internal.combineDateAndTime(this.EndDatePicker.Value, this.EndTimeField.Value);
+            [startTime, endTime] = this.getStartEndTimes();
 
             options = {format, "Location", location, "StartTime", startTime, "EndTime", endTime};
         end
@@ -46,6 +44,8 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
 
             if ~model.HasAnalysis || ~model.Analysis.Results.HasScience
                 this.reset();
+            else
+                this.changeSliderLimits(model.TimeRange);
             end
         end
     end

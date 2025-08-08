@@ -111,6 +111,8 @@ classdef (Abstract) VisualizationManager < mag.app.manage.Manager
                 for sv = supportedVisualizations
 
                     if sv.isSupported(model.Analysis.Results)
+
+                        sv.Model = model;
                         itemsData = [itemsData, sv]; %#ok<AGROW>
                     end
                 end

@@ -2,10 +2,7 @@ classdef (Abstract, HandleCompatible) StartEndDate
 % STARTENDDATE Add support for start and end date selection.
 
     properties (SetAccess = protected)
-        StartDatePicker matlab.ui.control.DatePicker
-        StartTimeField matlab.ui.control.EditField
-        EndDatePicker matlab.ui.control.DatePicker
-        EndTimeField matlab.ui.control.EditField
+        Slider mag.app.component.DatetimeRangeSlider
     end
 
     methods (Access = protected)
@@ -15,56 +12,32 @@ classdef (Abstract, HandleCompatible) StartEndDate
             arguments
                 this
                 parent (1, 1) matlab.ui.container.GridLayout
-                options.StartDateRow (1, 1) double
-                options.StartDateLabelColumn (1, :) double = 1
-                options.StartDatePickerColumn (1, :) double = 2
-                options.StartTimeFieldColumn (1, :) double = 3
-                options.EndDateRow (1, 1) double
-                options.EndDateLabelColumn (1, :) double = 1
-                options.EndDatePickerColumn (1, :) double = 2
-                options.EndTimeFieldColumn (1, :) double = 3
+                options.Rows (1, 2) double = [1, 2]
+                options.Columns (1, 2) double = [1, 3]
+                options.Limits (1, 2) datetime = [NaT(), NaT()]
             end
 
-            % Start date.
-            startLabel = uilabel(parent, Text = "Start date/time:");
-            startLabel.Layout.Row = options.StartDateRow;
-            startLabel.Layout.Column = options.StartDateLabelColumn;
+            this.Slider = mag.app.component.DatetimeRangeSlider(parent);
+            this.Slider.Layout.Row = options.Rows;
+            this.Slider.Layout.Column = options.Columns;
 
-            this.StartDatePicker = uidatepicker(parent);
-            this.StartDatePicker.Layout.Row = options.StartDateRow;
-            this.StartDatePicker.Layout.Column = options.StartDatePickerColumn;
+            if ~any(isnat(options.Limits))
+                this.changeSliderLimits(options.Limits);
+            end
+        end
 
-            this.StartTimeField = uieditfield(parent, Placeholder = "HH:mm:ss.SSS");
-            this.StartTimeField.Layout.Row = options.StartDateRow;
-            this.StartTimeField.Layout.Column = options.StartTimeFieldColumn;
-
-            % End date.
-            endLabel = uilabel(parent, Text = "End date/time:");
-            endLabel.Layout.Row = options.EndDateRow;
-            endLabel.Layout.Column = options.EndDateLabelColumn;
-
-            this.EndDatePicker = uidatepicker(parent);
-            this.EndDatePicker.Layout.Row = options.EndDateRow;
-            this.EndDatePicker.Layout.Column = options.EndDatePickerColumn;
-
-            this.EndTimeField = uieditfield(parent, Placeholder = "HH:mm:ss.SSS");
-            this.EndTimeField.Layout.Row = options.EndDateRow;
-            this.EndTimeField.Layout.Column = options.EndTimeFieldColumn;
+        function changeSliderLimits(this, limits)
+            this.Slider.Limits = limits;
         end
 
         function [startTime, endTime] = getStartEndTimes(this)
 
-            startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
-            endTime = mag.app.internal.combineDateAndTime(this.EndDatePicker.Value, this.EndTimeField.Value);
+            startTime = this.Slider.StartTime;
+            endTime = this.Slider.EndTime;
         end
 
         function resetStartEndDate(this)
-
-            this.StartDatePicker.Value = NaT();
-            this.StartTimeField.Value = string.empty();
-
-            this.EndDatePicker.Value = NaT();
-            this.EndTimeField.Value = string.empty();
+            this.Slider.reset();
         end
     end
 end
