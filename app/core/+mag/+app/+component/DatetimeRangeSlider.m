@@ -35,12 +35,12 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             comp.addlistener("Limits", "PostSet", @comp.limitsValueChanged);
         end
 
-        function startDate = get.StartTime(comp)
-            startDate = mag.app.internal.combineDateAndTime(comp.StartDatePicker.Value, comp.StartTimeField.Value);
+        function startTime = get.StartTime(comp)
+            startTime = mag.app.internal.combineDateAndTime(comp.StartDatePicker.Value, comp.StartTimeField.Value);
         end
 
-        function endDate = get.EndTime(comp)
-            endDate = mag.app.internal.combineDateAndTime(comp.EndDatePicker.Value, comp.EndTimeField.Value);
+        function endTime = get.EndTime(comp)
+            endTime = mag.app.internal.combineDateAndTime(comp.EndDatePicker.Value, comp.EndTimeField.Value);
         end
 
         function reset(comp)
@@ -211,7 +211,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
             % Create GridLayout
             comp.GridLayout = uigridlayout(comp);
-            comp.GridLayout.ColumnWidth = ["fit", "fit", "1x", "1x", "fit", "fit", "1x", "1x", "fit"];
+            comp.GridLayout.ColumnWidth = ["fit", "fit", "1.1x", "0.9x", "fit", "fit", "1.1x", "0.9x", "fit"];
             comp.GridLayout.RowHeight = ["fit", "1x", "1x", "fit"];
 
             % Create StartDatePicker
@@ -261,39 +261,6 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             comp.Slider.Layout.Column = [2, 8];
 
             comp.updateSliderRange();
-        end
-    end
-end
-
-function results = smartDatetimeString(dates)
-
-    results = strings(size(dates));
-
-    if isempty(dates)
-        return;
-    end
-
-    shortFormat = "dd-MM-yy";
-    longFormat = "dd-MM-yy HH:mm:ss";
-    hourFormat = "HH:mm:ss";
-
-    if isequal(dates(1), dateshift(dates(1), "start", "day"))
-        results(1) = string(dates(1), shortFormat);
-    else
-        results(1) = string(dates(1), longFormat);
-    end
-
-    for i = 2:numel(dates)
-
-        currentDate = dateshift(dates(i), "start", "day");
-        previousDate = dateshift(dates(i - 1), "start", "day");
-
-        if isequal(currentDate, previousDate)
-            results(i) = string(dates(i), hourFormat);
-        elseif isequal(dates(i), currentDate)
-            results(i) = string(dates(i), shortFormat);
-        else
-            results(i) = string(dates(i), longFormat);
         end
     end
 end
