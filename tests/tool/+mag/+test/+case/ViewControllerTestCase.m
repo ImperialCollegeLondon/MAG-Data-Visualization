@@ -7,18 +7,8 @@ classdef (Abstract) ViewControllerTestCase < mag.test.case.GraphicsTestCase
 
     methods (Access = protected)
 
-        function panel = createTestPanel(testCase, options)
-        % CREATETESTPANEL Create "uipanel" to add controls to.
-
-            arguments
-                testCase
-                options.VisibleOverride (1, 1) matlab.lang.OnOffSwitchState = "off"
-            end
-
-            f = uifigure(Visible = options.VisibleOverride);
-            panel = uipanel(f, Position = [1, 1, f.InnerPosition(3:4)]);
-
-            testCase.addTeardown(@() close(f));
+        function panel = createTestPanel(testCase, varargin)
+            panel = mag.test.GraphicsTestUtilities.createPanel(testCase, varargin{:});
         end
 
         function verifyStartEndDateButtons(testCase, control, options)

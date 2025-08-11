@@ -1,13 +1,18 @@
 classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 % DATETIMERANGESLIDER Slider for range of datetimes (start and end times).
 
-    properties (Access = private, Transient, NonCopyable)
+    properties (SetAccess = private, Transient, NonCopyable)
         GridLayout matlab.ui.container.GridLayout
         Slider matlab.ui.control.RangeSlider
         StartDatePicker matlab.ui.control.DatePicker
         StartTimeField matlab.ui.control.EditField
         EndDatePicker matlab.ui.control.DatePicker
         EndTimeField matlab.ui.control.EditField
+    end
+
+    properties (Constant)
+        % SLIDERLIMITS Range of slider values.
+        SliderLimits (1, 2) double = [0, 100]
     end
 
     properties (SetObservable)
@@ -39,7 +44,9 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
         end
 
         function reset(comp)
-            comp.Slider.Value = [0, 100];
+
+            comp.Slider.Value = comp.SliderLimits;
+            comp.updateSliderRange();
         end
     end
 
@@ -54,11 +61,11 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
         end
 
         function success = startDatePickerValueChanged(comp, ~, event)
-            success = comp.setDateValue(comp.StartTime, 1, "Start", event);
+            success = comp.setAndValidateDateValue(comp.StartTime, 1, "Start", event);
         end
 
         function success = endDatePickerValueChanged(comp, ~, event)
-            success = comp.setDateValue(comp.EndTime, 2, "End", event);
+            success = comp.setAndValidateDateValue(comp.EndTime, 2, "End", event);
         end
 
         function startTimeEditFieldValueChanged(comp, ~, event)
@@ -109,8 +116,8 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
             value = event.Value;
 
-            sliderRange = comp.Slider.Limits(2) - comp.Slider.Limits(1);
-            dateRange = comp.Limits(2) - comp.Limits(1);
+            sliderRange = range(comp.Slider.Limits);
+            dateRange = range(comp.Limits);
 
             % Set start datetime.
             startDate = dateRange * (value(1) / sliderRange) + comp.Limits(1);
@@ -128,7 +135,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
     methods (Access = private)
 
-        function success = setDateValue(comp, value, index, name, event)
+        function success = setAndValidateDateValue(comp, value, index, name, event)
 
             arguments
                 comp
@@ -140,8 +147,8 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
             success = true;
 
-            sliderRange = comp.Slider.Limits(2) - comp.Slider.Limits(1);
-            dateRange = comp.Limits(2) - comp.Limits(1);
+            sliderRange = range(comp.Slider.Limits);
+            dateRange = range(comp.Limits);
 
             errorTitle = compose("Cannot Set %s Date", name);
             otherName = setdiff(["start", "end"], lower(name));
@@ -149,6 +156,10 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             if value < comp.Limits(1)
 
                 uialert(ancestor(comp.GridLayout, "Figure", "toplevel"), compose("%s date must be greater than earliest date.", name), errorTitle);
+                success = false;
+            elseif value > comp.Limits(2)
+
+                uialert(ancestor(comp.GridLayout, "Figure", "toplevel"), compose("%s date must be less than latest date.", name), errorTitle);
                 success = false;
             else
 
@@ -162,7 +173,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             end
 
             if ~success && ~isempty(event)
-                comp.StartDatePicker.Value = event.PreviousValue;
+                comp.(name + "DatePicker").Value = event.PreviousValue;
             end
         end
 
@@ -173,7 +184,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             comp.EndDatePicker.Value = dateshift(comp.Limits(2), "start", "day");
             comp.EndTimeField.Value = string(comp.Limits(2), "HH:mm:ss.SSS");
 
-            comp.Slider.Limits = [0, 100];
+            comp.Slider.Limits = comp.SliderLimits;
             comp.Slider.MajorTicks = 0:20:100;
             comp.Slider.MinorTicks = 0:2.5:100;
 
@@ -196,7 +207,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
         function setup(comp)
 
-            comp.Position = [1, 1, 653, 137];
+            comp.Position = [1, 1, 650, 130];
 
             % Create GridLayout
             comp.GridLayout = uigridlayout(comp);
@@ -229,14 +240,14 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             comp.EndDatePicker.Limits = comp.Limits;
             comp.EndDatePicker.ValueChangedFcn = @comp.endDatePickerValueChanged;
 
-            % Create StartTimeEditField
+            % Create StartTimeField
             comp.StartTimeField = uieditfield(comp.GridLayout, "text");
             comp.StartTimeField.Placeholder = "HH:mm:ss.SSS";
             comp.StartTimeField.Layout.Row = 2;
             comp.StartTimeField.Layout.Column = 4;
             comp.StartTimeField.ValueChangedFcn = @comp.startTimeEditFieldValueChanged;
 
-            % Create EndTimeEditField
+            % Create EndTimeField
             comp.EndTimeField = uieditfield(comp.GridLayout, "text");
             comp.EndTimeField.Placeholder = "HH:mm:ss.SSS";
             comp.EndTimeField.Layout.Row = 2;

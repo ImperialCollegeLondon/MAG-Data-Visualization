@@ -17,6 +17,21 @@ classdef GraphicsTestUtilities
             ax = nexttile(tl);
         end
 
+
+        function panel = createPanel(testCase, options)
+        % CREATETESTPANEL Create "uipanel" to add test components to.
+
+            arguments
+                testCase
+                options.VisibleOverride (1, 1) matlab.lang.OnOffSwitchState = "off"
+            end
+
+            f = uifigure(Visible = options.VisibleOverride);
+            panel = uipanel(f, Position = [1, 1, f.InnerPosition(3:4)]);
+
+            testCase.addTeardown(@() close(f));
+        end
+
         function graph = getChildrenGraph(testCase, layout, axes, type)
         % GETCHILDRENGRAPH Get graph from axes and verify its type.
 
