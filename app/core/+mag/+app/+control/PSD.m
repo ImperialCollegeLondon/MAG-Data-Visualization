@@ -11,8 +11,7 @@ classdef PSD < mag.app.Control
 
     properties (SetAccess = private)
         Layout matlab.ui.container.GridLayout
-        StartDatePicker matlab.ui.control.DatePicker
-        StartTimeField matlab.ui.control.EditField
+        StartTimeSlider mag.app.component.DatetimeSlider
         DurationSpinner matlab.ui.control.Spinner
         SyncYAxesCheckBox matlab.ui.control.CheckBox
     end
@@ -31,19 +30,20 @@ classdef PSD < mag.app.Control
         function instantiate(this, parent)
 
             this.Layout = this.createDefaultGridLayout(parent);
+            this.Layout.RowHeight = ["3x", "1x", "1x", "1x", "1x"];
 
             % Start date.
             startLabel = uilabel(this.Layout, Text = "Start date/time:");
             startLabel.Layout.Row = 1;
             startLabel.Layout.Column = 1;
 
-            this.StartDatePicker = uidatepicker(this.Layout);
-            this.StartDatePicker.Layout.Row = 1;
-            this.StartDatePicker.Layout.Column = 2;
+            this.StartTimeSlider = mag.app.component.DatetimeSlider(this.Layout);
+            this.StartTimeSlider.Layout.Row = 1;
+            this.StartTimeSlider.Layout.Column = [2, 3];
 
-            this.StartTimeField = uieditfield(this.Layout, Placeholder = "HH:mm:ss.SSS");
-            this.StartTimeField.Layout.Row = 1;
-            this.StartTimeField.Layout.Column = 3;
+            if ~any(isnat(this.Model.TimeRange))
+                this.StartTimeSlider.Limits = this.Model.TimeRange;
+            end
 
             % Duration.
             durationLabel = uilabel(this.Layout, Text = "Duration (hours):");
@@ -81,7 +81,7 @@ classdef PSD < mag.app.Control
                 command (1, 1) mag.app.Command
             end
 
-            startTime = mag.app.internal.combineDateAndTime(this.StartDatePicker.Value, this.StartTimeField.Value);
+            startTime = this.StartTimeSlider.SelectedTime;
             duration = hours(this.DurationSpinner.Value);
 
             command = mag.app.Command(Functional = @(varargin) this.ViewType(varargin{:}).visualizeAll(), ...
