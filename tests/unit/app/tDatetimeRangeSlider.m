@@ -129,7 +129,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
         end
 
         % Test reset method returns slider to original values.
-        function rest(testCase)
+        function reset(testCase)
 
             % Set up.
             slider = testCase.createTestSlider();
