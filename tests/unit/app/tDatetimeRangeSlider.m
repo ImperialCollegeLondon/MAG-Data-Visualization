@@ -260,7 +260,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
 
         function [slider, panel] = createTestSlider(testCase)
 
-            panel = mag.test.GraphicsTestUtilities.createPanel(testCase, VisibleOverride = "on");
+            panel = mag.test.GraphicsTestUtilities.createPanel(testCase, VisibleOverride = "on", ScrollableOverride = "on");
             panel.Scrollable = "on";
 
             slider = mag.app.component.DatetimeRangeSlider(panel);
