@@ -20,6 +20,7 @@ jobs:
     name: Run MATLAB Tests
     strategy:
       matrix:
+        fail-fast: false
         release: ["R2024a", "R2024b", "R2025a"]
     runs-on: windows-latest
     steps:
