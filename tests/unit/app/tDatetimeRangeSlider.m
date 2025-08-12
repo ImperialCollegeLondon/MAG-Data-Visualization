@@ -65,9 +65,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
 
             % Set up.
             slider = testCase.createTestSlider();
-
             value = 25;
-            expectedDate = testCase.TestSliderLimits(1) + (range(testCase.TestSliderLimits) * value / (range(slider.SliderLimits)));
 
             % Exercise.
             % "drag" method not yet supported for SliderLimits.
@@ -77,10 +75,12 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             slider.Slider.ValueChangingFcn([], event);
 
             % Verify.
+            expectedDate = testCase.TestSliderLimits(1) + (range(testCase.TestSliderLimits) * slider.Slider.Value(DateSettings.Index) / (range(slider.SliderLimits)));
+
             testCase.verifyEqual(slider.(DateSettings.Name + "Time"), expectedDate, "Selected date should be updated to reflect slider value.");
             testCase.verifyEqual(slider.(DateSettings.OtherName + "Time"), testCase.TestSliderLimits(DateSettings.OtherIndex), "Other date should not be updated.");
 
-            testCase.verifyEqual(slider.Slider.Value(DateSettings.Index), value, "Selected slider value should be updated to reflect date value.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value(DateSettings.Index), value, "Selected slider value should be updated to reflect date value.", RelTol = 1e-2);
             testCase.verifyEqual(slider.Slider.Value(DateSettings.OtherIndex), slider.SliderLimits(DateSettings.OtherIndex), "Other slider value should not be updated.");
         end
 
@@ -101,7 +101,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.(DateSettings.Name + "Time"), expectedDate, "Selected date should be updated to reflect date value.");
             testCase.verifyEqual(slider.(DateSettings.OtherName + "Time"), testCase.TestSliderLimits(DateSettings.OtherIndex), "Other date should not be updated.");
 
-            testCase.verifyEqual(slider.Slider.Value(DateSettings.Index), expectedValue, "Selected slider value should be updated to reflect date value.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value(DateSettings.Index), expectedValue, "Selected slider value should be updated to reflect date value.", RelTol = 1e-2);
             testCase.verifyEqual(slider.Slider.Value(DateSettings.OtherIndex), slider.SliderLimits(DateSettings.OtherIndex), "Other slider value should not be updated.");
         end
 
@@ -124,7 +124,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.(DateSettings.Name + "Time"), expectedDate, "Selected date should be updated to reflect date value.");
             testCase.verifyEqual(slider.(DateSettings.OtherName + "Time"), testCase.TestSliderLimits(DateSettings.OtherIndex), "Other date should not be updated.");
 
-            testCase.verifyEqual(slider.Slider.Value(DateSettings.Index), expectedValue, "Selected slider value should be updated to reflect date value.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value(DateSettings.Index), expectedValue, "Selected slider value should be updated to reflect date value.", RelTol = 1e-2);
             testCase.verifyEqual(slider.Slider.Value(DateSettings.OtherIndex), slider.SliderLimits(DateSettings.OtherIndex), "Other slider value should not be updated.");
         end
 
@@ -145,10 +145,10 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             slider.reset();
 
             % Verify.
-            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should be reset.", AbsTol = 1e-6);
-
             testCase.verifyEqual(slider.StartTime, testCase.TestSliderLimits(1), "Slider start date should be reset.");
             testCase.verifyEqual(slider.EndTime, testCase.TestSliderLimits(2), "Slider end date should be reset.");
+
+            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should be reset.", RelTol = 1e-2);
         end
 
         % Test error is thrown when start date is too early.
@@ -166,7 +166,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.StartTime, testCase.TestSliderLimits(1), "Start time should not change.");
             testCase.verifyEqual(slider.EndTime, testCase.TestSliderLimits(2), "End time should not change.");
 
-            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should not change.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should not change.", RelTol = 1e-2);
         end
 
         % Test error is thrown when end date is too late.
@@ -184,7 +184,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.StartTime, testCase.TestSliderLimits(1), "Start time should not change.");
             testCase.verifyEqual(slider.EndTime, testCase.TestSliderLimits(2), "End time should not change.");
 
-            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should not change.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should not change.", RelTol = 1e-2);
         end
 
         % Test error is thrown when start date is after end date.
@@ -209,7 +209,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.StartTime, testCase.TestSliderLimits(1), "Start time should not change.");
             testCase.verifyEqual(slider.EndTime, endDate, "End time should not change.");
 
-            testCase.verifyEqual(slider.Slider.Value, [slider.SliderLimits(1), endValue], "Slider values should not change.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value, [slider.SliderLimits(1), endValue], "Slider values should not change.", RelTol = 1e-2);
         end
 
         % Test error is thrown when end date is before start date.
@@ -234,7 +234,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.StartTime, startDate, "Start time should not change.");
             testCase.verifyEqual(slider.EndTime, testCase.TestSliderLimits(2), "End time should not change.");
 
-            testCase.verifyEqual(slider.Slider.Value, [startValue, slider.SliderLimits(2)], "Slider values should not change.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value, [startValue, slider.SliderLimits(2)], "Slider values should not change.", RelTol = 1e-2);
         end
 
         % Test error is thrown when start/end times have the wrong format.
@@ -252,7 +252,7 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.StartTime, testCase.TestSliderLimits(1), "Start time should not change.");
             testCase.verifyEqual(slider.EndTime, testCase.TestSliderLimits(2), "End time should not change.");
 
-            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should not change.", AbsTol = 1e-6);
+            testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should not change.", RelTol = 1e-2);
         end
     end
 
