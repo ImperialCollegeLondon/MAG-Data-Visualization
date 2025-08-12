@@ -1,5 +1,5 @@
 classdef (Abstract, HandleCompatible) Struct
-% STRUCT Interface adding support for cropping of data.
+% STRUCT Interface adding support for converting to struct.
 
     methods (Hidden, Sealed)
 
