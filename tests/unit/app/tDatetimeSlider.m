@@ -185,6 +185,8 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
 
             slider = mag.app.component.DatetimeSlider(panel);
             slider.Limits = testCase.TestSliderLimits;
+
+            testCase.assumeTrue(panel.isInScrollView(slider), "Component outside the viewable area. Test skipped.");
         end
     end
 end
