@@ -1,4 +1,4 @@
-classdef tField < mag.test.case.ViewControllerTestCase
+classdef tField < mag.test.case.ViewControllerTestCase & matlab.mock.TestCase
 % TFIELD Unit tests for "mag.app.control.Field" class.
 
     methods (Test)
@@ -8,13 +8,18 @@ classdef tField < mag.test.case.ViewControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
+
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             field = mag.app.control.Field(@mag.bart.view.Field);
+            field.Model = model;
 
             % Exercise.
             field.instantiate(panel);
 
             % Verify.
-            testCase.verifyStartEndDateButtons(field, StartDateRow = 1, EndDateRow = 2);
+            testCase.verifyStartEndDateButtons(field);
         end
 
         % Test that "getVisualizeCommand" returns expected command.
@@ -23,7 +28,11 @@ classdef tField < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             field = mag.app.control.Field(@mag.bart.view.Field);
+            field.Model = model;
             field.instantiate(panel);
 
             results = mag.bart.Instrument();

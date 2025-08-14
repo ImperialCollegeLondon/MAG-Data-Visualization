@@ -1,4 +1,4 @@
-classdef tPSD < mag.test.case.ViewControllerTestCase
+classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
 % TPSD Unit tests for "mag.app.control.PSD" class.
 
     methods (Test)
@@ -8,22 +8,22 @@ classdef tPSD < mag.test.case.ViewControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
+
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd.Model = model;
 
             % Exercise.
             psd.instantiate(panel);
 
             % Verify.
-            testCase.assertNotEmpty(psd.StartDatePicker, "Start date picker should not be empty.");
-            testCase.assertNotEmpty(psd.StartTimeField, "Start time field should not be empty.");
+            testCase.assertNotEmpty(psd.StartTimeSlider, "Start date slider should not be empty.");
             testCase.assertNotEmpty(psd.DurationSpinner, "Duration spinner should not be empty.");
 
-            testCase.verifyEqual(psd.StartDatePicker.Layout, matlab.ui.layout.GridLayoutOptions(Row = 1, Column = 2), ...
+            testCase.verifyEqual(psd.StartTimeSlider.Layout, matlab.ui.layout.GridLayoutOptions(Row = 1, Column = [2, 3]), ...
                 "Start date picker layout should match expectation.");
-
-            testCase.verifyEqual(psd.StartTimeField.Placeholder, 'HH:mm:ss.SSS', "Start time field placeholder should match expectation.");
-            testCase.verifyEqual(psd.StartTimeField.Layout, matlab.ui.layout.GridLayoutOptions(Row = 1, Column = 3), ...
-                "Start time field layout should match expectation.");
 
             testCase.verifyEqual(psd.DurationSpinner.Value, 1, "Duration spinner value should match expectation.");
             testCase.verifyEqual(psd.DurationSpinner.Limits, [0, Inf], "Duration spinner limits should match expectation.");
@@ -37,7 +37,11 @@ classdef tPSD < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd.Model = model;
             psd.instantiate(panel);
 
             results = mag.bart.Instrument();
@@ -52,7 +56,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase
                 testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField(f), compose("""%s"" should be a named argument.", f));
             end
 
-            testCase.verifyTrue(ismissing(command.NamedArguments.Start), """Start"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.Start, psd.StartTimeSlider.SelectedTime, """Start"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.Duration, hours(1), """Duration"" should match expectation.");
         end
 
@@ -61,15 +65,18 @@ classdef tPSD < mag.test.case.ViewControllerTestCase
         function getVisualizeCommand_modifiedStartDate(testCase)
 
             % Set up.
-            panel = testCase.createTestPanel();
+            panel = testCase.createTestPanel(VisibleOverride = "on");
+
+            model = mag.app.bart.Model();
+            model.analyze({});
 
             psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd.Model = model;
             psd.instantiate(panel);
 
-            psd.StartDatePicker.Value = datetime("today");
-            psd.StartTimeField.Value = "10:30";
+            testCase.drag(psd.StartTimeSlider.Slider, 0, 50);
 
-            expectedStartDate = datetime("today") + duration(10, 30, 0);
+            expectedStartDate = psd.StartTimeSlider.Limits(1) + (range(psd.StartTimeSlider.Limits) * psd.StartTimeSlider.Slider.Value / range(psd.StartTimeSlider.SliderLimits));
             expectedStartDate.Format = mag.time.Constant.Format;
             expectedStartDate.TimeZone = mag.time.Constant.TimeZone;
 
@@ -96,7 +103,11 @@ classdef tPSD < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd.Model = model;
             psd.instantiate(panel);
 
             psd.DurationSpinner.Value = 2.15;
@@ -113,7 +124,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase
                 testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField(f), compose("""%s"" should be a named argument.", f));
             end
 
-            testCase.verifyTrue(ismissing(command.NamedArguments.Start), """Start"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.Start, psd.StartTimeSlider.SelectedTime, """Start"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.Duration, hours(2.15), """Duration"" should match expectation.");
         end
     end

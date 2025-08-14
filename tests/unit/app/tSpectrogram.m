@@ -8,13 +8,18 @@ classdef tSpectrogram < mag.test.case.ViewControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
+
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
+            spectrogram.Model = model;
 
             % Exercise.
             spectrogram.instantiate(panel);
 
             % Verify.
-            testCase.verifyStartEndDateButtons(spectrogram, StartDateRow = 1, EndDateRow = 2);
+            testCase.verifyStartEndDateButtons(spectrogram);
 
             testCase.assertNotEmpty(spectrogram.FrequencyPointsSpinner, "Frequency points spinner should not be empty.");
             testCase.assertNotEmpty(spectrogram.OverlapSpinner, "Overlap spinner should not be empty.");
@@ -52,7 +57,11 @@ classdef tSpectrogram < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
+            spectrogram.Model = model;
             spectrogram.instantiate(panel);
 
             results = mag.bart.Instrument();
@@ -79,7 +88,11 @@ classdef tSpectrogram < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
+            spectrogram.Model = model;
             spectrogram.instantiate(panel);
 
             spectrogram.OverlapSpinner.Value = 0.5;
@@ -108,7 +121,11 @@ classdef tSpectrogram < mag.test.case.ViewControllerTestCase
             % Set up.
             panel = testCase.createTestPanel();
 
+            model = mag.app.bart.Model();
+            model.analyze({});
+
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
+            spectrogram.Model = model;
             spectrogram.instantiate(panel);
 
             spectrogram.WindowSpinner.Value = 25;

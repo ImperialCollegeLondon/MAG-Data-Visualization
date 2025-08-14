@@ -32,7 +32,7 @@ classdef Spectrogram < mag.app.Control & mag.app.mixin.StartEndDate
             this.Layout = this.createDefaultGridLayout(parent);
 
             % Start and end dates.
-            this.addStartEndDateButtons(this.Layout, StartDateRow = 1, EndDateRow = 2);
+            this.addStartEndDateButtons(this.Layout, Limits = this.Model.TimeRange);
 
             % Frequency points.
             frequencyPointsLabel = uilabel(this.Layout, Text = "Frequency points:", ...

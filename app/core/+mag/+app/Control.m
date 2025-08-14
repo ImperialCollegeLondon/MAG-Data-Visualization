@@ -18,6 +18,11 @@ classdef (Abstract) Control < mag.app.manage.Manager
         DynamicPlaceholder (1, 1) string = "dynamic (default)"
     end
 
+    properties
+        % MODEL Model containing analysis results.
+        Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
+    end
+
     methods (Abstract)
 
         % ISSUPPORTED Determine whether view-controller is supported.
