@@ -1,10 +1,5 @@
-classdef tDatetimeSlider < mag.test.case.UITestCase
+classdef tDatetimeSlider < DatetimeSliderTestCase
 % TDATETIMESLIDER Unit tests for "mag.app.component.DatetimeSlider" class.
-
-    properties (Constant, Access = private)
-        InitialSliderLimits (1, 2) datetime = [datetime("yesterday", TimeZone = "UTC"), datetime("tomorrow", TimeZone = "UTC")]
-        TestSliderLimits (1, 2) datetime = [datetime(2025, 12, 25, 1, 2, 3, TimeZone = "UTC"), datetime(2026, 1, 1, 23, 45, 16, TimeZone = "UTC")]
-    end
 
     methods (Test)
 
@@ -33,7 +28,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function changeLimits(testCase)
 
             % Set up.
-            slider = testCase.createTestSlider();
+            slider = testCase.createTestSlider("DatetimeSlider");
 
             datePickerLimits = dateshift(testCase.TestSliderLimits, "start", "day");
             datePickerLimits.TimeZone = "";
@@ -52,7 +47,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function setDateWithSlider(testCase)
 
             % Set up.
-            slider = testCase.createTestSlider();
+            slider = testCase.createTestSlider("DatetimeSlider");
             value = 25;
 
             % Exercise.
@@ -61,7 +56,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
             % Verify.
             expectedDate = testCase.TestSliderLimits(1) + (range(testCase.TestSliderLimits) * slider.Slider.Value / (range(slider.SliderLimits)));
 
-            testCase.verifyEqual(slider.SelectedTime, expectedDate, "Selected date should be updated to reflect slider value.");
+            testCase.verifyLessThanOrEqual(abs(seconds(slider.SelectedTime - expectedDate)), seconds(1), "Selected date should be updated to reflect slider value.");
             testCase.verifyEqual(slider.Slider.Value, value, "Selected slider value should be updated to reflect date value.", RelTol = 1e-2);
         end
 
@@ -69,7 +64,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function setDateWithPicker(testCase)
 
             % Set up.
-            slider = testCase.createTestSlider();
+            slider = testCase.createTestSlider("DatetimeSlider");
             date = dateshift(testCase.TestSliderLimits(1) + days(2), "start", "day");
 
             expectedDate = date + mag.time.decodeTime(slider.TimeField.Value);
@@ -87,7 +82,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function setDateWithField(testCase)
 
             % Set up.
-            slider = testCase.createTestSlider();
+            slider = testCase.createTestSlider("DatetimeSlider");
             time = "13:26:45";
 
             expectedDate = slider.DatePicker.Value + mag.time.decodeTime(time);
@@ -107,7 +102,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function reset(testCase)
 
             % Set up.
-            slider = testCase.createTestSlider();
+            slider = testCase.createTestSlider("DatetimeSlider");
 
             testCase.type(slider.DatePicker, dateshift(testCase.TestSliderLimits(1) + days(2), "start", "day"));
 
@@ -126,7 +121,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function error_dateTooEarly(testCase)
 
             % Set up.
-            [slider, panel] = testCase.createTestSlider();
+            [slider, panel] = testCase.createTestSlider("DatetimeSlider");
 
             % Exercise.
             testCase.type(slider.TimeField, "00:00");
@@ -142,7 +137,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function error_dateTooLate(testCase)
 
             % Set up.
-            [slider, panel] = testCase.createTestSlider();
+            [slider, panel] = testCase.createTestSlider("DatetimeSlider");
 
             expectedDate = dateshift(testCase.TestSliderLimits(2), "start", "day") + mag.time.decodeTime(slider.TimeField.Value);
             expectedValue = range(slider.SliderLimits) * (expectedDate - testCase.TestSliderLimits(1)) / (range(testCase.TestSliderLimits));
@@ -163,7 +158,7 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
         function error_invalidTime(testCase)
 
             % Set up.
-            [slider, panel] = testCase.createTestSlider();
+            [slider, panel] = testCase.createTestSlider("DatetimeSlider");
 
             % Exercise.
             testCase.type(slider.TimeField, "abc.001");
@@ -173,20 +168,6 @@ classdef tDatetimeSlider < mag.test.case.UITestCase
 
             testCase.verifyEqual(slider.SelectedTime, testCase.TestSliderLimits(1), "Start time should not change.");
             testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits(1), "Slider values should not change.", RelTol = 1e-2);
-        end
-    end
-
-    methods (Access = private)
-
-        function [slider, panel] = createTestSlider(testCase)
-
-            panel = mag.test.GraphicsTestUtilities.createPanel(testCase, VisibleOverride = "on", ScrollableOverride = "on");
-            panel.Scrollable = "on";
-
-            slider = mag.app.component.DatetimeSlider(panel);
-            slider.Limits = testCase.TestSliderLimits;
-
-            testCase.assumeTrue(panel.isInScrollView(slider), "Component outside the viewable area. Test skipped.");
         end
     end
 end

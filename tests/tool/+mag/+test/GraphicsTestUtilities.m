@@ -23,11 +23,12 @@ classdef GraphicsTestUtilities
 
             arguments
                 testCase
-                options.VisibleOverride (1, 1) matlab.lang.OnOffSwitchState = "off"
+                options.PositionOverride (1, 4) double = get(groot(), "defaultFigurePosition")
                 options.ScrollableOverride (1, 1) matlab.lang.OnOffSwitchState = "off"
+                options.VisibleOverride (1, 1) matlab.lang.OnOffSwitchState = "off"
             end
 
-            f = uifigure(Visible = options.VisibleOverride, Scrollable = options.ScrollableOverride);
+            f = uifigure(Visible = options.VisibleOverride, Scrollable = options.ScrollableOverride, Position = options.PositionOverride);
             panel = uipanel(f, Position = [1, 1, f.InnerPosition(3:4)]);
 
             testCase.addTeardown(@() close(f));

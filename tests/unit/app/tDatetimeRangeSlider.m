@@ -1,11 +1,6 @@
-classdef tDatetimeRangeSlider < mag.test.case.UITestCase
+classdef tDatetimeRangeSlider < DatetimeSliderTestCase
 % TDATETIMERANGESLIDER Unit tests for
 % "mag.app.component.DatetimeRangeSlider" class.
-
-    properties (Constant, Access = private)
-        InitialSliderLimits (1, 2) datetime = [datetime("yesterday", TimeZone = "UTC"), datetime("tomorrow", TimeZone = "UTC")]
-        TestSliderLimits (1, 2) datetime = [datetime(2025, 12, 25, 1, 2, 3, TimeZone = "UTC"), datetime(2026, 1, 1, 23, 45, 16, TimeZone = "UTC")]
-    end
 
     properties (TestParameter)
         DateSettings = {struct(Name = "Start", Index = 1, OtherName = "End", OtherIndex = 2), ...
@@ -253,20 +248,6 @@ classdef tDatetimeRangeSlider < mag.test.case.UITestCase
             testCase.verifyEqual(slider.EndTime, testCase.TestSliderLimits(2), "End time should not change.");
 
             testCase.verifyEqual(slider.Slider.Value, slider.SliderLimits, "Slider values should not change.", RelTol = 1e-2);
-        end
-    end
-
-    methods (Access = private)
-
-        function [slider, panel] = createTestSlider(testCase)
-
-            panel = mag.test.GraphicsTestUtilities.createPanel(testCase, VisibleOverride = "on", ScrollableOverride = "on");
-            panel.Scrollable = "on";
-
-            slider = mag.app.component.DatetimeRangeSlider(panel);
-            slider.Limits = testCase.TestSliderLimits;
-
-            testCase.assumeTrue(panel.isInScrollView(slider), "Component outside the viewable area. Test skipped.");
         end
     end
 end
