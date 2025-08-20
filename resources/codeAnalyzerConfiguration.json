@@ -4,7 +4,7 @@
     "description": "MAG Lab MATLAB style guidelines",
     "author": "Michele Facchinelli",
     "schemaVersion": "1.1.0",
-    "guidelineVersion": "1.0.1",
+    "guidelineVersion": "1.1.0",
 
     // New and Modified Checks
     "checks":
@@ -108,7 +108,8 @@
             "casing": "UpperCamelCase"
         },
         "variable": {
-            "casing": ["lowercase", "lowerCamelCase"]
+            // lowercase, lowerCamelCase, SINGLEUpperCase
+            "regularExpression": "^(?:[a-z0-9]+|[a-z0-9][a-zA-Z0-9]*|[A-Z])$"
         }
     }
 }
