@@ -1,6 +1,6 @@
 {
     "name": "MAGDataVisualization",
-    "version": "8.2.0",
+    "version": "8.2.1",
     "id": "69962df8-e93e-47cd-a1d6-766ad3e9da8a",
     "formerNames": [],
     "displayName": "MAG Data Visualization",
@@ -21,6 +21,36 @@
         },
         {
             "path": "app/core",
+            "languages": [
+                "matlab"
+            ]
+        },
+        {
+            "path": "app/mission/hs",
+            "languages": [
+                "matlab"
+            ]
+        },
+        {
+            "path": "app/mission/imap",
+            "languages": [
+                "matlab"
+            ]
+        },
+        {
+            "path": "src/analyze",
+            "languages": [
+                "matlab"
+            ]
+        },
+        {
+            "path": "src/data",
+            "languages": [
+                "matlab"
+            ]
+        },
+        {
+            "path": "src/io",
             "languages": [
                 "matlab"
             ]
@@ -69,36 +99,6 @@
         },
         {
             "path": "app/mission/bart",
-            "languages": [
-                "matlab"
-            ]
-        },
-        {
-            "path": "app/mission/hs",
-            "languages": [
-                "matlab"
-            ]
-        },
-        {
-            "path": "app/mission/imap",
-            "languages": [
-                "matlab"
-            ]
-        },
-        {
-            "path": "src/analyze",
-            "languages": [
-                "matlab"
-            ]
-        },
-        {
-            "path": "src/data",
-            "languages": [
-                "matlab"
-            ]
-        },
-        {
-            "path": "src/io",
             "languages": [
                 "matlab"
             ]

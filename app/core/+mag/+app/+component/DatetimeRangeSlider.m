@@ -191,7 +191,7 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
             N = numel(comp.Slider.MajorTicks);
             ticks = linspace(comp.Limits(1), comp.Limits(2), N);
 
-            if range(comp.Limits) > days(7)
+            if range(comp.Limits) >= days(4)
                 comp.Slider.MajorTickLabels = string(ticks, "dd-MM-yy");
             else
                 comp.Slider.MajorTickLabels = smartDatetimeString(ticks);
