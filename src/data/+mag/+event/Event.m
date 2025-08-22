@@ -244,7 +244,7 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
             tableThis(:, fillVariables) = fillmissing(tableThis(:, fillVariables), "previous");
 
             tableThis{contains(tableThis.Label, "Config"), ["PrimaryNormalRate", "SecondaryNormalRate", "PacketNormalFrequency", "PrimaryBurstRate", "SecondaryBurstRate", "PacketBurstFrequency", "Duration"]} = missing();
-            tableThis{contains(tableThis.Label, "Ramp"), "Range"} = missing();
+            tableThis{contains(tableThis.Label, "Ramp"), "Range"} = mag.meta.Range.NaN;
         end
     end
 end

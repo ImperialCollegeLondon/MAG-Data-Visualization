@@ -190,7 +190,7 @@ function [rangeTable, events] = findRangeChanges(ranges, events, sensorName)
     end
 
     rangeTable(idxDelete, :) = [];
-    events{~contains(events.Label, "Range"), "Range"} = missing();
+    events{~contains(events.Label, "Range"), "Range"} = mag.meta.Range.NaN;
 
     % If the first range change is after the first event (and they are
     % close to each other) update its range.

@@ -1,5 +1,6 @@
 ## Software
 
+- (All) Replace range as integer/double with an enumeration `mag.meta.Range`
 - (All) Add chart for plotting shaded regions (`mag.graphics.chart.Region`)
 
 ## Package

@@ -104,6 +104,7 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
             % Rename variables.
             newVariableNames = ["x", "y", "z", "range", "coarse", "fine"];
             rawData = renamevars(rawData, [["x", "y", "z", "rng"] + "_" + sensor, sensor + "_" + ["coarse", "fine"]], newVariableNames);
+            rawData.range = mag.meta.Range(rawData.range);
 
             % Add compression and quality flags.
             if ismember("compression", rawData.Properties.VariableNames)
@@ -131,8 +132,14 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
             % Property order:
             %     sequence, x, y, z, range, coarse, fine, compression,
             %     compression width, quality, t
-            rawData.Properties.VariableContinuity = ["step", "continuous", "continuous", "continuous", "step", ...
-                "continuous", "continuous", "step", "step", "event", "continuous"];
+            continuity = repmat(matlab.tabular.Continuity.unset, 1, width(rawData));
+            variableNames = rawData.Properties.VariableNames;
+
+            continuity(ismember(variableNames, ["t", "x", "y", "z", "coarse", "fine"])) = matlab.tabular.Continuity.continuous;
+            continuity(ismember(variableNames, ["sequence", "range", "compression", "compression_width"])) = matlab.tabular.Continuity.step;
+            continuity(ismember(variableNames, "quality")) = matlab.tabular.Continuity.event;
+
+            rawData.Properties.VariableContinuity = continuity;
 
             % Convert to mag.Science.
             data = mag.Science(table2timetable(rawData, RowTimes = "t"), metadata);

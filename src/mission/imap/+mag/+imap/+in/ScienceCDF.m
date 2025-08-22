@@ -59,7 +59,14 @@ classdef ScienceCDF < mag.io.in.CDF
             % Property order:
             %     sequence, x, y, z, range, compression, compression width,
             %     quality
-            timedData.Properties.VariableContinuity = ["step", "continuous", "continuous", "continuous", "step", "step", "step", "event"];
+            continuity = repmat(matlab.tabular.Continuity.unset, 1, width(timedData));
+            variableNames = timedData.Properties.VariableNames;
+
+            continuity(ismember(variableNames, ["x", "y", "z"])) = matlab.tabular.Continuity.continuous;
+            continuity(ismember(variableNames, ["sequence", "range", "compression", "compression_width"])) = matlab.tabular.Continuity.step;
+            continuity(ismember(variableNames, "quality")) = matlab.tabular.Continuity.event;
+
+            timedData.Properties.VariableContinuity = continuity;
 
             % Create mag.Science object with metadata.
             metadata = mag.meta.Science(Mode = mode, Primary = isequal(sensor, mag.meta.Sensor.FOB), Sensor = sensor, ...
@@ -113,6 +120,8 @@ classdef ScienceCDF < mag.io.in.CDF
                 rawField = rawData{matches(variableNames, this.CDFSettings.Field, IgnoreCase = true)};
                 rawRange = rawData{matches(variableNames, this.CDFSettings.Range, IgnoreCase = true)};
             end
+
+            rawRange = mag.meta.Range(rawRange);
         end
     end
 end
