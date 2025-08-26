@@ -54,7 +54,7 @@ jobs:
         with:
           command: "matlab.addons.install('MATLAB.SPDF.CDF.mltbx'); matlab.addons.install('MATLAB.SPICE.MICE.mltbx');"
       - name: Run tests
-        uses: matlab-actions/run-build@v2.5.0
+        uses: matlab-actions/run-build@v2.5.1
         with:
           tasks: check test
       - name: Report results
