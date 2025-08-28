@@ -1,5 +1,9 @@
-classdef tToolbox < matlab.unittest.TestCase
+classdef tToolbox < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRelease
 % TTOOLBOX Tests for installation of MAG Data Visualization toolbox.
+
+    properties (Constant)
+        MinimumRelease = "R2025a"
+    end
 
     properties (Constant, Access = private)
         PackageRoot (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "..", "..", "..")
@@ -11,15 +15,11 @@ classdef tToolbox < matlab.unittest.TestCase
 
     methods (TestClassSetup)
 
-        function useMATLABR2025aOrAbove(testCase)
-            testCase.assumeFalse(isMATLABReleaseOlderThan("R2025a"), "Only MATLAB R2025a or later is supported for this test.");
-        end
-
         function checkMATLABPackage(testCase)
 
-            % MATLAB will still execute this method, even if the above
+            % MATLAB will still execute this method, even if the release
             % check fails.
-            if ~isMATLABReleaseOlderThan("R2025a")
+            if ~isMATLABReleaseOlderThan(testCase.MinimumRelease)
                 testCase.assumeEmpty(mpmlist(mag.buildtool.task.PackageTask.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
             end
         end

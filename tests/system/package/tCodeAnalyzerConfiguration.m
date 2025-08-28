@@ -1,16 +1,13 @@
-classdef tCodeAnalyzerConfiguration < matlab.unittest.TestCase
+classdef tCodeAnalyzerConfiguration < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRelease
 % TCODEANALYZERCONFIGURATION Tests for code analyzer configuration JSON
 % file.
 
-    properties (Constant, Access = public)
-        ConfigurationFile = fullfile(fileparts(mfilename("fullpath")), "..", "..", "..", "resources", "codeAnalyzerConfiguration.json")
+    properties (Constant)
+        MinimumRelease = "R2025a"
     end
 
-    methods (TestClassSetup)
-
-        function useMATLABR2025aOrAbove(testCase)
-            testCase.assumeFalse(isMATLABReleaseOlderThan("R2025a"), "Only MATLAB R2025a or later is supported for this test.");
-        end
+    properties (Constant, Access = public)
+        ConfigurationFile = fullfile(fileparts(mfilename("fullpath")), "..", "..", "..", "resources", "codeAnalyzerConfiguration.json")
     end
 
     methods (Test)
