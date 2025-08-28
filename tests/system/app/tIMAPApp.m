@@ -4,11 +4,13 @@ classdef tIMAPApp < AppTestCase
     properties (TestParameter)
         TestDetails = {
             struct(Folder = "imap/full_analysis", Instrument = '', Primary = '', Secondary = '', ...
-            Views = ["AT/SFT", "CPT", "Field", "HK", "I-ALiRT", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"]), ...
+            Views = ["AT/SFT", "CPT", "Field", "HK", "I-ALiRT", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"], Setup = []), ...
             struct(Folder = "imap/fob_only", Instrument = '', Primary = '', Secondary = '', ...
-            Views = ["AT/SFT", "CPT", "Field", "HK", "I-ALiRT", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"]), ...
+            Views = ["AT/SFT", "CPT", "Field", "HK", "I-ALiRT", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"], Setup = []), ...
             struct(Folder = "imap/sc_test", Instrument = "FM - BSW: 2.04 - ASW: 4.05", Primary = "FOB (FEE3 - FM5 - None)", Secondary = "FIB (FEE4 - FM4 - None)", ...
-            Views = ["AT/SFT", "CPT", "Field", "HK", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"])}
+            Views = ["AT/SFT", "CPT", "Field", "HK", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"], Setup = []), ...
+            struct(Folder = "imap/l1b_cdf", Instrument = "FM - BSW: 2.04 - ASW: 4.05", Primary = "FOB (FEE3 - FM5 - None)", Secondary = "FIB (FEE4 - FM4 - None)", ...
+            Views = ["AT/SFT", "CPT", "Field", "HK", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"], Setup = @tIMAPApp.l1bSetup)}
         InvalidLocation = {'', "this/folder/does-not/exist"}
     end
 
@@ -25,6 +27,11 @@ classdef tIMAPApp < AppTestCase
 
             % Exercise and verify processing.
             testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
+
+            if ~isempty(TestDetails.Setup)
+                TestDetails.Setup(testCase, app);
+            end
+
             testCase.press(app.ProcessDataButton);
 
             testCase.verifyAppUIElementStatus(app, "on");
@@ -37,41 +44,6 @@ classdef tIMAPApp < AppTestCase
             testCase.verifyEqual(app.ResultsManager.SecondaryTextArea.Value, cellstr(TestDetails.Secondary));
 
             testCase.verifyEqual(app.VisualizationManager.VisualizationTypeListBox.Items, cellstr(TestDetails.Views));
-
-            % Exercise and verify reset.
-            testCase.resetApp(app);
-        end
-
-        % Test that L1b analysis workflow is supported.
-        function analyze_l1bWorkflow(testCase)
-
-            testCase.assumeTrue(exist("spdfcdfinfo", "file") == 2, "SPDF CDF Toolbox not installed. Test skipped.");
-
-            % Set up.
-            workingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
-            testCase.copyDataToWorkingDirectory(workingDirectory, "imap/l1b_cdf");
-
-            expectedViews = ["AT/SFT", "CPT", "Field", "PSD", "Signal Analyzer", "Spectrogram", "Timestamp", "Wavelet Analyzer"];
-
-            app = testCase.createAppWithCleanup("IMAP");
-
-            % Exercise and verify processing.
-            testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
-            testCase.choose(app.AnalysisManager.LevelDropDown, string(mag.imap.meta.Level.L1b));
-            testCase.type(app.AnalysisManager.SciencePatternEditField, fullfile("data", "imap", "mag", "l1b", "*", "*", "*.cdf"));
-
-            testCase.press(app.ProcessDataButton);
-
-            testCase.verifyAppUIElementStatus(app, "on");
-            testCase.verifyTrue(app.ResultsManager.MetadataPanel.Enable, "Metadata panel should be enabled.");
-            testCase.verifyTrue(app.ResultsManager.SciencePreviewPanel.Enable, "Science preview should be enabled.");
-            testCase.verifyNotEmpty(app.ResultsManager.StackedChartPreview, "Science preview should be populated.");
-
-            testCase.verifyEqual(app.ResultsManager.InstrumentTextArea.Value, cellstr("FM - BSW: 2.04 - ASW: 4.05"));
-            testCase.verifyEqual(app.ResultsManager.PrimaryTextArea.Value, cellstr("FOB (FEE3 - FM5 - None)"));
-            testCase.verifyEqual(app.ResultsManager.SecondaryTextArea.Value, cellstr("FIB (FEE4 - FM4 - None)"));
-
-            testCase.verifyEqual(app.VisualizationManager.VisualizationTypeListBox.Items, cellstr(expectedViews));
 
             % Exercise and verify reset.
             testCase.resetApp(app);
@@ -106,6 +78,19 @@ classdef tIMAPApp < AppTestCase
 
             testCase.verifyFalse(app.ResultsManager.MetadataPanel.Enable, "Metadata panel should be disabled.");
             testCase.verifyFalse(app.ResultsManager.SciencePreviewPanel.Enable, "Science preview should be disabled.");
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function l1bSetup(testCase, app)
+
+            testCase.assumeTrue(exist("spdfcdfinfo", "file") == 2, "SPDF CDF Toolbox not installed. Test skipped.");
+
+            testCase.choose(app.AnalysisManager.LevelDropDown, string(mag.imap.meta.Level.L1b));
+
+            testCase.type(app.AnalysisManager.SciencePatternEditField, fullfile("data", "science", "mag", "l1b", "*", "*", "*.cdf"));
+            testCase.type(app.AnalysisManager.HKPatternEditField, fullfile("data", "hk", "mag", "l1", "*", "*", "*", "*.csv"));
         end
     end
 end

@@ -68,8 +68,8 @@ classdef MAGViewTestCase < mag.test.case.GraphicsTestCase & matlab.mock.TestCase
             % Create HK.
             if options.AddHK
 
-                pwrHK = mag.imap.hk.Power(mag.test.DataTestUtilities.getPowerTimetable(), mag.meta.HK(Type = "PW", Timestamp = datetime("now", TimeZone = "UTC")));
-                procstatHK = mag.imap.hk.Processor(mag.test.DataTestUtilities.getProcessorTimetable(), mag.meta.HK(Type = "PROCSTAT", Timestamp = datetime("now", TimeZone = "UTC")));
+                pwrHK = mag.imap.hk.Power(mag.test.DataTestUtilities.getPowerTimetable(), mag.meta.HK(Type = mag.meta.HKType.Power, Timestamp = datetime("now", TimeZone = "UTC")));
+                procstatHK = mag.imap.hk.Processor(mag.test.DataTestUtilities.getProcessorTimetable(), mag.meta.HK(Type = mag.meta.HKType.Processor, Timestamp = datetime("now", TimeZone = "UTC")));
 
                 instrument.HK = [pwrHK, procstatHK];
             end

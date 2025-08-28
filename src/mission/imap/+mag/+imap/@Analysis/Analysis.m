@@ -15,11 +15,7 @@ classdef Analysis < mag.Analysis
         % IALIRTPATTERN Pattern of I-ALiRT data files.
         IALiRTPattern (1, 1) string = "MAGScience-IALiRT-*.csv"
         % HKPATTERN Pattern of housekeeping files.
-        HKPattern (1, :) string = [fullfile("*", "Export", "idle_export_conf.*.csv"), ...
-            fullfile("*", "Export", "idle_export_proc.*.csv"), ...
-            fullfile("*", "Export", "idle_export_pwr.*.csv"), ...
-            fullfile("*", "Export", "idle_export_sci.*.csv"), ...
-            fullfile("*", "Export", "idle_export_stat.*.csv")]
+        HKPattern (1, 1) string = fullfile("*", "Export", "*.csv")
         % PROCESSING Processing steps for each phase.
         Processing (1, 1) mag.imap.Processing
     end
@@ -111,7 +107,7 @@ classdef Analysis < mag.Analysis
 
         function value = get.HKFileNames(this)
 
-            for hkp = 1:numel(this.HKPattern)
+            for hkp = 1:numel(this.HKFiles)
                 value{hkp} = string(fullfile({this.HKFiles{hkp}.folder}, {this.HKFiles{hkp}.name})); %#ok<AGROW>
             end
         end
@@ -127,8 +123,12 @@ classdef Analysis < mag.Analysis
 
             this.IALiRTFiles = dir(fullfile(this.Location, this.IALiRTPattern));
 
-            for hkp = 1:numel(this.HKPattern)
-                this.HKFiles{hkp} = dir(fullfile(this.Location, this.HKPattern(hkp)));
+            % Load HK files and partition them by HK type.
+            hkFiles = dir(fullfile(this.Location, this.HKPattern));
+            this.HKFiles = {};
+
+            for hkType = enumeration(mag.meta.HKType.Power)'
+                this.HKFiles{end + 1} = hkFiles(contains({hkFiles.name}, hkType.ShortName | hkType.PacketName, IgnoreCase = true));
             end
         end
 

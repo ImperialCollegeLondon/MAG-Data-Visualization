@@ -66,7 +66,7 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
 
             arguments
                 this mag.HK
-                type (1, 1) string {mustBeMember(type, ["PROCSTAT", "PW", "SCI", "SID15", "STATUS"])} = "PW"
+                type (1, 1) mag.meta.HKType = mag.meta.HKType.Power
             end
 
             if ~isempty(this)
@@ -86,7 +86,7 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
             if isscalar(this) && ~isempty(this.Metadata) && ~isempty(this.Metadata.Type)
 
                 className = matlab.mixin.CustomDisplay.getClassNameForHeader(this);
-                tag = char(compose("%s", this.Metadata.Type));
+                tag = char(compose("%s", this.Metadata.Type.ShortName));
 
                 header = ['  ', className, ' HK (', tag, ') with properties:'];
             else

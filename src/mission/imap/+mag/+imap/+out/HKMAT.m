@@ -31,10 +31,10 @@ classdef HKMAT < mag.io.out.MAT
 
             exportData = struct();
 
-            exportData = this.addHKData(exportData, data.getHKType("PW"), "PWR");
-            exportData = this.addHKData(exportData, data.getHKType("SID15"), "SID15");
-            exportData = this.addHKData(exportData, data.getHKType("STATUS"), "STATUS");
-            exportData = this.addHKData(exportData, data.getHKType("PROCSTAT"), "PROCSTAT");
+            exportData = this.addHKData(exportData, data.getHKType(mag.meta.HKType.Power), "PWR");
+            exportData = this.addHKData(exportData, data.getHKType(mag.meta.HKType.SID15), "SID15");
+            exportData = this.addHKData(exportData, data.getHKType(mag.meta.HKType.Status), "STATUS");
+            exportData = this.addHKData(exportData, data.getHKType(mag.meta.HKType.Processor), "PROCSTAT");
         end
     end
 

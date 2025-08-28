@@ -46,7 +46,14 @@ classdef SignedInteger < mag.process.Step
                     signedBit = this.ReferenceWidth;
                 end
 
-                data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, signedBit);
+                try
+                    data{compressed, this.Variables} = this.convertToSignedInteger(data{compressed, this.Variables}, signedBit);
+                catch exception
+
+                    if ~ismember(exception.identifier, "MATLAB:bitget:outOfRange")
+                        exception.rethrow();
+                    end
+                end
             end
 
             for v = this.Variables

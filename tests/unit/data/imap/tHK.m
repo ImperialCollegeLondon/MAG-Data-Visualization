@@ -4,11 +4,11 @@ classdef tHK < matlab.unittest.TestCase
     properties (TestParameter)
         HKTypes = {"SID15", "Processor", "Power", "Status", "Science"}
         Sensor = {"FOB", "FIB"}
-        Dispatch = {struct(Type = "SID15", Class = "mag.imap.hk.SID15"), ...
-            struct(Type = "PROCSTAT", Class = "mag.imap.hk.Processor"), ...
-            struct(Type = "PW", Class = "mag.imap.hk.Power"), ...
-            struct(Type = "STATUS", Class = "mag.imap.hk.Status"), ...
-            struct(Type = "SCI", Class = "mag.imap.hk.Science")}
+        Dispatch = {struct(Type = mag.meta.HKType.Power, Class = "mag.imap.hk.Power"), ...
+            struct(Type = mag.meta.HKType.Processor, Class = "mag.imap.hk.Processor"), ...
+            struct(Type = mag.meta.HKType.Science, Class = "mag.imap.hk.Science"), ...
+            struct(Type = mag.meta.HKType.SID15, Class = "mag.imap.hk.SID15"), ...
+            struct(Type = mag.meta.HKType.Status, Class = "mag.imap.hk.Status")}
     end
 
     methods (Test)
@@ -115,7 +115,7 @@ classdef tHK < matlab.unittest.TestCase
             hk = mag.imap.hk.Power.empty();
 
             % Exercise.
-            selectedHK = hk.getHKType("PROCSTAT");
+            selectedHK = hk.getHKType(mag.meta.HKType.Processor);
 
             % Verify.
             testCase.verifyEmpty(selectedHK, "Empty should be returned for empty input.");
@@ -141,7 +141,7 @@ classdef tHK < matlab.unittest.TestCase
             hk = testCase.createTestData();
 
             % Exercise.
-            selectedHK = hk.getHKType("PROCSTAT");
+            selectedHK = hk.getHKType(mag.meta.HKType.Processor);
 
             % Verify.
             testCase.verifyClass(selectedHK, "mag.imap.hk.Processor", "Correct type should be returned.");
@@ -295,8 +295,8 @@ classdef tHK < matlab.unittest.TestCase
             statusData = timetable(timestamps, ones(10, 1), zeros(10, 1), VariableNames = ["FOBSTAT", "FIBSTAT"]);
             procstatData = timetable(timestamps(1:2:end), (1:5)', (11:15)', VariableNames = ["OBNQ_NUM_MSG", "IBNQ_NUM_MSG"]);
 
-            hk(1) = mag.imap.hk.Status(statusData, mag.meta.HK(Type = "STATUS"));
-            hk(2) = mag.imap.hk.Processor(procstatData, mag.meta.HK(Type = "PROCSTAT"));
+            hk(1) = mag.imap.hk.Status(statusData, mag.meta.HK(Type = mag.meta.HKType.Status));
+            hk(2) = mag.imap.hk.Processor(procstatData, mag.meta.HK(Type = mag.meta.HKType.Processor));
         end
     end
 end

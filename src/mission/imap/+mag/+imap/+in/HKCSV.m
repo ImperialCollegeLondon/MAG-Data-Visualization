@@ -2,7 +2,8 @@ classdef HKCSV < mag.imap.in.IMAPCSV
 % HKCSV Format IMAP HK data for CSV import.
 
     properties (Constant, Access = private)
-        FileNamePattern (1, 1) string = "idle_export_\w+.MAG_HSK_(?<type>\w+)_(?<date>\d+)_(?<time>\w+).(?<extension>\w+)"
+        GSEOSFileNamePattern (1, 1) string = "idle_export_\w+.MAG_HSK_(?<type>\w+)_(?<date>\d+)_(?<time>\w+)\.(?<extension>\w+)"
+        SDCFileNamePattern (1, 1) string = "imap_mag_l1_(?<type>[^_]+)_(?<date>\d+)_v(?<version>\d+)\.(?<extension>\w+)"
     end
 
     properties
@@ -33,6 +34,10 @@ classdef HKCSV < mag.imap.in.IMAPCSV
                 data (1, 1) mag.HK
             end
 
+            % Make sure variable names are all uppercase.
+            rawData.Properties.VariableNames = upper(rawData.Properties.VariableNames);
+
+            % Rename time column.
             rawData = renamevars(rawData, "SHCOARSE", "t");
 
             % Convert timestamps.
@@ -50,10 +55,26 @@ classdef HKCSV < mag.imap.in.IMAPCSV
         function metadata = extractFileMetadata(this, fileName)
         % EXTRACTMETADATA Extract metadata information from file name.
 
-            rawData = regexp(fileName, this.FileNamePattern, "names");
+            [~, name, extension] = fileparts(fileName);
+            fileName = name + extension;
 
-            timestamp = datetime(rawData.date + rawData.time, InputFormat = "yyyyMMddHHmmss", TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format);
-            metadata = mag.meta.HK(Type = rawData.type, OutboardSetup = this.SensorSetup(1), InboardSetup = this.SensorSetup(2), Timestamp = timestamp);
+            if matches(fileName, regexpPattern(this.GSEOSFileNamePattern))
+
+                rawData = regexp(fileName, this.GSEOSFileNamePattern, "names");
+                timestamp = datetime(rawData.date + rawData.time, InputFormat = "yyyyMMddHHmmss", TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format);
+
+                extraArgs = {"Type", mag.meta.HKType.fromShortName(rawData.type), "Timestamp", timestamp};
+            elseif matches(fileName, regexpPattern(this.SDCFileNamePattern))
+
+                rawData = regexp(fileName, this.SDCFileNamePattern, "names");
+                timestamp = datetime(rawData.date, InputFormat = "yyyyMMdd", TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format);
+
+                extraArgs = {"Type", mag.meta.HKType.fromPacketName(rawData.type), "Timestamp", timestamp};
+            else
+                extraArgs = {};
+            end
+
+            metadata = mag.meta.HK(extraArgs{:}, OutboardSetup = this.SensorSetup(1), InboardSetup = this.SensorSetup(2));
         end
     end
 end

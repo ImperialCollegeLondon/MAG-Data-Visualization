@@ -39,10 +39,10 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.IALiRTFileNames(1), "MAGScience-IALiRT-20240507-11h32.csv", "I-ALiRT file names do not match.");
             testCase.verifySubstring(analysis.IALiRTFileNames(2), "MAGScience-IALiRT-20240507-11h35.csv", "I-ALiRT file names do not match.");
 
-            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_conf.MAG_HSK_SID15_20240507_111151.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_pwr.MAG_HSK_PW_20240507_111151.csv", "HK file names do not match.");
             testCase.verifySubstring(analysis.HKFileNames{2}, "idle_export_proc.MAG_HSK_PROCSTAT_20240507_111151.csv", "HK file names do not match.");
-            testCase.verifySubstring(analysis.HKFileNames{3}, "idle_export_pwr.MAG_HSK_PW_20240507_111151.csv", "HK file names do not match.");
-            testCase.verifyEmpty(analysis.HKFileNames{4}, "HK file names do not match.");
+            testCase.verifyEmpty(analysis.HKFileNames{3}, "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{4}, "idle_export_conf.MAG_HSK_SID15_20240507_111151.csv", "HK file names do not match.");
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20240507_111151.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
@@ -73,10 +73,10 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.IALiRTFileNames(1), "MAGScience-IALiRT-20250206-10h44.csv", "I-ALiRT file names do not match.");
             testCase.verifySubstring(analysis.IALiRTFileNames(2), "MAGScience-IALiRT-20250206-11h51.csv", "I-ALiRT file names do not match.");
 
-            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_conf.MAG_HSK_SID15_20250206_104025.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_pwr.MAG_HSK_PW_20250206_104025.csv", "HK file names do not match.");
             testCase.verifySubstring(analysis.HKFileNames{2}, "idle_export_proc.MAG_HSK_PROCSTAT_20250206_104025.csv", "HK file names do not match.");
-            testCase.verifySubstring(analysis.HKFileNames{3}, "idle_export_pwr.MAG_HSK_PW_20250206_104025.csv", "HK file names do not match.");
-            testCase.verifyEmpty(analysis.HKFileNames{4}, "HK file names do not match.");
+            testCase.verifyEmpty(analysis.HKFileNames{3}, "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{4}, "idle_export_conf.MAG_HSK_SID15_20250206_104025.csv", "HK file names do not match.");
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20250206_104025.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
@@ -104,10 +104,10 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.ScienceFileNames(1), "MAGScience-normal-(2,2)-32s-20250324-16h50.csv", "Science file names do not match.");
             testCase.verifyEmpty(analysis.IALiRTFileNames, "I-ALiRT file names do not match.");
 
-            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_conf.MAG_HSK_SID15_20250324_135949.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{1}, "idle_export_pwr.MAG_HSK_PW_20250324_135949.csv", "HK file names do not match.");
             testCase.verifySubstring(analysis.HKFileNames{2}, "idle_export_proc.MAG_HSK_PROCSTAT_20250324_135949.csv", "HK file names do not match.");
-            testCase.verifySubstring(analysis.HKFileNames{3}, "idle_export_pwr.MAG_HSK_PW_20250324_135949.csv", "HK file names do not match.");
-            testCase.verifySubstring(analysis.HKFileNames{4}, "idle_export_sci.MAG_HSK_SCI_20250324_135949.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{3}, "idle_export_sci.MAG_HSK_SCI_20250324_135949.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{4}, "idle_export_conf.MAG_HSK_SID15_20250324_135949.csv", "HK file names do not match.");
             testCase.verifySubstring(analysis.HKFileNames{5}, "idle_export_stat.MAG_HSK_STATUS_20250324_135949.csv", "HK file names do not match.");
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
@@ -129,10 +129,11 @@ classdef tIMAPAnalysis < AnalysisTestCase
 
             options = {"Location", pwd(), ...
                 "Level", mag.imap.meta.Level.L1b, ...
-                "SciencePattern", fullfile("data", "imap", "mag", "l1b", "*", "*", "*.cdf")};
+                "SciencePattern", fullfile("data", "science", "mag", "l1b", "*", "*", "*.cdf"), ...
+                "HKPattern", fullfile("data", "hk", "mag", "l1", "*", "*", "*", "*.csv")};
 
             % Exercise.
-            analysis = mag.imap.Analysis.start(options{:});
+            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(options{:}), "");
 
             % Verify.
             testCase.verifyEmpty(analysis.EventFileNames, "Event file names do not match.");
@@ -144,9 +145,9 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.verifySubstring(analysis.ScienceFileNames(4), "imap_mag_l1b_norm-mago_20250421_v007.cdf", "Science file names do not match.");
             testCase.verifyEmpty(analysis.IALiRTFileNames, "I-ALiRT file names do not match.");
 
-            testCase.verifyEmpty(analysis.HKFileNames{1}, "HK file names do not match.");
-            testCase.verifyEmpty(analysis.HKFileNames{2}, "HK file names do not match.");
-            testCase.verifyEmpty(analysis.HKFileNames{3}, "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{1}, "imap_mag_l1_hsk-pw_20250421_v001.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{2}, "imap_mag_l1_hsk-procstat_20250421_v001.csv", "HK file names do not match.");
+            testCase.verifySubstring(analysis.HKFileNames{3}, "imap_mag_l1_hsk-sci_20250421_v001.csv", "HK file names do not match.");
             testCase.verifyEmpty(analysis.HKFileNames{4}, "HK file names do not match.");
             testCase.verifyEmpty(analysis.HKFileNames{5}, "HK file names do not match.");
 
