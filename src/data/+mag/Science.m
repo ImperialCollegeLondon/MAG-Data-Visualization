@@ -19,7 +19,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
         % DZ z-axis derivative of the magnetic field.
         dZ (:, 1) double
         % RANGE Range values of sensor.
-        Range (:, 1) uint8
+        Range (:, 1) mag.meta.Range
         % SEQUENCE Sequence number of vectors.
         Sequence (:, 1) uint16
         % COMPRESSION Compression flag denoting whether data is compressed.
@@ -86,7 +86,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
         end
 
         function range = get.Range(this)
-            range = uint8(this.Data.(this.Settings.Range));
+            range = this.Data.(this.Settings.Range);
         end
 
         function sequence = get.Sequence(this)
