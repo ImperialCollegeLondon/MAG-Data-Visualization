@@ -47,7 +47,7 @@ classdef Units < mag.process.Step
             end
 
             % Convert "Enabled"/"Disabled" to boolean.
-            data = convertvars(data, @isText, @convertStateToLogical);
+            data = convertvars(data, @matlab.internal.datatypes.isText, @convertStateToLogical);
 
             switch metadata.Type
                 case mag.meta.HKType.Power
@@ -172,10 +172,6 @@ classdef Units < mag.process.Step
             readyTime = coarseTime + fineTime;
         end
     end
-end
-
-function tf = isText(value)
-    tf = matlab.internal.datatypes.isText(value);
 end
 
 function convertedValue = convertStateToLogical(value)
