@@ -6,6 +6,13 @@ classdef tCodeAnalyzerConfiguration < matlab.unittest.TestCase
         ConfigurationFile = fullfile(fileparts(mfilename("fullpath")), "..", "..", "..", "resources", "codeAnalyzerConfiguration.json")
     end
 
+    methods (TestClassSetup)
+
+        function useMATLABR2025aOrAbove(testCase)
+            testCase.assumeFalse(isMATLABReleaseOlderThan("R2025a"), "Only MATLAB R2025a or later is supported for this test.");
+        end
+    end
+
     methods (Test)
 
         function validConfiguration(testCase)
