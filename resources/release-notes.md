@@ -1,5 +1,6 @@
 ## App
 
+- (IMAP) Add support for loading HK defined in XTCE-decoded CSV files
 - (IMAP) Add enumeration for HK type (`mag.meta.HKType`)
 
 ## Software

@@ -9,10 +9,10 @@ function loadHKData(this)
 
     %% Import and Process Data
 
-    for hkp = 1:numel(this.HKPattern)
+    [~, ~, extension] = fileparts(this.HKPattern);
+    importStrategy = this.dispatchExtension(extension, "HK");
 
-        [~, ~, extension] = fileparts(this.HKPattern(hkp));
-        importStrategy = this.dispatchExtension(extension, "HK");
+    for hkp = 1:numel(this.HKFileNames)
 
         if ~isempty(this.Results.Science) && ...
                 ~isempty(this.Results.Outboard) && ~isempty(this.Results.Outboard.Metadata) && ...

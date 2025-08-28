@@ -46,10 +46,13 @@ classdef Units < mag.process.Step
                 metadata (1, 1) mag.meta.HK
             end
 
+            % Convert "Enabled"/"Disabled" to boolean.
+            data = convertvars(data, @isText, @convertStateToLogical);
+
             switch metadata.Type
-                case "PW"
+                case mag.meta.HKType.Power
                     data = this.convertPowerEngineeringUnits(data, metadata);
-                case "SCI"
+                case mag.meta.HKType.Science
 
                     for fee = ["FOB", "FIB"]
 
@@ -71,7 +74,7 @@ classdef Units < mag.process.Step
                         end
                     end
 
-                case "SID15"
+                case mag.meta.HKType.SID15
 
                     data = this.convertPowerEngineeringUnits(data, metadata);
 
@@ -79,7 +82,7 @@ classdef Units < mag.process.Step
                         data{:, drt} = this.convertDataReadyTime(data{:, drt});
                     end
 
-                case {"PROCSTAT", "STATUS"}
+                case {mag.meta.HKType.Processor, mag.meta.HKType.Status}
                     % nothing to do
                 otherwise
                     error("Unrecognized HK type ""%s"".", metadata.Type);
@@ -168,5 +171,20 @@ classdef Units < mag.process.Step
             coarseTime = bin2dec(binRT(:, 1:end-24));
             readyTime = coarseTime + fineTime;
         end
+    end
+end
+
+function tf = isText(value)
+    tf = matlab.internal.datatypes.isText(value);
+end
+
+function convertedValue = convertStateToLogical(value)
+
+    if any(value == "Saturated") || any(value == "NotSaturated")
+        convertedValue = value == "Saturated";
+    elseif any(value == "Enabled") || any(value == "Disabled")
+        convertedValue = value == "Enabled";
+    else
+        convertedValue = value;
     end
 end
