@@ -66,7 +66,7 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
 
             arguments
                 this mag.HK
-                type (1, 1) string {mustBeMember(type, ["PROCSTAT", "PW", "SCI", "SID15", "STATUS"])} = "PW"
+                type (1, 1) mag.meta.HKType = mag.meta.HKType.Power
             end
 
             if ~isempty(this)

@@ -20,7 +20,7 @@ classdef Comparison < mag.graphics.view.View
             this.Figures = matlab.ui.Figure.empty();
 
             [primarySensor, secondarySensor] = this.getSensorNames();
-            sid5HK = this.Results.HK.getHKType("SCI");
+            sid5HK = this.Results.HK.getHKType(mag.meta.HKType.Science);
 
             primaryScience = this.Results.Primary;
             secondaryScience = this.Results.Secondary;

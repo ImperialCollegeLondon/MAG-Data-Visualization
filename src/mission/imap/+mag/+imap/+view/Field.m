@@ -25,7 +25,7 @@ classdef Field < mag.imap.view.Science
             this.Figures = matlab.ui.Figure.empty();
 
             [primarySensor, secondarySensor] = this.getSensorNames();
-            pwrHK = this.Results.HK.getHKType("PW");
+            pwrHK = this.Results.HK.getHKType(mag.meta.HKType.Power);
 
             primary = this.Results.Primary;
             secondary = this.Results.Secondary;

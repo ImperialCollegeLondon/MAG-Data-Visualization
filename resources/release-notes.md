@@ -1,3 +1,7 @@
+## App
+
+- (IMAP) Add enumeration for HK type (`mag.meta.HKType`)
+
 ## Software
 
 - (All) Replace range as integer/double with an enumeration `mag.meta.Range`

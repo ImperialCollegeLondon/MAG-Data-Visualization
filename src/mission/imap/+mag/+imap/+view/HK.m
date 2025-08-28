@@ -27,7 +27,7 @@ classdef HK < mag.graphics.view.View
             [primarySensor, secondarySensor] = this.getSensorNames();
 
             % Power HK.
-            pwr = this.Results.HK.getHKType("PW");
+            pwr = this.Results.HK.getHKType(mag.meta.HKType.Power);
 
             if pwr.isPlottable()
 
@@ -94,7 +94,7 @@ classdef HK < mag.graphics.view.View
             end
 
             % Science HK.
-            sid5 = this.Results.HK.getHKType("SCI");
+            sid5 = this.Results.HK.getHKType(mag.meta.HKType.Science);
 
             if sid5.isPlottable()
 
@@ -122,9 +122,9 @@ classdef HK < mag.graphics.view.View
             end
 
             % Processor HK.
-            status = this.Results.HK.getHKType("STATUS");
-            procStat = this.Results.HK.getHKType("PROCSTAT");
-            sid15 = this.Results.HK.getHKType("SID15");
+            status = this.Results.HK.getHKType(mag.meta.HKType.Status);
+            procStat = this.Results.HK.getHKType(mag.meta.HKType.Processor);
+            sid15 = this.Results.HK.getHKType(mag.meta.HKType.SID15);
 
             if status.isPlottable() && procStat.isPlottable() && sid15.isPlottable()
 
