@@ -86,7 +86,7 @@ classdef (Abstract) HK < mag.TimeSeries & matlab.mixin.CustomDisplay
             if isscalar(this) && ~isempty(this.Metadata) && ~isempty(this.Metadata.Type)
 
                 className = matlab.mixin.CustomDisplay.getClassNameForHeader(this);
-                tag = char(compose("%s", this.Metadata.Type));
+                tag = char(compose("%s", this.Metadata.Type.ShortName));
 
                 header = ['  ', className, ' HK (', tag, ') with properties:'];
             else
