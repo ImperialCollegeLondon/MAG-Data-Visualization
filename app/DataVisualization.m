@@ -74,7 +74,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ToolbarManager = mag.app.manage.ToolbarManager(app, pathToAppIcons);
             app.ToolbarManager.instantiate(app.UIFigure);
 
-            app.NotificationHandler = mag.app.internal.NotificationHandler(app.UIFigure, app.ToolbarManager);
+            app.NotificationHandler = mag.app.internal.NotificationHandler(app.UIFigure);
+            app.ToolbarManager.subscribe(app.NotificationHandler);
 
             % Initialize app based on mission.
             try

@@ -69,12 +69,12 @@ classdef ToolbarManager < mag.app.manage.Manager
             this.HelpPushTool.Icon = this.getIconPath("help", theme);
         end
 
-        function reset(~)
-            error("Reset method not supported.");
+        function subscribe(this, notificationsHandler)
+            notificationsHandler.addlistener("Error", @(~, event) this.setLatestErrorMessage(event));
         end
 
-        function setLatestErrorMessage(this, exception)
-            this.PreviousError = exception;
+        function reset(~)
+            error("Reset method not supported.");
         end
 
         function unlockToolbar = lock(this)
@@ -172,6 +172,10 @@ classdef ToolbarManager < mag.app.manage.Manager
 
             this.App.NotificationHandler.displayAlert("Create issue on GitHub to share feedback, report issues and ask questions.", ...
                 "Create GitHub Issue", "info");
+        end
+
+        function setLatestErrorMessage(this, event)
+            this.PreviousError = event.Exception;
         end
     end
 end
