@@ -1,5 +1,5 @@
 classdef ErrorData < event.EventData
-% ERRORDATA Event published on caught event.
+% ERRORDATA Event published on caught error.
 
     properties
         Exception MException {mustBeScalarOrEmpty}
