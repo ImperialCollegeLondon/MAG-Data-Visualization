@@ -1,3 +1,7 @@
+## App
+
+- (All) Notifications handler notifies `Error` event on caught error
+
 ## Software
 
 - (All) Fix issue with plotting multiple regions with `mag.graphics.chart.Region`

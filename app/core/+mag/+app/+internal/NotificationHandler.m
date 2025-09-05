@@ -1,17 +1,19 @@
 classdef NotificationHandler < handle
 % NOTIFICATIONHANDLER Handle notifications for app components.
 
+    events
+        % ERROR Trigger event on error.
+        Error
+    end
+
     properties (Access = private)
         UIFigure matlab.ui.Figure {mustBeScalarOrEmpty}
-        ToolbarManager mag.app.manage.ToolbarManager {mustBeScalarOrEmpty}
     end
 
     methods
 
-        function this = NotificationHandler(uiFigure, toolbarManager)
-
+        function this = NotificationHandler(uiFigure)
             this.UIFigure = uiFigure;
-            this.ToolbarManager = toolbarManager;
         end
 
         function displayAlert(this, message, title, icon)
@@ -29,7 +31,9 @@ classdef NotificationHandler < handle
 
             if isa(message, "MException")
 
-                this.ToolbarManager.setLatestErrorMessage(message);
+                eventData = mag.app.event.ErrorData(message);
+                this.notify("Error", eventData);
+
                 msg = message.message;
             else
                 msg = message;
