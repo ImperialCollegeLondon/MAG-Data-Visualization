@@ -14,7 +14,7 @@ classdef (Abstract) Manager < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
         % SUBSCRIBE Subscribe to event.
         function subscribe(this, model)
-            model.addlistener("AnalysisChanged", @this.modelChangedCallback);
+            model.addlistener("ModelChanged", @this.modelChangedCallback);
         end
     end
 

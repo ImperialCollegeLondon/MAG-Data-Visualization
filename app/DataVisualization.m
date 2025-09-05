@@ -166,7 +166,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.createComponents();
 
             app.addlistener("Figures", "PostSet", @app.figuresChanged);
-            app.Model.addlistener("AnalysisChanged", @app.modelChangedCallback);
+            app.Model.addlistener("ModelChanged", @app.modelChangedCallback);
 
             app.UIFigure.Name = app.getAppName();
         end

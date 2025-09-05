@@ -29,7 +29,7 @@ classdef tModel < mag.test.case.ViewControllerTestCase
             testCase.EventTriggered = false;
 
             model = feval(ModelDetails.Model);
-            model.addlistener("AnalysisChanged", @testCase.trigger);
+            model.addlistener("ModelChanged", @testCase.trigger);
 
             model.load(workingDirectory.Folder);
 
@@ -52,7 +52,7 @@ classdef tModel < mag.test.case.ViewControllerTestCase
             testCase.EventTriggered = false;
 
             model = feval(ModelDetails.Model);
-            model.addlistener("AnalysisChanged", @testCase.trigger);
+            model.addlistener("ModelChanged", @testCase.trigger);
 
             testCase.verifyError(@() model.load(workingDirectory.Folder), ?MException, ...
                 "Error should be thrown when no valid analysis exists.");
@@ -68,7 +68,7 @@ classdef tModel < mag.test.case.ViewControllerTestCase
             testCase.EventTriggered = false;
 
             model = feval(ModelDetails.Model);
-            model.addlistener("AnalysisChanged", @testCase.trigger);
+            model.addlistener("ModelChanged", @testCase.trigger);
 
             % Exercise.
             model.reset();

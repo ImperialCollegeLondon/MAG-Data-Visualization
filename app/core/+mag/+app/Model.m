@@ -2,8 +2,8 @@ classdef (Abstract) Model < mag.mixin.SetGet
 % MODEL Abstract base class for mission analysis models.
 
     events
-        % ANALYSISCHANGED Analysis changed.
-        AnalysisChanged
+        % MODELCHANGED Model changed.
+        ModelChanged
     end
 
     properties (SetAccess = private)
@@ -54,7 +54,7 @@ classdef (Abstract) Model < mag.mixin.SetGet
         function setAnalysisAndNotify(this, analysis)
 
             this.Analysis = analysis;
-            this.notify("AnalysisChanged");
+            this.notify("ModelChanged");
         end
     end
 end
