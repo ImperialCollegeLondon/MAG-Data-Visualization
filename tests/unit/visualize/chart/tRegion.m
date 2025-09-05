@@ -16,6 +16,28 @@ classdef tRegion < PropertiesTestCase & ColorSupportTestCase
             struct(Name = "Label", Value = '你好', VerifiableName = "DisplayName")}
     end
 
+    methods (Test)
+
+        function showMultipleRegions(testCase)
+
+            % Set up.
+            [tl, ax] = mag.test.GraphicsTestUtilities.createFigure(testCase);
+
+            args = testCase.getExtraArguments();
+            regions = [0, 1; 1, 2; 3, 4];
+
+            % Exercise.
+            chart = mag.graphics.chart.Region(args{:}, Values = regions);
+
+            assembledGraph = chart.plot(testCase.Data, ax, tl);
+
+            % Verify.
+            testCase.assertSize(assembledGraph, [1, 3], "Chart should return all assembled graphs.");
+
+            testCase.verifyEqual(vertcat(assembledGraph.Value), regions, """Value"" property value should match.");
+        end
+    end
+
     methods (Access = protected)
 
         function args = getExtraArguments(this)
