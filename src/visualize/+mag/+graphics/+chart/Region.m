@@ -34,7 +34,7 @@ classdef Region < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSupport
                 graph (1, :) matlab.graphics.Graphics
             end
 
-            args = {axes, this.Values};
+            args = {axes, this.Values'};
 
             switch this.Axis
                 case "x"
