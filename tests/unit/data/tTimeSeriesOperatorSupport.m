@@ -1,11 +1,11 @@
-classdef tTimeSeriesOperationSupport < matlab.unittest.TestCase
-% TTIMESERIESOPERATIONSUPPORT Unit tests for
-% "mag.mixin.TimeSeriesOperationSupport" class.
+classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
+% TTIMESERIESOPERATORSUPPORT Unit tests for
+% "mag.mixin.TimeSeriesOperatorSupport" class.
 
     properties (TestParameter)
         Operation = {
-            struct(Function = @plus, Result = tTimeSeriesOperationSupport.getPlusResult()), ...
-            struct(Function = @minus, Result = tTimeSeriesOperationSupport.getMinusResult())}
+            struct(Function = @plus, Result = tTimeSeriesOperatorSupport.getPlusResult()), ...
+            struct(Function = @minus, Result = tTimeSeriesOperatorSupport.getMinusResult())}
     end
 
     methods (Test)
@@ -36,7 +36,7 @@ classdef tTimeSeriesOperationSupport < matlab.unittest.TestCase
         end
 
         % Test that "join" can be called on two different instances of
-        % mag.mixin.TimeSeriesOperationSupport.
+        % mag.mixin.TimeSeriesOperatorSupport.
         function test_joinWithThat(testCase)
 
             % Set up.
@@ -51,7 +51,7 @@ classdef tTimeSeriesOperationSupport < matlab.unittest.TestCase
         end
 
         % Test that "join" can be called on an array instances of
-        % mag.mixin.TimeSeriesOperationSupport.
+        % mag.mixin.TimeSeriesOperatorSupport.
         function test_joinWithArrayThis(testCase)
 
             % Set up.

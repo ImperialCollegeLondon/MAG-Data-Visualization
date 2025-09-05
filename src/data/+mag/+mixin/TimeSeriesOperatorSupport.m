@@ -1,5 +1,5 @@
-classdef (Abstract, HandleCompatible) TimeSeriesOperationSupport
-% TIMESERIESOPERATIONSUPPORT Interface adding support for operations on
+classdef (Abstract, HandleCompatible) TimeSeriesOperatorSupport
+% TIMESERIESOPERATORSUPPORT Interface adding support for operators on
 % "mag.TimeSeries" subclasses.
 
 % Assume that this class has access to methods and properties of
@@ -83,7 +83,7 @@ classdef (Abstract, HandleCompatible) TimeSeriesOperationSupport
             end
 
             try
-                result = builtin(functionName, this, that, varargin{:});
+                result = builtin(functionName, this.Data, that, varargin{:});
             catch exception
                 exception.throwAsCaller();
             end

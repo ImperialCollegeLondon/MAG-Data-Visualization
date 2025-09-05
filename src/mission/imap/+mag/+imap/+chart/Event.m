@@ -73,7 +73,9 @@ classdef Event < mag.graphics.chart.Chart
             time = interestingEvents.(interestingEvents.Properties.DimensionNames{1});
             variable = interestingEvents.(eventOfInterest);
 
-            if ~isnumeric(variable)
+            if isenum(variable) && isnumeric(variable)
+                variable = double(variable);
+            elseif ~isnumeric(variable)
                 variable = categorical(variable);
             end
 
