@@ -15,9 +15,14 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
         SliderLimits (1, 2) double = [0, 100]
     end
 
-    properties (SetObservable)
+    properties (AbortSet, SetObservable)
         % LIMITS Limits of slider.
         Limits (1, 2) datetime = [datetime("yesterday", TimeZone = "UTC"), datetime("tomorrow", TimeZone = "UTC")]
+    end
+
+    properties (Dependent)
+        % TOOLTIP Tooltip to display on UI elements.
+        Tooltip string {mustBeScalarOrEmpty}
     end
 
     properties (Dependent, SetAccess = private)
@@ -33,6 +38,19 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
             comp = comp@matlab.ui.componentcontainer.ComponentContainer(varargin{:});
             comp.addlistener("Limits", "PostSet", @comp.limitsValueChanged);
+        end
+
+        function set.Tooltip(comp, tooltip)
+
+            comp.Slider.Tooltip = tooltip;
+            comp.StartDatePicker.Tooltip = tooltip;
+            comp.StartTimeField.Tooltip = tooltip;
+            comp.EndDatePicker.Tooltip = tooltip;
+            comp.EndTimeField.Tooltip = tooltip;
+        end
+
+        function tooltip = get.Tooltip(comp)
+            tooltip = comp.Slider.Tooltip;
         end
 
         function startTime = get.StartTime(comp)
