@@ -207,7 +207,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function processDataButtonPushed(app)
 
             closeProgressBar = app.NotificationHandler.overlayProgressBar("Processing data..."); %#ok<NASGU>
-            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
+            restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
 
             try
                 app.Model.analyze(app.AnalysisManager.getAnalysisOptions());
@@ -231,7 +231,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function exportButtonPushed(app)
 
             closeProgressBar = app.NotificationHandler.overlayProgressBar("Exporting..."); %#ok<NASGU>
-            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
+            restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
 
             format = app.ExportFormatDropDown.Value;
 
@@ -278,7 +278,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function showFiguresButtonPushed(app)
 
             closeProgressBar = app.NotificationHandler.overlayProgressBar("Plotting data..."); %#ok<NASGU>
-            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
+            restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
 
             try
                 app.Figures = [app.Figures, app.VisualizationManager.visualize(app.Model.Analysis)];
@@ -290,7 +290,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         function saveFiguresButtonPushed(app)
 
             closeProgressBar = app.NotificationHandler.overlayProgressBar("Saving figures..."); %#ok<NASGU>
-            restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
+            restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
 
             try
                 mag.graphics.savePlots(app.Figures, app.ResultsLocation);
@@ -306,7 +306,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             if ~isempty(app.Figures) && any(isValidFigures)
 
                 closeProgressBar = app.NotificationHandler.overlayProgressBar("Closing figures..."); %#ok<NASGU>
-                restoreWarningState = app.disableWarningStackTrace(); %#ok<NASGU>
+                restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
 
                 close(app.Figures(isValidFigures));
             end
@@ -478,15 +478,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             variableName = lower(app.Mission.ShortName) + "Analysis";
             assignin("caller", variableName, app.Model.Analysis.copy());
-        end
-    end
-
-    methods (Static, Access = private)
-
-        function restoreWarningState = disableWarningStackTrace()
-
-            previousWarningState = warning("off", "backtrace");
-            restoreWarningState = onCleanup(@() warning(previousWarningState));
         end
     end
 end

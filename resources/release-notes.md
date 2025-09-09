@@ -1,13 +1,5 @@
 ## App
 
-- (All) Notifications handler notifies `Error` event on caught error
-
-## Software
-
-- (All) Fix issue with plotting multiple regions with `mag.graphics.chart.Region`
-- (All) Fix timeseries operators fallback to internal `tabular` data representation
-- (IMAP) Fix range events being displayed as text, instead of integers in event charts
-
-## Package
-
-- `datetime` slider and `datetime` range slider are registered AppDesigner components
+- (All) Notifications handler manages warnings stack trace
+- (All) Add tooltips to `datetime` slider and `datetime` range slider
+- (All) Do not set `Limits` for `datetime` slider and `datetime` range slider if they are the same
