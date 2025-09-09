@@ -62,5 +62,23 @@ classdef NotificationHandler < handle
             progressBar = uiprogressdlg(this.UIFigure, Message = message, Icon = "info", Indeterminate = "on");
             closeProgressBar = [onCleanup(@() delete(progressBar)), onCleanup(@() beep())];
         end
+
+        function restoreWarningState = disableWarningStackTrace(~)
+
+            previousWarningState = warning("off", "backtrace");
+            restoreWarningState = onCleanup(@() warning(previousWarningState));
+        end
+
+        function executeCallback(this, callback, message)
+
+            closeProgressBar = this.overlayProgressBar(message); %#ok<NASGU>
+            restoreWarningState = this.disableWarningStackTrace(); %#ok<NASGU>
+
+            try
+                callback();
+            catch exception
+                this.displayAlert(exception);
+            end
+        end
     end
 end
