@@ -7,3 +7,4 @@
 ## Software
 
 - (HelioSwarm) Add calibration for SEN HelioSwarm sensors
+- (IMAP) Add description and source for IMAP level definitions (`mag.imap.meta.Level`)
