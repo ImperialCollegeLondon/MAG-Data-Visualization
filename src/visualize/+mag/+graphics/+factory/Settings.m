@@ -2,6 +2,7 @@ classdef Settings < mag.mixin.SetGet
 % SETTINGS Graphics generation settings.
 
     properties
+        Parent {mustBeScalarOrEmpty, mustBeA(Parent, ["matlab.ui.Figure", "matlab.ui.container.GridLayout", "matlab.ui.container.Panel", "matlab.ui.container.Tab"])} = matlab.ui.Figure.empty()
         Name (1, 1) string = "MAG Plot"
         Title string {mustBeScalarOrEmpty} = string.empty()
         Arrangement {mustBeA(Arrangement, ["double", "string"])} = NaN(1, 2)

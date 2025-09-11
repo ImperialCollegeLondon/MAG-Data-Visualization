@@ -70,7 +70,7 @@ classdef ToolbarManager < mag.app.manage.Manager
         end
 
         function subscribe(this, notificationsHandler)
-            notificationsHandler.addlistener("Error", @(~, event) this.setLatestErrorMessage(event));
+            notificationsHandler.addlistener("Error", @(~, event) this.setPreviousError(event));
         end
 
         function reset(~)
@@ -145,8 +145,8 @@ classdef ToolbarManager < mag.app.manage.Manager
                 return;
             end
 
-            selection = uiconfirm(this.App.UIFigure, "Select debugging type.", "Debug Type", Icon = "question", Options = [this.DebugErrorID, this.DebugErrorSource, this.DebugCancel], ...
-                DefaultOption = this.DebugErrorID, CancelOption = this.DebugCancel);
+            selection = this.App.NotificationHandler.displayPopup("Select debugging type.", "Debug Type", "question", ...
+                [this.DebugErrorID, this.DebugErrorSource, this.DebugCancel], this.DebugErrorID, this.DebugCancel);
 
             switch selection
                 case this.DebugErrorID
@@ -174,7 +174,7 @@ classdef ToolbarManager < mag.app.manage.Manager
                 "Create GitHub Issue", "info");
         end
 
-        function setLatestErrorMessage(this, event)
+        function setPreviousError(this, event)
             this.PreviousError = event.Exception;
         end
     end

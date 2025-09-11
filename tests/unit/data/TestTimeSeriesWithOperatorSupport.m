@@ -1,5 +1,5 @@
-classdef TestTimeSeriesWithOperationSupport < mag.TimeSeries & mag.mixin.TimeSeriesOperatorSupport
-% TESTTIMESERIESWITHOPERATIONSUPPORT Test class for
+classdef TestTimeSeriesWithOperatorSupport < mag.TimeSeries & mag.mixin.TimeSeriesOperatorSupport
+% TESTTIMESERIESWITHOPERATORSUPPORT Test class for
 % mag.mixin.TimeSeriesOperatorSupport testing.
 
     methods

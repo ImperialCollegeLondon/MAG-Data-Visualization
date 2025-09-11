@@ -1,10 +1,8 @@
 ## App
 
-- (All) Notifications handler manages warnings stack trace
-- (All) Add tooltips to `datetime` slider and `datetime` range slider
-- (All) Do not set `Limits` for `datetime` slider and `datetime` range slider if they are the same
+- (All) Notifications handler manages pop ups
 
 ## Software
 
-- (HelioSwarm) Add calibration for SEN HelioSwarm sensors
-- (IMAP) Add description and source for IMAP level definitions (`mag.imap.meta.Level`)
+- (All) Allow specifying custom parent for any figure generated with `mag.graphics.visualize`
+- (All) Vertical alignment for `mag.graphics.chart.Line` should be spelled `bottom`
