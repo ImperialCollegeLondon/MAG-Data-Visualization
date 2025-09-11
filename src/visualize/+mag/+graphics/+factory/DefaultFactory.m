@@ -18,10 +18,6 @@ classdef DefaultFactory < mag.graphics.factory.Factory
                 options.?mag.graphics.factory.Settings
             end
 
-            arguments (Output)
-                f (1, 1) matlab.ui.Figure
-            end
-
             args = namedargs2cell(options);
             options = mag.graphics.factory.Settings(args{:});
 
@@ -36,16 +32,21 @@ classdef DefaultFactory < mag.graphics.factory.Factory
                 windowStyle = "docked";
             end
 
-            % Create and populate figure.
-            % Make sure figure is hidden while being populated, and only
-            % shown, if requested, at the end.
-            f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, WindowStyle = windowStyle, Visible = "off");
-            resetVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
+            % Create figure, or use provided parent.
+            if isempty(options.Parent) || ~isvalid(options.Parent)
 
-            if mag.internal.isThemeable(f)
-                f.Theme = options.Theme;
+                % Make sure figure is hidden while being populated, and only
+                % shown, if requested, at the end.
+                f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, WindowStyle = windowStyle, Visible = "off");
+                resetVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
+
+                if mag.internal.isThemeable(f)
+                    f.Theme = options.Theme;
+                else
+                    warning("Theme ""%s"" cannot be applied.", options.Theme);
+                end
             else
-                warning("Theme ""%s"" cannot be applied.", options.Theme);
+                f = options.Parent;
             end
 
             if any(ismissing(options.Arrangement))
