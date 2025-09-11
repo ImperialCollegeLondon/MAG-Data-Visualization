@@ -13,7 +13,7 @@ classdef Line < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSupport
         % HORIZONTALALIGNMENT Horizontal alignment of label.
         HorizontalAlignment (1, 1) string {mustBeMember(HorizontalAlignment, ["left", "center", "right"])} = "right"
         % VERTICALALIGNMENT Vertical alignment of label.
-        VerticalAlignment (1, 1) string {mustBeMember(VerticalAlignment, ["top", "middle", "bottol"])} = "top"
+        VerticalAlignment (1, 1) string {mustBeMember(VerticalAlignment, ["top", "middle", "bottom"])} = "top"
     end
 
     methods
