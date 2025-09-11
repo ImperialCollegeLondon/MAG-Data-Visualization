@@ -19,10 +19,10 @@ classdef NotificationHandler < handle
         function displayAlert(this, message, title, icon)
 
             arguments
-                this
+                this (1, 1) mag.app.internal.NotificationHandler
                 message (1, 1) {mustBeA(message, ["string", "MException"])}
                 title (1, 1) string = "Something Went Wrong..."
-                icon (1, 1) string {mustBeMember(icon, ["error", "warning", "info", "success", "none"])} = "error"
+                icon (1, 1) string {mustBeMember(icon, ["question", "info", "success", "warning", "error", "none"])} = "error"
             end
 
             if ~isvalid(this.UIFigure)
@@ -42,10 +42,29 @@ classdef NotificationHandler < handle
             uialert(this.UIFigure, msg, title, Icon = icon, Interpreter = "html");
         end
 
+        function selection = displayPopup(this, message, title, icon, options, defaultOption, cancelOption)
+
+            arguments
+                this (1, 1) mag.app.internal.NotificationHandler
+                message (1, 1) string
+                title (1, 1) string
+                icon (1, 1) string {mustBeMember(icon, ["question", "info", "success", "warning", "error", "none"])}
+                options (1, :) string
+                defaultOption (1, 1) string
+                cancelOption (1, 1) string
+            end
+
+            selection = uiconfirm(this.UIFigure, message, title, ...
+                Icon = icon, ...
+                Options = options, ...
+                DefaultOption = defaultOption, ...
+                CancelOption = cancelOption);
+        end
+
         function closeProgressBar = overlayProgressBar(this, message)
 
             arguments (Input)
-                this
+                this (1, 1) mag.app.internal.NotificationHandler
                 message (1, 1) string
             end
 

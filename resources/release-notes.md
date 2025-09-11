@@ -1,3 +1,7 @@
+## App
+
+- (All) Notifications handler manages pop ups
+
 ## Software
 
 - (All) Allow specifying custom parent for any figure generated with `mag.graphics.visualize`
