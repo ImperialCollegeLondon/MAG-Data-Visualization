@@ -28,7 +28,7 @@ classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
         function test_operationFallbackBuiltin(testCase)
 
             % Set up.
-            a = TestTimeSeriesWithOperationSupport();
+            a = TestTimeSeriesWithOperatorSupport();
 
             % Exercise and verify.
             testCase.verifyError(@() a + 2, ?MException, ...
@@ -72,7 +72,7 @@ classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
         function test_joinUnsupportedType(testCase)
 
             % Set up.
-            a = TestTimeSeriesWithOperationSupport();
+            a = TestTimeSeriesWithOperatorSupport();
 
             % Exercise and verify.
             testCase.verifyError(@() a.join("unsupportedType"), "mag:join:UnsupportedType", ...
@@ -84,8 +84,8 @@ classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
 
         function [a, b] = createTestData()
 
-            a = TestTimeSeriesWithOperationSupport();
-            b = TestTimeSeriesWithOperationSupport();
+            a = TestTimeSeriesWithOperatorSupport();
+            b = TestTimeSeriesWithOperatorSupport();
 
             a.Data = mag.test.DataTestUtilities.getScienceTimetable();
             b.Data = mag.test.DataTestUtilities.getScienceTimetable();
@@ -93,7 +93,7 @@ classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
 
         function result = getPlusResult()
 
-            result = TestTimeSeriesWithOperationSupport();
+            result = TestTimeSeriesWithOperatorSupport();
             result.Data = mag.test.DataTestUtilities.getScienceTimetable();
 
             result.Data = convertvars(result.Data, regexpPattern(".*"), "double");
@@ -102,7 +102,7 @@ classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
 
         function result = getMinusResult()
 
-            result = TestTimeSeriesWithOperationSupport();
+            result = TestTimeSeriesWithOperatorSupport();
             result.Data = mag.test.DataTestUtilities.getScienceTimetable();
 
             result.Data = convertvars(result.Data, regexpPattern(".*"), "double");
