@@ -79,7 +79,7 @@ classdef NotificationHandler < handle
             end
 
             progressBar = uiprogressdlg(this.UIFigure, Message = message, Icon = "info", Indeterminate = "on");
-            closeProgressBar = [onCleanup(@() delete(progressBar)), onCleanup(@() beep())];
+            closeProgressBar = [onCleanup(@() delete(progressBar)), onCleanup(@() mag.app.internal.NotificationHandler.beep())];
         end
 
         function restoreWarningState = disableWarningStackTrace(~)
@@ -97,6 +97,16 @@ classdef NotificationHandler < handle
                 callback();
             catch exception
                 this.displayAlert(exception);
+            end
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function beep()
+
+            if mag.internal.ToolboxSettings.getSettingValue("Sound")
+                beep();
             end
         end
     end

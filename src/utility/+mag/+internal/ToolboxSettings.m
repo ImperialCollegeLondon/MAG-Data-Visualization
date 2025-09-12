@@ -4,6 +4,8 @@ classdef ToolboxSettings
     properties (Constant)
         % FIGURERESOLUTION Resolution for MAG figures.
         FigureResolution (1, 1) struct = struct(Default = 300, Type = "double")
+        % SOUND Whether to play sounds when app functions are complete.
+        Sound (1, 1) struct = struct(Default = true, Type = "logical")
     end
 
     properties (Constant, Access = private)
