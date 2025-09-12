@@ -2,5 +2,5 @@
 
 - (All) Allow disabling beeping in MAG apps via MATLAB settings:
   ```
-  settings().MAG.Toolbox.Sound = false;
+  settings().MAG.Toolbox.Sound
   ```
