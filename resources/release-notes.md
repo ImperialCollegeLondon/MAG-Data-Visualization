@@ -10,4 +10,5 @@
 
 ## Software
 
+- (All) Add `Orientation` to `mag.graphics.chart.Line` to specify label orientation
 - (Bart) Fix issue with loading only one Bartington sensor data
