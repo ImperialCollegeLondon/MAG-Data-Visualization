@@ -5,6 +5,7 @@
   settings().MAG.Toolbox.Sound
   ```
 - (All) Fix issue with `datetime` range slider showing the wrong time range for HK plots
+- (All) Fix issue with incompatible timezones in `datetime` slider and `datetime` range slider
 
 ## Software
 

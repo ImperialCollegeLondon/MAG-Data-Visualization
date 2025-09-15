@@ -1,10 +1,11 @@
-function dateTime = combineDateAndTime(date, time)
+function dateTime = combineDateAndTime(date, time, options)
 % COMBINEDATEANDTIME Combine a datetime and an optional time string as a
 % datetime.
 
     arguments (Input)
         date (1, 1) datetime
         time string {mustBeScalarOrEmpty} = string.empty()
+        options.TimeZone string {mustBeScalarOrEmpty} = mag.time.Constant.TimeZone
     end
 
     arguments (Output)
@@ -18,5 +19,8 @@ function dateTime = combineDateAndTime(date, time)
     end
 
     dateTime.Format = mag.time.Constant.Format;
-    dateTime.TimeZone = mag.time.Constant.TimeZone;
+
+    if ~isempty(options.TimeZone)
+        dateTime.TimeZone = options.TimeZone;
+    end
 end
