@@ -142,6 +142,14 @@ classdef Analysis < mag.Analysis
                 end
             end
 
+            if isempty(input1Science)
+                input1Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.FOB));
+            end
+
+            if isempty(input2Science)
+                input2Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.FIB));
+            end
+
             this.Results.Science = [input1Science, input2Science];
         end
     end
