@@ -1,5 +1,5 @@
-classdef Units < mag.process.Step
-% UNITS Convert from engineering units.
+classdef L0EngineeringUnits < mag.process.Step
+% L0ENGINEERINGUNITS Convert from engineering units.
 
     properties (Constant, Access = private)
         % SCALEFACTORS Scale factors for engineering unit conversions.
@@ -45,9 +45,6 @@ classdef Units < mag.process.Step
                 data tabular
                 metadata (1, 1) mag.meta.HK
             end
-
-            % Convert "Enabled"/"Disabled" to boolean.
-            data = convertvars(data, @matlab.internal.datatypes.isText, @convertStateToLogical);
 
             switch metadata.Type
                 case mag.meta.HKType.Power
@@ -171,16 +168,5 @@ classdef Units < mag.process.Step
             coarseTime = bin2dec(binRT(:, 1:end-24));
             readyTime = coarseTime + fineTime;
         end
-    end
-end
-
-function convertedValue = convertStateToLogical(value)
-
-    if any(value == "Saturated") || any(value == "NotSaturated")
-        convertedValue = value == "Saturated";
-    elseif any(value == "Enabled") || any(value == "Disabled")
-        convertedValue = value == "Enabled";
-    else
-        convertedValue = value;
     end
 end
