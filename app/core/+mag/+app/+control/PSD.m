@@ -41,8 +41,8 @@ classdef PSD < mag.app.Control
             this.StartTimeSlider.Layout.Row = 1;
             this.StartTimeSlider.Layout.Column = [2, 3];
 
-            if ~any(isnat(this.Model.TimeRange))
-                this.StartTimeSlider.Limits = this.Model.TimeRange;
+            if ~any(isnat(this.Model.ScienceTimeRange))
+                this.StartTimeSlider.Limits = this.Model.ScienceTimeRange;
             end
 
             % Duration.

@@ -26,7 +26,18 @@ classdef (Abstract, HandleCompatible) StartEndDate
             end
         end
 
-        function changeSliderLimits(this, limits)
+        function changeSliderLimits(this, limits, options)
+
+            arguments
+                this (1, 1) mag.app.mixin.StartEndDate
+                limits (1, 2) datetime
+                options.IncludeBuffer (1, 1) logical = false
+            end
+
+            if options.IncludeBuffer
+                limits = limits + [-hours(1), hours(1)];
+            end
+
             this.Slider.Limits = limits;
         end
 

@@ -24,7 +24,7 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
             this.reset();
         end
 
-        function reset(this) %#ok<MANU>
+        function reset(~)
             % nothing to do
         end
 

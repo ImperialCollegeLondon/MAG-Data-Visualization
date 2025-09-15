@@ -16,6 +16,10 @@ classdef (Abstract) Model < mag.mixin.SetGet
         HasAnalysis (1, 1) logical
         % TIMERANGE Time range for analysis.
         TimeRange (1, 2) datetime
+        % SCIENCETIMERANGE Time range for science data.
+        ScienceTimeRange (1, 2) datetime
+        % HKTIMERANGE Time range for HK data.
+        HKTimeRange (1, 2) datetime
     end
 
     methods (Abstract)
@@ -42,7 +46,36 @@ classdef (Abstract) Model < mag.mixin.SetGet
         function range = get.TimeRange(this)
 
             if this.HasAnalysis && ~isempty(this.Analysis.Results)
+
+                scienceRange = this.ScienceTimeRange;
+                hkRange = this.HKTimeRange;
+
+                range = [min(scienceRange(1), hkRange(1)), max(scienceRange(2), hkRange(2))];
+            else
+                range = mag.time.emptyTime(0, 2);
+            end
+        end
+
+        function range = get.ScienceTimeRange(this)
+
+            if this.HasAnalysis && ~isempty(this.Analysis.Results)
                 range = this.Analysis.Results.TimeRange;
+            else
+                range = mag.time.emptyTime(0, 2);
+            end
+        end
+
+        function range = get.HKTimeRange(this)
+
+            if this.HasAnalysis && ~isempty(this.Analysis.Results)
+
+                range = NaT(1, 2, TimeZone = mag.time.Constant.TimeZone);
+
+                for hk = this.Analysis.Results.HK
+
+                    range(1) = min(range(1), min(hk.Time));
+                    range(2) = max(range(2), max(hk.Time));
+                end
             else
                 range = mag.time.emptyTime(0, 2);
             end
