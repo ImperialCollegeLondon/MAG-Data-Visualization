@@ -4,3 +4,7 @@
   ```
   settings().MAG.Toolbox.Sound
   ```
+
+## Software
+
+- (Bart) Fix issue with loading only one Bartington sensor data
