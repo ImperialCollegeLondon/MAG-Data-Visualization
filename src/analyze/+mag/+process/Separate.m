@@ -92,6 +92,7 @@ classdef Separate < mag.process.Step
 
                 missingRow.(this.DiscriminationVariable) = missingRow.(this.DiscriminationVariable) + smallValue;
                 missingRow{:, this.getMissingVariables(data)} = missing();
+                missingRow{:, varfun(@(x) isenum(x) & isa(x, "double"), data, OutputFormat = "uniform")} = NaN();
 
                 if ~isempty(this.QualityVariable)
                     missingRow.(this.QualityVariable) = mag.meta.Quality.Artificial;

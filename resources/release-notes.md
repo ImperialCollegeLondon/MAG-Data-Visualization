@@ -11,4 +11,5 @@
 ## Software
 
 - (All) Add `Orientation` to `mag.graphics.chart.Line` to specify label orientation
-- (Bart) Fix issue with loading only one Bartington sensor data
+- (Bartington) Fix issue with loading only one Bartington sensor data
+- (IMAP) Fix issues with processing HK defined in XTCE-decoded CSV files
