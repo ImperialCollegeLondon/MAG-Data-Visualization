@@ -28,12 +28,19 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
         SelectedTime (1, 1) datetime
     end
 
+    properties (Access = private)
+        % ORIGINALTIMEZONE Time zone of original input.
+        OriginalTimeZone string {mustBeScalarOrEmpty}
+    end
+
     methods
 
         function comp = DatetimeSlider(varargin)
 
             comp = comp@matlab.ui.componentcontainer.ComponentContainer(varargin{:});
             comp.addlistener("Limits", "PostSet", @comp.limitsValueChanged);
+
+            comp.limitsValueChanged();
         end
 
         function set.Tooltip(comp, tooltip)
@@ -48,7 +55,7 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
         end
 
         function time = get.SelectedTime(comp)
-            time = mag.app.internal.combineDateAndTime(comp.DatePicker.Value, comp.TimeField.Value);
+            time = mag.app.internal.combineDateAndTime(comp.DatePicker.Value, comp.TimeField.Value, TimeZone = comp.OriginalTimeZone);
         end
 
         function reset(comp)
@@ -63,6 +70,8 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
         function limitsValueChanged(comp, ~, ~)
 
             comp.DatePicker.Limits = comp.Limits;
+            comp.OriginalTimeZone = comp.Limits.TimeZone;
+
             comp.updateSliderRange();
         end
 

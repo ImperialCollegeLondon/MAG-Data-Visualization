@@ -149,6 +149,8 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             if ~isequal(location, 0)
                 this.LocationEditField.Value = location;
             end
+
+            this.LocationEditField.focus();
         end
     end
 end

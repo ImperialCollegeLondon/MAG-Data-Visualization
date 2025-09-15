@@ -10,6 +10,8 @@ classdef Line < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSupport
         Style (1, 1) string = "-"
         % LABEL Line label.
         Label (1, :) string = string.empty()
+        % ORIENTATION Orientation of label.
+        Orientation (1, 1) string {mustBeMember(Orientation, ["aligned", "horizontal"])} = "aligned"
         % HORIZONTALALIGNMENT Horizontal alignment of label.
         HorizontalAlignment (1, 1) string {mustBeMember(HorizontalAlignment, ["left", "center", "right"])} = "right"
         % VERTICALALIGNMENT Vertical alignment of label.
@@ -41,7 +43,9 @@ classdef Line < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSupport
             end
 
             args = {axes, this.Value, this.Style, this.Label, ...
-                "LabelHorizontalAlignment", this.HorizontalAlignment, "LabelVerticalAlignment", this.VerticalAlignment};
+                "LabelOrientation", this.Orientation, ...
+                "LabelHorizontalAlignment", this.HorizontalAlignment, ...
+                "LabelVerticalAlignment", this.VerticalAlignment};
 
             switch this.Axis
                 case "x"

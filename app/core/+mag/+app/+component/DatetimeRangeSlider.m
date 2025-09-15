@@ -32,12 +32,19 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
         EndTime (1, 1) datetime
     end
 
+    properties (Access = private)
+        % ORIGINALTIMEZONE Time zone of original input.
+        OriginalTimeZone string {mustBeScalarOrEmpty}
+    end
+
     methods
 
         function comp = DatetimeRangeSlider(varargin)
 
             comp = comp@matlab.ui.componentcontainer.ComponentContainer(varargin{:});
             comp.addlistener("Limits", "PostSet", @comp.limitsValueChanged);
+
+            comp.limitsValueChanged();
         end
 
         function set.Tooltip(comp, tooltip)
@@ -54,11 +61,11 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
         end
 
         function startTime = get.StartTime(comp)
-            startTime = mag.app.internal.combineDateAndTime(comp.StartDatePicker.Value, comp.StartTimeField.Value);
+            startTime = mag.app.internal.combineDateAndTime(comp.StartDatePicker.Value, comp.StartTimeField.Value, TimeZone = comp.OriginalTimeZone);
         end
 
         function endTime = get.EndTime(comp)
-            endTime = mag.app.internal.combineDateAndTime(comp.EndDatePicker.Value, comp.EndTimeField.Value);
+            endTime = mag.app.internal.combineDateAndTime(comp.EndDatePicker.Value, comp.EndTimeField.Value, TimeZone = comp.OriginalTimeZone);
         end
 
         function reset(comp)
@@ -74,6 +81,8 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
             comp.StartDatePicker.Limits = comp.Limits;
             comp.EndDatePicker.Limits = comp.Limits;
+
+            comp.OriginalTimeZone = comp.Limits.TimeZone;
 
             comp.updateSliderRange();
         end

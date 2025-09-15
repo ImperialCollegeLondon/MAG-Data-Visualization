@@ -22,7 +22,7 @@ classdef Field < mag.app.Control & mag.app.mixin.StartEndDate
             this.Layout = this.createDefaultGridLayout(parent);
 
             % Start and end dates.
-            this.addStartEndDateButtons(this.Layout, Limits = this.Model.TimeRange);
+            this.addStartEndDateButtons(this.Layout, Limits = this.Model.ScienceTimeRange);
 
             % Events.
             eventsLabel = uilabel(this.Layout, Text = "Events:");
