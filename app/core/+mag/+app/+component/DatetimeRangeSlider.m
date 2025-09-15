@@ -43,6 +43,8 @@ classdef DatetimeRangeSlider < matlab.ui.componentcontainer.ComponentContainer
 
             comp = comp@matlab.ui.componentcontainer.ComponentContainer(varargin{:});
             comp.addlistener("Limits", "PostSet", @comp.limitsValueChanged);
+
+            comp.limitsValueChanged();
         end
 
         function set.Tooltip(comp, tooltip)
