@@ -5,17 +5,17 @@ classdef Analysis < mag.Analysis
         % LOCATION Location of data to load.
         Location (1, 1) string {mustBeFolder} = pwd()
         % EVENTPATTERN Pattern of event files.
-        EventPattern (1, :) string = fullfile("*", "Event", "*.html")
+        EventPattern string {mustBeScalarOrEmpty} = fullfile("*", "Event", "*.html")
         % METADATAPATTERN Pattern of metadata files.
         MetadataPattern (1, :) string = ["imap_setup.json", "*.msg", "IMAP-MAG-TE-ICL-058*.xlsx", ...
             "IMAP-MAG-TE-ICL-061*.xlsx", "IMAP-MAG-TE-ICL-071*.docx", "IMAP-OPS-TE-ICL-001*.docx", ...
             "IMAP-OPS-TE-ICL-002*.docx"]
         % SCIENCEPATTERN Pattern of science data files.
-        SciencePattern (1, 1) string = "MAGScience-*-(*)-*.csv"
+        SciencePattern string {mustBeScalarOrEmpty} = "MAGScience-*-(*)-*.csv"
         % IALIRTPATTERN Pattern of I-ALiRT data files.
-        IALiRTPattern (1, 1) string = "MAGScience-IALiRT-*.csv"
+        IALiRTPattern string {mustBeScalarOrEmpty} = "MAGScience-IALiRT-*.csv"
         % HKPATTERN Pattern of housekeeping files.
-        HKPattern (1, 1) string = fullfile("*", "Export", "*.csv")
+        HKPattern string {mustBeScalarOrEmpty} = fullfile("*", "Export", "*.csv")
         % PROCESSING Processing steps for each phase.
         Processing (1, 1) mag.imap.Processing
     end
@@ -47,13 +47,13 @@ classdef Analysis < mag.Analysis
 
     properties (Access = private)
         % EVENTFILES Information about files containing event data.
-        EventFiles (:, 1) struct
+        EventFiles (:, 1) struct = struct(folder={}, name={})
         % METADATAFILES Information about files containing metadata.
-        MetadataFiles (:, 1) struct
+        MetadataFiles (:, 1) struct = struct(folder={}, name={})
         % SCIENCEFILES Information about files containing science data.
-        ScienceFiles (:, 1) struct
+        ScienceFiles (:, 1) struct = struct(folder={}, name={})
         % IALIRTFILES Information about files containing I-ALiRT data.
-        IALiRTFiles (:, 1) struct
+        IALiRTFiles (:, 1) struct = struct(folder={}, name={})
         % HKFILES Information about files containing HK data.
         HKFiles cell
     end
@@ -107,6 +107,8 @@ classdef Analysis < mag.Analysis
 
         function value = get.HKFileNames(this)
 
+            value = {};
+
             for hkp = 1:numel(this.HKFiles)
                 value{hkp} = string(fullfile({this.HKFiles{hkp}.folder}, {this.HKFiles{hkp}.name})); %#ok<AGROW>
             end
@@ -114,21 +116,33 @@ classdef Analysis < mag.Analysis
 
         function detect(this)
 
-            this.EventFiles = dir(fullfile(this.Location, this.EventPattern));
+            if ~isempty(this.EventPattern) && (strlength(this.EventPattern) > 0)
+                this.EventFiles = dir(fullfile(this.Location, this.EventPattern));
+            end
 
-            metadataDir = arrayfun(@dir, fullfile(this.Location, this.MetadataPattern), UniformOutput = false);
-            this.MetadataFiles = vertcat(metadataDir{:});
+            if ~isempty(this.MetadataPattern)
 
-            this.ScienceFiles = dir(fullfile(this.Location, this.SciencePattern));
+                metadataDir = arrayfun(@dir, fullfile(this.Location, this.MetadataPattern), UniformOutput = false);
+                this.MetadataFiles = vertcat(metadataDir{:});
+            end
 
-            this.IALiRTFiles = dir(fullfile(this.Location, this.IALiRTPattern));
+            if ~isempty(this.SciencePattern) && (strlength(this.SciencePattern) > 0)
+                this.ScienceFiles = dir(fullfile(this.Location, this.SciencePattern));
+            end
+
+            if ~isempty(this.IALiRTPattern) && (strlength(this.IALiRTPattern) > 0)
+                this.IALiRTFiles = dir(fullfile(this.Location, this.IALiRTPattern));
+            end
 
             % Load HK files and partition them by HK type.
-            hkFiles = dir(fullfile(this.Location, this.HKPattern));
-            this.HKFiles = {};
+            if ~isempty(this.HKPattern) && (strlength(this.HKPattern) > 0)
 
-            for hkType = enumeration(mag.meta.HKType.Power)'
-                this.HKFiles{end + 1} = hkFiles(contains({hkFiles.name}, hkType.ShortName | hkType.PacketName, IgnoreCase = true));
+                hkFiles = dir(fullfile(this.Location, this.HKPattern));
+                this.HKFiles = {};
+
+                for hkType = enumeration(mag.meta.HKType.Power)'
+                    this.HKFiles{end + 1} = hkFiles(contains({hkFiles.name}, hkType.ShortName | hkType.PacketName, IgnoreCase = true));
+                end
             end
         end
 
