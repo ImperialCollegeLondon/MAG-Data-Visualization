@@ -1,15 +1,3 @@
-## App
-
-- (All) Allow disabling beeping in MAG apps via MATLAB settings:
-  ```
-  settings().MAG.Toolbox.Sound
-  ```
-- (All) Fix issue with `datetime` range slider showing the wrong time range for HK plots
-- (All) Fix issue with incompatible timezones in `datetime` slider and `datetime` range slider
-- (All) Force app to come back to focus after choosing folder in "Analysis" tab
-
 ## Software
 
-- (All) Add `Orientation` to `mag.graphics.chart.Line` to specify label orientation
-- (Bartington) Fix issue with loading only one Bartington sensor data
-- (IMAP) Fix issues with processing HK defined in XTCE-decoded CSV files
+- (IMAP) Allow running IMAP analysis without any input data pattern
