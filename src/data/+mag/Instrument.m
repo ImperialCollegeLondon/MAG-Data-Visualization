@@ -80,10 +80,21 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
                 filters
             end
 
-            hasScience = this.HasScience;
-
+            % Crop science.
             this.cropScience(filters{:});
-            this.cropToMatch(HadScience = hasScience);
+
+            % Crop events.
+            if ~isempty(this.Events)
+                this.Events = this.Events.crop(filters{:});
+            end
+
+            % Adjust metadata.
+            if ~isempty(this.Metadata)
+                this.Metadata.Timestamp = this.TimeRange(1);
+            end
+
+            % Filter HK.
+            this.HK.crop(filters{:});
         end
 
         function cropScience(this, filters)
@@ -106,7 +117,7 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
             end
         end
 
-        function cropToMatch(this, startTime, endTime, options)
+        function cropToMatch(this, startTime, endTime)
         % CROPTOMATCH Crop metadata, events and HK based on science
         % timestamps or specified timestamps.
 
@@ -114,7 +125,6 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
                 this (1, 1) mag.Instrument
                 startTime (1, 1) datetime = this.TimeRange(1)
                 endTime (1, 1) datetime = this.TimeRange(2)
-                options.HadScience (1, 1) logical = true
             end
 
             timePeriod = timerange(startTime, endTime, "closed");
@@ -127,11 +137,6 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
             % Adjust metadata.
             if ~isempty(this.Metadata)
                 this.Metadata.Timestamp = startTime;
-            end
-
-            % If there already wasn't any science, do not crop the HK.
-            if ~options.HadScience
-                return;
             end
 
             % Filter HK.
