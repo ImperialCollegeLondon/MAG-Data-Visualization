@@ -2,8 +2,6 @@ classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of an IMAP data.
 
     properties
-        % LOCATION Location of data to load.
-        Location (1, 1) string {mustBeFolder} = pwd()
         % EVENTPATTERN Pattern of event files.
         EventPattern string {mustBeScalarOrEmpty} = fullfile("*", "Event", "*.html")
         % METADATAPATTERN Pattern of metadata files.
@@ -16,8 +14,6 @@ classdef Analysis < mag.Analysis
         IALiRTPattern string {mustBeScalarOrEmpty} = "MAGScience-IALiRT-*.csv"
         % HKPATTERN Pattern of housekeeping files.
         HKPattern string {mustBeScalarOrEmpty} = fullfile("*", "Export", "*.csv")
-        % PROCESSING Processing steps for each phase.
-        Processing (1, 1) mag.imap.Processing
     end
 
     properties (Dependent)
@@ -31,11 +27,6 @@ classdef Analysis < mag.Analysis
         IALiRTFileNames (1, :) string
         % HKFILENAMES Files containing HK data.
         HKFileNames (1, :) string
-    end
-
-    properties (SetAccess = private)
-        % RESULTS Results collected during analysis.
-        Results mag.imap.Instrument {mustBeScalarOrEmpty}
     end
 
     properties (Access = private)
@@ -64,6 +55,7 @@ classdef Analysis < mag.Analysis
 
             arguments
                 analysisOptions.?mag.imap.Analysis
+                analysisOptions.HealthChecks = [mag.imap.health.Power(), mag.imap.health.SID15()]
                 startOptions.Level (1, 1) mag.imap.meta.Level = mag.imap.meta.Level.L1a
             end
 
@@ -75,6 +67,7 @@ classdef Analysis < mag.Analysis
 
             analysis.detect();
             analysis.load();
+            analysis.check();
         end
     end
 

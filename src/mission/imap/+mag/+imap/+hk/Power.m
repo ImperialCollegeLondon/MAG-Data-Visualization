@@ -35,21 +35,23 @@ classdef Power < mag.HK
         % P2V4V +2.4 V voltage.
         P2V4V (:, 1) double
         % MAGORANGE Outboard sensor range.
-        MAGoRange (:, 1) double
+        MAGoRange (:, 1) mag.meta.Range
         % MAGIRANGE Inboard sensor range.
-        MAGiRange (:, 1) double
+        MAGiRange (:, 1) mag.meta.Range
         % MAGOSATFLAGX Outboard sensor x-axis saturation flag.
-        MAGoSatFlagX (:, 1) double
+        MAGoSatFlagX (:, 1) logical
         % MAGOSATFLAGY Outboard sensor y-axis saturation flag.
-        MAGoSatFlagY (:, 1) double
+        MAGoSatFlagY (:, 1) logical
         % MAGOSATFLAGZ Outboard sensor z-axis saturation flag.
-        MAGoSatFlagZ (:, 1) double
+        MAGoSatFlagZ (:, 1) logical
         % MAGISATFLAGX Inboard sensor x-axis saturation flag.
-        MAGiSatFlagX (:, 1) double
+        MAGiSatFlagX (:, 1) logical
         % MAGISATFLAGY Inboard sensor y-axis saturation flag.
-        MAGiSatFlagY (:, 1) double
+        MAGiSatFlagY (:, 1) logical
         % MAGISATFLAGZ Inboard sensor z-axis saturation flag.
-        MAGiSatFlagZ (:, 1) double
+        MAGiSatFlagZ (:, 1) logical
+        % MISSEDITF Number of missed ITF frames.
+        MissedITF (:, 1) double
     end
 
     methods
@@ -119,35 +121,50 @@ classdef Power < mag.HK
         end
 
         function magoRange = get.MAGoRange(this)
-            magoRange = this.Data.MAGORANGE;
+            magoRange = mag.meta.Range(this.Data.MAGORANGE);
         end
 
         function magiRange = get.MAGiRange(this)
-            magiRange = this.Data.MAGIRANGE;
+            magiRange = mag.meta.Range(this.Data.MAGIRANGE);
         end
 
         function magoSatFlagX = get.MAGoSatFlagX(this)
-            magoSatFlagX = this.Data.MAGOSATFLAGX;
+            magoSatFlagX = this.convertToLogical(this.Data.MAGOSATFLAGX);
         end
 
         function magoSatFlagY = get.MAGoSatFlagY(this)
-            magoSatFlagY = this.Data.MAGOSATFLAGY;
+            magoSatFlagY = this.convertToLogical(this.Data.MAGOSATFLAGY);
         end
 
         function magoSatFlagZ = get.MAGoSatFlagZ(this)
-            magoSatFlagZ = this.Data.MAGOSATFLAGZ;
+            magoSatFlagZ = this.convertToLogical(this.Data.MAGOSATFLAGZ);
         end
 
         function magiSatFlagX = get.MAGiSatFlagX(this)
-            magiSatFlagX = this.Data.MAGISATFLAGX;
+            magiSatFlagX = this.convertToLogical(this.Data.MAGISATFLAGX);
         end
 
         function magiSatFlagY = get.MAGiSatFlagY(this)
-            magiSatFlagY = this.Data.MAGISATFLAGY;
+            magiSatFlagY = this.convertToLogical(this.Data.MAGISATFLAGY);
         end
 
         function magiSatFlagZ = get.MAGiSatFlagZ(this)
-            magiSatFlagZ = this.Data.MAGISATFLAGZ;
+            magiSatFlagZ = this.convertToLogical(this.Data.MAGISATFLAGZ);
+        end
+
+        function missedITF = get.MissedITF(this)
+            missedITF = this.Data.MAGITFMISSCNT;
+        end
+    end
+
+    methods (Static, Access = protected)
+
+        function value = convertToLogical(value)
+
+            locMissing = ismissing(value);
+            value(locMissing) = 0;
+
+            value = logical(value);
         end
     end
 end
