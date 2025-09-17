@@ -23,7 +23,7 @@ classdef Ramp < mag.process.Step
                 matches = strfind(dv, this.Pattern);
 
                 if numel(matches) < floor((numel(dv) - 1) / numel(this.Pattern))
-                    warning("Ramp pattern inconsistent along %s-axis of %s.", d, metadata.Sensor);
+                    warning("Ramp pattern might be inconsistent along %s-axis of %s.", d, metadata.Sensor);
                 end
             end
         end
