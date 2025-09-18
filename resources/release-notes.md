@@ -1,6 +1,7 @@
 ## App
 
 - (All) Add "Health" tab to display health check results
+- (All) Exported MAT file is renamed to "Analysis (dd-MMM-yyyy HHmmss).mat"
 
 ## Software
 

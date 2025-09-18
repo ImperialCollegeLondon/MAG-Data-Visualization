@@ -261,7 +261,17 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     assignin("base", variableName, eval(variableName));
                 case app.ExportMAT
 
-                    fileName = fullfile(app.ResultsLocation, "Data.mat");
+                    if isempty(app.Model.TimeRange)
+                        extra = "";
+                    else
+
+                        timestamp = app.Model.TimeRange(1);
+                        timestamp.Format = "dd-MMM-yyyy HHmmss";
+
+                        extra = compose(" (%s)", timestamp);
+                    end
+
+                    fileName = fullfile(app.ResultsLocation, compose("Analysis%s.mat", extra));
                     variableName = app.createMissionSpecificVariable();
 
                     if isfile(fileName)
