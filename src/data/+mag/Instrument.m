@@ -83,9 +83,13 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
             % Crop science.
             this.cropScience(filters{:});
 
+            % TODO: it should be smarter and convert to the max/min of all
+            % filters.
+            filter = filters{1};
+
             % Crop events.
             if ~isempty(this.Events)
-                this.Events = this.Events.crop(filters{:});
+                this.Events = this.Events.crop(filter);
             end
 
             % Adjust metadata.
@@ -94,7 +98,7 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
             end
 
             % Filter HK.
-            this.HK.crop(filters{:});
+            this.HK.crop(filter);
         end
 
         function cropScience(this, filters)
