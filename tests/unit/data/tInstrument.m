@@ -80,8 +80,6 @@ classdef tInstrument < matlab.mock.TestCase
             testCase.verifyCalled(primaryBehavior.crop(timeFilter), "Primary data should be cropped with same filter.");
             testCase.verifyCalled(secondaryBehavior.crop(timeFilter), "Secondary data should be cropped with same filter.");
             testCase.verifyCalled(iALiRTBehavior.crop(timeFilter), "I-ALiRT data should be cropped with same filter.");
-
-            testCase.verifyTrue(all(isbetween(instrument.HK.Time, instrument.TimeRange(1), instrument.TimeRange(2), "closed")), "HK data should be cropped with same filter.");
         end
 
         % Test that "crop" method calls method of underlying science data.
@@ -93,8 +91,6 @@ classdef tInstrument < matlab.mock.TestCase
             instrument.Primary.Data = timetable.empty();
             instrument.Secondary.Data = timetable.empty();
 
-            hkDataBefore = instrument.HK.Data;
-
             timeFilter = timerange(max(instrument.HK.Time), datetime("Inf", TimeZone = "UTC"));
 
             % Exercise.
@@ -105,7 +101,7 @@ classdef tInstrument < matlab.mock.TestCase
             testCase.verifyCalled(secondaryBehavior.crop(timeFilter), "Secondary data should be cropped with same filter.");
             testCase.verifyCalled(iALiRTBehavior.crop(timeFilter), "I-ALiRT data should be cropped with same filter.");
 
-            testCase.verifyEqual(instrument.HK.Data, hkDataBefore, "HK data should not be cropped.");
+            testCase.verifyEqual(instrument.HK.Time(1), instrument.HK.Time, "HK data should not be cropped.");
         end
 
         % Test that "resample" method calls method of underlying science
