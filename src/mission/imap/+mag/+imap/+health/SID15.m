@@ -43,9 +43,9 @@ classdef SID15 < mag.health.Check
                 sensor = extract(attempts, regexpPattern("F(O|I)B"));
 
                 if any(value >= this.FailedActivationLimit)
-                    results(end + 1) = mag.health.Result(Name = compose("% Activation", sensor), Status = "Fail", Description = compose("%s failed to activate 14 or more times.", sensor));
+                    results(end + 1) = mag.health.Result(Name = compose("%s Activation", sensor), Status = "Fail", Description = compose("%s failed to activate 14 or more times.", sensor));
                 elseif any(value >= this.BorderlineActivationLimit)
-                    results(end + 1) = mag.health.Result(Name = compose("% Activation", sensor), Status = "Borderline", Description = compose("%s failed to activate 10 or more times.", sensor));
+                    results(end + 1) = mag.health.Result(Name = compose("%s Activation", sensor), Status = "Borderline", Description = compose("%s failed to activate 10 or more times.", sensor));
                 end
             end
 
