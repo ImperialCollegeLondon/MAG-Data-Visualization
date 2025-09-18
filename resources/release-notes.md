@@ -6,5 +6,6 @@
 ## Software
 
 - (IMAP) Add health checks for secondary currents and voltages, temperatures, saturation, missed ITFs, and activation
+- (IMAP) HK figure names include first timestamp date and time
 - (All) `mag.Instrument/crop` method crops data based on input timerange, not science timerange
 - (All) `mag.version` should not return a `datetime`-like string
