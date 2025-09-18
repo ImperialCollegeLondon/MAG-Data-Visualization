@@ -26,6 +26,11 @@ function v = version()
                 error("Could not determine version from AddOns.");
             end
         end
+
+        % Sometimes, the version gets loaded as a datetime!
+        if isdatetime(ver)
+            ver = compose("%d.%d.%d", ver.Day, ver.Month, ver.Year);
+        end
     end
 
     v = ver;
@@ -33,7 +38,7 @@ end
 
 function mustBeVersion(value)
 
-    if ~matches(value, regexpPattern("\d+\.\d+\.\d+"))
+    if ~isstring(value) || ~matches(value, regexpPattern("\d+\.\d+\.\d+"))
         error("Version must be compliant with Semantic Versioning 2.0.0.");
     end
 end

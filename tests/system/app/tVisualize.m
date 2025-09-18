@@ -14,7 +14,7 @@ classdef tVisualize < AppTestCase
         TestDetails = {
             struct(Folder = "bart", Mission = mag.meta.Mission.Bartington, NumShownFigures = 3, NumSavedFigures = 3), ...
             struct(Folder = "hs", Mission = mag.meta.Mission.HelioSwarm, NumShownFigures = 4, NumSavedFigures = 4), ...
-            struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP, NumShownFigures = 37, NumSavedFigures = 28)}
+            struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP, NumShownFigures = 38, NumSavedFigures = 28)}
     end
 
     methods (TestClassSetup)

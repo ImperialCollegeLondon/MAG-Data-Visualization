@@ -2,8 +2,6 @@ classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of HelioSwarm data.
 
     properties
-        % LOCATION Location of data to load.
-        Location (1, 1) string {mustBeFolder} = pwd()
         % INPUTSOURCE Data input source.
         InputSource (1, 1) mag.hs.meta.InputSource = mag.hs.meta.InputSource.UART
         % METADATAPATTERN Pattern of metadata files.
@@ -36,11 +34,6 @@ classdef Analysis < mag.Analysis
         HKFileNames (1, :) string
     end
 
-    properties (SetAccess = private)
-        % RESULTS Results collected during analysis.
-        Results mag.Instrument {mustBeScalarOrEmpty}
-    end
-
     properties (Access = private)
         % METADATAFILES Information about files containing metadata.
         MetadataFiles (:, 1) struct
@@ -64,6 +57,7 @@ classdef Analysis < mag.Analysis
 
             analysis.detect();
             analysis.load();
+            analysis.check();
         end
     end
 

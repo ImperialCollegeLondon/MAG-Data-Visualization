@@ -1,5 +1,5 @@
 function value = isThemeable(figure)
-% ISTHEMEABLE Determine whether figure is themeable (i.e., if setting
+% ISTHEMEABLE Determine whether figure is theme-able (i.e., if setting
 % dark/light mode is supported).
 
     arguments (Input)

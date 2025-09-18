@@ -2,8 +2,6 @@ classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of Bartington data.
 
     properties
-        % LOCATION Location of data to load.
-        Location (1, 1) string {mustBeFolder} = pwd()
         % GRADIOMETER Gradiometer mode.
         Gradiometer (1, 1) logical = false
         % INPUT1PATTERN Pattern of input 1 data files.
@@ -21,11 +19,6 @@ classdef Analysis < mag.Analysis
         Input1FileNames (1, :) string
         % INPUT2FILENAMES Files containing input 2 data.
         Input2FileNames (1, :) string
-    end
-
-    properties (SetAccess = private)
-        % RESULTS Results collected during analysis.
-        Results mag.bart.Instrument {mustBeScalarOrEmpty}
     end
 
     properties (Access = private)
@@ -49,6 +42,7 @@ classdef Analysis < mag.Analysis
 
             analysis.detect();
             analysis.load();
+            analysis.check();
         end
     end
 

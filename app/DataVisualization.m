@@ -21,6 +21,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ProcessDataButton matlab.ui.control.Button
         ResetButton matlab.ui.control.Button
         ResultsTab matlab.ui.container.Tab
+        HealthTab matlab.ui.container.Tab
         ExportTab matlab.ui.container.Tab
         ExportLayout matlab.ui.container.GridLayout
         ExportSettingsPanel matlab.ui.container.Panel
@@ -46,6 +47,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ToolbarManager mag.app.manage.ToolbarManager {mustBeScalarOrEmpty}
         AnalysisManager mag.app.manage.AnalysisManager {mustBeScalarOrEmpty}
         ResultsManager mag.app.manage.Manager {mustBeScalarOrEmpty}
+        HealthManager mag.app.manage.HealthManager {mustBeScalarOrEmpty}
         ExportManager mag.app.manage.ExportManager {mustBeScalarOrEmpty}
         VisualizationManager mag.app.manage.VisualizationManager {mustBeScalarOrEmpty}
         NotificationHandler mag.app.internal.NotificationHandler {mustBeScalarOrEmpty}
@@ -57,6 +59,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
     properties (Dependent, Access = private)
         ResultsLocation (1, 1) string {mustBeFolder}
+        Managers (1, :) mag.app.manage.Manager
     end
 
     methods
@@ -110,6 +113,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
         end
 
+        function value = get.Managers(app)
+            value = [app.AnalysisManager, app.ResultsManager, app.HealthManager, app.ExportManager, app.VisualizationManager];
+        end
+
         function selectMission(app, mission)
         % SELECTMISSION Select mission to analyze.
 
@@ -153,10 +160,11 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             app.AnalysisManager = app.Provider.getAnalysisManager();
             app.ResultsManager = app.Provider.getResultsManager();
+            app.HealthManager = mag.app.manage.HealthManager();
             app.ExportManager = app.Provider.getExportManager();
             app.VisualizationManager = app.Provider.getVisualizationManager();
 
-            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
+            for manager = app.Managers
                 manager.subscribe(app.Model);
             end
 
@@ -223,7 +231,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.Model.reset();
             app.Figures = matlab.ui.Figure.empty();
 
-            for manager = [app.AnalysisManager, app.ResultsManager, app.ExportManager, app.VisualizationManager]
+            for manager = app.Managers
                 manager.reset();
             end
         end
@@ -327,8 +335,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.TabGroup.Layout.Column = [1 2];
 
             % Create AnalyzeTab.
-            app.AnalyzeTab = uitab(app.TabGroup);
-            app.AnalyzeTab.Title = "Analyze";
+            app.AnalyzeTab = uitab(app.TabGroup, Title = "Analyze");
 
             % Create AnalyzeLayout.
             app.AnalyzeLayout = uigridlayout(app.AnalyzeTab);
@@ -366,15 +373,15 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.VersionLabel.Text = compose("v%s", mag.version());
 
             % Create ResultsTab.
-            app.ResultsTab = uitab(app.TabGroup);
-            app.ResultsTab.Title = "Results";
-
-            % Populate "Results" tab based on mission.
+            app.ResultsTab = uitab(app.TabGroup, Title = "Results");
             app.ResultsManager.instantiate(app.ResultsTab);
 
+            % Create HealthTab.
+            app.HealthTab = uitab(app.TabGroup, Title = "Health");
+            app.HealthManager.instantiate(app.HealthTab);
+
             % Create ExportTab.
-            app.ExportTab = uitab(app.TabGroup);
-            app.ExportTab.Title = "Export";
+            app.ExportTab = uitab(app.TabGroup, Title = "Export");
 
             % Create ExportLayout.
             app.ExportLayout = uigridlayout(app.ExportTab);
@@ -422,8 +429,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ExportManager.instantiate(app.ExportSettingsPanel);
 
             % Create VisualizeTab.
-            app.VisualizeTab = uitab(app.TabGroup);
-            app.VisualizeTab.Title = "Visualize";
+            app.VisualizeTab = uitab(app.TabGroup, Title = "Visualize");
 
             % Create VisualizeLayout.
             app.VisualizeLayout = uigridlayout(app.VisualizeTab);
