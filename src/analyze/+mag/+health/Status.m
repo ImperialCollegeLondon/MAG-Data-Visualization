@@ -8,6 +8,8 @@ classdef Status
         Fail (0, "#b50e0e")
         % BORDERLINE Health check provisionally passed.
         Borderline (0.5, "#d99e14")
+        % INCOMPLETE Health check could not be completed.
+        Incomplete (-1, "#808080")
     end
 
     properties
@@ -31,7 +33,7 @@ classdef Status
                 this (1, :) mag.health.Status
             end
 
-            [~, idxMin] = min([this.Value]);
+            [~, idxMin] = min(abs([this.Value]));
             value = this(idxMin);
         end
 
