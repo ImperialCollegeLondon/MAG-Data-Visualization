@@ -35,12 +35,14 @@ classdef Result < matlab.mixin.Heterogeneous & mag.mixin.SetGet
             for result = this
 
                 switch result.Status
-                    case "Pass"
+                    case {"Pass", "Incomplete"}
                         format = {"    %s: %s\n"};
                     case "Fail"
                         format = {2, "    %s: %s\n"};
                     case "Borderline"
                         format = {"    %s: [\b%s]\b\n"};
+                    otherwise
+                        error("mag:health:UnrecognizedStatus", "Unrecognized status ""%s"".", result.Status);
                 end
 
                 fprintf(format{:}, result.Name, result.Description);
