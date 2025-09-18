@@ -5,7 +5,7 @@ classdef Status
         % PASS Health check passed.
         Pass (1, "#14b814")
         % FAIL Health check failed.
-        Fail (0, "#b50e0e")
+        Fail (0, "#e76a5f")
         % BORDERLINE Health check provisionally passed.
         Borderline (0.5, "#d99e14")
         % INCOMPLETE Health check could not be completed.
@@ -25,6 +25,12 @@ classdef Status
 
             this.Value = value;
             this.Color = color;
+        end
+
+        function sortedThis = sort(this, varargin)
+
+            [~, idxSort] = sort([this.Value], varargin{:});
+            sortedThis = this(idxSort);
         end
 
         function value = getWorst(this)
