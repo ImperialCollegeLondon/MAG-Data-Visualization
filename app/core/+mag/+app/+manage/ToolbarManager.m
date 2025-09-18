@@ -50,7 +50,7 @@ classdef ToolbarManager < mag.app.manage.Manager
             % Create ImportPushTool.
             this.ImportPushTool = uipushtool(this.Toolbar);
             this.ImportPushTool.Tooltip = "Import existing analysis";
-            this.ImportPushTool.ClickedCallback = @(~, ~) this.importPushToolClicked();
+            this.ImportPushTool.ClickedCallback = @(~, ~) this.App.NotificationHandler.executeCallback(@this.importPushToolClicked, "Importing...");
             this.ImportPushTool.Icon = this.getIconPath("import", theme);
             this.ImportPushTool.Separator = "on";
 
@@ -119,18 +119,12 @@ classdef ToolbarManager < mag.app.manage.Manager
 
         function importPushToolClicked(this)
 
-            closeProgressBar = this.App.NotificationHandler.overlayProgressBar("Importing..."); %#ok<NASGU>
             [file, folder] = uigetfile("*.mat", "Import Analysis");
 
             if ~isequal(file, 0) && ~isequal(folder, 0)
 
-                try
-
-                    this.App.Model.load(fullfile(folder, file));
-                    this.App.NotificationHandler.displayAlert("Analysis successfully imported.", "Import Complete", "success");
-                catch exception
-                    this.App.NotificationHandler.displayAlert(exception);
-                end
+                this.App.Model.load(fullfile(folder, file));
+                this.App.NotificationHandler.displayAlert("Analysis successfully imported.", "Import Complete", "success");
             end
         end
 
