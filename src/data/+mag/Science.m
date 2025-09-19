@@ -29,8 +29,6 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
         CompressionWidth (:, 1) double
         % QUALITY Quality flag denoting whether data is of high quality.
         Quality (:, 1) mag.meta.Quality
-        % EVENTS Events detected.
-        Events eventtable
     end
 
     properties (SetAccess = immutable)
@@ -107,10 +105,6 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
 
         function quality = get.Quality(this)
             quality = this.Data.(this.Settings.Quality);
-        end
-
-        function events = get.Events(this)
-            events = this.Data.Properties.Events;
         end
 
         function crop(this, timeFilter)

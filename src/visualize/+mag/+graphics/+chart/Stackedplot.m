@@ -67,7 +67,7 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
 
                 graph(y) = plot(ax, xData, yData(:, y), this.MarkerStyle{:}, this.LineCustomization{:}, Color = colors(y, :));
 
-                if this.EventsVisible && ~isempty(data.Properties.Events)
+                if this.EventsVisible
                     this.addEventsData(ax, data);
                 end
             end
@@ -78,10 +78,20 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
 
         function addEventsData(ax, data)
 
+            if isa(data, "mag.TimeSeries")
+                events = data.Events;
+            elseif istimetable(data)
+                events = data.Properties.Events;
+            else
+                events = [];
+            end
+
+            if isempty(events)
+                return;
+            end
+
             hold(ax, "on");
             resetAxesHold = onCleanup(@() hold(ax, "off"));
-
-            events = data.Properties.Events;
 
             eventTimes = events.Properties.RowTimes;
             eventLabels = events.(events.Properties.EventLabelsVariable);
