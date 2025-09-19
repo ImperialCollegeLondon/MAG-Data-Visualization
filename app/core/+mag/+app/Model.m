@@ -6,6 +6,11 @@ classdef (Abstract) Model < mag.mixin.SetGet
         ModelChanged
     end
 
+    properties (Abstract, Constant, Access = protected)
+        % ANALYSISCLASSNAME Name of analysis class.
+        AnalysisClassName (1, 1) string
+    end
+
     properties (SetAccess = private)
         % ANALYSIS Analysis results.
         Analysis mag.Analysis {mustBeScalarOrEmpty} = mag.imap.Analysis.empty()
@@ -26,9 +31,6 @@ classdef (Abstract) Model < mag.mixin.SetGet
 
         % ANALYZE Perform analysis.
         analyze(this, options)
-
-        % LOAD Load analysis.
-        load(this, matFile)
 
         % EXPORT Export analysis.
         export(this, options)
@@ -79,6 +81,29 @@ classdef (Abstract) Model < mag.mixin.SetGet
             else
                 range = mag.time.emptyTime(0, 2);
             end
+        end
+
+        function load(this, matFile)
+        % LOAD Load analysis.
+
+            results = load(matFile);
+
+            for f = string(fieldnames(results))'
+
+                analysis = results.(f);
+
+                if isa(analysis, this.AnalysisClassName)
+
+                    if ~isequal(analysis.OriginalVersion, mag.version())
+                        warning("mag:app:OldVersion", "Loaded analysis was generated with version %s and may be incompatible.", analysis.OriginalVersion);
+                    end
+
+                    this.setAnalysisAndNotify(analysis);
+                    return;
+                end
+            end
+
+            error("mag:app:InvalidMAT", "No ""%s"" found in MAT file.", this.AnalysisClassName);
         end
     end
 
