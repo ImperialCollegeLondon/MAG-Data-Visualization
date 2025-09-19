@@ -1,8 +1,9 @@
-function time = decodeTime(time)
+function time = decodeTime(time, options)
 % DECODETIME Decode a time string as a duration.
 
     arguments (Input)
         time string {mustBeScalarOrEmpty}
+        options.ExtraFormats (1, :) string = string.empty()
     end
 
     arguments (Output)
@@ -10,6 +11,11 @@ function time = decodeTime(time)
     end
 
     formats = ["hh:mm", "hh:mm:ss", "hh:mm:ss.SSS"];
+
+    if ~isempty(options.ExtraFormats)
+        formats = [formats, options.ExtraFormats];
+    end
+
     conversion = @(f) duration(time, InputFormat = f);
 
     for f = formats

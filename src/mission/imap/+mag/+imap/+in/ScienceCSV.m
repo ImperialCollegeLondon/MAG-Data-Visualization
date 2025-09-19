@@ -33,17 +33,17 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
             rawSecondary = rawData(:, regexpPattern(".*(sec|sequence|compression).*"));
 
             % Extract file metadata.
-            [mode, primaryFrequency, secondaryFrequency, packetFrequency, timeStamp] = this.extractFileMetadata(fileName);
+            [mode, primaryFrequency, secondaryFrequency, packetFrequency, timestamp] = this.extractFileMetadata(fileName);
 
             % Process science data.
-            data = [this.processScience(rawPrimary, "pri", Sensor = mag.meta.Sensor.FOB, Mode = mode, DataFrequency = primaryFrequency, PacketFrequency = packetFrequency, Timestamp = timeStamp), ...
-                this.processScience(rawSecondary, "sec", Sensor = mag.meta.Sensor.FIB, Mode = mode, DataFrequency = secondaryFrequency, PacketFrequency = packetFrequency, Timestamp = timeStamp)];
+            data = [this.processScience(rawPrimary, "pri", Sensor = mag.meta.Sensor.FOB, Mode = mode, DataFrequency = primaryFrequency, PacketFrequency = packetFrequency, Timestamp = timestamp), ...
+                this.processScience(rawSecondary, "sec", Sensor = mag.meta.Sensor.FIB, Mode = mode, DataFrequency = secondaryFrequency, PacketFrequency = packetFrequency, Timestamp = timestamp)];
         end
     end
 
     methods (Access = private)
 
-        function [mode, primaryFrequency, secondaryFrequency, packetFrequency, timeStamp] = extractFileMetadata(this, fileName)
+        function [mode, primaryFrequency, secondaryFrequency, packetFrequency, timestamp] = extractFileMetadata(this, fileName)
         % EXTRACTMETADATA Extract metadata information from file name.
 
             rawData = regexp(fileName, this.FileNamePattern, "names");
@@ -51,8 +51,8 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
             % If no metadata was found, assume default values.
             if isempty(rawData)
 
-                timeStamp = regexp(fileName, "(?<date>\d+)-(?<time>\w+)", "names");
-                timeStamp = datetime(timeStamp.date + timeStamp.time, InputFormat = "uuuuMMddHH'h'mm", TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format);
+                timestamp = regexp(fileName, "(?<date>\d+)-(?<time>\w+)", "names");
+                timestamp = mag.time.decodeDate(timestamp.date + timestamp.time, ExtraFormats = "uuuuMMdd" + ["HH'h'mm", "HH'h'"]);
 
                 if contains(fileName, "ialirt", IgnoreCase = true)
 
@@ -84,7 +84,8 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
                 primaryFrequency = rawData.primaryFrequency;
                 secondaryFrequency = rawData.secondaryFrequency;
                 packetFrequency = rawData.packetFrequency;
-                timeStamp = datetime(rawData.date + rawData.time, InputFormat = "uuuuMMddHH'h'mm", TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format);
+
+                timestamp = mag.time.decodeDate(rawData.date + rawData.time, ExtraFormats = "uuuuMMdd" + ["HH'h'mm", "HH'h'"]);
             end
         end
 

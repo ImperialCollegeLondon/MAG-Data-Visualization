@@ -1,8 +1,11 @@
-function date = decodeDate(date)
+function date = decodeDate(date, options)
 % DECODEDATE Decode a date string as a duration.
 
     arguments (Input)
         date string {mustBeScalarOrEmpty}
+        options.ExtraFormats (1, :) string = string.empty()
+        options.TimeZone (1, 1) string = mag.time.Constant.TimeZone
+        options.DisplayFormat (1, 1) string = mag.time.Constant.Format
     end
 
     arguments (Output)
@@ -13,6 +16,10 @@ function date = decodeDate(date)
     formats = horzcat(formats, replace(formats, "-", "/"));
     formats = horzcat(formats, replace(formats, "-", " "));
 
+    if ~isempty(options.ExtraFormats)
+        formats = [formats, options.ExtraFormats];
+    end
+
     conversion = @(f) datetime(date, InputFormat = f);
 
     for f = formats
@@ -21,8 +28,8 @@ function date = decodeDate(date)
 
             date = conversion(f);
 
-            date.TimeZone = mag.time.Constant.TimeZone;
-            date.Format = mag.time.Constant.Format;
+            date.TimeZone = options.TimeZone;
+            date.Format = options.DisplayFormat;
             return;
         catch exception
 

@@ -13,6 +13,8 @@ classdef (Abstract) TimeSeries < mag.Data & mag.mixin.Crop & mag.mixin.Signal
         Time (:, 1) datetime
         % DT Time derivative.
         dT (:, 1) duration
+        % EVENTS Events detected.
+        Events eventtable
         IndependentVariable
         DependentVariables
     end
@@ -29,6 +31,10 @@ classdef (Abstract) TimeSeries < mag.Data & mag.mixin.Crop & mag.mixin.Signal
 
         function dt = get.dT(this)
             dt = this.computeDerivative(this.Time);
+        end
+
+        function events = get.Events(this)
+            events = this.Data.Properties.Events;
         end
 
         function independentVariable = get.IndependentVariable(this)

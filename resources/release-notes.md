@@ -1,12 +1,5 @@
-## App
-
-- (All) Add "Health" tab to display health check results
-- (All) Exported MAT file is renamed to "Analysis (dd-MMM-yyyy HHmmss).mat"
-- (All) Issue a warning if an analysis generated with older release is imported
-
 ## Software
 
-- (IMAP) Add health checks for secondary currents and voltages, temperatures, saturation, missed ITFs, and activation
-- (IMAP) HK figure names include first timestamp date and time
-- (All) `mag.Instrument/crop` method crops data based on input timerange, not science timerange
-- (All) `mag.version` should not return a `datetime`-like string
+- (All) Fix issue with loading events from `mag.TimeSeries` in `mag.graphics.chart.Stackedplot` (when `EventsVisible = true`)
+- (IMAP) Support old IMAP science file format (file time defined as `HH'h'` instead of `HH'h'mm`)
+- (IMAP) Fix typos is power health check descriptions

@@ -51,8 +51,8 @@ classdef Timestamp < mag.process.Step
             end
 
             % Add time offset to all timestamps.
-            timeStamp = coarseAndFineTime(:, 1) + (coarseAndFineTime(:, 2) / double(intmax("uint16")));
-            time = timeStamp + timeOffset;
+            timestamp = coarseAndFineTime(:, 1) + (coarseAndFineTime(:, 2) / double(intmax("uint16")));
+            time = timestamp + timeOffset;
         end
     end
 end
