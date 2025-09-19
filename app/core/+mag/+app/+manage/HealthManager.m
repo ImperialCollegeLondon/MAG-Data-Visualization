@@ -86,12 +86,16 @@ classdef HealthManager < mag.app.manage.Manager
             if model.HasAnalysis && ~isempty(model.Analysis.HealthChecks) && ~isempty([model.Analysis.HealthChecks.Results])
 
                 checks = [model.Analysis.HealthChecks.Results];
+
                 checkStatus = [checks.Status];
+                worstStatus = checkStatus.getWorst();
+
+                figure = ancestor(this.HealthLayout, "figure");
 
                 % Add summary.
                 this.SummaryLabel.Text = compose("Overall: %d/%d checks passed.", nnz(checkStatus == mag.health.Status.Pass), numel(checks));
-                this.SummaryLamp.Color = checkStatus.getWorst().Color;
-                this.SummaryLamp.Tooltip = string(checkStatus.getWorst());
+                this.SummaryLamp.Color = worstStatus.getThemedColor(figure);
+                this.SummaryLamp.Tooltip = string(worstStatus);
 
                 % Add check results.
                 data = table(vertcat(checks.Name), string(checkStatus'), vertcat(checks.Description), VariableNames = ["Name", "Status", "Description"]);
@@ -100,14 +104,12 @@ classdef HealthManager < mag.app.manage.Manager
                 this.IndividualTable.ColumnWidth = ["fit", "fit", "1x"];
 
                 % Add style based on status.
-                status = enumeration(mag.health.Status.Pass);
-
-                for s = status'
+                for s = unique(checkStatus)
 
                     idxStatus = find(data.Status == string(s));
                     idxStatus = [idxStatus, repmat(2, numel(idxStatus), 1)]; %#ok<AGROW>
 
-                    style = uistyle(BackgroundColor = s.Color);
+                    style = uistyle(BackgroundColor = s.getThemedColor(figure));
                     this.IndividualTable.addStyle(style, "cell", idxStatus);
                 end
 

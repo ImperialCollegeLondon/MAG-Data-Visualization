@@ -128,7 +128,7 @@ classdef Power < mag.health.Check
 
             % If no failures so far, it's a pass.
             if isempty(results)
-                results = mag.health.Result(Name = "Secondary Currents", Status = "Pass", Description = "Secondary voltages within limits.");
+                results = mag.health.Result(Name = "Secondary Currents", Status = "Pass", Description = "Secondary currents within limits.");
             end
 
             this.Results = [this.Results, results];
@@ -155,7 +155,7 @@ classdef Power < mag.health.Check
 
             % If no failures so far, it's a pass.
             if isempty(results)
-                results = mag.health.Result(Name = "Temperatures", Status = "Pass", Description = "Sensor and EBox temperatures within limits.");
+                results = mag.health.Result(Name = "Temperatures", Status = "Pass", Description = "Sensor and ICU temperatures within limits.");
             end
 
             this.Results = [this.Results, results];

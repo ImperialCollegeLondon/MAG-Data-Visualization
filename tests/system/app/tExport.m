@@ -77,7 +77,6 @@ classdef tExport < AppTestCase
             % Set up.
             variableName = compose("%sAnalysis", lower(testCase.Mission.ShortName));
             exportFolder = fullfile(testCase.WorkingDirectory.Folder, compose("Results (v%s)", mag.version()));
-            exportFile = fullfile(exportFolder, "Data.mat");
 
             testCase.choose(testCase.App.ExportTab);
             testCase.choose(testCase.App.ExportFormatDropDown, DataVisualization.ExportMAT);
@@ -88,9 +87,11 @@ classdef tExport < AppTestCase
 
             % Verify.
             testCase.assertTrue(isfolder(exportFolder), "Export folder should exist.");
-            testCase.assertTrue(isfile(exportFile), "Export file should exist.");
 
-            exportedResults = load(exportFile);
+            exportFile = dir(fullfile(exportFolder, "Analysis (*).mat"));
+            testCase.assertNumElements(exportFile, 1, "Export file should exist.");
+
+            exportedResults = load(fullfile(exportFile.folder, exportFile.name));
             testCase.assertThat(exportedResults, mag.test.constraint.IsField(variableName), "Analysis should be exported.");
 
             if mag.test.isGitHub()
@@ -105,7 +106,10 @@ classdef tExport < AppTestCase
             % Set up.
             variableName = compose("%sAnalysis", lower(testCase.Mission.ShortName));
             exportFolder = fullfile(testCase.WorkingDirectory.Folder, compose("Results (v%s)", mag.version()));
-            exportFile = fullfile(exportFolder, "Data.mat");
+
+            timestamp = testCase.App.Model.TimeRange(1);
+            timestamp.Format = "dd-MMM-yyyy HHmmss";
+            exportFile = fullfile(exportFolder, compose("Analysis (%s).mat", timestamp));
 
             anotherAnalysis = mag.hs.Analysis();
 
