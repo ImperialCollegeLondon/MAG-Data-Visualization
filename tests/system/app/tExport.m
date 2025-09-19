@@ -106,7 +106,10 @@ classdef tExport < AppTestCase
             % Set up.
             variableName = compose("%sAnalysis", lower(testCase.Mission.ShortName));
             exportFolder = fullfile(testCase.WorkingDirectory.Folder, compose("Results (v%s)", mag.version()));
-            exportFile = fullfile(exportFolder, "Data.mat");
+
+            timestamp = testCase.App.Model.TimeRange(1);
+            timestamp.Format = "dd-MMM-yyyy HHmmss";
+            exportFile = fullfile(exportFolder, compose("Analysis (%s).mat", timestamp));
 
             anotherAnalysis = mag.hs.Analysis();
 
