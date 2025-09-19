@@ -226,11 +226,11 @@ classdef Power < mag.health.Check
                 limit = limits{v};
 
                 if any(value < limit(1))
-                    results(end + 1) = mag.health.Result(Name = v, Status = status, Description = compose("Exceeds %s low limits (%.5g < %.5g).", type, min(value), limit(1)));
+                    results(end + 1) = mag.health.Result(Name = v, Status = status, Description = compose("Exceeds %s low limit (%.5g < %.5g).", type, min(value), limit(1)));
                 end
 
                 if any(value > limit(2))
-                    results(end + 1) = mag.health.Result(Name = v, Status = status, Description = compose("Exceeds %s high limits (%.5g > %.5g).", type, max(value), limit(2)));
+                    results(end + 1) = mag.health.Result(Name = v, Status = status, Description = compose("Exceeds %s high limit (%.5g > %.5g).", type, max(value), limit(2)));
                 end
             end
         end
