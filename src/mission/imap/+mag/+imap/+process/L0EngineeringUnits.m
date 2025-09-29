@@ -51,12 +51,20 @@ classdef L0EngineeringUnits < mag.process.Step
                     data = this.convertPowerEngineeringUnits(data, metadata);
                 case mag.meta.HKType.Science
 
+                    timeVectorVariables = ["COARSETM", "FINETM", "XVEC", "YVEC", "ZVEC"];
+                    preSteps = mag.process.AllZero(Variables = regexpPattern("F(I|O)B_(" + join(timeVectorVariables, "|") + ")"));
+
+                    for ps = preSteps
+                        data = ps.apply(data, mag.meta.Science());
+                    end
+
                     for fee = ["FOB", "FIB"]
 
                         steps = [mag.process.SignedInteger(IgnoreCompressedData = false, CompressionVariable = "COMPRESSION", ReferenceWidth = 16, ...
-                            Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"], AssumedType = "uint16"), ...
-                            mag.process.Range(RangeVariable = fee + "_RNG", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"]), ...
-                            mag.process.Calibration(RangeVariable = fee + "_RNG", Variables = fee + ["_XVEC", "_YVEC", "_ZVEC"])];
+                            Variables = fee + "_" + ["XVEC", "YVEC", "ZVEC"], AssumedType = "uint16"), ...
+                            mag.process.AllZero(Variables = fee + "_" + timeVectorVariables, Replace = true), ...
+                            mag.process.Range(RangeVariable = fee + "_RNG", Variables = fee + "_" + ["XVEC", "YVEC", "ZVEC"]), ...
+                            mag.process.Calibration(RangeVariable = fee + "_RNG", Variables = fee + "_" + ["XVEC", "YVEC", "ZVEC"])];
 
                         if fee == "FOB"
                             ssu = metadata.OutboardSetup;

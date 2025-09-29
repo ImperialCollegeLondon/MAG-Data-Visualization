@@ -75,8 +75,12 @@ classdef (Abstract) Model < mag.mixin.SetGet
 
                 for hk = this.Analysis.Results.HK
 
-                    range(1) = min(range(1), min(hk.Time));
-                    range(2) = max(range(2), max(hk.Time));
+                    if isempty(hk.Time)
+                        continue;
+                    end
+
+                    range(1) = min(range(1), min(hk.Time, [], "omitmissing"));
+                    range(2) = max(range(2), max(hk.Time, [], "omitmissing"));
                 end
             else
                 range = mag.time.emptyTime(0, 2);

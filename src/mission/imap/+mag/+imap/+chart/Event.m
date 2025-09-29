@@ -40,7 +40,9 @@ classdef Event < mag.graphics.chart.Chart
 
             graph = matlab.graphics.Graphics.empty();
 
-            if isa(data, "mag.Science")
+            if isempty(data)
+                return;
+            elseif isa(data, "mag.Science")
 
                 eventOfInterest = data.Settings.(this.EventOfInterest);
                 data = data.Data;
@@ -143,7 +145,9 @@ classdef Event < mag.graphics.chart.Chart
             colors = zeros(numel(variable), 3);
 
             for i = 1:numel(idxUnique)
-                colors(i, :) = defaultColors(idxUnique(i), :);
+
+                j = mod(idxUnique(i) - 1, height(defaultColors)) + 1;
+                colors(i, :) = defaultColors(j, :);
             end
         end
     end
