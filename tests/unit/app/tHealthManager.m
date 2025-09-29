@@ -30,6 +30,11 @@ classdef tHealthManager < mag.test.case.ViewControllerTestCase
 
             % Set up.
             panel = testCase.createTestPanel();
+            figure = ancestor(panel, "figure");
+
+            if mag.internal.isThemeable(figure)
+                figure.Theme = "light"; % force light figures, as lamp color depends on it
+            end
 
             manager = mag.app.manage.HealthManager();
             manager.instantiate(panel);
