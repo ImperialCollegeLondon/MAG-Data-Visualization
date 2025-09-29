@@ -167,7 +167,8 @@ end
 function [rangeTable, events] = findRangeChanges(ranges, events, sensorName)
 
     % Find range changes.
-    locRange = diff(ranges.range) ~= 0;
+    dR = diff(ranges.range);
+    locRange = (dR ~= 0) & ~ismissing(dR);
 
     rangeTable = vertcat(ranges(1, :), ranges(find(locRange) + 1, "range"));
     rangeTable = renamevars(rangeTable, "range", "Range");
