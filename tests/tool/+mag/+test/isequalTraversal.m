@@ -31,7 +31,23 @@ function [equality, difference] = isequalTraversal(a, b, propertyName)
 
     % Iterate over each element and its properties.
     if isa(a, "handle")
+
         [equality, difference] = handleTraversal(a, b, propertyName);
+        return;
+    elseif istabular(a)
+
+        for i = 1:height(a)
+
+            for j = 1:width(a)
+
+                if ~isequaln(a{i, j}, b{i, j})
+
+                    equality = false;
+                    difference = compose("%s(%d, %d)", propertyName, i, j);
+                    return;
+                end
+            end
+        end
     else
 
         for i = 1:numel(a)
@@ -43,10 +59,10 @@ function [equality, difference] = isequalTraversal(a, b, propertyName)
                 return;
             end
         end
-
-        equality = true;
-        difference = string.empty();
     end
+
+    equality = true;
+    difference = string.empty();
 end
 
 function [equality, difference] = handleTraversal(a, b, propertyName)

@@ -20,7 +20,7 @@ jobs:
     name: Run MATLAB Tests
     strategy:
       matrix:
-        release: ["R2024a", "R2024b", "R2025a"]
+        release: ["R2024a", "R2024b", "R2025a", "R2025b"]
       fail-fast: false
     runs-on: windows-latest
     steps:
@@ -54,7 +54,7 @@ jobs:
         with:
           command: "matlab.addons.install('MATLAB.SPDF.CDF.mltbx'); matlab.addons.install('MATLAB.SPICE.MICE.mltbx');"
       - name: Run tests
-        uses: matlab-actions/run-build@v2.5.1
+        uses: matlab-actions/run-build@v2.5.2
         with:
           tasks: check test
       - name: Report results
@@ -68,7 +68,7 @@ jobs:
           use-actions-summary: 'false'
       - name: Report coverage
         uses: 5monkeys/cobertura-action@master
-        if: matrix.release == 'R2025a'
+        if: matrix.release == 'R2025b'
         with:
           path: 'artifacts/coverage.xml'
           minimum_coverage: 80
@@ -76,6 +76,6 @@ jobs:
           report_name: Coverage Report (${{ matrix.release }})
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
-        if: matrix.release == 'R2025a'
+        if: matrix.release == 'R2025b'
         with:
           sarif_file: artifacts/issues.sarif

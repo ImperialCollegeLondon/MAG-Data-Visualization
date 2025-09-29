@@ -6,6 +6,8 @@ classdef EventPSD < mag.graphics.view.View
         Name string {mustBeScalarOrEmpty} = missing()
         % EVENT Event name to show.
         Event (1, 1) string {mustBeMember(Event, ["DataFrequency", "Range"])} = "DataFrequency"
+        % SKIPSHORTEVENTS Skip events that are shorter than 1 minute.
+        SkipShortEvents (1, 1) logical = true
     end
 
     methods
@@ -59,14 +61,19 @@ classdef EventPSD < mag.graphics.view.View
                 % Find when event takes place.
                 startTime = interestingEvents.Time(i);
 
-                if i == size(interestingEvents, 1)
+                if i == height(interestingEvents)
                     endTime = data.Time(end);
                 else
                     endTime = interestingEvents.Time(i + 1);
                 end
 
+                % Do not show very short windows.
+                if this.SkipShortEvents && (abs(endTime - startTime) < minutes(1))
+                    continue;
+                end
+
                 % Remove 30 seconds to avoid spikes during transitions.
-                if (endTime - startTime) > minutes(2)
+                if abs(endTime - startTime) > minutes(2)
 
                     startTime = startTime + seconds(30);
                     endTime = endTime - seconds(30);
@@ -74,14 +81,14 @@ classdef EventPSD < mag.graphics.view.View
 
                 duration = endTime - startTime;
 
-                if (duration > 0) && (height(data.Data(timerange(startTime, startTime + duration, "closed"), :)) > 7)
+                if (duration > 0) && (height(data.Data(timerange(startTime, endTime, "closed"), :)) > 7)
 
                     % Compute PSD.
                     psd = mag.psd(data, Start = startTime, Duration = duration);
 
                     % Add plot.
                     charts = [charts, {psd, ...
-                        mag.graphics.style.Default(Title = this.getFigureTitle(data.Metadata, interestingEvents.Label(i), startTime, duration), ...
+                        mag.graphics.style.Default(Title = this.getFigureTitle(interestingEvents.Label(i), startTime, duration), ...
                         XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
                         Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine])}]; %#ok<AGROW>
                 end
@@ -100,8 +107,8 @@ classdef EventPSD < mag.graphics.view.View
 
     methods (Access = private)
 
-        function value = getFigureTitle(this, metadata, label, startTime, duration)
-            value = compose("%s %s (%s, %s)", metadata.getDisplay("Sensor"), label, this.date2str(startTime, "dd-MMM-yy HH:mm"), duration);
+        function value = getFigureTitle(this, label, startTime, duration)
+            value = compose("%s (%s, %s)", label, this.date2str(startTime, "dd-MMM-yy HH:mm"), duration);
         end
     end
 end

@@ -1,5 +1,9 @@
 ## Software
 
-- (All) Fix issue with loading events from `mag.TimeSeries` in `mag.graphics.chart.Stackedplot` (when `EventsVisible = true`)
-- (IMAP) Support old IMAP science file format (file time defined as `HH'h'` instead of `HH'h'mm`)
-- (IMAP) Fix typos is power health check descriptions
+- (IMAP) Fix issues with processing and viewing science HK (SID5) when only one sensor is active
+- (IMAP) Ignore `NaN` ranges when detecting automated range changes
+- (IMAP) Do not show PSD for short events in `mag.imap.view.EventPSD`
+
+## Package
+
+- Add support for MATLAB R2025b
