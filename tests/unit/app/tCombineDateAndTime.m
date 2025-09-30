@@ -55,7 +55,7 @@ classdef tCombineDateAndTime < matlab.unittest.TestCase
         % Test that error is thrown when time is in incorrect format.
         function datetimeTime_invalidTime(testCase, ValidDate, InvalidTime)
 
-            testCase.verifyError(@() mag.app.internal.combineDateAndTime(ValidDate, InvalidTime), "", ...
+            testCase.verifyError(@() mag.app.internal.combineDateAndTime(ValidDate, InvalidTime), "mag:time:ParseError", ...
                 "Error should be thrown on invalid time.");
         end
     end

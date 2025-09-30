@@ -32,5 +32,5 @@ function time = decodeTime(time, options)
         end
     end
 
-    error("Unable to parse time '%s' using the formats %s.", time, join(compose("'%s'", formats), ", "));
+    error("mag:time:ParseError", "Unable to parse time '%s' using the formats %s.", time, join(compose("'%s'", formats), ", "));
 end

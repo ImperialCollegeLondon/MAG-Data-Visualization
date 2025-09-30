@@ -24,7 +24,7 @@ classdef tDecodeTime < matlab.unittest.TestCase
         % Test that error is thrown when invalid time is used.
         function decodeTime_fail(testCase, InvalidTime)
 
-            testCase.verifyError(@() mag.time.decodeTime(InvalidTime), ?MException, ...
+            testCase.verifyError(@() mag.time.decodeTime(InvalidTime), "mag:time:ParseError", ...
                 "Error should be thrown when value does not match regex.");
         end
     end
