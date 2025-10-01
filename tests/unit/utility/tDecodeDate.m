@@ -37,7 +37,7 @@ classdef tDecodeDate < matlab.unittest.TestCase
         % Test that error is thrown when invalid date is used.
         function decodeDate_fail(testCase, InvalidDate)
 
-            testCase.verifyError(@() mag.time.decodeDate(InvalidDate), ?MException, ...
+            testCase.verifyError(@() mag.time.decodeDate(InvalidDate), "mag:time:ParseError", ...
                 "Error should be thrown when value does not match regex.");
         end
     end
