@@ -25,7 +25,7 @@ classdef (Abstract, HandleCompatible) ColorSupport
                     set(graph(i), colorOptionName, this.Colors(i, :));
                 end
             elseif ~isempty(this.Colors) && (numel(graph) > size(this.Colors, 1))
-                error("Mismatch in number of colors for number of plots.");
+                error("mag:graphics:ColorNumberMismatch", "Mismatch in number of colors for number of plots.");
             end
         end
     end

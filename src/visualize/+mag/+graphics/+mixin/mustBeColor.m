@@ -5,7 +5,7 @@ function mustBeColor(color)
         return;
     elseif isa(color, "numeric")
 
-        exception = MException("", "Invalid format for ""Colors"" property.");
+        exception = MException("mag:graphics:InvalidColor", "Invalid format for ""Colors"" property.");
         exception.throwAsCaller();
     else
 
