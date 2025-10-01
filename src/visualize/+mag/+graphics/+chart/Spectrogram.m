@@ -12,6 +12,10 @@ classdef Spectrogram < mag.graphics.chart.Chart
             this.assignProperties(options);
         end
 
+        function value = isSupported(~, data)
+            value = isa(data, "mag.Spectrum");
+        end
+
         function graph = plot(this, data, axes, ~)
 
             arguments (Input)

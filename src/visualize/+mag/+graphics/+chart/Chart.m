@@ -31,6 +31,12 @@ classdef (Abstract) Chart < matlab.mixin.Heterogeneous & mag.mixin.SetGet
                 this.YVariables_ = yVariables;
             end
         end
+
+        function value = isSupported(~, data)
+        % ISDATATYPESUPPORTED Check if chart supports specific data types.
+
+            value = isa(data, "mag.Data") || istabular(data);
+        end
     end
 
     methods (Abstract)

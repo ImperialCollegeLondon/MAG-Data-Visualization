@@ -9,8 +9,42 @@ classdef tStackedplot < MarkerSupportTestCase
     methods (Test)
 
         % Test that stackedplot charts can view more than one line per
-        % axis.
-        function stackedplotWithMultipleLines(testCase)
+        % axis, with each line the same variable.
+        function stackedplotWithMultipleLines_sameVariables(testCase)
+
+            % Set up.
+            data1 = testCase.createTestDataWithEvents(SetDuration = false, SetEndTime = false);
+            data2 = data1 + 10;
+
+            % Exercise.
+            f = mag.graphics.visualize({data1, data2}, mag.graphics.style.Stackedplot(Charts = mag.graphics.chart.Stackedplot(YVariables = ["A", "B", "C"])));
+            testCase.addTeardown(@() close(f));
+
+            % Verify.
+            % The chart should only return the main objects, but the figure
+            % should also show two vertical lines per plot.
+            testCase.assertTrue(isvalid(f), "Figure should be valid.");
+
+            tl = f.Children.Children(1);
+            testCase.assertClass(tl, "matlab.graphics.layout.TiledChartLayout", "Child should be a tiled layout.");
+
+            axes = mag.test.getAllAxes(tl);
+            graph = [axes.Children];
+
+            testCase.assertSize(graph, [2, 3], "Number of graphs should match expectation.");
+            testCase.assertClass(graph, "matlab.graphics.chart.primitive.Line", "Graphs should be lines.");
+
+            testCase.verifyEqual(graph(1, 1).YData, data2.C', "Graph data should match.");
+            testCase.verifyEqual(graph(1, 2).YData, data2.B', "Graph data should match.");
+            testCase.verifyEqual(graph(1, 3).YData, data2.A', "Graph data should match.");
+            testCase.verifyEqual(graph(2, 1).YData, data1.C', "Graph data should match.");
+            testCase.verifyEqual(graph(2, 2).YData, data1.B', "Graph data should match.");
+            testCase.verifyEqual(graph(2, 3).YData, data1.A', "Graph data should match.");
+        end
+
+        % Test that stackedplot charts can view more than one line per
+        % axis, with each line a different variable.
+        function stackedplotWithMultipleLines_differentVariables(testCase)
 
             % Set up.
             data = testCase.createTestDataWithEvents(SetDuration = false, SetEndTime = false);
@@ -216,7 +250,7 @@ classdef tStackedplot < MarkerSupportTestCase
 
             % Exercise and verify.
             chart = feval(testCase.ClassName, Color = double.empty(), YVariables = "Number");
-            testCase.verifyError(@() chart.plot(testCase.Data, ax, tl), ?MException, "Error should be thrown when number of colors does not match number of graphs.");
+            testCase.verifyError(@() chart.plot(testCase.Data, ax, tl), "mag:graphics:ColorNumberMismatch", "Error should be thrown when number of colors does not match number of graphs.");
         end
     end
 

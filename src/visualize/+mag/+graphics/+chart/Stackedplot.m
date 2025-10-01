@@ -20,11 +20,18 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
             this.assignProperties(options);
         end
 
+        function value = isSupported(this, data)
+
+            % Also support cell arrays, but do not allow cells of cells.
+            value = isSupported@mag.graphics.chart.Chart(this, data) || ...
+                (~isempty(data) && iscell(data) && ~any(cellfun(@iscell, data)) && all(cellfun(@(x) this.isSupported(x), data)));
+        end
+
         function graph = plot(this, data, axes, layout)
 
             arguments (Input)
                 this
-                data {mustBeA(data, ["mag.Data", "timetable"])}
+                data {mustBeA(data, ["mag.Data", "timetable", "cell"])}
                 axes (1, 1) matlab.graphics.axis.Axes
                 layout (1, 1) matlab.graphics.layout.TiledChartLayout
             end
@@ -33,15 +40,20 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
                 graph (1, :) matlab.graphics.Graphics
             end
 
-            xData = this.getXData(data);
-            yData = this.getYData(data);
+            if ~iscell(data)
+                data = {data};
+            end
 
-            Ny = width(yData);
+            xData = cellfun(@(x) this.getXData(x), data, UniformOutput = false);
+            yData = cellfun(@(x) this.getYData(x), data, UniformOutput = false);
+
+            Ny = width(yData{1});
+            Nz = numel(data);
 
             if height(this.Colors) == 1
                 colors = repmat(this.Colors, Ny, 1);
             elseif isempty(this.Colors) || (Ny > height(this.Colors))
-                error("Mismatch in number of colors for number of plots.");
+                error("mag:graphics:ColorNumberMismatch", "Mismatch in number of colors for number of plots.");
             else
                 colors = this.Colors;
             end
@@ -56,7 +68,7 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
             end
 
             % Create custom stacked plot.
-            graph = matlab.graphics.chart.primitive.Line.empty(0, Ny);
+            graph = matlab.graphics.chart.primitive.Line.empty();
 
             for y = 1:Ny
 
@@ -65,7 +77,22 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
                 hold(ax, "on");
                 resetAxesHold = onCleanup(@() hold(ax, "off"));
 
-                graph(y) = plot(ax, xData, yData(:, y), this.MarkerStyle{:}, this.LineCustomization{:}, Color = colors(y, :));
+                g = matlab.graphics.chart.primitive.Line.empty(0, Nz);
+
+                for z = 1:Nz
+
+                    % If only 1 line per axis, the color changes per tile,
+                    % otherwise it changes per line.
+                    if Nz == 1
+                        c = y;
+                    else
+                        c = z;
+                    end
+
+                    g(z) = plot(ax, xData{z}, yData{z}(:, y), this.MarkerStyle{:}, this.LineCustomization{:}, Color = colors(c, :));
+                end
+
+                graph = [graph, g]; %#ok<AGROW>
 
                 if this.EventsVisible
                     this.addEventsData(ax, data);
@@ -78,6 +105,10 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
 
         function addEventsData(ax, data)
 
+            if iscell(data) && isscalar(data)
+                data = data{1};
+            end
+
             if isa(data, "mag.TimeSeries")
                 events = data.Events;
             elseif istimetable(data)
@@ -89,9 +120,6 @@ classdef Stackedplot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSuppor
             if isempty(events)
                 return;
             end
-
-            hold(ax, "on");
-            resetAxesHold = onCleanup(@() hold(ax, "off"));
 
             eventTimes = events.Properties.RowTimes;
             eventLabels = events.(events.Properties.EventLabelsVariable);

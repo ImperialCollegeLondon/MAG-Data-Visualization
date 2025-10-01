@@ -1,4 +1,3 @@
 ## Software
 
-- (IMAP) Apply compression processing step before calibration corrections
-- (IMAP) Add ID `mag:time:ParseError` to error thrown for incorrect time formats in `mag.time.decodeTime`
+- (All) Add support for plotting multiple datasets with the same variables in `mag.graphics.chart.Stackedplot`

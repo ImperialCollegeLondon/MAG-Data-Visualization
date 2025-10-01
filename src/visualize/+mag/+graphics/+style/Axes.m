@@ -32,6 +32,10 @@ classdef (Abstract) Axes < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
             for c = this.Charts
 
+                if ~c.isSupported(data)
+                    error("mag:graphics:UnsupportedType", "Chart ""%s"" does not support data of type ""%s"" with size (%d, %d).", class(c), class(data), height(data), width(data));
+                end
+
                 g = c.plot(data, axes, layout);
                 graph = horzcat(graph, g); %#ok<AGROW>
             end

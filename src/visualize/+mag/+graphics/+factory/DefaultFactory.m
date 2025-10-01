@@ -10,7 +10,7 @@ classdef DefaultFactory < mag.graphics.factory.Factory
             end
 
             arguments (Input, Repeating)
-                data {mustBeA(data, ["mag.Data", "tabular"])}
+                data {mustBeA(data, ["mag.Data", "tabular", "cell"])}
                 styles (1, :) mag.graphics.style.Axes
             end
 
@@ -100,7 +100,7 @@ classdef DefaultFactory < mag.graphics.factory.Factory
 
             arguments (Input)
                 t (1, 1) matlab.graphics.layout.TiledChartLayout
-                data {mustBeA(data, ["mag.Data", "tabular"])}
+                data {mustBeA(data, ["mag.Data", "tabular", "cell"])}
                 styles (1, :) mag.graphics.style.Axes
             end
 
