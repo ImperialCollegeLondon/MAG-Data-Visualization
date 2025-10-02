@@ -129,6 +129,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             dummyAnalysis = mag.imap.Analysis();
 
             this.LocationEditField.Value = string.empty();
+            this.LevelDropDown.ValueIndex = 1;
             this.EventPatternEditField.Value = join(dummyAnalysis.EventPattern, pathsep());
             this.MetadataPatternEditField.Value = join(dummyAnalysis.MetadataPattern, pathsep());
             this.SciencePatternEditField.Value = dummyAnalysis.SciencePattern;
