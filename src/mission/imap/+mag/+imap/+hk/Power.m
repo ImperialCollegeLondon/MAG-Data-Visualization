@@ -50,8 +50,8 @@ classdef Power < mag.HK
         MAGiSatFlagY (:, 1) logical
         % MAGISATFLAGZ Inboard sensor z-axis saturation flag.
         MAGiSatFlagZ (:, 1) logical
-        % MISSEDITF Number of missed ITF frames.
-        MissedITF (:, 1) double
+        % MISSEDITFS Number of missed ITF frames.
+        MissedITFs (:, 1) double
     end
 
     methods
@@ -152,8 +152,8 @@ classdef Power < mag.HK
             magiSatFlagZ = this.convertToLogical(this.Data.MAGISATFLAGZ);
         end
 
-        function missedITF = get.MissedITF(this)
-            missedITF = this.Data.MAGITFMISSCNT;
+        function missedITFs = get.MissedITFs(this)
+            missedITFs = this.Data.MAGITFMISSCNT;
         end
     end
 

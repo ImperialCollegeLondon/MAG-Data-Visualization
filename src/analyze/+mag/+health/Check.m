@@ -16,11 +16,20 @@ classdef (Abstract) Check < matlab.mixin.Heterogeneous & mag.mixin.SetGet
             end
 
             [this.Results] = deal(mag.health.Result.empty());
-            arrayfun(@(c) c.run(results), this);
+
+            for c = this(:)'
+
+                if c.isSupported(results)
+                    c.run(results);
+                end
+            end
         end
     end
 
     methods (Abstract)
+
+        % ISSUPPORTED Determine whether results are supported.
+        supported = isSupported(this, results)
 
         % RUN Run checks on specified results.
         run(this, results)

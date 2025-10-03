@@ -61,7 +61,7 @@ classdef tHealthManager < mag.test.case.ViewControllerTestCase
             testCase.verifyEqual(manager.SummaryLamp.Color, hex2rgb(expectedStatus.Color), "Lamp color should match expectation.");
             testCase.verifyEqual(manager.SummaryLamp.Tooltip, char(expectedStatus), "Lamp tooltip should match expectation.");
 
-            testCase.verifySize(manager.IndividualTable.Data, [19, 3], "Table size should match expectation.");
+            testCase.verifySize(manager.IndividualTable.Data, [22, 3], "Table size should match expectation.");
         end
 
         % Test that when no health data is available, nothing is shown.

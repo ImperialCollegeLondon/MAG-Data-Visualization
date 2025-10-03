@@ -58,6 +58,23 @@ classdef Power < mag.health.Check
 
     methods
 
+        function supported = isSupported(~, results)
+
+            arguments
+                ~
+                results (1, 1) mag.imap.Instrument
+            end
+
+            if ~results.HasHK
+
+                supported = false;
+                return;
+            end
+
+            pwr = results.HK.getHKType("Power");
+            supported = ~isempty(pwr) && pwr.HasData;
+        end
+
         function run(this, results)
 
             arguments
@@ -65,20 +82,23 @@ classdef Power < mag.health.Check
                 results (1, 1) mag.imap.Instrument
             end
 
-            if ~results.HasHK
-                return;
-            end
-
             pwr = results.HK.getHKType("Power");
 
-            if isempty(pwr) || ~pwr.HasData
-                return;
+            % Only check secondary voltages and currents on FM,
+            % as the limits are defined for FM only.
+            if ~isempty(results.Metadata) && ~isempty(results.Metadata.Model)
+                checkSecondary = results.Metadata.Model == "FM";
+            else
+                checkSecondary = true;
             end
 
-            this.checkSecondaryVoltages(pwr);
-            this.checkSecondaryCurrents(pwr);
-            this.checkTemperatures(pwr);
+            if checkSecondary
 
+                this.checkSecondaryVoltages(pwr);
+                this.checkSecondaryCurrents(pwr);
+            end
+
+            this.checkTemperatures(pwr);
             this.checkSaturation(pwr);
             this.checkMissedITFFrames(pwr);
         end
@@ -191,17 +211,17 @@ classdef Power < mag.health.Check
 
         function checkMissedITFFrames(this, pwr)
 
-            if any(pwr.MissedITF > 0)
+            if any(pwr.MissedITFs > 0)
 
                 status = mag.health.Status.Fail;
-                description = compose("%d missed ITF frames.", max(pwr.MissedITF));
+                description = compose("%d missed ITF frames.", max(pwr.MissedITFs));
             else
 
                 status = mag.health.Status.Pass;
                 description = "No missed ITF frames.";
             end
 
-            this.Results(end + 1) = mag.health.Result(Name = "Missed ITF Count", ...
+            this.Results(end + 1) = mag.health.Result(Name = "Missed ITF Count (POWER)", ...
                 Status = status, Description = description);
         end
     end

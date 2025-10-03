@@ -76,27 +76,58 @@ classdef tPower < matlab.unittest.TestCase
             instrument = mag.imap.Instrument(HK = pwr);
             check = mag.imap.health.Power();
 
+            testCase.assertTrue(check.isSupported(instrument), "Check should be supported for valid power HK.");
+
             % Exercise.
             check.run(instrument);
 
             % Verify.
-            testCase.assertNotEmpty(check.Results, "Results should have been populated.");
+            testCase.assertNumElements(check.Results, 5, "Results should have been populated.");
 
             testCase.verifyEqual(matlab.unittest.constraints.EveryElementOf([check.Results.Status]), mag.health.Status.Pass, "All checks should pass.");
         end
 
-        % Test that no checks are run if no power HK is available.
-        function noPowerHK(testCase)
+        % Test that checks are not supported if no HK is available.
+        function noHK(testCase)
 
             % Set up.
             instrument = mag.imap.Instrument();
+            check = mag.imap.health.Power();
+
+            % Exercise and verify.
+            testCase.verifyFalse(check.isSupported(instrument), "Check should not be supported if no HK is available.");
+        end
+
+        % Test that checks are not supported if no power HK is available.
+        function noPowerHK(testCase)
+
+            % Set up.
+            status = mag.imap.hk.Status(timetable(), mag.meta.HK(Type = "Status"));
+
+            instrument = mag.imap.Instrument(HK = status);
+            check = mag.imap.health.Power();
+
+            % Exercise and verify.
+            testCase.verifyFalse(check.isSupported(instrument), "Check should not be supported if no power HK is available.");
+        end
+
+        % Test that secondary voltage and current checks are not run for EM.
+        function noSecondaryChecksOnEM(testCase)
+
+            % Set up.
+            pwr = testCase.createTestPowerHK();
+            metadata = mag.meta.Instrument(Model = "EM");
+
+            instrument = mag.imap.Instrument(HK = pwr, Metadata = metadata);
             check = mag.imap.health.Power();
 
             % Exercise.
             check.run(instrument);
 
             % Verify.
-            testCase.assertEmpty(check.Results, "Results should not have been populated.");
+            testCase.assertNumElements(check.Results, 3, "Only 3 results should have been populated.");
+
+            testCase.verifyEqual(matlab.unittest.constraints.EveryElementOf([check.Results.Status]), mag.health.Status.Pass, "All checks should pass.");
         end
 
         % Test that checks fail when value is higher than danger high.
@@ -275,7 +306,7 @@ classdef tPower < matlab.unittest.TestCase
                 "P1V5V", "P1V5I", "P1V8V", "P1V8I", "P3V3V", "P3V3I", "P2V5V", "P2V5I", "P8V", "P8VI", "N8V", "N8VI", "P2V4V", ...
                 "MAGOSATFLAG" + ["X", "Y", "Z"], "MAGISATFLAG" + ["X", "Y", "Z"], "MAGITFMISSCNT"]);
 
-            pwr = mag.imap.hk.Power(pwrTT, mag.meta.HK(Typ = "Power"));
+            pwr = mag.imap.hk.Power(pwrTT, mag.meta.HK(Type = "Power"));
         end
     end
 end
