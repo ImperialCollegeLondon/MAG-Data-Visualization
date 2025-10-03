@@ -8,6 +8,18 @@ classdef Processing < mag.Processing
         RampSteps (1, :) mag.process.Step
     end
 
+    methods
+
+        function this = Processing(options)
+
+            arguments
+                options.?mag.imap.Processing
+            end
+
+            this.assignProperties(options);
+        end
+    end
+
     methods (Static)
 
         function processing = getStepsForLevel(level)

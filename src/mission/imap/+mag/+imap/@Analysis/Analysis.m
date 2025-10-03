@@ -55,7 +55,7 @@ classdef Analysis < mag.Analysis
 
             arguments
                 analysisOptions.?mag.imap.Analysis
-                analysisOptions.HealthChecks = [mag.imap.health.Power(), mag.imap.health.SID15()]
+                analysisOptions.HealthChecks = [mag.imap.health.Power(), mag.imap.health.SID15(), mag.imap.health.Processor()]
                 startOptions.Level (1, 1) mag.imap.meta.Level = mag.imap.meta.Level.L1a
             end
 
