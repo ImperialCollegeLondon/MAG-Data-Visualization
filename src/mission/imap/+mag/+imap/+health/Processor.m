@@ -70,19 +70,19 @@ classdef Processor < mag.health.Check
             end
 
             property = compose("%sITFs", state);
-            state = lower(state);
+            lowerState = lower(state);
 
             if any(procStat.(property) > 0)
 
                 status = mag.health.Status.Fail;
-                description = compose("%d %s ITF frames.", max(procStat.(property)), state);
+                description = compose("%d %s ITF frames.", max(procStat.(property)), lowerState);
             else
 
                 status = mag.health.Status.Pass;
-                description = compose("No %s ITF frames.", state);
+                description = compose("No %s ITF frames.", lowerState);
             end
 
-            this.Results(end + 1) = mag.health.Result(Name = compose("%s ITF Count", state), ...
+            this.Results(end + 1) = mag.health.Result(Name = compose("%s ITF Count (PROCSTAT)", state), ...
                 Status = status, Description = description);
         end
     end

@@ -221,7 +221,7 @@ classdef Power < mag.health.Check
                 description = "No missed ITF frames.";
             end
 
-            this.Results(end + 1) = mag.health.Result(Name = "Missed ITF Count", ...
+            this.Results(end + 1) = mag.health.Result(Name = "Missed ITF Count (POWER)", ...
                 Status = status, Description = description);
         end
     end
