@@ -22,23 +22,33 @@ classdef tSID15 < matlab.unittest.TestCase
             check.run(instrument);
 
             % Verify.
-            testCase.assertNotEmpty(check.Results, "Results should have been populated.");
+            testCase.assertNumElements(check.Results, 1, "Results should have been populated.");
 
             testCase.verifyEqual(matlab.unittest.constraints.EveryElementOf([check.Results.Status]), mag.health.Status.Pass, "All checks should pass.");
         end
 
-        % Test that no checks are run if no SID15 HK is available.
-        function noSID15HK(testCase)
+        % Test that checks are not supported if no HK is available.
+        function noHK(testCase)
 
             % Set up.
             instrument = mag.imap.Instrument();
             check = mag.imap.health.SID15();
 
-            % Exercise.
-            check.run(instrument);
+            % Exercise and verify.
+            testCase.verifyFalse(check.isSupported(instrument), "Check should not be supported if no HK is available.");
+        end
 
-            % Verify.
-            testCase.assertEmpty(check.Results, "Results should not have been populated.");
+        % Test that checks are not supported if no SID15 HK is available.
+        function noSID15HK(testCase)
+
+            % Set up.
+            status = mag.imap.hk.Status(timetable(), mag.meta.HK(Type = "Status"));
+
+            instrument = mag.imap.Instrument(HK = status);
+            check = mag.imap.health.SID15();
+
+            % Exercise and verify.
+            testCase.verifyFalse(check.isSupported(instrument), "Check should not be supported if no SID15 HK is available.");
         end
 
         % Test that checks fail on sensor activation failure.
@@ -100,7 +110,7 @@ classdef tSID15 < matlab.unittest.TestCase
                 5 * onesArray, ...
                 VariableNames = ["ISV_FOB_ACTTRIES", "ISV_FIB_ACTTRIES"]);
 
-            sid15 = mag.imap.hk.SID15(sid15TT, mag.meta.HK(Typ = "SID15"));
+            sid15 = mag.imap.hk.SID15(sid15TT, mag.meta.HK(Type = "SID15"));
         end
     end
 end

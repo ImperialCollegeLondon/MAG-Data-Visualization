@@ -10,6 +10,23 @@ classdef SID15 < mag.health.Check
 
     methods
 
+        function supported = isSupported(~, results)
+
+            arguments
+                ~
+                results (1, 1) mag.imap.Instrument
+            end
+
+            if ~results.HasHK
+
+                supported = false;
+                return;
+            end
+
+            sid15 = results.HK.getHKType("SID15");
+            supported = ~isempty(sid15) && sid15.HasData;
+        end
+
         function run(this, results)
 
             arguments
@@ -17,16 +34,7 @@ classdef SID15 < mag.health.Check
                 results (1, 1) mag.imap.Instrument
             end
 
-            if ~results.HasHK
-                return;
-            end
-
             sid15 = results.HK.getHKType("SID15");
-
-            if isempty(sid15) || ~sid15.HasData
-                return;
-            end
-
             this.checkActivations(sid15);
         end
     end
