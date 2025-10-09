@@ -1,9 +1,3 @@
-## App
-
-- (IMAP) Also reset IMAP data processing level on "Reset"
-
 ## Software
 
-- (All) Add support for plotting multiple datasets with the same variables in `mag.graphics.chart.Stackedplot`
-- (IMAP) Add health checks for PROCSTAT HK, including single bit error, missed and rejected ITF frames
-- (IMAP) Do not run secondary voltages and currents health checks on EM
+- (IMAP) Adjust health check limits for 1.8 V and 3.3 V currents based on in-flight data
