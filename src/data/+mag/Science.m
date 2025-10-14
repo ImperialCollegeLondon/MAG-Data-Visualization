@@ -330,12 +330,14 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             name = supportedSensors(locSelected);
         end
 
-        function science = select(this, selected)
-        % SELECT Return primary or secondary sensor.
+        function science = select(this, options)
+        % SELECT Return sensor based on filters.
 
             arguments (Input)
                 this (1, :) mag.Science
-                selected (1, 1) string {mustBeMember(selected, ["Outboard", "Inboard", "Primary", "Secondary"])}
+                options.Primary logical {mustBeScalarOrEmpty} = logical.empty()
+                options.Sensor mag.meta.Sensor {mustBeScalarOrEmpty} = mag.meta.Sensor.empty()
+                options.Model string {mustBeScalarOrEmpty} = string.empty()
             end
 
             arguments (Output)
@@ -348,12 +350,17 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 return;
             end
 
+            numFilters = nnz([~isempty(options.Primary), ~isempty(options.Sensor), ~isempty(options.Model)]);
+            assert(numFilters == 1, "Exactly one filter must be specified.");
+
             metadata = [this.Metadata];
 
-            if contains(selected, "board")
-                locSelected = [metadata.Sensor] == ("F" + extract(selected, regexpPattern("O|I")) + "B");
-            else
-                locSelected = [metadata.Primary] == isequal(selected, "Primary");
+            if ~isempty(options.Primary)
+                locSelected = [metadata.Primary] == options.Primary;
+            elseif ~isempty(options.Sensor)
+                locSelected = [metadata.Sensor] == options.Sensor;
+            elseif ~isempty(options.Model)
+                locSelected = arrayfun(@(x) isequal(x.Setup.Model, options.Model), metadata);
             end
 
             science = this(locSelected);

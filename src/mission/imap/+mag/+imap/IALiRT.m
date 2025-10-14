@@ -37,11 +37,11 @@ classdef IALiRT < matlab.mixin.Copyable & mag.mixin.SetGet & mag.mixin.Crop & ma
         end
 
         function primary = get.Primary(this)
-            primary = this.Science.select("Primary");
+            primary = this.Science.select(Primary = true);
         end
 
         function secondary = get.Secondary(this)
-            secondary = this.Science.select("Secondary");
+            secondary = this.Science.select(Primary = false);
         end
 
         function value = isPlottable(this)
