@@ -125,9 +125,13 @@ classdef tPower < matlab.unittest.TestCase
             check.run(instrument);
 
             % Verify.
-            testCase.assertNumElements(check.Results, 3, "Only 3 results should have been populated.");
+            testCase.assertNotEmpty(check.Results, "Results should have been populated.");
 
-            testCase.verifyEqual(matlab.unittest.constraints.EveryElementOf([check.Results.Status]), mag.health.Status.Pass, "All checks should pass.");
+            locIncomplete = [check.Results.Status] == mag.health.Status.Incomplete;
+            testCase.assertEqual(nnz(locIncomplete), 2, "Only 2 checks should be incomplete.");
+
+            incompleteChecks = check.Results(locIncomplete);
+            testCase.verifySubstring(matlab.unittest.constraints.EveryElementOf([incompleteChecks.Name]), "Secondary", "Incomplete checks should match expectation.");
         end
 
         % Test that checks fail when value is higher than danger high.

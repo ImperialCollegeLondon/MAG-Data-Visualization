@@ -87,16 +87,13 @@ classdef Power < mag.health.Check
             % Only check secondary voltages and currents on FM,
             % as the limits are defined for FM only.
             if ~isempty(results.Metadata) && ~isempty(results.Metadata.Model)
-                checkSecondary = results.Metadata.Model == "FM";
+                skipSecondaryChecks = results.Metadata.Model ~= "FM";
             else
-                checkSecondary = true;
+                skipSecondaryChecks = false;
             end
 
-            if checkSecondary
-
-                this.checkSecondaryVoltages(pwr);
-                this.checkSecondaryCurrents(pwr);
-            end
+            this.checkSecondaryVoltages(pwr, skipSecondaryChecks);
+            this.checkSecondaryCurrents(pwr, skipSecondaryChecks);
 
             this.checkTemperatures(pwr);
             this.checkSaturation(pwr);
@@ -106,7 +103,13 @@ classdef Power < mag.health.Check
 
     methods (Access = private)
 
-        function checkSecondaryVoltages(this, pwr)
+        function checkSecondaryVoltages(this, pwr, skipCheck)
+
+            if skipCheck
+
+                this.Results(end + 1) = mag.health.Result(Name = "Secondary Voltages", Status = "Incomplete", Description = "Secondary voltage limits are only defined for IMAP FM.");
+                return;
+            end
 
             results = mag.health.Result.empty();
 
@@ -133,7 +136,13 @@ classdef Power < mag.health.Check
             this.Results = [this.Results, results];
         end
 
-        function checkSecondaryCurrents(this, pwr)
+        function checkSecondaryCurrents(this, pwr, skipCheck)
+
+            if skipCheck
+
+                this.Results(end + 1) = mag.health.Result(Name = "Secondary Currents", Status = "Incomplete", Description = "Secondary current limits are only defined for IMAP FM.");
+                return;
+            end
 
             results = mag.health.Result.empty();
 
