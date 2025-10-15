@@ -39,8 +39,11 @@ classdef Status
                 this (1, :) mag.health.Status
             end
 
-            [~, idxMin] = min(abs([this.Value]));
-            value = this(idxMin);
+            locInclude = [this.Value] >= 0;
+            these = this(locInclude);
+
+            [~, idxMin] = min([these.Value]);
+            value = these(idxMin);
         end
 
         function color = getThemedColor(this, figure)

@@ -15,6 +15,18 @@ classdef tStatus < matlab.unittest.TestCase
             testCase.verifyEqual(worstStatus, mag.health.Status.Pass, "Worst status should be ""Pass"".");
         end
 
+        function getWorst_pass_withIncomplete(testCase)
+
+            % Set up.
+            status = [mag.health.Status.Incomplete, mag.health.Status.Pass, mag.health.Status.Incomplete];
+
+            % Exercise.
+            worstStatus = status.getWorst();
+
+            % Verify.
+            testCase.verifyEqual(worstStatus, mag.health.Status.Pass, "Worst status should be ""Pass"".");
+        end
+
         function getWorst_borderline(testCase)
 
             % Set up.
