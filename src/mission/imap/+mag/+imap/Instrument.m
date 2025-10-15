@@ -35,19 +35,19 @@ classdef Instrument < mag.Instrument
         end
 
         function outboard = get.Outboard(this)
-            outboard = this.Science.select("Outboard");
+            outboard = this.Science.select(Sensor = "FOB");
         end
 
         function inboard = get.Inboard(this)
-            inboard = this.Science.select("Inboard");
+            inboard = this.Science.select(Sensor = "FIB");
         end
 
         function primary = get.Primary(this)
-            primary = this.Science.select("Primary");
+            primary = this.Science.select(Primary = true);
         end
 
         function secondary = get.Secondary(this)
-            secondary = this.Science.select("Secondary");
+            secondary = this.Science.select(Primary = false);
         end
 
         function cropScience(this, filters)
