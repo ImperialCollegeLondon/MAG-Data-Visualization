@@ -360,7 +360,9 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             elseif ~isempty(options.Sensor)
                 locSelected = [metadata.Sensor] == options.Sensor;
             elseif ~isempty(options.Model)
-                locSelected = arrayfun(@(x) isequal(x.Setup.Model, options.Model), metadata);
+
+                setup = [metadata.Setup];
+                locSelected = arrayfun(@(x) isequal(x.Model, options.Model), setup);
             end
 
             science = this(locSelected);
