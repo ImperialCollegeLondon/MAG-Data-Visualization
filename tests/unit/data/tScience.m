@@ -553,6 +553,39 @@ classdef tScience < matlab.unittest.TestCase
             testCase.verifyEqual(science.select(Sensor = "FOB"), science2, "Outboard sensor should be returned when asked.");
         end
 
+        % Test that correct sensor model is selected.
+        function select_model(testCase)
+
+            % Set up.
+            setup1 = mag.meta.Setup(Model = "FM4");
+            science1 = testCase.createTestData();
+            science1.Metadata.Setup = setup1;
+
+            setup2 = mag.meta.Setup(Model = "FM5");
+            science2 = testCase.createTestData();
+            science2.Metadata.Setup = setup2;
+
+            science = [science1, science2];
+
+            % Exercise and verify.
+            testCase.verifyEqual(science.select(Model = "FM5"), science2, "FM5 sensor should be returned when asked.");
+        end
+
+        % Test that no sensor is returned when no metadata is defined.
+        function select_noMetadata(testCase)
+
+            % Set up.
+            science1 = testCase.createTestData();
+            science2 = testCase.createTestData();
+
+            science = [science1, science2];
+
+            % Exercise and verify.
+            testCase.verifyEmpty(science.select(Primary = true), "No sensor should be returned.");
+            testCase.verifyEmpty(science.select(Sensor = "FOB"), "No sensor should be returned.");
+            testCase.verifyEmpty(science.select(Model = "FM5"), "No sensor should be returned.");
+        end
+
         % Test that displaying a single object displays the correct
         % information.
         function customDisplay_singleObject(testCase)
