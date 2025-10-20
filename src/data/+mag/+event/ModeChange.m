@@ -5,9 +5,9 @@ classdef ModeChange < mag.event.Event
         % MODE Mode being changed to.
         Mode (1, 1) mag.meta.Mode = "Normal"
         % PRIMARYNORMALRATE Normal mode rate of primary sensor.
-        PrimaryNormalRate (1, 1) double {mustBeMemberOrMissing(PrimaryNormalRate, [1, 2, 4])} = 2
+        PrimaryNormalRate (1, 1) double {mustBeMemberOrMissing(PrimaryNormalRate, [1, 2, 4, 8])} = 2
         % SECONDARYNORMALRATE Normal mode rate of secondary sensor.
-        SecondaryNormalRate (1, 1) double {mustBeMemberOrMissing(SecondaryNormalRate, [1, 2, 4])} = 2
+        SecondaryNormalRate (1, 1) double {mustBeMemberOrMissing(SecondaryNormalRate, [1, 2, 4, 8])} = 2
         % PRIMARYBURSTRATE Burst mode rate of primary sensor.
         PrimaryBurstRate (1, 1) double {mustBeMemberOrMissing(PrimaryBurstRate, [8, 64, 128])} = 64
         % SECONDARYBURSTRATE Burst mode rate of secondary sensor.
