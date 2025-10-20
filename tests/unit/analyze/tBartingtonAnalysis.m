@@ -20,6 +20,8 @@ classdef tBartingtonAnalysis < matlab.unittest.TestCase
 
             testCase.verifyTrue(analysis.Results.Input1.HasData, "Input 1 should have data.");
             testCase.verifyFalse(analysis.Results.Input2.HasData, "Input 1 should not have data.");
+
+            testCase.verifyEqual(analysis.Results.Metadata.Mission, mag.meta.Mission.Bartington, "Mission metadata should be set to ""Bartington"".");
         end
     end
 end
