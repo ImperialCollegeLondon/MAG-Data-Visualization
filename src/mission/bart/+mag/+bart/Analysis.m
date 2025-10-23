@@ -73,7 +73,8 @@ classdef Analysis < mag.Analysis
 
         function load(this)
 
-            this.Results = mag.bart.Instrument();
+            metadata = mag.meta.Instrument(Mission = mag.meta.Mission.Bartington);
+            this.Results = mag.bart.Instrument(Metadata = metadata);
 
             this.loadScienceData();
         end
