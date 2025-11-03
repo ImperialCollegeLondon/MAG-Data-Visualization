@@ -21,16 +21,18 @@ classdef IsField < matlab.unittest.constraints.BooleanConstraint & ...
 
     methods (Hidden, Sealed)
 
-        function diag = getConstraintDiagnosticFor(constraint, actual)
+        function diag = getConstraintDiagnosticFor(constraint, actual, isNegative)
+
+            if isNegative
+                sense = matlab.unittest.internal.diagnostics.DiagnosticSense.Negative;
+            else
+                sense = matlab.unittest.internal.diagnostics.DiagnosticSense.Positive;
+            end
 
             if constraint.satisfiedBy(actual)
-
-                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generatePassingDiagnostic(constraint, ...
-                    matlab.unittest.internal.diagnostics.DiagnosticSense.Positive, actual);
+                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generatePassingDiagnostic(constraint, sense, actual);
             else
-
-                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generateFailingDiagnostic(constraint, ...
-                    matlab.unittest.internal.diagnostics.DiagnosticSense.Positive, actual);
+                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generateFailingDiagnostic(constraint, sense, actual);
             end
         end
     end
@@ -38,7 +40,7 @@ classdef IsField < matlab.unittest.constraints.BooleanConstraint & ...
     methods (Access = protected)
 
         function diag = getNegativeDiagnosticFor(constraint, actual)
-            diag = getConstraintDiagnosticFor(constraint, actual);
+            diag = constraint.getConstraintDiagnosticFor(actual, true);
         end
     end
 
