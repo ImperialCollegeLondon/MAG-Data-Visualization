@@ -1,5 +1,5 @@
 classdef tPSD < MAGViewTestCase
-% TPSD Unit tests for "mag.imap.view.PSD" class.
+% TPSD Unit tests for "mag.graphics.view.PSD" class.
 
     methods (Test)
 
@@ -20,7 +20,7 @@ classdef tPSD < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.imap.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
+            view = mag.graphics.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
                 Transformation = mockTransformation, Factory = mockFactory);
 
             view.visualize();
@@ -49,7 +49,7 @@ classdef tPSD < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.imap.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
+            view = mag.graphics.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
                 Transformation = mockTransformation, Factory = mockFactory);
 
             view.visualize();
@@ -69,14 +69,16 @@ classdef tPSD < MAGViewTestCase
             psdStart = instrument.Primary.Time(1);
             psdDuration = minutes(5);
 
-            [expectedInputs, mockTransformation] = testCase.generateExpectedInputs(instrument, psdStart, psdDuration);
+            [expectedInputs, mockTransformation] = testCase.generateExpectedInputs(instrument, psdStart, psdDuration, ...
+                Name = "Burst (64 Hz) PSD (%s)", ...
+                Title = "Start: %s - Duration: %s - (64 Hz)");
             expectedOutput = figure();
 
             [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.imap.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
+            view = mag.graphics.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
                 Transformation = mockTransformation, Factory = mockFactory);
 
             view.visualize();
@@ -96,14 +98,16 @@ classdef tPSD < MAGViewTestCase
             psdStart = instrument.Secondary.Time(1);
             psdDuration = minutes(5);
 
-            [expectedInputs, mockTransformation] = testCase.generateExpectedInputs(instrument, psdStart, psdDuration);
+            [expectedInputs, mockTransformation] = testCase.generateExpectedInputs(instrument, psdStart, psdDuration, ...
+                Name = "Burst (8 Hz) PSD (%s)", ...
+                Title = "Start: %s - Duration: %s - (8 Hz)");
             expectedOutput = figure();
 
             [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.imap.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
+            view = mag.graphics.view.PSD(instrument, Start = psdStart, Duration = psdDuration, ...
                 Transformation = mockTransformation, Factory = mockFactory);
 
             view.visualize();
@@ -129,7 +133,7 @@ classdef tPSD < MAGViewTestCase
             when(withAnyInputs(factoryBehavior.assemble()), matlab.mock.actions.Invoke(@(~, varargin) testCase.verifyInputsAndAssignOutput(expectedOutput, expectedInputs, varargin)));
 
             % Exercise.
-            view = mag.imap.view.PSD(instrument, Start = psdStart, Duration = psdDuration, SyncYAxes = true, ...
+            view = mag.graphics.view.PSD(instrument, Start = psdStart, Duration = psdDuration, SyncYAxes = true, ...
                 Transformation = mockTransformation, Factory = mockFactory);
 
             view.visualize();
@@ -150,7 +154,7 @@ classdef tPSD < MAGViewTestCase
             [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
 
             % Exercise.
-            view = mag.imap.view.PSD(instrument, Transformation = mockTransformation, Factory = mockFactory);
+            view = mag.graphics.view.PSD(instrument, Transformation = mockTransformation, Factory = mockFactory);
             view.visualize();
 
             % Verify.

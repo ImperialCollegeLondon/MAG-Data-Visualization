@@ -12,7 +12,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
 
             % Exercise.
@@ -40,7 +40,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
             psd.instantiate(panel);
 
@@ -70,7 +70,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
             psd.instantiate(panel);
 
@@ -106,7 +106,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
             psd.instantiate(panel);
 
