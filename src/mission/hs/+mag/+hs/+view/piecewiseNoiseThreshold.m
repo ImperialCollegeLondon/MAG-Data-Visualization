@@ -1,5 +1,5 @@
 function y = piecewiseNoiseThreshold(x)
-% PIECEWISENOISE Generate noise as a piecewise function.
+% PIECEWISENOISETHRESHOLD Generate noise as a piecewise function.
 
     y(x <= 1) = 1500;
     y((x > 1) & (x <= 2)) = 15;
