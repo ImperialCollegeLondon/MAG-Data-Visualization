@@ -1,4 +1,4 @@
-classdef IsField < matlab.unittest.constraints.Constraint & mag.mixin.SetGet & ...
+classdef IsField < matlab.unittest.constraints.BooleanConstraint & ...
                    matlab.unittest.internal.constraints.HybridDiagnosticMixin & ...
                    matlab.unittest.internal.constraints.HybridCasualDiagnosticMixin
 % ISFIELD Constraint for fields of structs.
@@ -32,6 +32,13 @@ classdef IsField < matlab.unittest.constraints.Constraint & mag.mixin.SetGet & .
                 diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generateFailingDiagnostic(constraint, ...
                     matlab.unittest.internal.diagnostics.DiagnosticSense.Positive, actual);
             end
+        end
+    end
+
+    methods (Access = protected)
+
+        function diag = getNegativeDiagnosticFor(constraint, actual)
+            diag = getConstraintDiagnosticFor(constraint, actual);
         end
     end
 

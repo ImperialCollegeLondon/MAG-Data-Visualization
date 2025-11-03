@@ -23,9 +23,7 @@ classdef (Abstract, HandleCompatible) MarkerSupport
                 "MarkerSize", this.MarkerSize};
 
             if ~isempty(this.MarkerColor)
-
-                style = [style, {"MarkerEdgeColor", this.MarkerColor, ...
-                    "MarkerFaceColor", this.MarkerColor}];
+                style = [style, {"MarkerEdgeColor", this.MarkerColor, "MarkerFaceColor", this.MarkerColor}];
             end
         end
     end
@@ -40,8 +38,11 @@ classdef (Abstract, HandleCompatible) MarkerSupport
 
                 set(graph(i), ...
                     Marker = this.Marker, ...
-                    MarkerSize = this.MarkerSize, ...
-                    MarkerFaceColor = this.MarkerColor);
+                    MarkerSize = this.MarkerSize);
+
+                if ~isempty(this.MarkerColor)
+                    set(graph(i), MarkerEdgeColor = this.MarkerColor, MarkerFaceColor = this.MarkerColor);
+                end
             end
         end
     end
