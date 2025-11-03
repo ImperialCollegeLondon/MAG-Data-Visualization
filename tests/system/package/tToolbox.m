@@ -7,6 +7,7 @@ classdef tToolbox < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRe
 
     properties (Constant, Access = private)
         PackageRoot (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "..", "..", "..")
+        ToolboxName (1, 1) string = mag.internal.getPackageDetails("DisplayName")
     end
 
     properties (TestParameter)
@@ -20,7 +21,7 @@ classdef tToolbox < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRe
             % MATLAB will still execute this method, even if the release
             % check fails.
             if ~isMATLABReleaseOlderThan(testCase.MinimumRelease)
-                testCase.assumeEmpty(mpmlist(mag.buildtool.task.PackageTask.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
+                testCase.assumeEmpty(mpmlist(testCase.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
             end
         end
     end
@@ -55,7 +56,7 @@ classdef tToolbox < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRe
             testCase.assertTrue(isfile(task.ToolboxArtifact.Path), "Toolbox should be generated.");
 
             matlab.addons.install(task.ToolboxArtifact.Path);
-            testCase.addTeardown(@() matlab.addons.uninstall(mag.buildtool.task.PackageTask.ToolboxName));
+            testCase.addTeardown(@() matlab.addons.uninstall(testCase.ToolboxName));
 
             addOns = matlab.addons.installedAddons();
             locMAG = addOns.Name == mag.internal.getPackageDetails("DisplayName");
@@ -69,7 +70,7 @@ classdef tToolbox < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRe
         function task = createPackageTask(testCase)
 
             task = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
-                PackageRoot = testCase.PackageRoot, ...
+                Package = matlab.mpm.Package(testCase.PackageRoot), ...
                 ToolboxPath = fullfile(testCase.PackageRoot, "artifacts", "MAG Data Visualization.mltbx"));
         end
     end

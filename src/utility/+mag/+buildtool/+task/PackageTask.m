@@ -1,19 +1,15 @@
 classdef (Sealed) PackageTask < matlab.buildtool.Task
 % PACKAGETASK Package code into toolbox.
 
-    properties (Constant)
-        ToolboxName (1, 1) string = mag.internal.getPackageDetails("DisplayName")
-    end
-
-    properties (Constant, Access = private)
-        ToolboxUUID (1, 1) string = "69962df8-e93e-47cd-a1d6-766ad3e9da8a"
-    end
-
     properties (TaskInput)
-        % PACKAGEROOT Package root folder.
-        PackageRoot (1, 1) string {mustBeFolder} = pwd()
-        % TOOLBOXVERSION Toolbox configuration project template.
-        ToolboxVersion (1, 1) string = mag.version()
+        % PACKAGE MATLAB package definition.
+        Package matlab.mpm.Package {mustBeScalarOrEmpty}
+        % MINIMUMRELEASE Minimum MATLAB release.
+        MinimumRelease (1, 1) string = "R2024a"
+        % ICON Path to icon.
+        Icon string {mustBeScalarOrEmpty, mustBeFile}
+        % EXTRAFILES Extra files to package.
+        ExtraFiles (1, :) string = string.empty()
         % TOOLBOXPATH Full path to toolbox to package into.
         ToolboxPath string {mustBeScalarOrEmpty}
     end
@@ -49,18 +45,21 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
             arguments
                 task (1, 1) mag.buildtool.task.PackageTask
                 ~
-                version (1, 1) string = task.ToolboxVersion
+                version (1, 1) string = task.Package.Version
             end
 
-            toolboxOptions = matlab.addons.toolbox.ToolboxOptions(task.PackageRoot, task.ToolboxUUID, ...
-                ToolboxName = task.ToolboxName, ...
+            toolboxOptions = matlab.addons.toolbox.ToolboxOptions( ...
+                task.Package.PackageRoot, ...
+                task.Package.ID, ...
                 ToolboxVersion = version, ...
-                Description = mag.internal.getPackageDetails("Description"), ...
                 ToolboxFiles = task.getToolboxFiles(), ...
                 ToolboxMatlabPath = task.getMATLABPath(), ...
-                ToolboxImageFile = fullfile(task.PackageRoot, "icons", "logo.png"), ...
                 OutputFile = task.ToolboxPath, ...
-                MinimumMATLABRelease = "R2024a");
+                MinimumMATLABRelease = task.MinimumRelease);
+
+            if ~isempty(task.Icon)
+                toolboxOptions.ToolboxImageFile = task.Icon;
+            end
 
             toolboxOptions.SupportedPlatforms.Win64 = true;
             toolboxOptions.SupportedPlatforms.Maci64 = true;
@@ -75,19 +74,15 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
 
         function files = getToolboxFiles(task)
 
-            files = fullfile(task.PackageRoot, ["app", "src", ...
-                fullfile("resources", "extensions.json"), ...
-                fullfile("icons", "mag.png")]);
+            files = fullfile(task.Package.PackageRoot, ["app", "src", ...
+                task.ExtraFiles]);
         end
-    end
 
-    methods (Static, Access = private)
-
-        function matlabPath = getMATLABPath()
+        function matlabPath = getMATLABPath(task)
 
             matlabPath = string(split(path(), pathsep()));
 
-            locMAG = contains(matlabPath, "MAG-Data-Visualization") & ~contains(matlabPath, "tests");
+            locMAG = contains(matlabPath, task.Package.PackageRoot) & ~contains(matlabPath, "test" | "tests");
             matlabPath = matlabPath(locMAG);
         end
     end
