@@ -1,4 +1,4 @@
-classdef IsField < matlab.unittest.constraints.Constraint & mag.mixin.SetGet & ...
+classdef IsField < matlab.unittest.constraints.BooleanConstraint & ...
                    matlab.unittest.internal.constraints.HybridDiagnosticMixin & ...
                    matlab.unittest.internal.constraints.HybridCasualDiagnosticMixin
 % ISFIELD Constraint for fields of structs.
@@ -21,17 +21,26 @@ classdef IsField < matlab.unittest.constraints.Constraint & mag.mixin.SetGet & .
 
     methods (Hidden, Sealed)
 
-        function diag = getConstraintDiagnosticFor(constraint, actual)
+        function diag = getConstraintDiagnosticFor(constraint, actual, isNegative)
+
+            if isNegative
+                sense = matlab.unittest.internal.diagnostics.DiagnosticSense.Negative;
+            else
+                sense = matlab.unittest.internal.diagnostics.DiagnosticSense.Positive;
+            end
 
             if constraint.satisfiedBy(actual)
-
-                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generatePassingDiagnostic(constraint, ...
-                    matlab.unittest.internal.diagnostics.DiagnosticSense.Positive, actual);
+                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generatePassingDiagnostic(constraint, sense, actual);
             else
-
-                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generateFailingDiagnostic(constraint, ...
-                    matlab.unittest.internal.diagnostics.DiagnosticSense.Positive, actual);
+                diag = matlab.unittest.internal.diagnostics.ConstraintDiagnosticFactory.generateFailingDiagnostic(constraint, sense, actual);
             end
+        end
+    end
+
+    methods (Access = protected)
+
+        function diag = getNegativeDiagnosticFor(constraint, actual)
+            diag = constraint.getConstraintDiagnosticFor(actual, true);
         end
     end
 

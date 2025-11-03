@@ -1,4 +1,11 @@
+## App
+
+- (All) Add option to show HelioSwarm noise threshold for PSD plots
+
 ## Software
 
-- (Bartington) Set `Bartington` as mission metadata for Bartington analysis
-- (IMAP) Allow Normal mode with 8 Hz rate
+- (All) Add ability to specify custom noise thresholds in PSD plots
+
+## Package
+
+- Update packaging to use MATLAB MPM Package definition

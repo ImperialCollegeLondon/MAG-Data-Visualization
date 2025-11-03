@@ -13,6 +13,7 @@ classdef PSD < mag.app.Control
         Layout matlab.ui.container.GridLayout
         StartTimeSlider mag.app.component.DatetimeSlider
         DurationSpinner matlab.ui.control.Spinner
+        NoiseThresholdDropDown matlab.ui.control.DropDown
         SyncYAxesCheckBox matlab.ui.control.CheckBox
     end
 
@@ -55,9 +56,18 @@ classdef PSD < mag.app.Control
             this.DurationSpinner.Layout.Row = 2;
             this.DurationSpinner.Layout.Column = [2, 3];
 
+            % Noise threshold.
+            noiseThresholdLabel = uilabel(this.Layout, Text = "Noise threshold:");
+            noiseThresholdLabel.Layout.Row = 3;
+            noiseThresholdLabel.Layout.Column = 1;
+
+            this.NoiseThresholdDropDown = uidropdown(this.Layout, Items = ["Default", "HelioSwarm"]);
+            this.NoiseThresholdDropDown.Layout.Row = 3;
+            this.NoiseThresholdDropDown.Layout.Column = [2, 3];
+
             % Sync y-axes.
             this.SyncYAxesCheckBox = uicheckbox(this.Layout, Text = "Sync y-axes");
-            this.SyncYAxesCheckBox.Layout.Row = 3;
+            this.SyncYAxesCheckBox.Layout.Row = 4;
             this.SyncYAxesCheckBox.Layout.Column = 2;
 
             % Note.
@@ -84,9 +94,18 @@ classdef PSD < mag.app.Control
             startTime = this.StartTimeSlider.SelectedTime;
             duration = hours(this.DurationSpinner.Value);
 
+            switch this.NoiseThresholdDropDown.Value
+                case "HelioSwarm"
+
+                    noiseThreshold = {"NoiseThreshold", mag.graphics.chart.Function(Callable = @mag.hs.view.piecewiseNoiseThreshold, ...
+                        LineStyle = "--", Color = "black")};
+                otherwise % including "Default"
+                    noiseThreshold = {};
+            end
+
             command = mag.app.Command(Functional = @(varargin) this.ViewType(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
-                NamedArguments = struct(Start = startTime, Duration = duration, SyncYAxes = this.SyncYAxesCheckBox.Value));
+                NamedArguments = struct(noiseThreshold{:}, Start = startTime, Duration = duration, SyncYAxes = this.SyncYAxesCheckBox.Value));
         end
     end
 end

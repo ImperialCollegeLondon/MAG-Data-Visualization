@@ -12,7 +12,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
 
             % Exercise.
@@ -21,6 +21,8 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             % Verify.
             testCase.assertNotEmpty(psd.StartTimeSlider, "Start date slider should not be empty.");
             testCase.assertNotEmpty(psd.DurationSpinner, "Duration spinner should not be empty.");
+            testCase.assertNotEmpty(psd.NoiseThresholdDropDown, "Noise threshold dropdown should not be empty.");
+            testCase.assertNotEmpty(psd.SyncYAxesCheckBox, "Sync y-axes checkbox should not be empty.");
 
             testCase.verifyEqual(psd.StartTimeSlider.Layout, matlab.ui.layout.GridLayoutOptions(Row = 1, Column = [2, 3]), ...
                 "Start date picker layout should match expectation.");
@@ -29,6 +31,9 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             testCase.verifyEqual(psd.DurationSpinner.Limits, [0, Inf], "Duration spinner limits should match expectation.");
             testCase.verifyEqual(psd.DurationSpinner.Layout, matlab.ui.layout.GridLayoutOptions(Row = 2, Column = [2, 3]), ...
                 "Duration spinner layout should match expectation.");
+
+            testCase.verifyEqual(psd.NoiseThresholdDropDown.Value, 'Default', "Noise threshold dropdown should match expectation.");
+            testCase.verifyEqual(psd.SyncYAxesCheckBox.Value, false, "Sync y-axes checkbox value should match expectation.");
         end
 
         % Test that "getVisualizeCommand" returns expected command.
@@ -40,7 +45,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
             psd.instantiate(panel);
 
@@ -52,12 +57,15 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             % Verify.
             testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
 
-            for f = ["Start", "Duration"]
+            for f = ["Start", "Duration", "SyncYAxes"]
                 testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField(f), compose("""%s"" should be a named argument.", f));
             end
 
             testCase.verifyEqual(command.NamedArguments.Start, psd.StartTimeSlider.SelectedTime, """Start"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.Duration, hours(1), """Duration"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
+
+            testCase.assertThat(command.NamedArguments, ~mag.test.constraint.IsField("NoiseThreshold"), """NoiseThreshold"" should not be a named argument.");
         end
 
         % Test that "getVisualizeCommand" returns expected command, when
@@ -70,7 +78,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
             psd.instantiate(panel);
 
@@ -88,12 +96,15 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             % Verify.
             testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
 
-            for f = ["Start", "Duration"]
+            for f = ["Start", "Duration", "SyncYAxes"]
                 testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField(f), compose("""%s"" should be a named argument.", f));
             end
 
             testCase.verifyEqual(command.NamedArguments.Start, expectedStartDate, """Start"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.Duration, hours(1), """Duration"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
+
+            testCase.assertThat(command.NamedArguments, ~mag.test.constraint.IsField("NoiseThreshold"), """NoiseThreshold"" should not be a named argument.");
         end
 
         % Test that "getVisualizeCommand" returns expected command, when
@@ -106,7 +117,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             model = mag.app.bart.Model();
             model.analyze({});
 
-            psd = mag.app.control.PSD(@mag.bart.view.PSD);
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
             psd.Model = model;
             psd.instantiate(panel);
 
@@ -120,12 +131,85 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             % Verify.
             testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
 
-            for f = ["Start", "Duration"]
+            for f = ["Start", "Duration", "SyncYAxes"]
                 testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField(f), compose("""%s"" should be a named argument.", f));
             end
 
             testCase.verifyEqual(command.NamedArguments.Start, psd.StartTimeSlider.SelectedTime, """Start"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.Duration, hours(2.15), """Duration"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
+
+            testCase.assertThat(command.NamedArguments, ~mag.test.constraint.IsField("NoiseThreshold"), """NoiseThreshold"" should not be a named argument.");
+        end
+
+        % Test that "getVisualizeCommand" returns expected command, when
+        % "NoiseThreshold" is modified.
+        function getVisualizeCommand_noiseThreshold(testCase)
+
+            % Set up.
+            panel = testCase.createTestPanel();
+
+            model = mag.app.bart.Model();
+            model.analyze({});
+
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
+            psd.Model = model;
+            psd.instantiate(panel);
+
+            psd.NoiseThresholdDropDown.Value = "HelioSwarm";
+
+            results = mag.bart.Instrument();
+
+            % Exercise.
+            command = psd.getVisualizeCommand(results);
+
+            % Verify.
+            testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
+
+            for f = ["Start", "Duration", "NoiseThreshold", "SyncYAxes"]
+                testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField(f), compose("""%s"" should be a named argument.", f));
+            end
+
+            testCase.verifyEqual(command.NamedArguments.Start, psd.StartTimeSlider.SelectedTime, """Start"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.Duration, hours(1), """Duration"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.NoiseThreshold, mag.graphics.chart.Function(Callable = @mag.hs.view.piecewiseNoiseThreshold,LineStyle = "--", Color = "black"), ...
+                """NoiseThreshold"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
+        end
+
+        % Test that "getVisualizeCommand" returns expected command, when
+        % "Sync y-axes" is modified.
+        function getVisualizeCommand_syncYAxes(testCase)
+
+            % Set up.
+            panel = testCase.createTestPanel();
+
+            model = mag.app.bart.Model();
+            model.analyze({});
+
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
+            psd.Model = model;
+            psd.instantiate(panel);
+
+            psd.SyncYAxesCheckBox.Value = true;
+
+            results = mag.bart.Instrument();
+
+            % Exercise.
+            command = psd.getVisualizeCommand(results);
+
+            % Verify.
+            testCase.verifyEqual(command.PositionalArguments, {results}, "Visualize command positional arguments should match expectation.");
+
+            for f = ["Start", "Duration", "SyncYAxes"]
+                testCase.assertThat(command.NamedArguments, mag.test.constraint.IsField(f), compose("""%s"" should be a named argument.", f));
+            end
+
+            testCase.verifyEqual(command.NamedArguments.Start, psd.StartTimeSlider.SelectedTime, """Start"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.Duration, hours(1), """Duration"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.SyncYAxes, true, """Sync y-axes"" should match expectation.");
+
+            testCase.assertThat(command.NamedArguments, ~mag.test.constraint.IsField("NoiseThreshold"), """NoiseThreshold"" should not be a named argument.");
         end
     end
 end
