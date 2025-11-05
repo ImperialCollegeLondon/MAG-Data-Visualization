@@ -496,8 +496,8 @@ classdef Analysis < mag.Analysis
                 end
             else
 
-                error("Cannot retrieve ""mag.imap.Analysis"" from ""%s"". Data needs to be reprocessed:" + newline() + newline() + ...
-                    ">> mag.imap.Analysis.start(Location = ""%s"")", class(object), object.Location);
+                error("mag:loadobj:IncompatibleVersion", "Cannot retrieve ""mag.imap.Analysis"" from ""%s"". Data needs to be reprocessed:" ...
+                    + newline() + newline() + ">> mag.imap.Analysis.start(Location = ""%s"")", class(object), object.Location);
             end
         end
     end
