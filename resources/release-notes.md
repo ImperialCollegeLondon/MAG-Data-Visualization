@@ -1,3 +1,3 @@
-## Software
+## Package
 
-- (IMAP) Add ID to error thrown when `loadobj` cannot load incompatible versions
+- Add utility method for determining installed AddOn version

@@ -15,21 +15,8 @@ function v = version()
         % Look for installed toolbox.
         if isempty(ver)
 
-            root = fullfile(fileparts(mfilename("fullpath")), "../../../");
-            addon = fullfile(root, "resources", "addons_core.xml");
-
-            if isfile(addon)
-
-                details = readstruct(addon);
-                ver = details.version;
-            else
-                error("Could not determine version from AddOns.");
-            end
-        end
-
-        % Sometimes, the version gets loaded as a datetime!
-        if isdatetime(ver)
-            ver = compose("%d.%d.%d", ver.Day, ver.Month, ver.Year);
+            addOnRoot = fullfile(fileparts(mfilename("fullpath")), "../../../");
+            ver = mag.internal.getAddOnVersion(addOnRoot);
         end
     end
 
