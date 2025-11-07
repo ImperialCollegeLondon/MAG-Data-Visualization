@@ -4,4 +4,5 @@
 
 ## Software
 
+- (All) Do not apply sensor rotation to HelioSwarm SEN sensors
 - (IMAP) Do not throw error when loading incompatible IMAP analysis objects
