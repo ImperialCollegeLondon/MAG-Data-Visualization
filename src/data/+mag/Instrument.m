@@ -180,31 +180,6 @@ classdef Instrument < handle & matlab.mixin.Copyable & matlab.mixin.CustomDispla
         end
     end
 
-    methods (Hidden, Sealed, Static)
-
-        function loadedObject = loadobj(object)
-        % LOADOBJ Override default loading from MAT file.
-
-            if isa(object, "mag.Instrument")
-                loadedObject = object;
-            else
-
-                if ~isfield(object, "Science")
-
-                    science = [object.Primary, object.Secondary];
-                    object = rmfield(object, ["Primary", "Secondary"]);
-
-                    args = namedargs2cell(object);
-                    loadedObject = mag.imap.Instrument(args{:}, Science = science);
-                else
-
-                    args = namedargs2cell(object);
-                    loadedObject = mag.imap.Instrument(args{:});
-                end
-            end
-        end
-    end
-
     methods (Access = protected)
 
         function copiedThis = copyElement(this)

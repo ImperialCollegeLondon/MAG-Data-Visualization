@@ -473,32 +473,4 @@ classdef Analysis < mag.Analysis
         % FINDMODECHANGES Improve estimate of mode change times.
         eventData = findModeChanges(data, eventData, name)
     end
-
-    methods (Hidden, Sealed, Static)
-
-        function loadedObject = loadobj(object)
-        % LOADOBJ Override default loading from MAT file.
-
-            if isa(object, "mag.imap.Analysis")
-
-                loadedObject = object;
-
-                if strlength(object.OriginalVersion) ~= 0
-                    return;
-                end
-
-                % If no original version is available, make sure the HK
-                % data is dispatched to the correct classes.
-                results = loadedObject.Results;
-
-                for hk = 1:numel(results.HK)
-                    results.HK(hk) = mag.imap.hk.dispatchHKType(results.HK(hk).Data, results.HK(hk).Metadata);
-                end
-            else
-
-                error("mag:loadobj:IncompatibleVersion", "Cannot retrieve ""mag.imap.Analysis"" from ""%s"". Data needs to be reprocessed:" ...
-                    + newline() + newline() + ">> mag.imap.Analysis.start(Location = ""%s"")", class(object), object.Location);
-            end
-        end
-    end
 end
