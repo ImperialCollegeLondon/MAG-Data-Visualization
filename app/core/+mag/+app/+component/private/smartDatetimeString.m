@@ -7,8 +7,13 @@ function results = smartDatetimeString(dates)
     end
 
     shortFormat = "dd-MM-yy";
-    longFormat = "dd-MM-yy HH:mm:ss";
-    hourFormat = "HH:mm:ss";
+    longFormat = "dd-MM-yy HH:mm";
+
+    if range(dates, "all") > hours(6)
+        hourFormat = "HH:mm";
+    else
+        hourFormat = "HH:mm:ss";
+    end
 
     if isequal(dates(1), dateshift(dates(1), "start", "day"))
         results(1) = string(dates(1), shortFormat);
