@@ -14,7 +14,7 @@ classdef NoiseThreshold
 
             arguments
                 this (1, 1) mag.graphics.psd.NoiseThreshold
-                parent {mustBeScalarOrEmpty}
+                parent {mustBeScalarOrEmpty} = matlab.ui.Figure.empty()
             end
 
             color = "black";
