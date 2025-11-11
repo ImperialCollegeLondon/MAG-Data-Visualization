@@ -1,9 +1,8 @@
 ## App
 
-- (All) `datetime` slider labels do not display seconds when time range is > 6 hours
+- (All) Allow setting the selected time programmatically in `datetime` slider
 
 ## Software
 
-- (All) Do not apply sensor rotation to HelioSwarm SEN sensors
-- (All) Fix rotation of LM sensors
-- (IMAP) Do not throw error when loading incompatible IMAP analysis objects
+- (All) Refactor selection of PSD noise thresholds
+- (All) Add support for plotting multiple data sources with same variables in `mag.graphics.chart.Plot`

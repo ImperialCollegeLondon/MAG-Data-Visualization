@@ -6,7 +6,7 @@ classdef (Abstract, HandleCompatible) MarkerSupport
         Marker (1, 1) string = "none"
         % MARKERSIZE Marker size.
         MarkerSize (1, 1) double = 10
-        % MARKERFACE Marker face color option. "flat" means filled marker.
+        % MARKERFACE Marker face color option.
         MarkerColor {mustBeScalarOrEmpty, mag.graphics.mixin.mustBeColor}
     end
 

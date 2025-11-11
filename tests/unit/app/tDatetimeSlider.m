@@ -98,6 +98,56 @@ classdef tDatetimeSlider < DatetimeSliderTestCase
             testCase.verifyEqual(slider.Slider.Value, expectedValue, "Selected slider value should be updated to reflect date value.", RelTol = 1e-2);
         end
 
+        % Test that selected time can be changed programmatically.
+        function setSelectedTimeProgrammatically(testCase)
+
+            % Set up.
+            slider = testCase.createTestSlider("DatetimeSlider");
+            selectedDate = mean(testCase.TestSliderLimits);
+
+            expectedDate = datetime(selectedDate.Year, selectedDate.Month, selectedDate.Day);
+            expectedTime = char(datetime(selectedDate, Format = "HH:mm:ss.SSS"));
+            expectedValue = range(slider.SliderLimits) * (selectedDate - testCase.TestSliderLimits(1)) / (range(testCase.TestSliderLimits));
+
+            % Exercise.
+            slider.SelectedTime = selectedDate;
+
+            % Verify.
+            testCase.assertEqual(slider.SelectedTime, selectedDate, "Selected date should be updated to reflect date value.");
+
+            testCase.verifyEqual(slider.DatePicker.Value, expectedDate, "Date value should be updated to reflect date value.");
+            testCase.verifyEqual(slider.TimeField.Value, expectedTime, "Time value should be updated to reflect date value.");
+            testCase.verifyEqual(slider.Slider.Value, expectedValue, "Slider value should be updated to reflect date value.", RelTol = 1e-2);
+        end
+
+        % Test that setting the selected time to an invalid value, reverts
+        % to original value.
+        function setSelectedTimeProgrammatically_invalidTime(testCase)
+
+            % Set up.
+            slider = testCase.createTestSlider("DatetimeSlider");
+
+            selectedDate = mean(testCase.TestSliderLimits);
+            invalidDate = testCase.TestSliderLimits(2) + days(1);
+
+            expectedDate = datetime(selectedDate.Year, selectedDate.Month, selectedDate.Day);
+            expectedTime = char(datetime(selectedDate, Format = "HH:mm:ss.SSS"));
+            expectedValue = range(slider.SliderLimits) * (selectedDate - testCase.TestSliderLimits(1)) / (range(testCase.TestSliderLimits));
+
+            slider.SelectedTime = selectedDate;
+
+            % Exercise.
+            testCase.verifyError(@() set(slider, SelectedTime = invalidDate), "mag:app:component:InvalidSelectedTime", ...
+                "Error should be thrown when setting selected time to an invalid value.");
+
+            % Verify.
+            testCase.verifyEqual(slider.SelectedTime, selectedDate, "Selected date should be updated to reflect date value.");
+
+            testCase.verifyEqual(slider.DatePicker.Value, expectedDate, "Date value should be updated to reflect date value.");
+            testCase.verifyEqual(slider.TimeField.Value, expectedTime, "Time value should be updated to reflect date value.");
+            testCase.verifyEqual(slider.Slider.Value, expectedValue, "Slider value should be updated to reflect date value.", RelTol = 1e-2);
+        end
+
         % Test reset method returns slider to original values.
         function reset(testCase)
 

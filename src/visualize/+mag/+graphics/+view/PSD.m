@@ -6,8 +6,8 @@ classdef PSD < mag.graphics.view.View
         Start (1, 1) datetime = NaT(TimeZone = "UTC")
         % DURATION Duration of PSD plot.
         Duration (1, 1) duration = hours(1)
-        % NOISETHRESHOLD Noise threshold line.
-        NoiseThreshold (1, :) mag.graphics.chart.Chart = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}")
+        % NOISETHRESHOLD Noise threshold.
+        NoiseThreshold (1, 1) mag.graphics.psd.NoiseThreshold = "Default"
         % SYNCYAXES Sync y-axes.
         SyncYAxes (1, 1) logical = false
     end
@@ -107,7 +107,7 @@ classdef PSD < mag.graphics.view.View
 
             charts = {psd, ...
                 mag.graphics.style.Default(Title = compose("%s PSD", sensor), XLabel = this.FLabel, YLabel = this.PSDLabel, XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
-                Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), this.NoiseThreshold])};
+                Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), this.NoiseThreshold.getChart()])};
         end
 
         function value = getPSDFigureTitle(this, science)
