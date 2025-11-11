@@ -61,7 +61,9 @@ classdef PSD < mag.app.Control
             noiseThresholdLabel.Layout.Row = 3;
             noiseThresholdLabel.Layout.Column = 1;
 
-            this.NoiseThresholdDropDown = uidropdown(this.Layout, Items = ["Default", "HelioSwarm"]);
+            noiseThresholds = enumeration(mag.graphics.psd.NoiseThreshold.Default);
+
+            this.NoiseThresholdDropDown = uidropdown(this.Layout, Items = string(noiseThresholds), ItemsData = noiseThresholds);
             this.NoiseThresholdDropDown.Layout.Row = 3;
             this.NoiseThresholdDropDown.Layout.Column = [2, 3];
 
@@ -94,18 +96,9 @@ classdef PSD < mag.app.Control
             startTime = this.StartTimeSlider.SelectedTime;
             duration = hours(this.DurationSpinner.Value);
 
-            switch this.NoiseThresholdDropDown.Value
-                case "HelioSwarm"
-
-                    noiseThreshold = {"NoiseThreshold", mag.graphics.chart.Function(Callable = @mag.hs.view.piecewiseNoiseThreshold, ...
-                        LineStyle = "--", Color = "black")};
-                otherwise % including "Default"
-                    noiseThreshold = {};
-            end
-
             command = mag.app.Command(Functional = @(varargin) this.ViewType(varargin{:}).visualizeAll(), ...
                 PositionalArguments = {results}, ...
-                NamedArguments = struct(noiseThreshold{:}, Start = startTime, Duration = duration, SyncYAxes = this.SyncYAxesCheckBox.Value));
+                NamedArguments = struct(Start = startTime, Duration = duration, NoiseThreshold = this.NoiseThresholdDropDown.Value, SyncYAxes = this.SyncYAxesCheckBox.Value));
         end
     end
 end

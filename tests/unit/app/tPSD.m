@@ -172,8 +172,7 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
 
             testCase.verifyEqual(command.NamedArguments.Start, psd.StartTimeSlider.SelectedTime, """Start"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.Duration, hours(1), """Duration"" should match expectation.");
-            testCase.verifyEqual(command.NamedArguments.NoiseThreshold, mag.graphics.chart.Function(Callable = @mag.hs.view.piecewiseNoiseThreshold,LineStyle = "--", Color = "black"), ...
-                """NoiseThreshold"" should match expectation.");
+            testCase.verifyEqual(command.NamedArguments.NoiseThreshold, mag.graphics.psd.NoiseThreshold.HelioSwarm, """NoiseThreshold"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
         end
 
