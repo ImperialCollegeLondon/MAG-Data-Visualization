@@ -21,9 +21,6 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
     properties (Dependent)
         % TOOLTIP Tooltip to display on UI elements.
         Tooltip string {mustBeScalarOrEmpty}
-    end
-
-    properties (Dependent, SetAccess = private)
         % SELECTEDTIME Selected datetime.
         SelectedTime (1, 1) datetime
     end
@@ -45,6 +42,11 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
 
         function set.Tooltip(comp, tooltip)
 
+            arguments
+                comp (1, 1) mag.app.component.DatetimeSlider
+                tooltip (1, 1) string
+            end
+
             comp.Slider.Tooltip = tooltip;
             comp.DatePicker.Tooltip = tooltip;
             comp.TimeField.Tooltip = tooltip;
@@ -52,6 +54,31 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
 
         function tooltip = get.Tooltip(comp)
             tooltip = comp.Slider.Tooltip;
+        end
+
+        function set.SelectedTime(comp, time)
+
+            arguments
+                comp (1, 1) mag.app.component.DatetimeSlider
+                time (1, 1) datetime
+            end
+
+            previousTime = comp.SelectedTime;
+            time.TimeZone = comp.OriginalTimeZone;
+
+            try
+                comp.setDateAndTime(time);
+            catch e
+
+                comp.setDateAndTime(previousTime);
+
+                exception = MException("mag:app:component:InvalidSelectedTime", "Selected time ""%s"" is invalid.", string(time));
+                exception = exception.addCause(e);
+
+                exception.throw();
+            end
+
+            comp.datePickerValueChanged([], []);
         end
 
         function time = get.SelectedTime(comp)
@@ -137,9 +164,7 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
             dateRange = range(comp.Limits);
 
             date = dateRange * (value(1) / sliderRange) + comp.Limits(1);
-
-            comp.DatePicker.Value = dateshift(date, "start", "day");
-            comp.TimeField.Value = string(date, "HH:mm:ss.SSS");
+            comp.setDateAndTime(date);
         end
     end
 
@@ -147,8 +172,7 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
 
         function updateSliderRange(comp)
 
-            comp.DatePicker.Value = dateshift(comp.Limits(1), "start", "day");
-            comp.TimeField.Value = string(comp.Limits(1), "HH:mm:ss.SSS");
+            comp.setDateAndTime(comp.Limits(1));
 
             comp.Slider.Limits = comp.SliderLimits;
             comp.Slider.MajorTicks = 0:25:100;
@@ -162,6 +186,12 @@ classdef DatetimeSlider < matlab.ui.componentcontainer.ComponentContainer
             else
                 comp.Slider.MajorTickLabels = smartDatetimeString(ticks);
             end
+        end
+
+        function setDateAndTime(comp, value)
+
+            comp.DatePicker.Value = dateshift(value, "start", "day");
+            comp.TimeField.Value = string(value, "HH:mm:ss.SSS");
         end
     end
 
