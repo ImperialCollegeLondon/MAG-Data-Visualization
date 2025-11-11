@@ -59,5 +59,23 @@ classdef Status
                 color = fliplightness(color);
             end
         end
+
+        function icon = getIcon(this)
+
+            arguments
+                this (1, 1) mag.health.Status
+            end
+
+            switch this
+                case mag.health.Status.Pass
+                    icon = "success";
+                case mag.health.Status.Fail
+                    icon = "error";
+                case mag.health.Status.Borderline
+                    icon = "warning";
+                case mag.health.Status.Incomplete
+                    icon = "question";
+            end
+        end
     end
 end
