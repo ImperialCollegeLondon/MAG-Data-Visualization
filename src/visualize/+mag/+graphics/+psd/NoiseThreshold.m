@@ -10,13 +10,29 @@ classdef NoiseThreshold
 
     methods
 
-        function threshold = getChart(this)
+        function threshold = getChart(this, parent)
+
+            arguments
+                this (1, 1) mag.graphics.psd.NoiseThreshold
+                parent {mustBeScalarOrEmpty} = matlab.ui.Figure.empty()
+            end
+
+            color = "black";
+
+            if ~isempty(parent)
+
+                root = ancestor(parent, "figure");
+
+                if ~isempty(root) && mag.internal.isThemeable(root) && isequal(root.Theme.BaseColorStyle, "dark")
+                    color = fliplightness(color);
+                end
+            end
 
             switch this
                 case mag.graphics.psd.NoiseThreshold.Default
                     threshold = mag.graphics.chart.Line(Axis = "y", Value = 0.01, Style = "--", Label = "10 pT Hz^{-0.5}");
                 case mag.graphics.psd.NoiseThreshold.HelioSwarm
-                    threshold = mag.graphics.chart.Function(Callable = @mag.graphics.psd.NoiseThreshold.helioSwarmPiecewiseNoiseThreshold, LineStyle = "--", Color = "black");
+                    threshold = mag.graphics.chart.Function(Callable = @mag.graphics.psd.NoiseThreshold.helioSwarmPiecewiseNoiseThreshold, LineStyle = "--", Color = color);
                 otherwise
                     error("mag:graphics:UnknownPSDNoiseThreshold", "Unknown PSD noise threshold of type ""%s"".", this);
             end

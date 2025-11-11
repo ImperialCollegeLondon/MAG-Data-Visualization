@@ -45,8 +45,7 @@ classdef Plot < mag.graphics.chart.Chart & mag.graphics.mixin.ColorSupport & mag
             xData = cellfun(@(x) this.getXData(x), data, UniformOutput = false);
             yData = cellfun(@(x) this.getYData(x), data, UniformOutput = false);
 
-            hold(axes, "on");
-            resetAxesHold = onCleanup(@() hold(axes, "off"));
+            resetAxesHold = this.holdAxesWithCleanup(axes); %#ok<NASGU>
 
             graph = matlab.graphics.chart.primitive.Line.empty();
 
