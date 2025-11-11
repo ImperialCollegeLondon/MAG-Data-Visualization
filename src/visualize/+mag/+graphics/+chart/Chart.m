@@ -113,4 +113,17 @@ classdef (Abstract) Chart < matlab.mixin.Heterogeneous & mag.mixin.SetGet
             end
         end
     end
+
+    methods (Static, Access = protected)
+
+        function resetAxesHold = holdAxesWithCleanup(axes)
+        % HOLDAXESWITHCLEANUP Hold "on" axes and restore to original hold
+        % state on cleanup.
+
+            originalHold = matlab.lang.OnOffSwitchState(ishold(axes));
+
+            hold(axes, "on");
+            resetAxesHold = onCleanup(@() hold(axes, originalHold));
+        end
+    end
 end
