@@ -35,6 +35,8 @@ See [internal documentation](https://imperialcollege.atlassian.net/wiki/spaces/P
 
 ## Development
 
+### Install
+
 To get started, clone this repository and install the package for development:
 
 ``` matlab
@@ -45,6 +47,14 @@ When developing new features or fixing issues, create a new branch. After finish
 
 To change the version of the toolbox, modify the package definition file in `resources/mpackage.json`. This will automatically update the toolbox version and create a new toolbox with the correct version.
 Also, update the contents of the `resources/release-notes.md` file by detailing what has changed in the new version.
+
+### Uninstall
+
+In MATLAB run:
+
+``` matlab
+mpmuninstall("MAGDataVisualization");
+```
 
 ## License
 
