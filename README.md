@@ -48,6 +48,14 @@ When developing new features or fixing issues, create a new branch. After finish
 To change the version of the toolbox, modify the package definition file in `resources/mpackage.json`. This will automatically update the toolbox version and create a new toolbox with the correct version.
 Also, update the contents of the `resources/release-notes.md` file by detailing what has changed in the new version.
 
+### Test
+
+To run the MATLAB tests, run:
+
+``` matlab
+runtests("tests", IncludeSubfolders = true, ReportCoverageFor = ["app", "src"])
+```
+
 ### Uninstall
 
 In MATLAB run:
