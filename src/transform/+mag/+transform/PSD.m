@@ -55,7 +55,43 @@ classdef PSD < mag.transform.Transformation
             [psd, f] = psdtsh(xyz, dt, this.FFTType, this.NW);
             psd = psd .^ 0.5;
 
-            psd = mag.PSD(table(f, psd(:, 1), psd(:, 2), psd(:, 3), VariableNames = ["f", science.Settings.X, science.Settings.Y, science.Settings.Z]));
+            % Smoothing
+            smoothingSpan = 101;
+            smoothingDegree = 2;
+            smoothingCutoff = 1E-2; %The cutoff value for low vs high frequency.
+
+            if this.Duration > hours(2)
+                relevantIndices = find(f<smoothingCutoff);
+                smoothingMethod = 'none';
+            else
+                relevantIndices = find(f>smoothingCutoff);
+                smoothingMethod = 'moving';
+    
+            end
+
+            switch smoothingMethod
+                case 'none'
+                    xVec = psd(:, 1);
+                    yVec = psd(:, 2);
+                    zVec = psd(:, 3);
+                case 'sgolay'
+                    xVec = smooth(psd(:, 1),smoothingSpan,smoothingMethod,smoothingDegree);
+                    yVec = smooth(psd(:, 2),smoothingSpan,smoothingMethod,smoothingDegree);
+                    zVec = smooth(psd(:, 3),smoothingSpan,smoothingMethod,smoothingDegree);
+
+                otherwise
+                    xVec = smooth(psd(:, 1),smoothingSpan,smoothingMethod);
+                    yVec = smooth(psd(:, 2),smoothingSpan,smoothingMethod);
+                    zVec = smooth(psd(:, 3),smoothingSpan,smoothingMethod);
+            end
+
+            xVec = xVec(relevantIndices);
+            yVec = yVec(relevantIndices);
+            zVec = zVec(relevantIndices);
+            f = f(relevantIndices);
+
+            psd = mag.PSD(table(f, xVec, yVec, zVec, VariableNames = ["f", science.Settings.X, science.Settings.Y, science.Settings.Z]));
+            
         end
     end
 end
