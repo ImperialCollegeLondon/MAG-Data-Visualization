@@ -151,7 +151,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     app.Provider = mag.app.hs.Provider();
                 case mag.meta.Mission.IMAP
                     app.Provider = mag.app.imap.Provider();
-                case mag.meta.Mission.VIGIL
+                case mag.meta.Mission.Vigil
                     app.Provider = mag.app.vigil.Provider();
                 otherwise
                     error("mag:app:UnsupportedMission", "%s mission not supported.", app.Mission.DisplayName);

@@ -19,10 +19,10 @@ classdef Field < mag.graphics.view.View
 
             this.Figures = matlab.ui.Figure.empty();
 
-            fob = this.Results.FOB;
-            fib = this.Results.FIB;
+            outboard = this.Results.Outboard;
+            inboard = this.Results.Inboard;
 
-            [numScience, scienceData] = this.getScienceData(fob, fib);
+            [numScience, scienceData] = this.getScienceData(outboard, inboard);
 
             if isempty(scienceData)
                 return;
@@ -30,8 +30,8 @@ classdef Field < mag.graphics.view.View
 
             this.Figures = this.Factory.assemble( ...
                 scienceData{:}, ...
-                Title = this.getFigureTitle(fob, fib), ...
-                Name = this.getFigureName(fob, fib), ...
+                Title = this.getFigureTitle(outboard, inboard), ...
+                Name = this.getFigureName(outboard, inboard), ...
                 Arrangement = [1, numScience], ...
                 LinkXAxes = true, ...
                 WindowState = "maximized");
@@ -40,55 +40,55 @@ classdef Field < mag.graphics.view.View
 
     methods (Access = private)
 
-        function value = getFigureTitle(this, fob, fib)
+        function value = getFigureTitle(this, outboard, inboard)
 
-            hasFob = ~isempty(fob) && fob.HasData;
-            hasFib = ~isempty(fib) && fib.HasData;
+            hasOutboard = ~isempty(outboard) && outboard.HasData;
+            hasInboard = ~isempty(inboard) && inboard.HasData;
 
-            if hasFob && hasFib
-                value = compose("%s (%s, %s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata), this.getDataFrequency(fib.Metadata));
-            elseif hasFob
-                value = compose("%s (%s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata));
-            elseif hasFib
-                value = compose("%s (%s)", fib.Metadata.getDisplay("Mode"), this.getDataFrequency(fib.Metadata));
+            if hasOutboard && hasInboard
+                value = compose("%s (%s, %s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata), this.getDataFrequency(inboard.Metadata));
+            elseif hasOutboard
+                value = compose("%s (%s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata));
+            elseif hasInboard
+                value = compose("%s (%s)", inboard.Metadata.getDisplay("Mode"), this.getDataFrequency(inboard.Metadata));
             end
         end
 
-        function value = getFigureName(this, fob, fib)
+        function value = getFigureName(this, outboard, inboard)
 
-            hasFob = ~isempty(fob) && fob.HasData;
-            hasFib = ~isempty(fib) && fib.HasData;
+            hasOutboard = ~isempty(outboard) && outboard.HasData;
+            hasInboard = ~isempty(inboard) && inboard.HasData;
 
-            if hasFob && hasFib
-                value = compose("%s (%s, %s) Time Series (%s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata), this.getDataFrequency(fib.Metadata), this.date2str(fob.Metadata.Timestamp));
-            elseif hasFob
-                value = compose("%s (%s) Time Series (%s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata), this.date2str(fob.Metadata.Timestamp));
-            elseif hasFib
-                value = compose("%s (%s) Time Series (%s)", fib.Metadata.getDisplay("Mode"), this.getDataFrequency(fib.Metadata), this.date2str(fib.Metadata.Timestamp));
+            if hasOutboard && hasInboard
+                value = compose("%s (%s, %s) Time Series (%s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata), this.getDataFrequency(inboard.Metadata), this.date2str(outboard.Metadata.Timestamp));
+            elseif hasOutboard
+                value = compose("%s (%s) Time Series (%s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata), this.date2str(outboard.Metadata.Timestamp));
+            elseif hasInboard
+                value = compose("%s (%s) Time Series (%s)", inboard.Metadata.getDisplay("Mode"), this.getDataFrequency(inboard.Metadata), this.date2str(inboard.Metadata.Timestamp));
             end
         end
     end
 
     methods (Static, Access = private)
 
-        function [numScience, scienceData] = getScienceData(fob, fib)
+        function [numScience, scienceData] = getScienceData(outboard, inboard)
 
             numScience = 0;
             scienceData = {};
 
-            if ~isempty(fob) && fob.HasData
+            if ~isempty(outboard) && outboard.HasData
 
                 numScience = numScience + 1;
-                scienceData = [scienceData, {fob, ...
-                    mag.graphics.style.Stackedplot(Title = "FOB", YLabels = ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], ...
+                scienceData = [scienceData, {outboard, ...
+                    mag.graphics.style.Stackedplot(Title = "Outboard", YLabels = ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], ...
                     Charts = mag.graphics.chart.Stackedplot(YVariables = ["X", "Y", "Z", "B"]))}];
             end
 
-            if ~isempty(fib) && fib.HasData
+            if ~isempty(inboard) && inboard.HasData
 
                 numScience = numScience + 1;
-                scienceData = [scienceData, {fib, ...
-                    mag.graphics.style.Stackedplot(Title = "FIB", YLabels = ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], YAxisLocation = "right", ...
+                scienceData = [scienceData, {inboard, ...
+                    mag.graphics.style.Stackedplot(Title = "Inboard", YLabels = ["x [nT]", "y [nT]", "z [nT]", "|B| [nT]"], YAxisLocation = "right", ...
                     Charts = mag.graphics.chart.Stackedplot(YVariables = ["X", "Y", "Z", "B"]))}];
             end
         end

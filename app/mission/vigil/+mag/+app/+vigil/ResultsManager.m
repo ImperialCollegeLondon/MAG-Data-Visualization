@@ -34,12 +34,12 @@ classdef ResultsManager < mag.app.manage.ResultsManager
 
                 results = model.Analysis.Results;
 
-                if results.FOB.HasData && results.FIB.HasData
-                    this.plotSensorPreview(results.FOB.Data, results.FIB.Data, LegendLabels = ["FOB", "FIB"]);
-                elseif results.FOB.HasData
-                    this.plotSensorPreview(results.FOB.Data, LegendLabels = "FOB");
-                elseif results.FIB.HasData
-                    this.plotSensorPreview(results.FIB.Data, LegendLabels = "FIB");
+                if results.Outboard.HasData && results.Inboard.HasData
+                    this.plotSensorPreview(results.Outboard.Data, results.Inboard.Data, LegendLabels = ["Outboard", "Inboard"]);
+                elseif results.Outboard.HasData
+                    this.plotSensorPreview(results.Outboard.Data, LegendLabels = "Outboard");
+                elseif results.Inboard.HasData
+                    this.plotSensorPreview(results.Inboard.Data, LegendLabels = "Inboard");
                 end
             else
                 this.reset();

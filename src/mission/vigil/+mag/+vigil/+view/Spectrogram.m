@@ -31,10 +31,10 @@ classdef Spectrogram < mag.graphics.view.View
 
         function visualize(this)
 
-            fob = this.Results.FOB;
-            fib = this.Results.FIB;
+            outboard = this.Results.Outboard;
+            inboard = this.Results.Inboard;
 
-            [numSpectrogram, spectrogramData] = this.getSpectrogramData(fob, fib);
+            [numSpectrogram, spectrogramData] = this.getSpectrogramData(outboard, inboard);
 
             if isempty(spectrogramData)
                 return;
@@ -42,8 +42,8 @@ classdef Spectrogram < mag.graphics.view.View
 
             this.Figures = this.Factory.assemble( ...
                 spectrogramData{:}, ...
-                Title = this.getFrequencyFigureTitle(fob, fib), ...
-                Name = this.getFrequencyFigureName(fob, fib), ...
+                Title = this.getFrequencyFigureTitle(outboard, inboard), ...
+                Name = this.getFrequencyFigureName(outboard, inboard), ...
                 Arrangement = [9, numSpectrogram], ...
                 LinkXAxes = true, ...
                 TileIndexing = "columnmajor", ...
@@ -53,27 +53,27 @@ classdef Spectrogram < mag.graphics.view.View
 
     methods (Access = private)
 
-        function [numSpectrogram, spectrogramData] = getSpectrogramData(this, fob, fib)
+        function [numSpectrogram, spectrogramData] = getSpectrogramData(this, outboard, inboard)
 
             numSpectrogram = 0;
             spectrogramData = {};
 
-            if ~isempty(fob) && fob.HasData
+            if ~isempty(outboard) && outboard.HasData
 
-                fobSpectrum = mag.spectrogram(fob, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
+                outboardSpectrum = mag.spectrogram(outboard, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
                     Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
 
                 numSpectrogram = numSpectrogram + 1;
-                spectrogramData = [spectrogramData, this.getFrequencyCharts(fob, fobSpectrum, "FOB", "left")];
+                spectrogramData = [spectrogramData, this.getFrequencyCharts(outboard, outboardSpectrum, "Outboard", "left")];
             end
 
-            if ~isempty(fib) && fib.HasData
+            if ~isempty(inboard) && inboard.HasData
 
-                fibSpectrum = mag.spectrogram(fib, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
+                inboardSpectrum = mag.spectrogram(inboard, FrequencyLimits = this.FrequencyLimits, FrequencyPoints = this.FrequencyPoints, ...
                     Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
 
                 numSpectrogram = numSpectrogram + 1;
-                spectrogramData = [spectrogramData, this.getFrequencyCharts(fib, fibSpectrum, "FIB", "right")];
+                spectrogramData = [spectrogramData, this.getFrequencyCharts(inboard, inboardSpectrum, "Inboard", "right")];
             end
         end
 
@@ -88,31 +88,31 @@ classdef Spectrogram < mag.graphics.view.View
                 spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "Z"))};
         end
 
-        function value = getFrequencyFigureTitle(this, fob, fib)
+        function value = getFrequencyFigureTitle(this, outboard, inboard)
 
-            hasFob = ~isempty(fob) && fob.HasData;
-            hasFib = ~isempty(fib) && fib.HasData;
+            hasOutboard = ~isempty(outboard) && outboard.HasData;
+            hasInboard = ~isempty(inboard) && inboard.HasData;
 
-            if hasFob && hasFib
-                value = compose("%s (%s, %s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata), this.getDataFrequency(fib.Metadata));
-            elseif hasFob
-                value = compose("%s (%s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata));
-            elseif hasFib
-                value = compose("%s (%s)", fib.Metadata.getDisplay("Mode"), this.getDataFrequency(fib.Metadata));
+            if hasOutboard && hasInboard
+                value = compose("%s (%s, %s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata), this.getDataFrequency(inboard.Metadata));
+            elseif hasOutboard
+                value = compose("%s (%s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata));
+            elseif hasInboard
+                value = compose("%s (%s)", inboard.Metadata.getDisplay("Mode"), this.getDataFrequency(inboard.Metadata));
             end
         end
 
-        function value = getFrequencyFigureName(this, fob, fib)
+        function value = getFrequencyFigureName(this, outboard, inboard)
 
-            hasFob = ~isempty(fob) && fob.HasData;
-            hasFib = ~isempty(fib) && fib.HasData;
+            hasOutboard = ~isempty(outboard) && outboard.HasData;
+            hasInboard = ~isempty(inboard) && inboard.HasData;
 
-            if hasFob && hasFib
-                value = compose("%s (%s, %s) Spectrogram (%s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata), this.getDataFrequency(fib.Metadata), this.date2str(fob.Metadata.Timestamp));
-            elseif hasFob
-                value = compose("%s (%s) Spectrogram (%s)", fob.Metadata.getDisplay("Mode"), this.getDataFrequency(fob.Metadata), this.date2str(fob.Metadata.Timestamp));
-            elseif hasFib
-                value = compose("%s (%s) Spectrogram (%s)", fib.Metadata.getDisplay("Mode"), this.getDataFrequency(fib.Metadata), this.date2str(fib.Metadata.Timestamp));
+            if hasOutboard && hasInboard
+                value = compose("%s (%s, %s) Spectrogram (%s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata), this.getDataFrequency(inboard.Metadata), this.date2str(outboard.Metadata.Timestamp));
+            elseif hasOutboard
+                value = compose("%s (%s) Spectrogram (%s)", outboard.Metadata.getDisplay("Mode"), this.getDataFrequency(outboard.Metadata), this.date2str(outboard.Metadata.Timestamp));
+            elseif hasInboard
+                value = compose("%s (%s) Spectrogram (%s)", inboard.Metadata.getDisplay("Mode"), this.getDataFrequency(inboard.Metadata), this.date2str(inboard.Metadata.Timestamp));
             end
         end
     end
