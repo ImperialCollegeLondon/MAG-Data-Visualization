@@ -12,7 +12,8 @@ classdef tExport < AppTestCase
         TestDetails = {
             struct(Folder = "bart", Mission = mag.meta.Mission.Bartington, Setup = []), ...
             struct(Folder = "hs", Mission = mag.meta.Mission.HelioSwarm, Setup = @tExport.helioSwarmSetup), ...
-            struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP, Setup = [])}
+            struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP, Setup = []), ...
+            struct(Folder = "vigil", Mission = mag.meta.Mission.Vigil, Setup = [])}
     end
 
     methods (TestClassSetup)
