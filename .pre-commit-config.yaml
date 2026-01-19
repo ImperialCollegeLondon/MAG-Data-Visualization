@@ -13,11 +13,11 @@ repos:
         args: [--autofix, --indent, "4"]
         exclude: resources/codeAnalyzerConfiguration.json|resources/mpackage.json|tests/unit/data/imap/test_data/invalid.json
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: "0.35.0"
+    rev: "0.36.0"
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.46.0
+    rev: v0.47.0
     hooks:
       - id: markdownlint-fix
         args: [--ignore, LICENSE.md, --disable, MD013]
