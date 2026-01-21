@@ -64,7 +64,7 @@ classdef ScienceLOG < mag.io.in.Format
             tokens = regexp(name, "\w+_sci_(?<date>\d{8})_(?<time>\d{6})", "names", "once");
 
             if ~isempty(tokens)
-                startTime = mag.time.decodeDate(tokens.date + tokens.time, ExtraFormats = "yyyyMMddhhmmss");
+                startTime = mag.time.decodeDate(tokens.date + tokens.time, ExtraFormats = "yyyyMMddHHmmss");
             else
                 startTime = datetime("now", TimeZone = "UTC");
             end
