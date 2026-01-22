@@ -35,8 +35,7 @@ classdef ScienceLOG < mag.io.in.Format
 
             % Keep only required columns: Time, Bx, By, Bz, Range.
             % Column order is: Vector No., Time, Status, Bx, By, Bz, Range.
-            rawData = rawData(:, [2, 4, 5, 6, 7]);
-            rawData.Properties.VariableNames = ["Time", "Bx", "By", "Bz", "Range"];
+            rawData = rawData(:, ["Time", "Bx", "By", "Bz", "Range"]);
         end
 
         function data = process(this, rawData, fileName)
@@ -52,6 +51,7 @@ classdef ScienceLOG < mag.io.in.Format
             end
 
             if isempty(rawData)
+
                 data = mag.Science(timetable(), mag.meta.Science(Sensor = this.Sensor));
                 return;
             end
@@ -71,18 +71,23 @@ classdef ScienceLOG < mag.io.in.Format
 
             % Convert time column (seconds since some epoch) to datetime.
             % The time values are large numbers representing elapsed time.
-            % We'll use the relative time from the first sample.
+            % Use the relative time from the first sample.
             timeValues = rawData.Time;
             relativeTime = timeValues - timeValues(1);
 
             % Create datetime array from relative seconds.
             timestamps = startTime + seconds(relativeTime);
+
             timestamps.Format = mag.time.Constant.Format;
+            timestamps.TimeZone = mag.time.Constant.TimeZone;
 
             % Create timetable.
             scienceData = timetable(timestamps, ...
                 rawData.Bx, rawData.By, rawData.Bz, rawData.Range, ...
                 VariableNames = ["x", "y", "z", "range"]);
+
+            % Convert range value to index.
+            scienceData.range = scienceData.range / 8;
 
             % Create metadata.
             metadata = this.detectMetadata(timestamps);
