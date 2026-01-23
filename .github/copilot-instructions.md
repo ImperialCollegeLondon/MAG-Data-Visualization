@@ -38,6 +38,7 @@ Adding a new mission (checklist)
    - `Instrument.m` — extend `mag.Instrument`, add sensor-specific dependent properties (e.g. `FOB`, `FIB`)
    - `+in/` — I/O format classes extending `mag.io.in.Format` with `Extension`, `load()`, `process()` methods
    - `+view/` — visualization classes (e.g. `Field.m`, `Spectrogram.m`) extending `mag.graphics.view.View`
+   - `+out/` — export format classes (e.g. `ScienceMAT.m`) extending `mag.io.out.MAT` with `getExportFileName()`, `convertToExportFormat()` methods
 2. **App files** under `app/mission/<name>/+mag/+app/+<name>/`:
    - `Provider.m` — extend `mag.app.Provider`, return Model and Managers
    - `Model.m` — extend `mag.app.Model`, implement `analyze`, `export`, `reset`
@@ -45,15 +46,46 @@ Adding a new mission (checklist)
 3. **Register mission**:
    - Add enum value to `src/data/+mag/+meta/Mission.m` (if not already present)
    - Add case to switch statement in `app/DataVisualization.m` `selectMission()` method
-4. **Conventions**:
+4. **Tests** under `tests/`:
+   - `tests/system/analyze/t<Name>Analysis.m` — system tests for analysis workflow
+   - `tests/system/app/t<Name>App.m` — app integration tests
+   - `tests/unit/io/t<Name>*In.m` — unit tests for I/O input format
+   - `tests/unit/data/t<Name>Instrument.m` — unit tests for Instrument class
+   - Test data files in `tests/system/test_data/<name>/` and `tests/unit/io/test_data/`
+5. **Conventions**:
    - Use inherited `Processing.ScienceSteps` for science processing instead of custom properties
    - Set metadata via `mag.meta.Science(Sensor, Mode, DataFrequency, Timestamp)` in I/O `process()` method
-   - View figure titles should include Mode and frequency from metadata (e.g. `"Normal (FOB 16 Hz, FIB 16 Hz)"`)
+   - View figure titles should include Mode and frequency from metadata (e.g. `"Normal (Outboard 1 Hz, Inboard 1 Hz)"`)
+   - Use descriptive property names like `Outboard`/`Inboard` rather than acronyms like `FOB`/`FIB` for public Instrument API
+   - The underlying `mag.meta.Sensor` enum values (`FOB`, `FIB`) are used internally for sensor identification
+   - Export format struct field names (e.g. `B.FOB`, `B.FIB` in MAT files) can use technical sensor names
+
+I/O format implementation notes
+- **Input formats** (`+in/`):
+  - Extend `mag.io.in.Format`, set `Extension` property (e.g. `".log.txt"`)
+  - Implement `load(fileName)` to read raw data into a timetable
+  - Implement `process(rawData, fileName)` to create `mag.Science` with proper metadata
+  - Extract timestamp from filename if not in data (use `regexp` with named tokens)
+  - Calculate `DataFrequency` dynamically from timestamps: `round(1 / mode(seconds(diff(data.t))))`
+- **Output formats** (`+out/`):
+  - Extend `mag.io.out.MAT` for MAT export
+  - Implement `getExportFileName(data)` returning filename with timestamp, mode, frequencies
+  - Implement `convertToExportFormat(data)` returning struct with sensor data
+  - Use `this.flattenStruct(metadata)` to convert metadata objects to flat structs
+  - Handle cases where only one sensor has data
+
+View implementation notes
+- Extend `mag.graphics.view.View`, accept `mag.<mission>.Instrument` as `results` argument
+- Access sensor data via `this.Results.Outboard` / `this.Results.Inboard`
+- Check data availability before accessing: `if ~isempty(outboard) && outboard.HasData`
+- Use `this.getDataFrequency(metadata)` helper to format frequency strings (e.g. `"Outboard 1 Hz"`)
+- Build figure titles showing all available sensor info when both sensors present
 
 Examples to reference
 - Manager subscription pattern: see how managers are created and subscribed in [app/DataVisualization.m](app/DataVisualization.m).
 - Abstract Analysis contract: see [src/analyze/+mag/Analysis.m](src/analyze/+mag/Analysis.m).
 - Data model behaviors: see `get()` customization in [src/data/+mag/Data.m](src/data/+mag/Data.m).
+- Vigil mission implementation: see `src/mission/vigil/` for a complete example of a simple mission with dual sensors.
 
 Notes for AI code edits
 - Avoid changing public API signatures for `Provider`, `Model`, `Analysis` and `Data` unless absolutely necessary; breakage is easily introduced across missions.
