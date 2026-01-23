@@ -15,26 +15,26 @@ classdef ScienceMAT < mag.io.out.MAT
             end
 
             % Determine timestamp and frequency from available data.
-            if data.Outboard.HasData
-
-                timestamp = data.Outboard.Metadata.Timestamp;
+            if ~isempty(data.Outboard) && data.Outboard.HasData
                 outboardFreq = data.Outboard.Metadata.DataFrequency;
             else
-
-                timestamp = data.Inboard.Metadata.Timestamp;
                 outboardFreq = 0;
             end
 
-            if data.Inboard.HasData
+            if ~isempty(data.Inboard) && data.Inboard.HasData
                 inboardFreq = data.Inboard.Metadata.DataFrequency;
             else
                 inboardFreq = 0;
             end
 
-            % Determine mode from available data.
-            if data.Outboard.HasData
+            % Determine timestamp and mode from available data.
+            if ~isempty(data.Outboard) && data.Outboard.HasData
+
+                timestamp = data.Outboard.Metadata.Timestamp;
                 mode = data.Outboard.Metadata.Mode;
             else
+
+                timestamp = data.Inboard.Metadata.Timestamp;
                 mode = data.Inboard.Metadata.Mode;
             end
 
@@ -56,7 +56,7 @@ classdef ScienceMAT < mag.io.out.MAT
             exportData = struct();
 
             % Export outboard data.
-            if data.Outboard.HasData
+            if ~isempty(data.Outboard) && data.Outboard.HasData
 
                 exportData.B.FOB.Time = data.Outboard.Time;
                 exportData.B.FOB.Data = data.Outboard.XYZ;
@@ -65,7 +65,7 @@ classdef ScienceMAT < mag.io.out.MAT
             end
 
             % Export inboard data.
-            if data.Inboard.HasData
+            if ~isempty(data.Inboard) && data.Inboard.HasData
 
                 exportData.B.FIB.Time = data.Inboard.Time;
                 exportData.B.FIB.Data = data.Inboard.XYZ;

@@ -1,5 +1,5 @@
-classdef tScienceLOGIn < MAGIOTestCase
-% TSCIENCELONGIN Unit tests for "mag.vigil.in.ScienceLOG" class.
+classdef tVigilScienceLOGIn < MAGIOTestCase
+% TVIGILSCIENCELOGIN Unit tests for "mag.vigil.in.ScienceLOG" class.
 
     properties (TestParameter)
         Sensor = {mag.meta.Sensor.FOB, mag.meta.Sensor.FIB}
