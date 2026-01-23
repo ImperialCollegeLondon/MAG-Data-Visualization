@@ -100,18 +100,20 @@ classdef HealthManager < mag.app.manage.Manager
                 % Add check results.
                 data = table(vertcat(checks.Name), string(checkStatus'), vertcat(checks.Description), VariableNames = ["Name", "Status", "Description"]);
 
-                this.IndividualTable.Data = data;
-                this.IndividualTable.ColumnWidth = ["fit", "fit", "1x"];
-
                 % Add style based on status.
                 for s = unique(checkStatus)
 
                     idxStatus = find(data.Status == string(s));
-                    idxStatus = [idxStatus, repmat(2, numel(idxStatus), 1)]; %#ok<AGROW>
 
-                    style = uistyle(BackgroundColor = s.getThemedColor(figure));
-                    this.IndividualTable.addStyle(style, "cell", idxStatus);
+                    styleIcon = uistyle(Icon = s.getIcon(), IconAlignment = "left");
+                    this.IndividualTable.addStyle(styleIcon, "cell", [idxStatus, ones(numel(idxStatus), 1)]);
+
+                    styleColor = uistyle(BackgroundColor = s.getThemedColor(figure));
+                    this.IndividualTable.addStyle(styleColor, "cell", [idxStatus, repmat(2, numel(idxStatus), 1)]);
                 end
+
+                this.IndividualTable.Data = data;
+                this.IndividualTable.ColumnWidth = ["fit", "fit", "1x"];
 
                 % Show results.
                 this.SummaryLayout.Visible = "on";

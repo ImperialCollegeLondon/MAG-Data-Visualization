@@ -8,8 +8,8 @@ classdef Mission
         HelioSwarm ("HelioSwarm", "HS")
         % IMAP IMAP mission.
         IMAP ("IMAP", "IMAP")
-        % SOLARORBITER Solar Orbiter mission.
-        SolarOrbiter ("Solar Orbiter", "SO")
+        % VIGIL Vigil mission.
+        Vigil ("Vigil", "Vigil")
     end
 
     properties

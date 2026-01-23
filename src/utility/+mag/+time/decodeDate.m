@@ -15,6 +15,7 @@ function date = decodeDate(date, options)
     formats = ["dd-MMM-yyyy", "dd-MM-yyyy", "yyyy-MMM-dd", "yyyy-MM-dd"];
     formats = horzcat(formats, replace(formats, "-", "/"));
     formats = horzcat(formats, replace(formats, "-", " "));
+    formats = horzcat(formats, replace(formats, "-", ""));
 
     if ~isempty(options.ExtraFormats)
         formats = [formats, options.ExtraFormats];
