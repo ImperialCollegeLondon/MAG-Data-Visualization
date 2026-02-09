@@ -1,4 +1,4 @@
-classdef Mission
+classdef Mission < matlab.mixin.CustomCompactDisplayProvider
 % MISSION Enumeration for mission name.
 
     enumeration
@@ -12,7 +12,7 @@ classdef Mission
         Vigil ("Vigil", "Vigil")
     end
 
-    properties
+    properties (SetAccess = immutable)
         DisplayName (1, 1) string
         ShortName (1, 1) string
     end
@@ -23,6 +23,17 @@ classdef Mission
 
             enum.DisplayName = displayName;
             enum.ShortName = shortName;
+        end
+    end
+
+    methods (Hidden)
+
+        function representation = compactRepresentationForSingleLine(this, displayConfiguration, width)
+            representation = this.widthConstrainedDataRepresentation(displayConfiguration, width);
+        end
+
+        function representation = compactRepresentationForColumn(this, displayConfiguration, ~)
+            representation = this.fullDataRepresentation(displayConfiguration);
         end
     end
 end
