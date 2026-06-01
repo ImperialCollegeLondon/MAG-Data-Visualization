@@ -31,7 +31,7 @@ classdef ScienceCSV < mag.io.in.CSV
             end
 
             metadataArgs = namedargs2cell(metadataOptions);
-            metadata = mag.meta.Science(metadataArgs{:}, Primary = true);
+            metadata = mag.meta.Science(metadataArgs{:}, Primary = true, Sensor = mag.meta.Sensor.FOB);
 
             % Remove variables.
             rawData = removevars(rawData, regexpPattern("\w_saturation"));
