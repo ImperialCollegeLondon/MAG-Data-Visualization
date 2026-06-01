@@ -4,7 +4,7 @@ classdef tHelioSwarmApp < AppTestCase
 
     properties (TestParameter)
         TestDetails = {
-            struct(Folder = "hs", ...
+            struct(Folder = "hs/single_file", ...
             Views = ["Field", "HK", "PSD", "Signal Analyzer", "Spectrogram", "Wavelet Analyzer"])}
         InvalidLocation = {'', "this/folder/does-not/exist"}
     end
