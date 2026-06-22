@@ -27,7 +27,7 @@ jobs:
             exit 1
           fi
       - name: Package toolbox
-        uses: matlab-actions/run-build@v2.6.1
+        uses: matlab-actions/run-build@v3.1.2
         with:
           tasks: package("${{ env.MAG_DATA_VISUALIZATION_VERSION }}")
       - name: Upload toolbox
