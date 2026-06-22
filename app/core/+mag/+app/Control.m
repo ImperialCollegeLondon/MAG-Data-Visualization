@@ -18,15 +18,14 @@ classdef (Abstract) Control < mag.app.manage.Manager
         DynamicPlaceholder (1, 1) string = "dynamic (default)"
     end
 
-    properties (Access = private)
-        ModelReference matlab.internal.WeakHandle {mustBeScalarOrEmpty}
+    properties (WeakHandle)
+        % MODEL Sensor calibration model.
+        Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
     end
 
     properties (Dependent)
         % HASMODEL Logical denoting whether model exists.
         HasModel (1, 1) logical
-        % MODEL Sensor calibration model.
-        Model mag.app.Model {mustBeScalarOrEmpty}
     end
 
     methods (Abstract)
@@ -41,17 +40,7 @@ classdef (Abstract) Control < mag.app.manage.Manager
     methods
 
         function value = get.HasModel(this)
-            value = ~isempty(this.ModelReference) && ~this.ModelReference.isDestroyed();
-        end
-
-        function value = get.Model(this)
-
-            assert(this.HasModel, "Cannot access destroyed model.");
-            value = this.ModelReference.get();
-        end
-
-        function set.Model(this, value)
-            this.ModelReference = matlab.internal.WeakHandle(value);
+            value = ~isempty(this.Model) && isvalid(this.Model);
         end
 
         function reset(~)
