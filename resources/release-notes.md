@@ -1,7 +1,3 @@
-## App
+## Test
 
-- (All) Fix issue with opening app in MATLAB R2026a
-
-## Package
-
-- Add support for MATLAB R2026a
+- (IMAP) Fix failing IMAP tests due to numerical accuracy issues
