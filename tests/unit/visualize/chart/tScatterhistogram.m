@@ -24,9 +24,7 @@ classdef tScatterhistogram < MAGChartTestCase
 
             % Verify.
             axes = unique(mag.test.getAllAxes(tl));
-            graph = vertcat(axes.Children);
-
-            testCase.assertNumElements(graph, 3, "Scatter-histogram should create 3 objects.");
+            graph = testCase.getGraph(axes, 3);
 
             testCase.verifySameHandle(assembledGraph, unique([graph.Parent]), "Chart should return assembled graph.");
             testCase.verifyEmpty(assembledGraph.GroupVariable, """GroupVariable"" property value should be empty.");
@@ -48,13 +46,22 @@ classdef tScatterhistogram < MAGChartTestCase
 
             % Verify.
             axes = unique(mag.test.getAllAxes(tl));
-            graph = vertcat(axes.Children);
-
-            testCase.assertNumElements(graph, 40, "Scatter-histogram should create 21 objects.");
+            graph = testCase.getGraph(axes, 40);
 
             testCase.verifySameHandle(assembledGraph, unique([graph.Parent]), "Chart should return assembled graph.");
             testCase.verifyEmpty(assembledGraph.GroupVariable, """GroupVariable"" property value should be empty.");
             testCase.verifyEqual(assembledGraph.GroupData, testCase.Data.Letter, """GroupData"" property value should match expectation.");
+        end
+    end
+
+    methods (Access = private)
+
+        function graph = getGraph(testCase, axes, expectedNumber)
+
+            constraint = matlab.unittest.constraints.Eventually(matlab.unittest.constraints.HasElementCount(expectedNumber));
+            testCase.assertThat(@() vertcat(axes.Children), constraint, compose("Scatter-histogram should create %s objects.", expectedNumber));
+
+            graph = constraint.FinalReturnValue;
         end
     end
 end
