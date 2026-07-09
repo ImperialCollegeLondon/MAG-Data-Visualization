@@ -46,12 +46,24 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
         function [mode, primaryFrequency, secondaryFrequency, packetFrequency, timestamp] = extractFileMetadata(this, fileName)
         % EXTRACTMETADATA Extract metadata information from file name.
 
+            [~, fileName, fileExtension] = fileparts(fileName);
+            fileName = fileName + fileExtension;
+
             rawData = regexp(fileName, this.FileNamePattern, "names");
 
             % If no metadata was found, assume default values.
             if isempty(rawData)
 
                 timestamp = regexp(fileName, "(?<date>\d+)-(?<time>\w+)", "names");
+
+                if isempty(timestamp)
+                    error("mag:imap:InvalidFileName", "Unable to extract timestamp from file name ""%s"".", fileName);
+                end
+
+                if numel(timestamp) > 1
+                    timestamp = timestamp(end);
+                end
+
                 timestamp = mag.time.decodeDate(timestamp.date + timestamp.time, ExtraFormats = "uuuuMMdd" + ["HH'h'mm", "HH'h'"]);
 
                 if contains(fileName, "ialirt", IgnoreCase = true)
