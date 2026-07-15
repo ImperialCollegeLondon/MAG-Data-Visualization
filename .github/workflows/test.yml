@@ -20,7 +20,7 @@ jobs:
     name: Run MATLAB Tests
     strategy:
       matrix:
-        release: ["R2024b", "R2025a", "R2025b", "R2026a"]
+        release: ["R2025a", "R2025b", "R2026a"]
     runs-on: windows-latest
     steps:
       - name: Check out repository

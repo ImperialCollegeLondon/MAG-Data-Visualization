@@ -4,4 +4,14 @@ classdef (Abstract) UITestCase < matlab.uitest.TestCase & mag.test.mixin.Require
     properties (Constant)
         MinimumRelease = "R2024b"
     end
+
+    methods (TestClassSetup)
+
+        function screenshotOnFailure(testCase)
+
+            if mag.test.isGitHub()
+                testCase.onFailure(matlab.unittest.diagnostics.ScreenshotDiagnostic(Prefix = "mag_test_failure_"));
+            end
+        end
+    end
 end

@@ -1,7 +1,6 @@
-## App
+> [!WARNING]
+> Starting v9.0.2, MATLAB R2024a is no longer supported.
 
-- (All) Fix issue with opening app in MATLAB R2026a
+## Test
 
-## Package
-
-- Add support for MATLAB R2026a
+- Fix tests failing due to timing issues
