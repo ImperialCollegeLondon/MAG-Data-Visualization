@@ -2,7 +2,7 @@ classdef tDataVisualization < AppTestCase
 % TDATAVISUALIZATION System tests for "DataVisualization" app.
 
     properties (TestParameter)
-        ValidMission = {"Bartington", "HelioSwarm", "IMAP", "Vigil"}
+        ValidMission = {"Bartington", "HENON", "HelioSwarm", "IMAP", "Vigil"}
         InvalidMission = {"SolarOrbiter", "Not a Mission"}
         BreakpointType = {mag.app.manage.ToolbarManager.DebugErrorID, mag.app.manage.ToolbarManager.DebugErrorSource}
     end

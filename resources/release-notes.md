@@ -1,7 +1,10 @@
+> [!WARNING]
+> Starting v9.0.2, MATLAB R2024a is no longer supported.
+
 ## App
 
-- (All) Fix issue with opening app in MATLAB R2026a
+- (HENON) Add support for HENON mission
 
-## Package
+## Analysis
 
-- Add support for MATLAB R2026a
+- (HENON) Add support for HENON mission
