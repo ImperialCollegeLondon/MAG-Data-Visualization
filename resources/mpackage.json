@@ -1,6 +1,6 @@
 {
     "name": "MAGDataVisualization",
-    "version": "9.0.2",
+    "version": "9.1.0",
     "id": "69962df8-e93e-47cd-a1d6-766ad3e9da8a",
     "formerNames": [],
     "displayName": "MAG Data Visualization",
@@ -50,6 +50,12 @@
             ]
         },
         {
+            "path": "src/mission/henon",
+            "languages": [
+                "matlab"
+            ]
+        },
+        {
             "path": "src/mission/hs",
             "languages": [
                 "matlab"
@@ -87,6 +93,12 @@
         },
         {
             "path": "app/mission/bart",
+            "languages": [
+                "matlab"
+            ]
+        },
+        {
+            "path": "app/mission/henon",
             "languages": [
                 "matlab"
             ]

@@ -4,6 +4,8 @@ classdef Mission < matlab.mixin.CustomCompactDisplayProvider
     enumeration
         % BARTINGTON Bartington reference.
         Bartington ("Bartington", "Bart")
+        % HENON HENON mission.
+        HENON ("HENON", "HENON")
         % HELIOSWARM HelioSwarm mission.
         HelioSwarm ("HelioSwarm", "HS")
         % IMAP IMAP mission.
