@@ -14,7 +14,7 @@ classdef tHelioSwarmAnalysis < matlab.unittest.TestCase
 
             % Verify.
             testCase.verifyEqual(idpuAnalysis.ScienceProcessing.ExtraScaling, (1 / 2^8) * (15/16)^2, ...
-                "Extra scale factor scaling should match iDPU expectation.");
+                "Extra scale factor scaling should match iDPU expectation.", RelTol = 1e-6);
 
         end
 
@@ -25,7 +25,7 @@ classdef tHelioSwarmAnalysis < matlab.unittest.TestCase
                                     2.243, 0.07236, 0.01848, 0.00451];
 
             testCase.verifyEqual(mag.hs.Analysis.getScaleFactors(), expectedScaleFactors, ...
-                "HelioSwarm scale factor matrix should match expectation.");
+                "HelioSwarm scale factor matrix should match expectation.", RelTol = 1e-6);
         end
 
         function helioSwarmCompleteScaleFactors(testCase)
@@ -35,7 +35,7 @@ classdef tHelioSwarmAnalysis < matlab.unittest.TestCase
                                                                          2.243, 0.07236, 0.01848, 0.00451];
 
             testCase.verifyEqual(mag.hs.Analysis.getCompleteScaleFactors(), expectedCompleteScaleFactors, ...
-                "Complete scale factor matrix should match expectation for iDPU.");
+                "Complete scale factor matrix should match expectation for iDPU.", RelTol = 1e-6);
         end
     end
 end

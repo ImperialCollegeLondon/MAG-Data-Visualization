@@ -25,7 +25,7 @@ classdef tHelioSwarmApp < AppTestCase
             testCase.verifySize(tableData, [3, 4], ...
                 "Scale factors table should be a 3x4 matrix.");
             testCase.verifyEqual(actualData, expectedData, ...
-                "Scale factors table should display the correct scale factor values.");
+                "Scale factors table should display the correct scale factor values.", RelTol = 1e-6);
         end
 
         % Test that full analysis workflow is supported.

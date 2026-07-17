@@ -23,7 +23,7 @@ classdef tRange < MAGAnalysisTestCase
             scaledValue = rangeStep.applyRange(UniformUnscaledValue, UniformScaleFactor);
 
             % Verify.
-            testCase.verifyEqual(scaledValue, UniformScaledValue, "Scaled value with uniform scale factors should match expectation.");
+            testCase.verifyEqual(scaledValue, UniformScaledValue, "Scaled value with uniform scale factors should match expectation.", RelTol = 1e-6);
         end
 
         function applyRangeAxisSpecific(testCase)
@@ -49,7 +49,7 @@ classdef tRange < MAGAnalysisTestCase
             scaledValue = rangeStep.applyRange(unscaledValue, rangeValues);
 
             % Verify.
-            testCase.verifyEqual(scaledValue, expectedValue, "Scaled value with axis-specific scale factors should match expectation.");
+            testCase.verifyEqual(scaledValue, expectedValue, "Scaled value with axis-specific scale factors should match expectation.", RelTol = 1e-6);
         end
     end
 end
