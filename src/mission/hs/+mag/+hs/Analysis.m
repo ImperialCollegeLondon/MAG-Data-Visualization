@@ -171,7 +171,7 @@ classdef Analysis < mag.Analysis
 
                 switch this.InputSource
                     case mag.hs.meta.InputSource.UART
-                        rangeStep.ExtraScaling = (1 / 2^8);
+                        rangeStep.ExtraScaling = (1 / 2^8) * (15/16)^2;
                     case mag.hs.meta.InputSource.iDPU
                         rangeStep.ExtraScaling = (1 / 2^8) * (15/16)^2;
                 end
