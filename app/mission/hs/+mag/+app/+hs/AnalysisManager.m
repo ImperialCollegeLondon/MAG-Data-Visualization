@@ -12,6 +12,8 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
         SciencePatternEditFieldLabel matlab.ui.control.Label
         HKPatternEditField matlab.ui.control.EditField
         HKPatternEditFieldLabel matlab.ui.control.Label
+        ScaleFactorsTableLabel matlab.ui.control.Label
+        ScaleFactorsTable matlab.ui.control.Table
     end
 
     methods
@@ -21,7 +23,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             % Create AnalyzeSettingsLayout.
             this.AnalyzeSettingsLayout = uigridlayout(parent);
             this.AnalyzeSettingsLayout.ColumnWidth = ["fit", "1x", "fit"];
-            this.AnalyzeSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x", "1x"];
+            this.AnalyzeSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x", "fit", "3x"];
 
             % Create LocationEditFieldLabel.
             this.LocationEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
@@ -79,6 +81,21 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.HKPatternEditField.Layout.Row = 4;
             this.HKPatternEditField.Layout.Column = [2, 3];
 
+            % Create ScaleFactorsTableLabel.
+            this.ScaleFactorsTableLabel = uilabel(this.AnalyzeSettingsLayout);
+            this.ScaleFactorsTableLabel.Layout.Row = 5;
+            this.ScaleFactorsTableLabel.Layout.Column = [1, 3];
+            this.ScaleFactorsTableLabel.Text = "Scale factors which will be used to convert raw science data to nT:";
+
+            % Create ScaleFactorsTable.
+            this.ScaleFactorsTable = uitable(this.AnalyzeSettingsLayout);
+            this.ScaleFactorsTable.ColumnName = compose("Range %d", 0:3);
+            this.ScaleFactorsTable.RowName = ["X", "Y", "Z"];
+            this.ScaleFactorsTable.ColumnFormat = repmat({'char'}, 1, 4);
+            this.ScaleFactorsTable.ColumnEditable = false(1, 4);
+            this.ScaleFactorsTable.Layout.Row = 6;
+            this.ScaleFactorsTable.Layout.Column = [1, 3];
+
             % Reset.
             this.reset();
         end
@@ -91,6 +108,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.MetadataPatternEditField.Value = join(dummyAnalysis.MetadataPattern, pathsep());
             this.SciencePatternEditField.Value = dummyAnalysis.SciencePattern;
             this.HKPatternEditField.Value = join(dummyAnalysis.HKPattern, pathsep());
+            this.ScaleFactorsTable.Data = this.formatScaleFactorsData(mag.hs.Analysis.getCompleteScaleFactors());
         end
 
         function options = getAnalysisOptions(this)
@@ -128,6 +146,21 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
 
     methods (Access = private)
 
+        function formattedData = formatScaleFactorsData(~, scaleFactors)
+
+            formattedData = strings(size(scaleFactors));
+
+            for idx = 1:numel(scaleFactors)
+
+                fixedDisplay = sprintf("%.4f", scaleFactors(idx));
+                if scaleFactors(idx) ~= 0 && mag.app.hs.AnalysisManager.countSignificantDigits(fixedDisplay) < 3
+                    formattedData(idx) = sprintf("%.6e", scaleFactors(idx));
+                else
+                    formattedData(idx) = fixedDisplay;
+                end
+            end
+        end
+
         function browseButtonPushed(this)
 
             location = uigetdir(this.LocationEditField.Value, "Select Data Root");
@@ -137,6 +170,16 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             end
 
             this.LocationEditField.focus();
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function numSignificantDigits = countSignificantDigits(value)
+
+            digitsOnly = regexprep(value, "[-+.]", "");
+            digitsOnly = regexprep(digitsOnly, "^0+", "");
+            numSignificantDigits = strlength(digitsOnly);
         end
     end
 end

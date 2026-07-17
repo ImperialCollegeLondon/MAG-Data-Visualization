@@ -59,6 +59,26 @@ classdef Analysis < mag.Analysis
             analysis.load();
             analysis.check();
         end
+
+        function scaleFactors = getScaleFactors()
+        % GETSCALEFACTORS Return HelioSwarm range scale factors for each axis.
+
+            scaleFactors = [2.286, 0.0738, 0.01884, 0.00459; ...
+                            2.243, 0.07236, 0.01848, 0.00451; ...
+                            2.243, 0.07236, 0.01848, 0.00451];
+        end
+
+        function extraScaling = getExtraScaling()
+        % GETEXTRASCALING Return HelioSwarm extra scaling
+
+                    extraScaling = (1 / 2^8) * (15 / 16)^2;
+        end
+
+        function completeScaleFactors = getCompleteScaleFactors()
+        % GETCOMPLETESCALEFACTORS Return complete factors (ExtraScaling * ScaleFactors).
+
+            completeScaleFactors = mag.hs.Analysis.getExtraScaling() * mag.hs.Analysis.getScaleFactors();
+        end
     end
 
     methods
@@ -169,17 +189,8 @@ classdef Analysis < mag.Analysis
 
                 rangeStep = scienceProcessing(rangeLoc);
 
-                % Set HelioSwarm-specific scale factors for each axis
-                rangeStep.ScaleFactors = [2.286, 0.0738, 0.01884, 0.00459; ...
-                                          2.243, 0.07236, 0.01848, 0.00451; ...
-                                          2.243, 0.07236, 0.01848, 0.00451];
-
-                switch this.InputSource
-                    case mag.hs.meta.InputSource.UART
-                        rangeStep.ExtraScaling = (1 / 2^8) * (15/16)^2;
-                    case mag.hs.meta.InputSource.iDPU
-                        rangeStep.ExtraScaling = (1 / 2^8) * (15/16)^2;
-                end
+                rangeStep.ScaleFactors = mag.hs.Analysis.getScaleFactors();
+                rangeStep.ExtraScaling = mag.hs.Analysis.getExtraScaling();
 
                 this.ScienceProcessing = scienceProcessing;
             end
