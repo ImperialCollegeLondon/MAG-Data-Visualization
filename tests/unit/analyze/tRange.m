@@ -4,7 +4,7 @@ classdef tRange < MAGAnalysisTestCase
     properties (TestParameter)
         % Test with uniform scale factors (backward compatibility)
         UniformUnscaledValue = {ones(4, 3), ones(4, 3), ones(4, 3), ones(4, 3), ones(4, 3)}
-        UniformScaleFactor = {zeros(4, 1), ones(4, 1), 2 * ones(4, 1), 3 * ones(4, 1), [0; 1; 2; 3]}
+        RangeValues = {zeros(4, 1), ones(4, 1), 2 * ones(4, 1), 3 * ones(4, 1), [0; 1; 2; 3]}
         UniformScaledValue = {2.13618 * ones(4, 3), ...
             0.072 * ones(4, 3), ...
             0.01854 * ones(4, 3), ...
@@ -14,13 +14,13 @@ classdef tRange < MAGAnalysisTestCase
 
     methods (Test, ParameterCombination = "sequential")
 
-        function applyRangeUniform(testCase, UniformUnscaledValue, UniformScaleFactor, UniformScaledValue)
+        function applyRangeUniform(testCase, UniformUnscaledValue, RangeValues, UniformScaledValue)
 
             % Set up.
             rangeStep = mag.process.Range();
 
             % Exercise.
-            scaledValue = rangeStep.applyRange(UniformUnscaledValue, UniformScaleFactor);
+            scaledValue = rangeStep.applyRange(UniformUnscaledValue, RangeValues);
 
             % Verify.
             testCase.verifyEqual(scaledValue, UniformScaledValue, "Scaled value with uniform scale factors should match expectation.", RelTol = 1e-6);

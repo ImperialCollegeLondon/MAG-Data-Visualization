@@ -71,7 +71,7 @@ classdef Analysis < mag.Analysis
         function extraScaling = getExtraScaling()
         % GETEXTRASCALING Return HelioSwarm extra scaling
 
-                    extraScaling = (1 / 2^8) * (15 / 16)^2;
+            extraScaling = (1 / 2^8) * (15 / 16)^2;
         end
 
         function completeScaleFactors = getCompleteScaleFactors()
