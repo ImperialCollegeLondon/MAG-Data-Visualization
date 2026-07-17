@@ -169,6 +169,11 @@ classdef Analysis < mag.Analysis
 
                 rangeStep = scienceProcessing(rangeLoc);
 
+                % Set HelioSwarm-specific scale factors for each axis
+                rangeStep.ScaleFactors = [2.286, 0.0738, 0.01884, 0.00459; ...
+                                          2.243, 0.07236, 0.01848, 0.00451; ...
+                                          2.243, 0.07236, 0.01848, 0.00451];
+
                 switch this.InputSource
                     case mag.hs.meta.InputSource.UART
                         rangeStep.ExtraScaling = (1 / 2^8) * (15/16)^2;
