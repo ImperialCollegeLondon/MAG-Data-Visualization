@@ -4,7 +4,4 @@
 ## Analysis
 
 - (HENON) Split data with `NaN`s after large gaps
-
-## Test
-
-- Fix tests failing due to timing issues
+- (HENON) Fix issue with loading time from file name
