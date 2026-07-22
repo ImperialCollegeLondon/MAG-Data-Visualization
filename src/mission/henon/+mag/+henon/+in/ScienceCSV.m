@@ -83,7 +83,7 @@ classdef ScienceCSV < mag.io.in.Format
 
     methods (Access = private)
 
-        function timestamps = convertTime(~, timeValues, fileName)
+        function timestamps = convertTime(this, timeValues, fileName)
 
             timeValues = double(timeValues);
 
