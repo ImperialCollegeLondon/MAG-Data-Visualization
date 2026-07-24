@@ -3,5 +3,4 @@
 
 ## Analysis
 
-- (HENON) Split data with `NaN`s after large gaps
-- (HENON) Fix issue with loading time from file name
+- (All) Rename sensor "FOB" and "FIB" with "OBS" and "IBS", respectively

@@ -55,7 +55,7 @@ classdef tVigilInstrument < matlab.unittest.TestCase
             instrument = testCase.createTestData();
 
             % Exercise and verify.
-            testCase.verifyEqual(instrument.Outboard.Metadata.Sensor, mag.meta.Sensor.FOB, "Outboard should return FOB sensor data.");
+            testCase.verifyEqual(instrument.Outboard.Metadata.Sensor, mag.meta.Sensor.OBS, "Outboard should return OBS sensor data.");
         end
 
         % Test that "Inboard" returns correct science data.
@@ -65,7 +65,7 @@ classdef tVigilInstrument < matlab.unittest.TestCase
             instrument = testCase.createTestData();
 
             % Exercise and verify.
-            testCase.verifyEqual(instrument.Inboard.Metadata.Sensor, mag.meta.Sensor.FIB, "Inboard should return FIB sensor data.");
+            testCase.verifyEqual(instrument.Inboard.Metadata.Sensor, mag.meta.Sensor.IBS, "Inboard should return IBS sensor data.");
         end
 
         % Test that "TimeRange" is based on both Outboard and Inboard data.
@@ -95,14 +95,14 @@ classdef tVigilInstrument < matlab.unittest.TestCase
             fobTime = datetime("now", TimeZone = "UTC") + seconds(0:4)';
             fobData = timetable(fobTime, rand(5, 1), rand(5, 1), rand(5, 1), rand(5, 1), VariableNames = ["x", "y", "z", "range"], DimensionNames = ["t", "Data"]);
 
-            fobMetadata = mag.meta.Science(Sensor = mag.meta.Sensor.FOB, Mode = mag.meta.Mode.Normal, DataFrequency = 1);
+            fobMetadata = mag.meta.Science(Sensor = mag.meta.Sensor.OBS, Mode = mag.meta.Mode.Normal, DataFrequency = 1);
             fobScience = mag.Science(fobData, fobMetadata);
 
             % Create FIB science data.
             fibTime = datetime("now", TimeZone = "UTC") + seconds(0:4)';
             fibData = timetable(fibTime, rand(5, 1), rand(5, 1), rand(5, 1), rand(5, 1), VariableNames = ["x", "y", "z", "range"], DimensionNames = ["t", "Data"]);
 
-            fibMetadata = mag.meta.Science(Sensor = mag.meta.Sensor.FIB, Mode = mag.meta.Mode.Normal, DataFrequency = 1);
+            fibMetadata = mag.meta.Science(Sensor = mag.meta.Sensor.IBS, Mode = mag.meta.Mode.Normal, DataFrequency = 1);
             fibScience = mag.Science(fibData, fibMetadata);
 
             % Create instrument.

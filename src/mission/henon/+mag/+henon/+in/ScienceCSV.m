@@ -11,7 +11,7 @@ classdef ScienceCSV < mag.io.in.Format
 
     properties
         % SENSOR Sensor type (FOB or FIB).
-        Sensor (1, 1) mag.meta.Sensor = mag.meta.Sensor.FOB
+        Sensor (1, 1) mag.meta.Sensor = mag.meta.Sensor.OBS
     end
 
     methods
@@ -58,7 +58,7 @@ classdef ScienceCSV < mag.io.in.Format
 
             if isempty(rawData)
 
-                metadata = mag.meta.Science(Sensor = this.Sensor, Primary = this.Sensor == mag.meta.Sensor.FOB);
+                metadata = mag.meta.Science(Sensor = this.Sensor, Primary = this.Sensor == mag.meta.Sensor.OBS);
                 data = mag.Science(timetable(), metadata);
                 return;
             end
@@ -134,7 +134,7 @@ classdef ScienceCSV < mag.io.in.Format
             end
 
             metadata = mag.meta.Science( ...
-                Primary = this.Sensor == mag.meta.Sensor.FOB, ...
+                Primary = this.Sensor == mag.meta.Sensor.OBS, ...
                 Sensor = this.Sensor, ...
                 Mode = mag.meta.Mode.Normal, ...
                 DataFrequency = frequency, ...

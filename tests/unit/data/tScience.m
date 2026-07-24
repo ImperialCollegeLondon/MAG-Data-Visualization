@@ -451,17 +451,17 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.Metadata.Sensor = "FOB";
+            science1.Metadata.Sensor = "OBS";
 
             science2 = testCase.createTestData();
             science2.Metadata.Primary = true;
-            science2.Metadata.Sensor = "FIB";
+            science2.Metadata.Sensor = "IBS";
 
             science = [science1, science2];
 
             % Exercise and verify.
-            testCase.verifyEqual(science.getName(), mag.meta.Sensor.FIB, "Primary sensor should be returned by default.");
-            testCase.verifyEqual(science.getName("Primary"), mag.meta.Sensor.FIB, "Primary sensor should be returned when asked.");
+            testCase.verifyEqual(science.getName(), mag.meta.Sensor.IBS, "Primary sensor should be returned by default.");
+            testCase.verifyEqual(science.getName("Primary"), mag.meta.Sensor.IBS, "Primary sensor should be returned when asked.");
         end
 
         % Test that secondary sensor name is returned correctly.
@@ -469,16 +469,16 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.Metadata.Sensor = "FOB";
+            science1.Metadata.Sensor = "OBS";
 
             science2 = testCase.createTestData();
             science2.Metadata.Primary = true;
-            science2.Metadata.Sensor = "FIB";
+            science2.Metadata.Sensor = "IBS";
 
             science = [science1, science2];
 
             % Exercise and verify.
-            testCase.verifyEqual(science.getName("Secondary"), mag.meta.Sensor.FOB, "Secondary sensor should be returned when asked.");
+            testCase.verifyEqual(science.getName("Secondary"), mag.meta.Sensor.OBS, "Secondary sensor should be returned when asked.");
         end
 
         % Test that if no primary sensor is set, FOB is returned by
@@ -488,16 +488,16 @@ classdef tScience < matlab.unittest.TestCase
             % Set up.
             science1 = testCase.createTestData();
             science1.Metadata.Primary = false;
-            science1.Metadata.Sensor = "FOB";
+            science1.Metadata.Sensor = "OBS";
 
             science2 = testCase.createTestData();
             science2.Metadata.Primary = false;
-            science2.Metadata.Sensor = "FIB";
+            science2.Metadata.Sensor = "IBS";
 
             science = [science1, science2];
 
             % Exercise and verify.
-            testCase.verifyEqual(science.getName("Primary"), mag.meta.Sensor.FOB, "Default primary sensor should be FOB.");
+            testCase.verifyEqual(science.getName("Primary"), mag.meta.Sensor.OBS, "Default primary sensor should be OBS.");
         end
 
         % Test that error is thrown if more than 1 sensor is set as
@@ -507,11 +507,11 @@ classdef tScience < matlab.unittest.TestCase
             % Set up.
             science1 = testCase.createTestData();
             science1.Metadata.Primary = true;
-            science1.Metadata.Sensor = "FOB";
+            science1.Metadata.Sensor = "OBS";
 
             science2 = testCase.createTestData();
             science2.Metadata.Primary = true;
-            science2.Metadata.Sensor = "FIB";
+            science2.Metadata.Sensor = "IBS";
 
             science = [science1, science2];
 
@@ -525,11 +525,11 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.Metadata.Sensor = "FOB";
+            science1.Metadata.Sensor = "OBS";
 
             science2 = testCase.createTestData();
             science2.Metadata.Primary = true;
-            science2.Metadata.Sensor = "FIB";
+            science2.Metadata.Sensor = "IBS";
 
             science = [science1, science2];
 
@@ -542,15 +542,15 @@ classdef tScience < matlab.unittest.TestCase
 
             % Set up.
             science1 = testCase.createTestData();
-            science1.Metadata.Sensor = "FIB";
+            science1.Metadata.Sensor = "IBS";
 
             science2 = testCase.createTestData();
-            science2.Metadata.Sensor = "FOB";
+            science2.Metadata.Sensor = "OBS";
 
             science = [science1, science2];
 
             % Exercise and verify.
-            testCase.verifyEqual(science.select(Sensor = "FOB"), science2, "Outboard sensor should be returned when asked.");
+            testCase.verifyEqual(science.select(Sensor = "OBS"), science2, "Outboard sensor should be returned when asked.");
         end
 
         % Test that correct sensor model is selected.
@@ -582,7 +582,7 @@ classdef tScience < matlab.unittest.TestCase
 
             % Exercise and verify.
             testCase.verifyEmpty(science.select(Primary = true), "No sensor should be returned.");
-            testCase.verifyEmpty(science.select(Sensor = "FOB"), "No sensor should be returned.");
+            testCase.verifyEmpty(science.select(Sensor = "OBS"), "No sensor should be returned.");
             testCase.verifyEmpty(science.select(Model = "FM5"), "No sensor should be returned.");
         end
 
@@ -595,7 +595,7 @@ classdef tScience < matlab.unittest.TestCase
 
             science.Metadata.DataFrequency = 64;
             science.Metadata.Mode = "Burst";
-            science.Metadata.Sensor = "FIB";
+            science.Metadata.Sensor = "IBS";
             science.Metadata.Setup = mag.meta.Setup(Model = "FM4");
 
             % Exercise.
@@ -614,7 +614,7 @@ classdef tScience < matlab.unittest.TestCase
 
             science.Metadata.DataFrequency = 64;
             science.Metadata.Mode = "Burst";
-            science.Metadata.Sensor = "FIB";
+            science.Metadata.Sensor = "IBS";
             science.Metadata.Setup = mag.meta.Setup.empty();
 
             % Exercise.
@@ -633,7 +633,7 @@ classdef tScience < matlab.unittest.TestCase
 
             science.Metadata.DataFrequency = 64;
             science.Metadata.Mode = "Burst";
-            science.Metadata.Sensor = "FIB";
+            science.Metadata.Sensor = "IBS";
             science.Metadata.Setup = mag.meta.Setup();
 
             % Exercise.

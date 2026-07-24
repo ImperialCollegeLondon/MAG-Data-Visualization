@@ -69,7 +69,7 @@ classdef ScienceCDF < mag.io.in.CDF
             timedData.Properties.VariableContinuity = continuity;
 
             % Create mag.Science object with metadata.
-            metadata = mag.meta.Science(Mode = mode, Primary = isequal(sensor, mag.meta.Sensor.FOB), Sensor = sensor, ...
+            metadata = mag.meta.Science(Mode = mode, Primary = isequal(sensor, mag.meta.Sensor.OBS), Sensor = sensor, ...
                 Timestamp = datetime(date, InputFormat = "uuuuMMdd", Format = mag.time.Constant.Format, TimeZone = mag.time.Constant.TimeZone));
             data = mag.Science(timedData, metadata);
         end
@@ -85,9 +85,9 @@ classdef ScienceCDF < mag.io.in.CDF
 
             switch lower(details.sensor)
                 case "o"
-                    sensor = mag.meta.Sensor.FOB;
+                    sensor = mag.meta.Sensor.OBS;
                 case "i"
-                    sensor = mag.meta.Sensor.FIB;
+                    sensor = mag.meta.Sensor.IBS;
                 otherwise
                     error("Unsupported sensor ""%s"".", details.sensor);
             end

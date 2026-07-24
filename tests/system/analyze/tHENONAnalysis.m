@@ -28,8 +28,8 @@ classdef tHENONAnalysis < AnalysisTestCase
             inboard = analysis.Results.Inboard;
 
             testCase.verifyEqual(analysis.Results.Metadata.Mission, mag.meta.Mission.HENON, "Mission metadata should be set to HENON.");
-            testCase.verifyEqual(outboard.Metadata.Sensor, mag.meta.Sensor.FOB, "Outboard sensor metadata should be FOB.");
-            testCase.verifyEqual(inboard.Metadata.Sensor, mag.meta.Sensor.FIB, "Inboard sensor metadata should be FIB.");
+            testCase.verifyEqual(outboard.Metadata.Sensor, mag.meta.Sensor.OBS, "Outboard sensor metadata should be OBS.");
+            testCase.verifyEqual(inboard.Metadata.Sensor, mag.meta.Sensor.IBS, "Inboard sensor metadata should be IBS.");
             testCase.verifyEqual(outboard.Metadata.Mode, mag.meta.Mode.Normal, "Outboard mode should be Normal.");
             testCase.verifyEqual(inboard.Metadata.Mode, mag.meta.Mode.Normal, "Inboard mode should be Normal.");
             testCase.verifyEqual(outboard.Metadata.DataFrequency, 1, "Outboard data frequency should be 1 Hz.");

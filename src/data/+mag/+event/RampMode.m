@@ -3,7 +3,7 @@ classdef RampMode < mag.event.Event
 
     properties
         % SENSOR Sensor going into ramp mode.
-        Sensor (1, 1) mag.meta.Sensor = "FOB"
+        Sensor (1, 1) mag.meta.Sensor = "OBS"
     end
 
     methods

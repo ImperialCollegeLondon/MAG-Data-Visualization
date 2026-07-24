@@ -6,8 +6,8 @@ classdef tHENONScienceCSVIn < MAGIOTestCase
     end
 
     properties (TestParameter)
-        FileDetails = {struct(Extension = "ob", Sensor = mag.meta.Sensor.FOB), ...
-            struct(Extension = "ib", Sensor = mag.meta.Sensor.FIB)}
+        FileDetails = {struct(Extension = "ob", Sensor = mag.meta.Sensor.OBS), ...
+            struct(Extension = "ib", Sensor = mag.meta.Sensor.IBS)}
     end
 
     methods (Test)

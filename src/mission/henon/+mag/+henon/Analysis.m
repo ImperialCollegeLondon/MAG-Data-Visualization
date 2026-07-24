@@ -87,15 +87,15 @@ classdef Analysis < mag.Analysis
             obsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ib", IgnoreCase = true));
             ibsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ob", IgnoreCase = true));
 
-            obsScience = this.importAndProcess(obsFiles, mag.meta.Sensor.FOB);
-            ibsScience = this.importAndProcess(ibsFiles, mag.meta.Sensor.FIB);
+            obsScience = this.importAndProcess(obsFiles, mag.meta.Sensor.OBS);
+            ibsScience = this.importAndProcess(ibsFiles, mag.meta.Sensor.IBS);
 
             if isempty(obsScience)
-                obsScience = mag.Science(timetable(), mag.meta.Science(Primary = true, Sensor = mag.meta.Sensor.FOB));
+                obsScience = mag.Science(timetable(), mag.meta.Science(Primary = true, Sensor = mag.meta.Sensor.OBS));
             end
 
             if isempty(ibsScience)
-                ibsScience = mag.Science(timetable(), mag.meta.Science(Primary = false, Sensor = mag.meta.Sensor.FIB));
+                ibsScience = mag.Science(timetable(), mag.meta.Science(Primary = false, Sensor = mag.meta.Sensor.IBS));
             end
 
             this.Results.Science = [obsScience, ibsScience];

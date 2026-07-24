@@ -79,8 +79,8 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
                 secondarySensor = string(this.Results.Science.getName("Secondary"));
             else
 
-                primarySensor = "FOB";
-                secondarySensor = "FIB";
+                primarySensor = "OBS";
+                secondarySensor = "IBS";
             end
         end
     end

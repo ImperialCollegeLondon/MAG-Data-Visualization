@@ -116,11 +116,11 @@ classdef Analysis < mag.Analysis
 
             fobScience = mag.io.import( ...
                 FileNames = fobFiles, ...
-                Format = mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.FOB));
+                Format = mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.OBS));
 
             fibScience = mag.io.import( ...
                 FileNames = fibFiles, ...
-                Format = mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.FIB));
+                Format = mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.IBS));
 
             for sp = this.Processing.ScienceSteps
 
@@ -130,11 +130,11 @@ classdef Analysis < mag.Analysis
             end
 
             if isempty(fobScience)
-                fobScience = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.FOB));
+                fobScience = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.OBS));
             end
 
             if isempty(fibScience)
-                fibScience = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.FIB));
+                fibScience = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.IBS));
             end
 
             this.Results.Science = [fobScience, fibScience];

@@ -106,8 +106,8 @@ classdef tIALiRT < matlab.mock.TestCase
 
             scienceTT = mag.test.DataTestUtilities.getScienceTimetable();
 
-            [primary, primaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Primary = true, Sensor = "FOB")}, Strict = true);
-            [secondary, secondaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Sensor = "FIB")}, Strict = true);
+            [primary, primaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Primary = true, Sensor = "OBS")}, Strict = true);
+            [secondary, secondaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Sensor = "IBS")}, Strict = true);
 
             iALiRT = mag.imap.IALiRT(Science = [primary, secondary]);
         end

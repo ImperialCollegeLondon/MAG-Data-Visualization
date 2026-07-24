@@ -15,7 +15,7 @@ classdef tScienceCDFOut < MAGIOTestCase
         function getExportFileName(testCase)
 
             % Set up.
-            metadata = mag.meta.Science(Mode = "Burst", Sensor = "FIB", Timestamp = datetime("now"));
+            metadata = mag.meta.Science(Mode = "Burst", Sensor = "IBS", Timestamp = datetime("now"));
             data = mag.Science(timetable.empty(), metadata);
 
             expectedFileName = compose("imap_mag_l2b_burst-magi_%s_v2.cdf", datetime("today", Format = "yyyyMMdd"));

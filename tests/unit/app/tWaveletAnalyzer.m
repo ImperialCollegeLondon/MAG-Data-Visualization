@@ -45,8 +45,8 @@ classdef tWaveletAnalyzer < mag.test.case.ViewControllerTestCase
             waveletAnalyzer.SignalDropDown.Value = Axis;
 
             results = mag.imap.Instrument();
-            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FOB"));
-            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FIB"));
+            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "OBS"));
+            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "IBS"));
 
             expectedData = results.(Sensor).(Axis);
 
@@ -75,8 +75,8 @@ classdef tWaveletAnalyzer < mag.test.case.ViewControllerTestCase
             waveletAnalyzer.SignalDropDown.Value = Axis;
 
             results = mag.imap.Instrument();
-            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FOB"));
-            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FIB"));
+            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "OBS"));
+            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "IBS"));
 
             expectedData = timetable(results.(Sensor).Time - results.(Sensor).Time(1), results.(Sensor).(Axis), VariableNames = compose("%s_%s", Sensor, Axis));
 

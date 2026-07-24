@@ -2,7 +2,7 @@ classdef tVigilScienceLOGIn < MAGIOTestCase
 % TVIGILSCIENCELOGIN Unit tests for "mag.vigil.in.ScienceLOG" class.
 
     properties (TestParameter)
-        Sensor = {mag.meta.Sensor.FOB, mag.meta.Sensor.FIB}
+        Sensor = {mag.meta.Sensor.OBS, mag.meta.Sensor.IBS}
     end
 
     methods (Test)

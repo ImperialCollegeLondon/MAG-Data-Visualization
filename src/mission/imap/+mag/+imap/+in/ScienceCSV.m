@@ -36,8 +36,8 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
             [mode, primaryFrequency, secondaryFrequency, packetFrequency, timestamp] = this.extractFileMetadata(fileName);
 
             % Process science data.
-            data = [this.processScience(rawPrimary, "pri", Sensor = mag.meta.Sensor.FOB, Mode = mode, DataFrequency = primaryFrequency, PacketFrequency = packetFrequency, Timestamp = timestamp), ...
-                this.processScience(rawSecondary, "sec", Sensor = mag.meta.Sensor.FIB, Mode = mode, DataFrequency = secondaryFrequency, PacketFrequency = packetFrequency, Timestamp = timestamp)];
+            data = [this.processScience(rawPrimary, "pri", Sensor = mag.meta.Sensor.OBS, Mode = mode, DataFrequency = primaryFrequency, PacketFrequency = packetFrequency, Timestamp = timestamp), ...
+                this.processScience(rawSecondary, "sec", Sensor = mag.meta.Sensor.IBS, Mode = mode, DataFrequency = secondaryFrequency, PacketFrequency = packetFrequency, Timestamp = timestamp)];
         end
     end
 
