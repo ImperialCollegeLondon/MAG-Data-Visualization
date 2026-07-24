@@ -82,8 +82,10 @@ classdef Analysis < mag.Analysis
                 return;
             end
 
-            obsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ob", IgnoreCase = true));
-            ibsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ib", IgnoreCase = true));
+            % On HENON, the OBS and IBS file are swapped (".ib" is OBS and
+            % ".ob" is IBS).
+            obsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ib", IgnoreCase = true));
+            ibsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ob", IgnoreCase = true));
 
             obsScience = this.importAndProcess(obsFiles, mag.meta.Sensor.FOB);
             ibsScience = this.importAndProcess(ibsFiles, mag.meta.Sensor.FIB);
