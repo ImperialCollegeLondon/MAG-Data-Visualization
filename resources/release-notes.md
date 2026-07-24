@@ -3,5 +3,4 @@
 
 ## Analysis
 
-- (HENON) Split data with `NaN`s after large gaps
-- (HENON) Fix issue with loading time from file name
+- (HENON) Fix issue with `.ob` file containing IBS data and `.ib` file containing OBS data
