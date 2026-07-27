@@ -42,12 +42,11 @@ classdef Analysis < mag.Analysis
                 options.?mag.vigil.Analysis
             end
 
-            scaleFactorRow = [72000, 8400, 512, 256] / ((2^23)-1);
             this.Processing.ScienceSteps = [ ...
                 mag.process.AllZero(Variables = ["x", "y", "z"]), ...
                 mag.process.Separate(DiscriminationVariable = "timestamps", LargeDiscriminateThreshold = minutes(1), Variables = ["x", "y", "z"]), ...
                 mag.process.Sort(), ...
-                mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"], ScaleFactors = [scaleFactorRow; scaleFactorRow; scaleFactorRow])];
+                mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"], ScaleFactors = [72000, 8400, 512, 256] / ((2^23)-1))];
 
             this.assignProperties(options);
         end
