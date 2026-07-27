@@ -3,7 +3,7 @@ classdef Analysis < mag.Analysis
 
     properties
         % INPUTSOURCE Data input source.
-        InputSource (1, 1) mag.hs.meta.InputSource = mag.hs.meta.InputSource.UART
+        InputSource (1, 1) mag.hs.meta.InputSource = mag.hs.meta.InputSource.iDPU
         % METADATAPATTERN Pattern of metadata files.
         MetadataPattern string {mustBeScalarOrEmpty} = string.empty()
         % SCIENCEPATTERN Pattern of science data files.
