@@ -13,18 +13,18 @@ jobs:
   qa:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: pre-commit/action@v3.0.1
 
   test:
     name: Run MATLAB Tests
     strategy:
       matrix:
-        release: ["R2024b", "R2025a", "R2025b", "R2026a"]
+        release: ["R2025a", "R2025b", "R2026a"]
     runs-on: windows-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v3.0.1
         with:
@@ -50,11 +50,11 @@ jobs:
           tarBall: false
           zipBall: false
       - name: Install support packages
-        uses: matlab-actions/run-command@v3.1.2
+        uses: matlab-actions/run-command@v3.2.0
         with:
           command: "matlab.addons.install('MATLAB.SPDF.CDF.mltbx'); matlab.addons.install('MATLAB.SPICE.MICE.mltbx');"
       - name: Run tests
-        uses: matlab-actions/run-build@v3.1.2
+        uses: matlab-actions/run-build@v3.2.0
         with:
           tasks: check test
       - name: Report results

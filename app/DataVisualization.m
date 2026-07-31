@@ -147,6 +147,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             switch app.Mission
                 case mag.meta.Mission.Bartington
                     app.Provider = mag.app.bart.Provider();
+                case mag.meta.Mission.HENON
+                    app.Provider = mag.app.henon.Provider();
                 case mag.meta.Mission.HelioSwarm
                     app.Provider = mag.app.hs.Provider();
                 case mag.meta.Mission.IMAP

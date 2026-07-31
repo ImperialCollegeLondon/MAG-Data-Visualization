@@ -1,7 +1,6 @@
-## App
+> [!WARNING]
+> Starting v9.0.2, MATLAB R2024a is no longer supported.
 
-- (All) Fix issue with opening app in MATLAB R2026a
+## Analysis
 
-## Package
-
-- Add support for MATLAB R2026a
+- (HENON) Fix issue with `.ob` file containing IBS data and `.ib` file containing OBS data
