@@ -11,6 +11,23 @@ classdef tHelioSwarmApp < AppTestCase
 
     methods (Test)
 
+        % Test that HelioSwarm complete scale factors table is populated correctly.
+        function scaleFactorsTable_populated(testCase)
+
+            % Set up.
+            app = testCase.createAppWithCleanup("HelioSwarm");
+
+            % Verify.
+            tableData = string(app.AnalysisManager.ScaleFactorsTable.Data);
+            expectedData = mag.hs.Analysis.getCompleteScaleFactors();
+            actualData = str2double(tableData);
+
+            testCase.verifySize(tableData, [3, 4], ...
+                "Scale factors table should be a 3x4 matrix.");
+            testCase.verifyEqual(actualData, expectedData, ...
+                "Scale factors table should display the correct scale factor values.", RelTol = 1e-6);
+        end
+
         % Test that full analysis workflow is supported.
         function analyze_fullWorkflow(testCase, TestDetails)
 

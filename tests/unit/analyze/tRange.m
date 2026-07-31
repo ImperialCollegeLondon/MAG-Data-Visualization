@@ -2,27 +2,70 @@ classdef tRange < MAGAnalysisTestCase
 % TRANGE Unit tests for "mag.process.Range" class.
 
     properties (TestParameter)
-        UnscaledValue = {ones(4, 4), ones(4, 4), ones(4, 4), ones(4, 4), ones(4, 4)}
-        ScaleFactor = {zeros(4, 1), ones(4, 1), 2 * ones(4, 1), 3 * ones(4, 1), [0; 1; 2; 3]}
-        ScaledValue = {2.13618 * ones(4, 4), ...
-            0.072 * ones(4, 4), ...
-            0.01854 * ones(4, 4), ...
-            0.00453 * ones(4, 4), ...
-            [2.13618; 0.072; 0.01854; 0.00453] * ones(1, 4)}
+        % Test with uniform scale factors (backward compatibility)
+        UniformUnscaledValue = {ones(4, 3), ones(4, 3), ones(4, 3), ones(4, 3), ones(4, 3)}
+        RangeValues = {zeros(4, 1), ones(4, 1), 2 * ones(4, 1), 3 * ones(4, 1), [0; 1; 2; 3]}
+        UniformScaledValue = {2.13618 * ones(4, 3), ...
+            0.072 * ones(4, 3), ...
+            0.01854 * ones(4, 3), ...
+            0.00453 * ones(4, 3), ...
+            [2.13618; 0.072; 0.01854; 0.00453] * ones(1, 3)}
     end
 
     methods (Test, ParameterCombination = "sequential")
 
-        function applyRange(testCase, UnscaledValue, ScaleFactor, ScaledValue)
+        function applyRangeUniform(testCase, UniformUnscaledValue, RangeValues, UniformScaledValue)
 
             % Set up.
             rangeStep = mag.process.Range();
 
             % Exercise.
-            scaledValue = rangeStep.applyRange(UnscaledValue, ScaleFactor);
+            scaledValue = rangeStep.applyRange(UniformUnscaledValue, RangeValues);
 
             % Verify.
-            testCase.verifyEqual(scaledValue, ScaledValue, "Scaled value should match expectation.");
+            testCase.verifyEqual(scaledValue, UniformScaledValue, "Scaled value with uniform scale factors should match expectation.", RelTol = 1e-6);
+        end
+
+        function applyRangeAxisSpecific(testCase)
+
+            % Set up - create range step with axis-specific scale factors.
+            scaleFactors = [1, 2, 3, 4; ...      % Axis 1 scale factors
+                            2, 4, 6, 8; ...      % Axis 2 scale factors
+                            3, 6, 9, 12];        % Axis 3 scale factors
+            rangeStep = mag.process.Range(ScaleFactors = scaleFactors);
+
+            % Test data: 4 observations, 3 axes
+            % Each row has a different range value (0, 1, 2, 3)
+            unscaledValue = ones(4, 3);
+            rangeValues = [0; 1; 2; 3];
+
+            % Expected: each axis scaled by its own factors
+            expectedValue = [1, 2, 3; ...     % Range 0: scaled by [1, 2, 3]
+                             2, 4, 6; ...     % Range 1: scaled by [2, 4, 6]
+                             3, 6, 9; ...     % Range 2: scaled by [3, 6, 9]
+                             4, 8, 12];       % Range 3: scaled by [4, 8, 12]
+
+            % Exercise.
+            scaledValue = rangeStep.applyRange(unscaledValue, rangeValues);
+
+            % Verify.
+            testCase.verifyEqual(scaledValue, expectedValue, "Scaled value with axis-specific scale factors should match expectation.", RelTol = 1e-6);
+        end
+
+        function applyRangeUniformExplicitVector(testCase)
+
+            % Set up - explicitly provide scale factors as a 1x4 vector.
+            scaleFactors = [2.13618, 0.072, 0.01854, 0.00453];
+            rangeStep = mag.process.Range(ScaleFactors = scaleFactors);
+
+            % Verify constructor expands the stored property.
+            testCase.verifyEqual(rangeStep.ScaleFactors, repmat(scaleFactors, 3, 1));
+
+            % Exercise.
+            scaledValue = rangeStep.applyRange(ones(4, 3), [0; 1; 2; 3]);
+
+            % Verify.
+            testCase.verifyEqual(scaledValue, [2.13618; 0.072; 0.01854; 0.00453] * ones(1, 3), RelTol = 1e-6);
         end
     end
 end

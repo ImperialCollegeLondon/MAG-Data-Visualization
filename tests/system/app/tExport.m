@@ -11,7 +11,7 @@ classdef tExport < AppTestCase
     properties (ClassSetupParameter)
         TestDetails = {
             struct(Folder = "bart", Mission = mag.meta.Mission.Bartington, Setup = []), ...
-            struct(Folder = "hs/single_file", Mission = mag.meta.Mission.HelioSwarm, Setup = @tExport.helioSwarmSetup), ...
+            struct(Folder = "hs/single_file", Mission = mag.meta.Mission.HelioSwarm, Setup = []), ...
             struct(Folder = "imap/full_analysis", Mission = mag.meta.Mission.IMAP, Setup = []), ...
             struct(Folder = "vigil", Mission = mag.meta.Mission.Vigil, Setup = [])}
     end
@@ -141,10 +141,4 @@ classdef tExport < AppTestCase
         end
     end
 
-    methods (Static, Access = private)
-
-        function helioSwarmSetup(testCase, app)
-            testCase.choose(app.AnalysisManager.InputSourceDropDown, string(mag.hs.meta.InputSource.iDPU));
-        end
-    end
 end
