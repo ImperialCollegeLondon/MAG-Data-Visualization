@@ -92,7 +92,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.ScaleFactorsTable.ColumnName = compose("Range %d", 0:3);
             this.ScaleFactorsTable.RowName = ["X", "Y", "Z"];
             this.ScaleFactorsTable.ColumnFormat = repmat({'char'}, 1, 4);
-            this.ScaleFactorsTable.ColumnEditable = false(1, 4);
+            this.ScaleFactorsTable.ColumnEditable = true(1, 4);
             this.ScaleFactorsTable.Layout.Row = 6;
             this.ScaleFactorsTable.Layout.Column = [1, 3];
 
@@ -129,11 +129,14 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
                 metadataPattern = split(this.MetadataPatternEditField.Value, pathsep())';
             end
 
+            scaleFactors = this.parseScaleFactorsData(this.ScaleFactorsTable.Data);
+
             options = {"Location", this.LocationEditField.Value, ...
                 "InputSource", mag.hs.meta.InputSource.iDPU, ...
                 "MetadataPattern", metadataPattern, ...
                 "SciencePattern", this.SciencePatternEditField.Value, ...
-                "HKPattern", this.HKPatternEditField.Value};
+                "HKPattern", this.HKPatternEditField.Value, ...
+                "ScaleFactors", scaleFactors};
         end
     end
 
@@ -170,6 +173,33 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             end
 
             this.LocationEditField.focus();
+        end
+
+        function scaleFactors = parseScaleFactorsData(~, data)
+
+            if isnumeric(data)
+                scaleFactors = double(data);
+            elseif iscell(data)
+                scaleFactors = str2double(string(data));
+            else
+                scaleFactors = str2double(string(data));
+            end
+
+            if ~isequal(size(scaleFactors), [3, 4])
+                error("mag:app:hs:InvalidScaleFactorsSize", "Scale factors must be a 3x4 matrix.");
+            end
+
+            if any(isnan(scaleFactors), "all")
+                error("mag:app:hs:InvalidScaleFactorsNaN", "Scale factors must be valid numeric values.");
+            end
+
+            if any(~isfinite(scaleFactors), "all")
+                error("mag:app:hs:InvalidScaleFactorsFinite", "Scale factors must be finite values.");
+            end
+
+            if any(scaleFactors <= 0, "all")
+                error("mag:app:hs:InvalidScaleFactorsPositive", "Scale factors must be positive values.");
+            end
         end
     end
 

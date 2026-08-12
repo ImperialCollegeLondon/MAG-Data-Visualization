@@ -23,6 +23,8 @@ classdef Analysis < mag.Analysis
             mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"])]
         % HKPROCESSING Steps needed to process imported HK data.
         HKProcessing (1, :) mag.process.Step = mag.process.Step.empty()
+        % SCALEFACTORS Scale factors used to convert raw science data to nT.
+        ScaleFactors (3, 4) double {mustBePositive} = mag.hs.Analysis.getCompleteScaleFactors()
     end
 
     properties (Dependent)
@@ -189,8 +191,8 @@ classdef Analysis < mag.Analysis
 
                 rangeStep = scienceProcessing(rangeLoc);
 
-                rangeStep.ScaleFactors = mag.hs.Analysis.getScaleFactors();
-                rangeStep.ExtraScaling = mag.hs.Analysis.getExtraScaling();
+                rangeStep.ScaleFactors = this.ScaleFactors;
+                rangeStep.ExtraScaling = 1;
 
                 this.ScienceProcessing = scienceProcessing;
             end
