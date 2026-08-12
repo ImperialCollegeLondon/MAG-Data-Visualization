@@ -65,15 +65,15 @@ classdef Analysis < mag.Analysis
         function scaleFactors = getScaleFactors()
         % GETSCALEFACTORS Return HelioSwarm range scale factors for each axis.
 
-            scaleFactors = [2.286, 0.0738, 0.01884, 0.00459; ...
-                            2.243, 0.07236, 0.01848, 0.00451; ...
-                            2.243, 0.07236, 0.01848, 0.00451];
+            scaleFactors = [0.007848358, 0.000253372, 6.4682E-05, 1.57585E-05; ...
+                            0.007700729, 0.000248428, 6.3446E-05, 1.54839E-05; ...
+                            0.007700729, 0.000248428, 6.3446E-05, 1.54839E-05];
         end
 
         function extraScaling = getExtraScaling()
         % GETEXTRASCALING Return HelioSwarm extra scaling
 
-            extraScaling = (1 / 2^8) * (15 / 16)^2;
+            extraScaling = 1;
         end
 
         function completeScaleFactors = getCompleteScaleFactors()
