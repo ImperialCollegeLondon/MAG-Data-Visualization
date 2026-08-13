@@ -39,6 +39,36 @@ classdef tHelioSwarmApp < AppTestCase
                 "Scale factors table columns should all be editable.");
         end
 
+        % Test that Decode binary files checkbox is enabled by default.
+        function decodeBinaryFilesCheckbox_defaultChecked(testCase)
+
+            % Set up.
+            app = testCase.createAppWithCleanup("HelioSwarm");
+
+            % Verify.
+            testCase.verifyTrue(app.AnalysisManager.DecodeBinaryFilesCheckBox.Value, ...
+                "Decode binary files checkbox should be checked by default.");
+        end
+
+        % Test that disabling binary decoding is applied in analysis.
+        function analyze_decodeBinaryFilesDisabled(testCase)
+
+            % Set up.
+            workingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
+            testCase.copyDataToWorkingDirectory(workingDirectory, "hs/single_file");
+
+            app = testCase.createAppWithCleanup("HelioSwarm");
+            testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
+            app.AnalysisManager.DecodeBinaryFilesCheckBox.Value = false;
+
+            % Exercise.
+            testCase.press(app.ProcessDataButton);
+
+            % Verify.
+            testCase.verifyFalse(app.Model.Analysis.DecodeBinaryFiles, ...
+                "DecodeBinaryFiles should be disabled in analysis when checkbox is cleared.");
+        end
+
         % Test that edited HelioSwarm scale factors are used by analysis.
         function analyze_editedScaleFactorsUsed(testCase)
 
