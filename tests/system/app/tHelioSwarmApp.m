@@ -50,6 +50,54 @@ classdef tHelioSwarmApp < AppTestCase
                 "Decode binary files checkbox should be checked by default.");
         end
 
+        % Test that HelioSwarm HK field checkboxes are populated from HK CSV fields.
+        function hkFieldCheckboxes_populated(testCase)
+
+            % Set up.
+            workingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
+            testCase.copyDataToWorkingDirectory(workingDirectory, "hs/single_file");
+
+            app = testCase.createAppWithCleanup("HelioSwarm");
+            testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
+            testCase.press(app.ProcessDataButton);
+
+            expectedFields = string(app.Model.Analysis.Results.HK(1).Data.Properties.VariableNames);
+
+            % Exercise.
+            testCase.choose(app.VisualizeTab);
+            testCase.choose(app.VisualizationManager.VisualizationTypeListBox, "HK");
+
+            hkControl = app.VisualizationManager.VisualizationTypeListBox.ItemsData(app.VisualizationManager.VisualizationTypeListBox.ValueIndex);
+            selectedFields = hkControl.FieldNames(arrayfun(@(x) x.Value, hkControl.FieldCheckBoxes));
+
+            % Verify.
+            testCase.verifyEqual(hkControl.FieldNames, expectedFields, ...
+                "HK control should create one checkbox per HK CSV field.");
+            testCase.verifyEmpty(selectedFields, ...
+                "HK control should not select any fields by default.");
+        end
+
+        % Test that HelioSwarm HK view does nothing when no fields are selected.
+        function hkShowFigures_noSelectedFieldsDoesNothing(testCase)
+
+            % Set up.
+            workingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
+            testCase.copyDataToWorkingDirectory(workingDirectory, "hs/single_file");
+
+            app = testCase.createAppWithCleanup("HelioSwarm");
+            testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
+            testCase.press(app.ProcessDataButton);
+
+            % Exercise.
+            testCase.choose(app.VisualizeTab);
+            testCase.choose(app.VisualizationManager.VisualizationTypeListBox, "HK");
+            testCase.press(app.ShowFiguresButton);
+
+            % Verify.
+            testCase.verifyEmpty(app.Figures, ...
+                "No HK figures should be generated when no HK fields are selected.");
+        end
+
         % Test that disabling binary decoding is applied in analysis.
         function analyze_decodeBinaryFilesDisabled(testCase)
 
