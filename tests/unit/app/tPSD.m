@@ -36,6 +36,26 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             testCase.verifyEqual(psd.SyncYAxesCheckBox.Value, false, "Sync y-axes checkbox value should match expectation.");
         end
 
+        % Test that HelioSwarm model defaults to HelioSwarm noise threshold.
+        function instantiate_helioSwarmDefaultNoiseThreshold(testCase)
+
+            % Set up.
+            panel = testCase.createTestPanel();
+
+            model = mag.app.hs.Model();
+            model.analyze({});
+
+            psd = mag.app.control.PSD(@mag.graphics.view.PSD);
+            psd.Model = model;
+
+            % Exercise.
+            psd.instantiate(panel);
+
+            % Verify.
+            testCase.verifyEqual(psd.NoiseThresholdDropDown.Value, mag.graphics.psd.NoiseThreshold.HelioSwarm, ...
+                "Noise threshold dropdown should default to HelioSwarm for HelioSwarm mission.");
+        end
+
         % Test that "getVisualizeCommand" returns expected command.
         function getVisualizeCommand(testCase)
 

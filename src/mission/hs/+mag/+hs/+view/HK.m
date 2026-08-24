@@ -1,6 +1,15 @@
 classdef HK < mag.graphics.view.View
 % HK Show housekeeping for HelioSwarm.
 
+    properties
+        % SELECTEDFIELDS HK fields to plot as separate figures.
+        SelectedFields (1, :) string = string.empty()
+    end
+
+    properties (Constant, Access = private)
+        GainFields (1, 3) string = ["x_gain", "y_gain", "z_gain"]
+    end
+
     methods
 
         function this = HK(results, options)
@@ -21,18 +30,70 @@ classdef HK < mag.graphics.view.View
 
             hk = this.Results.HK;
 
-            this.Figures = this.Factory.assemble( ...
-                hk, ...
-                [mag.graphics.style.Default(Title = "1.5 V", YLabel = "[V]", Charts = mag.graphics.chart.Plot(YVariables = "P1V5V")), ...
-                mag.graphics.style.Default(Title = "2.5 V", YLabel = "[V]", Charts = mag.graphics.chart.Plot(YVariables = "P2V5V")), ...
-                mag.graphics.style.LeftRight(Title = "+8.5 V", LeftLabel = "[V]", RightLabel = "[mA]", Charts = [mag.graphics.chart.Plot(YVariables = "P8V5V"), mag.graphics.chart.Plot(YVariables = "P8V5I")]), ...
-                mag.graphics.style.LeftRight(Title = "-8.5 V", LeftLabel = "[V]", RightLabel = "[mA]", Charts = [mag.graphics.chart.Plot(YVariables = "N8V5V"), mag.graphics.chart.Plot(YVariables = "N8V5I")]), ...
-                mag.graphics.style.Stackedplot(Title = "Temperature", YLabels = ["Board " + this.TLabel, "Sensor " + this.TLabel], Layout = [2, 2], Charts = mag.graphics.chart.Stackedplot(YVariables = ["Board", "Sensor"] + "Temperature"))], ...
-                Name = "HK Time Series", ...
-                Arrangement = [4, 2], ...
-                TileIndexing = "rowmajor", ...
-                LinkXAxes = true, ...
+            if isempty(hk)
+                return;
+            end
+
+            hk = hk(1);
+            availableFields = string(hk.Data.Properties.VariableNames);
+
+            selectedFields = this.SelectedFields(ismember(this.SelectedFields, availableFields));
+
+            if isempty(selectedFields)
+                return;
+            end
+
+            for field = selectedFields
+
+                this.Figures(end + 1) = this.plotField( ...
+                    hk.Data, field, field, compose("HK %s", field)); %#ok<AGROW>
+
+                if ismember(field, this.GainFields)
+
+                    if ~ismember("range", availableFields)
+                        warning("mag:hs:HK:MissingRange", ...
+                            "Cannot calibrate ""%s"" because HK data does not contain ""range"".", field);
+                        continue;
+                    end
+
+                    gainData = hk.Data(:, field);
+                    rawGains = gainData.(field);
+                    ranges = double(hk.Data.range);
+
+                    gainData.(field) = mag.hs.view.HK.checkGainRange(rawGains, ranges);
+
+                    calibratedTitle = field + " calibrated";
+
+                    this.Figures(end + 1) = this.plotField( ...
+                        gainData, field, calibratedTitle, compose("HK %s calibrated", field)); %#ok<AGROW>
+                end
+            end
+        end
+    end
+
+    methods (Access = private)
+
+        function figureHandle = plotField(this, data, yVariable, titleText, figureName)
+
+            figureHandle = this.Factory.assemble( ...
+                data, ...
+                mag.graphics.style.Default(Title = titleText, XLabel = "Time", YLabel = yVariable, Charts = mag.graphics.chart.Plot(YVariables = yVariable)), ...
+                Name = figureName, ...
                 WindowState = "maximized");
+
+            axesHandle = findall(figureHandle, Type = "axes");
+            ylabel(axesHandle, yVariable, Interpreter = "none");
+            title(axesHandle, titleText, Interpreter = "none");
+        end
+    end
+
+    methods (Static)
+
+        function calibratedGains = checkGainRange(rawGains, ranges)
+
+            offsets = [0, 4, 6, 8];
+            offsetVector = offsets(ranges + 1);
+            calibratedGains = rawGains - offsetVector';
         end
     end
 end
