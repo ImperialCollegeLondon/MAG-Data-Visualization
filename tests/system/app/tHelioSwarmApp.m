@@ -173,7 +173,7 @@ classdef tHelioSwarmApp < AppTestCase
             editedScience = appEdited.Model.Analysis.Results.Science;
 
 
-            
+
             % Verify.
             testCase.verifyEqual(numel(editedScience), numel(defaultScience), ...
                 "Number of science channels should be unchanged.");
