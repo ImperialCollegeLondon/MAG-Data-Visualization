@@ -14,7 +14,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
       - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v3.0.2
+        uses: matlab-actions/setup-matlab@v3.1.0
         with:
           release: R2026a
       - name: Load version from package
