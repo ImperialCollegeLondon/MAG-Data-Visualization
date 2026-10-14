@@ -5,7 +5,7 @@ classdef RangeChange < mag.event.Event
         % RANGE Range being changed to.
         Range (1, 1) mag.meta.Range = mag.meta.Range.Zero
         % SENSOR Sensor whose range is changed.
-        Sensor (1, 1) mag.meta.Sensor = "FOB"
+        Sensor (1, 1) mag.meta.Sensor = "OBS"
     end
 
     methods

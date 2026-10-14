@@ -35,7 +35,7 @@ What to change and how to verify
 Adding a new mission (checklist)
 1. **Core files** under `src/mission/<name>/+mag/+<name>/`:
    - `Analysis.m` — extend `mag.Analysis`, implement `detect`, `load`, `export`, and static `start()`
-   - `Instrument.m` — extend `mag.Instrument`, add sensor-specific dependent properties (e.g. `FOB`, `FIB`)
+   - `Instrument.m` — extend `mag.Instrument`, add sensor-specific dependent properties (e.g. `OBS`, `IBS`)
    - `+in/` — I/O format classes extending `mag.io.in.Format` with `Extension`, `load()`, `process()` methods
    - `+view/` — visualization classes (e.g. `Field.m`, `Spectrogram.m`) extending `mag.graphics.view.View`
    - `+out/` — export format classes (e.g. `ScienceMAT.m`) extending `mag.io.out.MAT` with `getExportFileName()`, `convertToExportFormat()` methods
@@ -56,8 +56,8 @@ Adding a new mission (checklist)
    - Use inherited `Processing.ScienceSteps` for science processing instead of custom properties
    - Set metadata via `mag.meta.Science(Sensor, Mode, DataFrequency, Timestamp)` in I/O `process()` method
    - View figure titles should include Mode and frequency from metadata (e.g. `"Normal (Outboard 1 Hz, Inboard 1 Hz)"`)
-   - Use descriptive property names like `Outboard`/`Inboard` rather than acronyms like `FOB`/`FIB` for public Instrument API
-   - The underlying `mag.meta.Sensor` enum values (`FOB`, `FIB`) are used internally for sensor identification
+   - Use descriptive property names like `Outboard`/`Inboard` rather than acronyms like `OBS`/`IBS` for public Instrument API
+   - The underlying `mag.meta.Sensor` enum values (`OBS`, `IBS`) are used internally for sensor identification
    - Export format struct field names (e.g. `B.FOB`, `B.FIB` in MAT files) can use technical sensor names
 
 I/O format implementation notes

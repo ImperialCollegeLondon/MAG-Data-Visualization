@@ -55,9 +55,9 @@ classdef MAGViewTestCase < mag.test.case.GraphicsTestCase & matlab.mock.TestCase
             setup2 = mag.meta.Setup(Can = "Some", FEE = "FEE4", Harness = "Other cable", Model = "LM2");
 
             metaScience1 = mag.meta.Science(Primary = false, Mode = "Burst", DataFrequency = 8, PacketFrequency = 4, ...
-                Sensor = "FOB", Setup = setup1, Timestamp = mag.test.DataTestUtilities.Time(1));
+                Sensor = "OBS", Setup = setup1, Timestamp = mag.test.DataTestUtilities.Time(1));
             metaScience2 = mag.meta.Science(Primary = true, Mode = "Burst", DataFrequency = 64, PacketFrequency = 4, ...
-                Sensor = "FIB", Setup = setup2);
+                Sensor = "IBS", Setup = setup2);
 
             science1 = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), metaScience1);
             science2 = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), metaScience2);
