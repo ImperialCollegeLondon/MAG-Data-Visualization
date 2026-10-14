@@ -4,3 +4,7 @@
 ## Analysis
 
 - (All) Rename sensor "FOB" and "FIB" with "OBS" and "IBS", respectively
+
+## Package
+
+- Add support for MATLAB R2026b
