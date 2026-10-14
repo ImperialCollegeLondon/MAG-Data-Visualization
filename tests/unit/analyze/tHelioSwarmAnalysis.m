@@ -10,17 +10,32 @@ classdef tHelioSwarmAnalysis < matlab.unittest.TestCase
             location = fullfile(fileparts(mfilename("fullpath")), "test_data");
 
             % Exercise.
-            uartAnalysis = mag.hs.Analysis.start(Location = location, InputSource = "UART");
             idpuAnalysis = mag.hs.Analysis.start(Location = location, InputSource = "iDPU");
 
             % Verify.
-            testCase.verifyEqual(uartAnalysis.ScienceProcessing.ExtraScaling, (1 / 2^8), "Extra scale factor scaling should match UART expectation.");
-            testCase.verifyEqual(idpuAnalysis.ScienceProcessing.ExtraScaling, (1 / 2^8) * (15/16)^2, ...
-                "Extra scale factor scaling should match iDPU expectation.");
+            testCase.verifyEqual(idpuAnalysis.ScienceProcessing.ExtraScaling, 1, ...
+                "Extra scale factor scaling should match iDPU expectation.", RelTol = 1e-6);
 
-            testCase.verifyThat(matlab.unittest.constraints.EveryElementOf(idpuAnalysis.Results.Science.XYZ ./ uartAnalysis.Results.Science.XYZ), ...
-                matlab.unittest.constraints.IsEqualTo((15/16)^2, Within = matlab.unittest.constraints.AbsoluteTolerance(1e-7)), ...
-                "Ratio of analyzed science should match expectation.");
+        end
+
+        function helioSwarmScaleFactors(testCase)
+
+            expectedScaleFactors = [0.007848358, 0.000253372, 6.4682E-05, 1.57585E-05; ...
+                                    0.007700729, 0.000248428, 6.3446E-05, 1.54839E-05; ...
+                                    0.007700729, 0.000248428, 6.3446E-05, 1.54839E-05];
+
+            testCase.verifyEqual(mag.hs.Analysis.getScaleFactors(), expectedScaleFactors, ...
+                "HelioSwarm scale factor matrix should match expectation.", RelTol = 1e-6);
+        end
+
+        function helioSwarmCompleteScaleFactors(testCase)
+
+            expectedCompleteScaleFactors = [0.007848358, 0.000253372, 6.4682E-05, 1.57585E-05; ...
+                                            0.007700729, 0.000248428, 6.3446E-05, 1.54839E-05; ...
+                                            0.007700729, 0.000248428, 6.3446E-05, 1.54839E-05];
+
+            testCase.verifyEqual(mag.hs.Analysis.getCompleteScaleFactors(), expectedCompleteScaleFactors, ...
+                "Complete scale factor matrix should match expectation for iDPU.", RelTol = 1e-6);
         end
     end
 end

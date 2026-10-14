@@ -6,8 +6,8 @@ classdef Range < mag.process.Step
         RangeVariable (1, 1) string
         % VARIABLES Variables to be converted using range information.
         Variables (1, :) string
-        % SCALEFACTORS Scale factor for each supported range.
-        ScaleFactors (1, 4) double {mustBePositive} = [2.13618, 0.072, 0.01854, 0.00453]
+        % SCALEFACTORS Scale factor for each axis and supported range.
+        ScaleFactors double {mustBePositive} = [2.13618, 0.072, 0.01854, 0.00453]
         % EXTRASCALING Extra scaling factor.
         ExtraScaling (1, 1) double = 1
     end
@@ -21,6 +21,14 @@ classdef Range < mag.process.Step
             end
 
             this.assignProperties(options);
+
+            if ~isequal(size(this.ScaleFactors), [1, 4]) && ~isequal(size(this.ScaleFactors), [3, 4])
+                error("mag:process:Range:InvalidScaleFactors", "ScaleFactors must be either a 1x4 vector or a 3x4 matrix.");
+            end
+
+            if size(this.ScaleFactors, 1) == 1
+                this.ScaleFactors = repmat(this.ScaleFactors, 3, 1);
+            end
         end
 
         function data = apply(this, data, ~)
@@ -43,7 +51,9 @@ classdef Range < mag.process.Step
             for sf = 0:3
 
                 locScaleFactor = ranges == sf;
-                data(locScaleFactor, :) = this.ExtraScaling * this.ScaleFactors(sf + 1) * data(locScaleFactor, :);
+                for axis = 1:3
+                    data(locScaleFactor, axis) = this.ExtraScaling * this.ScaleFactors(axis, sf + 1) * data(locScaleFactor, axis);
+                end
             end
         end
     end

@@ -67,6 +67,10 @@ classdef PSD < mag.app.Control
             this.NoiseThresholdDropDown.Layout.Row = 3;
             this.NoiseThresholdDropDown.Layout.Column = [2, 3];
 
+            if this.HasModel && isa(this.Model, "mag.app.hs.Model")
+                this.NoiseThresholdDropDown.Value = mag.graphics.psd.NoiseThreshold.HelioSwarm;
+            end
+
             % Sync y-axes.
             this.SyncYAxesCheckBox = uicheckbox(this.Layout, Text = "Sync y-axes");
             this.SyncYAxesCheckBox.Layout.Row = 4;
