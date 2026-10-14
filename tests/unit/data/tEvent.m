@@ -225,9 +225,9 @@ classdef tEvent < matlab.unittest.TestCase
                 testCase.verifyTrue(all(ismissing(tt.(v))), compose("Timetable property ""%s"" should be missing.", v));
             end
 
-            testCase.verifyEqual(tt.Label(1), "FOB Range 2", "Label of first event should match expectation.");
-            testCase.verifyEqual(tt.Label(2), "FIB Range 1", "Label of second event should match expectation.");
-            testCase.verifyEqual(tt.Label(3), "FOB Range 3", "Label of third event should match expectation.");
+            testCase.verifyEqual(tt.Label(1), "OBS Range 2", "Label of first event should match expectation.");
+            testCase.verifyEqual(tt.Label(2), "IBS Range 1", "Label of second event should match expectation.");
+            testCase.verifyEqual(tt.Label(3), "OBS Range 3", "Label of third event should match expectation.");
 
             testCase.verifyEqual(tt.Time', [events(1).CompleteTimestamp, events(2).AcknowledgeTimestamp, events(3).CommandTimestamp], ...
                 "Event timestamps should match expected ones.");
@@ -257,9 +257,9 @@ classdef tEvent < matlab.unittest.TestCase
                 testCase.verifyTrue(all(ismissing(tt.(v))), compose("Timetable property ""%s"" should be missing.", v));
             end
 
-            testCase.verifyEqual(tt.Label(1), "FOB Ramp", "Label of first event should match expectation.");
-            testCase.verifyEqual(tt.Label(2), "FIB Ramp", "Label of second event should match expectation.");
-            testCase.verifyEqual(tt.Label(3), "FOB Ramp", "Label of third event should match expectation.");
+            testCase.verifyEqual(tt.Label(1), "OBS Ramp", "Label of first event should match expectation.");
+            testCase.verifyEqual(tt.Label(2), "IBS Ramp", "Label of second event should match expectation.");
+            testCase.verifyEqual(tt.Label(3), "OBS Ramp", "Label of third event should match expectation.");
 
             testCase.verifyEqual(tt.Time', [events(1).CompleteTimestamp, events(2).AcknowledgeTimestamp, events(3).CommandTimestamp], ...
                 "Event timestamps should match expected ones.");

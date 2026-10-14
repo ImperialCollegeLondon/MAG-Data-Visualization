@@ -602,7 +602,7 @@ classdef tScience < matlab.unittest.TestCase
             output = evalc("display(science)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "FIB (FM4) in Burst (64)", "Science metadata should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "IBS (FM4) in Burst (64)", "Science metadata should be included in display.");
         end
 
         % Test that displaying a single object displays the correct
@@ -621,7 +621,7 @@ classdef tScience < matlab.unittest.TestCase
             output = evalc("display(science)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "FIB in Burst (64)", "Science metadata should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "IBS in Burst (64)", "Science metadata should be included in display.");
         end
 
         % Test that displaying a single object displays the correct
@@ -640,7 +640,7 @@ classdef tScience < matlab.unittest.TestCase
             output = evalc("display(science)");
 
             % Verify.
-            testCase.verifySubstring(eraseTags(output), "FIB in Burst (64)", "Science metadata should be included in display.");
+            testCase.verifySubstring(eraseTags(output), "IBS in Burst (64)", "Science metadata should be included in display.");
         end
 
         % Test that displaying a single object displays the correct

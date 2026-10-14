@@ -91,14 +91,14 @@ classdef tVigilInstrument < matlab.unittest.TestCase
 
         function instrument = createTestData(~)
 
-            % Create FOB science data.
+            % Create OBS science data.
             fobTime = datetime("now", TimeZone = "UTC") + seconds(0:4)';
             fobData = timetable(fobTime, rand(5, 1), rand(5, 1), rand(5, 1), rand(5, 1), VariableNames = ["x", "y", "z", "range"], DimensionNames = ["t", "Data"]);
 
             fobMetadata = mag.meta.Science(Sensor = mag.meta.Sensor.OBS, Mode = mag.meta.Mode.Normal, DataFrequency = 1);
             fobScience = mag.Science(fobData, fobMetadata);
 
-            % Create FIB science data.
+            % Create IBS science data.
             fibTime = datetime("now", TimeZone = "UTC") + seconds(0:4)';
             fibData = timetable(fibTime, rand(5, 1), rand(5, 1), rand(5, 1), rand(5, 1), VariableNames = ["x", "y", "z", "range"], DimensionNames = ["t", "Data"]);
 
