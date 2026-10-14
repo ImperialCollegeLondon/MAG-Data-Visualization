@@ -16,7 +16,7 @@ jobs:
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v3.0.2
         with:
-          release: R2026a
+          release: R2026b
       - name: Load version from package
         run: |
           echo "MAG_DATA_VISUALIZATION_VERSION=$(jq -r .version resources/mpackage.json)" >> $GITHUB_ENV
