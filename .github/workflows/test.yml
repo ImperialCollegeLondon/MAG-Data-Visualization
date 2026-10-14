@@ -26,7 +26,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
       - name: Set up MATLAB
-        uses: matlab-actions/setup-matlab@v3.0.2
+        uses: matlab-actions/setup-matlab@v3.1.0
         with:
           release: ${{ matrix.release }}
           products: MATLAB_Test Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox Wavelet_Toolbox
@@ -50,11 +50,11 @@ jobs:
           tarBall: false
           zipBall: false
       - name: Install support packages
-        uses: matlab-actions/run-command@v3.2.1
+        uses: matlab-actions/run-command@v3.3.0
         with:
           command: "matlab.addons.install('MATLAB.SPDF.CDF.mltbx'); matlab.addons.install('MATLAB.SPICE.MICE.mltbx');"
       - name: Run tests
-        uses: matlab-actions/run-build@v3.2.1
+        uses: matlab-actions/run-build@v3.4.0
         with:
           tasks: check test
       - name: Report results
@@ -75,7 +75,7 @@ jobs:
           skip_covered: true
           report_name: Coverage Report (${{ matrix.release }})
       - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v4.37.4
+        uses: github/codeql-action/upload-sarif@v4.38.3
         if: matrix.release == 'R2026b'
         with:
           sarif_file: artifacts/issues.sarif
