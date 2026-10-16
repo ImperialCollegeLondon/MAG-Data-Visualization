@@ -21,7 +21,7 @@ classdef tHENONApp < AppTestCase
 
             % Exercise and verify processing.
             testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             testCase.verifyAppUIElementStatus(app, "on");
             testCase.verifyTrue(app.ResultsManager.SciencePreviewPanel.Enable, "Science preview should be enabled.");
@@ -43,7 +43,7 @@ classdef tHENONApp < AppTestCase
 
             % Exercise.
             testCase.type(app.AnalysisManager.LocationEditField, InvalidLocation);
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             % Verify.
             testCase.dismissDialog("uialert", app.UIFigure);

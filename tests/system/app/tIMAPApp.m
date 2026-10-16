@@ -32,7 +32,7 @@ classdef tIMAPApp < AppTestCase
                 TestDetails.Setup(testCase, app);
             end
 
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             testCase.verifyAppUIElementStatus(app, "on");
             testCase.verifyTrue(app.ResultsManager.MetadataPanel.Enable, "Metadata panel should be enabled.");
@@ -57,7 +57,7 @@ classdef tIMAPApp < AppTestCase
 
             % Exercise.
             testCase.type(app.AnalysisManager.LocationEditField, InvalidLocation);
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             % Verify.
             testCase.dismissDialog("uialert", app.UIFigure);

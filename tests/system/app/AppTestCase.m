@@ -1,7 +1,28 @@
 classdef (Abstract) AppTestCase < mag.test.case.UITestCase & mag.test.case.GraphicsTestCase
 % APPTESTCASE Base class for all MAG app tests.
 
+    properties (Constant, Access = protected)
+        % TASKTIMEOUT Maximum time (in seconds) to wait for background
+        % tasks.
+        TaskTimeout (1, 1) double = 300
+    end
+
     methods (Access = protected)
+
+        function processData(testCase, app)
+        % PROCESSDATA Press "Process Data" button and wait for processing
+        % to complete.
+
+            testCase.press(app.ProcessDataButton);
+            testCase.waitForTasks(app);
+        end
+
+        function waitForTasks(testCase, app)
+        % WAITFORTASKS Wait for app background tasks to complete.
+
+            testCase.assertTrue(app.waitForTasks(testCase.TaskTimeout), ...
+                compose("Background tasks should complete within %d seconds.", testCase.TaskTimeout));
+        end
 
         function copyDataToWorkingDirectory(testCase, workingDirectory, testFolder)
 

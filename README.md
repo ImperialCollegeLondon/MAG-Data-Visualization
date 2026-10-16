@@ -5,29 +5,104 @@
 [![MATLAB Toolbox](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml/badge.svg)](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml)
 [![View MAG Data Visualization Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/169568)
 
-This repository contains utilities for processing and visualizing MAG science and HK data. The supported MATLAB releases are MATLAB R2024b and later.
+MATLAB toolbox for processing, exporting and visualizing magnetometer (MAG) science and housekeeping (HK) data. It includes an app for interactive analysis, as well as functions and classes for scripting.
 
-The following MATLAB toolboxes are required to use the toolbox:
+Supported missions and instruments:
 
-* MATLAB
+| Mission      | Data processing | Export formats |
+| ------------ | :-------------: | -------------- |
+| Bartington   | ✓               | –              |
+| HelioSwarm   | ✓               | MAT            |
+| HENON        | ✓               | –              |
+| IMAP         | ✓               | MAT, CDF       |
+| Vigil        | ✓               | –              |
+
+## Requirements
+
+MATLAB R2024b or later, with:
+
 * Signal Processing Toolbox
 * Statistics and Machine Learning Toolbox
 * Text Analytics Toolbox
 
-The following external MATLAB libraries are required:
+Optional MATLAB toolboxes:
+
+* **Wavelet Toolbox**: enables the "Wavelet Analyzer" view in the app.
+* **Parallel Computing Toolbox**: allows IMAP processing to run in the background (see [Background Processing](#background-processing)).
+
+External libraries, required for IMAP data:
 
 * MATLAB SPICE (MICE): <https://naif.jpl.nasa.gov/naif/toolkit_MATLAB.html>
 * MATLAB SPDF CDF: <https://cdf.gsfc.nasa.gov/html/sw_and_docs.html>
 
+## Installation
+
+Install the toolbox from [File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/169568), or from the MATLAB Add-On Explorer by searching for "MAG Data Visualization".
+
 ## Getting Started
 
-The toolbox adds to the path many functions and classes that can be used for data processing and visualization. These can be found under the `mag` namespace; you can use tab-completion to see what is available:
+### App
+
+Open the app from the MATLAB Command Window, optionally specifying the mission:
+
+``` matlab
+DataVisualization()        % asks which mission to analyze
+DataVisualization("IMAP")  % opens the app for IMAP
+```
+
+The app guides you through the workflow, one tab at a time:
+
+1. **Analyze**: select the folder containing the data, adjust the settings and click "Process Data".
+2. **Results** and **Health**: check metadata, a preview of the science data, and the results of health checks.
+3. **Export**: save the analysis to the MATLAB Workspace, to a MAT file, or to a mission-specific format.
+4. **Visualize**: select the views to plot, then show, save or close the figures.
+
+Use the toolbar to change mission, import a previously exported analysis, or report an issue.
+
+### Scripting
+
+All functionality is available under the `mag` namespace; use tab-completion to explore it:
 
 ``` matlab
 mag.<TAB>
 ```
 
-In the sections below you can find more information about some of the functionalities.
+For example, to process IMAP data and export it to MAT files:
+
+``` matlab
+analysis = mag.imap.Analysis.start(Location = "path/to/data");
+analysis.export("MAT", Location = "path/to/results");
+```
+
+Each mission provides an equivalent `Analysis` class (`mag.bart.Analysis`, `mag.henon.Analysis`, `mag.hs.Analysis`, `mag.vigil.Analysis`).
+
+### Background Processing
+
+The app processes, imports and exports data in the background, so MATLAB and the app remain responsive. While a task runs, its button changes to "Cancel", and the outcome is shown next to it when it completes. Any output from the processing, such as health check results and warnings, is printed to the Command Window when it completes.
+
+Background tasks run on a thread-based worker. Thread-based workers cannot use MEX files, which IMAP relies on (SPICE and CDF). In that case:
+
+* if Parallel Computing Toolbox is available, the task runs on a process-based worker; a parallel pool with one worker is started the first time, which can take some time;
+* otherwise, the task runs in the foreground, blocking the app until it completes.
+
+### Settings
+
+Toolbox settings are stored in the `MAG.Toolbox` group of the MATLAB [settings](https://www.mathworks.com/help/matlab/ref/matlab.settings.settingsgroup.html):
+
+| Setting                | Default | Description                                         |
+| ---------------------- | ------- | --------------------------------------------------- |
+| `BackgroundProcessing` | `true`  | Whether the app runs processing in the background.  |
+| `FigureResolution`     | `300`   | Resolution (in DPI) of saved figures.               |
+| `Sound`                | `true`  | Whether to play a sound when app tasks complete.    |
+
+Settings are created the first time they are used. For example, to disable background processing:
+
+``` matlab
+mag.internal.ToolboxSettings.getSettingValue("BackgroundProcessing");  % make sure setting exists
+
+s = settings();
+s.MAG.Toolbox.BackgroundProcessing.PersonalValue = false;
+```
 
 ## User Manual
 
@@ -37,28 +112,39 @@ See [internal documentation](https://imperialcollege.atlassian.net/wiki/spaces/P
 
 ### Install
 
-To get started, clone this repository and install the package for development:
+Clone this repository and install the package for development:
 
 ``` matlab
 mpminstall(pwd(), Authoring = true);
 ```
 
-When developing new features or fixing issues, create a new branch. After finishing development, make sure to write tests to cover any new changes.
+When developing new features or fixing issues, create a new branch, and write tests to cover any new changes.
 
-To change the version of the toolbox, modify the package definition file in `resources/mpackage.json`. This will automatically update the toolbox version and create a new toolbox with the correct version.
-Also, update the contents of the `resources/release-notes.md` file by detailing what has changed in the new version.
+### Build and Test
 
-### Test
+The repository uses the MATLAB build tool. From the repository root, run:
 
-To run the MATLAB tests, run:
+``` matlab
+buildtool            % run default tasks: "check" and "test"
+buildtool check      % check code issues
+buildtool test       % run tests
+buildtool package    % package code into toolbox
+```
+
+Alternatively, run all tests with coverage:
 
 ``` matlab
 runtests("tests", IncludeSubfolders = true, ReportCoverageFor = ["app", "src"])
 ```
 
-### Uninstall
+IMAP tests require the SPICE and CDF external libraries; tests of the "Wavelet Analyzer" view require Wavelet Toolbox.
 
-In MATLAB run:
+### Release
+
+1. Update the version in the package definition file, `resources/mpackage.json`. The toolbox version is derived from it.
+2. Describe the changes in `resources/release-notes.md`.
+
+### Uninstall
 
 ``` matlab
 mpmuninstall("MAGDataVisualization");
