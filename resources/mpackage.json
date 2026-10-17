@@ -5,8 +5,7 @@
     "formerNames": [],
     "displayName": "MAG Data Visualization",
     "summary": "MAG data visualization toolbox",
-    "tags": [],
-    "readme": "README.md",
+    "description": "MAG toolbox for processing and visualizing magnetometer data and housekeeping",
     "provider": {
         "name": "Michele Facchinelli",
         "organization": "Imperial College London",
@@ -131,13 +130,5 @@
     ],
     "dependencies": [],
     "releaseCompatibility": ">=R2024b",
-    "supportedPlatforms": [
-        {
-            "platform": "any",
-            "architectures": [
-                "any"
-            ]
-        }
-    ],
-    "schemaVersion": "1.2.0"
+    "schemaVersion": "1.1.0"
 }
