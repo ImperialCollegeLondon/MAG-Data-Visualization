@@ -225,9 +225,9 @@ classdef tEvent < matlab.unittest.TestCase
                 testCase.verifyTrue(all(ismissing(tt.(v))), compose("Timetable property ""%s"" should be missing.", v));
             end
 
-            testCase.verifyEqual(tt.Label(1), "FOB Range 2", "Label of first event should match expectation.");
-            testCase.verifyEqual(tt.Label(2), "FIB Range 1", "Label of second event should match expectation.");
-            testCase.verifyEqual(tt.Label(3), "FOB Range 3", "Label of third event should match expectation.");
+            testCase.verifyEqual(tt.Label(1), "OBS Range 2", "Label of first event should match expectation.");
+            testCase.verifyEqual(tt.Label(2), "IBS Range 1", "Label of second event should match expectation.");
+            testCase.verifyEqual(tt.Label(3), "OBS Range 3", "Label of third event should match expectation.");
 
             testCase.verifyEqual(tt.Time', [events(1).CompleteTimestamp, events(2).AcknowledgeTimestamp, events(3).CommandTimestamp], ...
                 "Event timestamps should match expected ones.");
@@ -257,9 +257,9 @@ classdef tEvent < matlab.unittest.TestCase
                 testCase.verifyTrue(all(ismissing(tt.(v))), compose("Timetable property ""%s"" should be missing.", v));
             end
 
-            testCase.verifyEqual(tt.Label(1), "FOB Ramp", "Label of first event should match expectation.");
-            testCase.verifyEqual(tt.Label(2), "FIB Ramp", "Label of second event should match expectation.");
-            testCase.verifyEqual(tt.Label(3), "FOB Ramp", "Label of third event should match expectation.");
+            testCase.verifyEqual(tt.Label(1), "OBS Ramp", "Label of first event should match expectation.");
+            testCase.verifyEqual(tt.Label(2), "IBS Ramp", "Label of second event should match expectation.");
+            testCase.verifyEqual(tt.Label(3), "OBS Ramp", "Label of third event should match expectation.");
 
             testCase.verifyEqual(tt.Time', [events(1).CompleteTimestamp, events(2).AcknowledgeTimestamp, events(3).CommandTimestamp], ...
                 "Event timestamps should match expected ones.");
@@ -346,30 +346,30 @@ classdef tEvent < matlab.unittest.TestCase
 
             events(1) = mag.event.RangeChange(CompleteTimestamp = datetime("yesterday", TimeZone = "UTC"), ...
                 Type = 1, SubType = 2, ...
-                Range = 2, Sensor = "FOB");
+                Range = 2, Sensor = "OBS");
 
             events(2) = mag.event.RangeChange(AcknowledgeTimestamp = datetime("today", TimeZone = "UTC"), ...
                 Type = 3, SubType = 4, ...
-                Range = 1, Sensor = "FIB");
+                Range = 1, Sensor = "IBS");
 
             events(3) = mag.event.RangeChange(CommandTimestamp = datetime("tomorrow", TimeZone = "UTC"), ...
                 Type = 5, SubType = 6, ...
-                Range = 3, Sensor = "FOB");
+                Range = 3, Sensor = "OBS");
         end
 
         function events = createRampModeEvents()
 
             events(1) = mag.event.RampMode(CompleteTimestamp = datetime("yesterday", TimeZone = "UTC"), ...
                 Type = 1, SubType = 2, ...
-                Sensor = "FOB");
+                Sensor = "OBS");
 
             events(2) = mag.event.RampMode(AcknowledgeTimestamp = datetime("today", TimeZone = "UTC"), ...
                 Type = 3, SubType = 4, ...
-                Sensor = "FIB");
+                Sensor = "IBS");
 
             events(3) = mag.event.RampMode(CommandTimestamp = datetime("tomorrow", TimeZone = "UTC"), ...
                 Type = 5, SubType = 6, ...
-                Sensor = "FOB");
+                Sensor = "OBS");
         end
 
         function [events, timestamp] = createCroppableEvents()
@@ -388,11 +388,11 @@ classdef tEvent < matlab.unittest.TestCase
 
             events(2) = mag.event.RangeChange(CompleteTimestamp = timestamp + seconds(1), ...
                 Type = 227, SubType = 1, ...
-                Range = 2, Sensor = "FOB");
+                Range = 2, Sensor = "OBS");
 
             events(3) = mag.event.RangeChange(CompleteTimestamp = timestamp + seconds(2), ...
                 Type = 227, SubType = 2, ...
-                Range = 2, Sensor = "FIB");
+                Range = 2, Sensor = "IBS");
 
             events(4) = mag.event.ModeChange(AcknowledgeTimestamp = timestamp + minutes(1), ...
                 Type = 226, SubType = 6, ...

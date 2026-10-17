@@ -3,4 +3,8 @@
 
 ## Analysis
 
-- (HENON) Fix issue with `.ob` file containing IBS data and `.ib` file containing OBS data
+- (All) Rename sensor "FOB" and "FIB" with "OBS" and "IBS", respectively
+
+## Package
+
+- Add support for MATLAB R2026b

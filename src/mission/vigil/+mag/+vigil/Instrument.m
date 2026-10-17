@@ -2,9 +2,9 @@ classdef Instrument < mag.Instrument
 % INSTRUMENT Class containing Vigil instrument data.
 
     properties (Dependent, SetAccess = private)
-        % OUTBOARD Outboard (FOB) science data.
+        % OUTBOARD Outboard (OBS) science data.
         Outboard mag.Science {mustBeScalarOrEmpty}
-        % INBOARD Inboard (FIB) science data.
+        % INBOARD Inboard (IBS) science data.
         Inboard mag.Science {mustBeScalarOrEmpty}
     end
 
@@ -20,11 +20,11 @@ classdef Instrument < mag.Instrument
         end
 
         function outboard = get.Outboard(this)
-            outboard = this.Science.select(Sensor = "FOB");
+            outboard = this.Science.select(Sensor = "OBS");
         end
 
         function inboard = get.Inboard(this)
-            inboard = this.Science.select(Sensor = "FIB");
+            inboard = this.Science.select(Sensor = "IBS");
         end
     end
 end

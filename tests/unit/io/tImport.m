@@ -46,7 +46,7 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
         function import_science_combined(testCase)
 
             % Set up.
-            [format, formatBehavior, fileNames, data1, data2] = testCase.createScienceFormat(SecondarySensor = "FOB");
+            [format, formatBehavior, fileNames, data1, data2] = testCase.createScienceFormat(SecondarySensor = "OBS");
 
             [step, stepBehavior] = testCase.createMock(?mag.process.Step, Strict = true);
             testCase.assignOutputsWhen(stepBehavior.apply(data1.Data, data1.Metadata), data1.Data);
@@ -120,8 +120,8 @@ classdef tImport < MAGIOTestCase & matlab.mock.TestCase
 
             arguments
                 testCase (1, 1) tImport
-                options.PrimarySensor (1, 1) mag.meta.Sensor = mag.meta.Sensor.FOB
-                options.SecondarySensor (1, 1) mag.meta.Sensor = mag.meta.Sensor.FIB
+                options.PrimarySensor (1, 1) mag.meta.Sensor = mag.meta.Sensor.OBS
+                options.SecondarySensor (1, 1) mag.meta.Sensor = mag.meta.Sensor.IBS
             end
 
             fileNames = [fullfile(testCase.TestDataLocation, "MAGScience-normal-(2,2)-8s-20240410-15h26.csv"), ...

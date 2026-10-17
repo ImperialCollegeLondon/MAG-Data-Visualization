@@ -26,11 +26,11 @@ classdef tData < matlab.unittest.TestCase
 
             % Set up.
             setup = mag.meta.Setup(Can = "Can 1", FEE = "FEE3", Harness = "IMAP-IMAP1", Model = "EM2");
-            metadata = mag.meta.Science(Setup = setup, Sensor = "FOB", Mode = "Burst", DataFrequency = 4, PacketFrequency = 8, Primary = true);
+            metadata = mag.meta.Science(Setup = setup, Sensor = "OBS", Mode = "Burst", DataFrequency = 4, PacketFrequency = 8, Primary = true);
 
             expectedStruct = struct(Primary = true, ...
                 Setup = struct(Can = "Can 1", FEE = "FEE3", Harness = "IMAP-IMAP1", Model = "EM2"), ...
-                Sensor = "FOB", ...
+                Sensor = "OBS", ...
                 Mode = "Burst", ...
                 DataFrequency = 4, ...
                 PacketFrequency = 8, ...
@@ -66,9 +66,9 @@ classdef tData < matlab.unittest.TestCase
 
             % Set up.
             metadata = mag.meta.Science();
-            metadata.Sensor = mag.meta.Sensor.FOB;
+            metadata.Sensor = mag.meta.Sensor.OBS;
 
-            expectedValue = mag.meta.Sensor.FOB;
+            expectedValue = mag.meta.Sensor.OBS;
 
             % Exercise.
             value = metadata.getDisplay("Sensor");
@@ -84,9 +84,9 @@ classdef tData < matlab.unittest.TestCase
             % Set up.
             metadata(1) = mag.meta.Science();
             metadata(2) = mag.meta.Science();
-            [metadata.Sensor] = deal(mag.meta.Sensor.FIB);
+            [metadata.Sensor] = deal(mag.meta.Sensor.IBS);
 
-            expectedValue = mag.meta.Sensor.FIB;
+            expectedValue = mag.meta.Sensor.IBS;
 
             % Exercise.
             value = metadata.getDisplay("Sensor");
@@ -102,7 +102,7 @@ classdef tData < matlab.unittest.TestCase
             % Set up.
             metadata(1) = mag.meta.Science();
             metadata(2) = mag.meta.Science();
-            [metadata.Sensor] = deal(mag.meta.Sensor.FIB, mag.meta.Sensor.FOB);
+            [metadata.Sensor] = deal(mag.meta.Sensor.IBS, mag.meta.Sensor.OBS);
 
             % Exercise.
             value = metadata.getDisplay("Sensor");
@@ -118,7 +118,7 @@ classdef tData < matlab.unittest.TestCase
             % Set up.
             metadata(1) = mag.meta.Science();
             metadata(2) = mag.meta.Science();
-            [metadata.Sensor] = deal(mag.meta.Sensor.FOB, mag.meta.Sensor.FIB);
+            [metadata.Sensor] = deal(mag.meta.Sensor.OBS, mag.meta.Sensor.IBS);
 
             expectedValue = "Ciao";
 

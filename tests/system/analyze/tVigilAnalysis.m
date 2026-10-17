@@ -24,8 +24,8 @@ classdef tVigilAnalysis < AnalysisTestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
 
-            testCase.verifyEqual(analysis.Results.Outboard.Metadata.Sensor, mag.meta.Sensor.FOB, "Outboard sensor metadata should be FOB.");
-            testCase.verifyEqual(analysis.Results.Inboard.Metadata.Sensor, mag.meta.Sensor.FIB, "Inboard sensor metadata should be FIB.");
+            testCase.verifyEqual(analysis.Results.Outboard.Metadata.Sensor, mag.meta.Sensor.OBS, "Outboard sensor metadata should be OBS.");
+            testCase.verifyEqual(analysis.Results.Inboard.Metadata.Sensor, mag.meta.Sensor.IBS, "Inboard sensor metadata should be IBS.");
 
             testCase.verifyEqual(analysis.Results.Outboard.Metadata.Mode, mag.meta.Mode.Normal, "Outboard mode should be Normal.");
             testCase.verifyEqual(analysis.Results.Inboard.Metadata.Mode, mag.meta.Mode.Normal, "Inboard mode should be Normal.");

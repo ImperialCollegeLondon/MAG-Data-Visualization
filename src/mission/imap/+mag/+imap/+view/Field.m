@@ -141,6 +141,8 @@ classdef Field < mag.imap.view.Science
 
             numHK = 0;
             hkData = {};
+            primaryHKSensor = replace(primarySensor, ["OBS", "IBS"], ["FOB", "FIB"]);
+            secondaryHKSensor = replace(secondarySensor, ["OBS", "IBS"], ["FOB", "FIB"]);
 
             if pwrHK.isPlottable()
 
@@ -148,14 +150,14 @@ classdef Field < mag.imap.view.Science
 
                     numHK = 1;
                     hkData = [hkData, {pwrHK, ...
-                        mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", primarySensor), YLabel = this.TLabel, Legend = [primarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [primarySensor, "ICU"] + "Temperature"))}];
+                        mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", primarySensor), YLabel = this.TLabel, Legend = [primarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [primaryHKSensor, "ICU"] + "Temperature"))}];
                 end
 
                 if ~isempty(secondary) && secondary.HasData
 
                     numHK = 1;
                     hkData = [hkData, {pwrHK, ...
-                        mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", secondarySensor), YLabel = this.TLabel, YAxisLocation = "right", Legend = [secondarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [secondarySensor, "ICU"] + "Temperature"))}];
+                        mag.graphics.style.Default(Title = compose("%s & ICU Temperatures", secondarySensor), YLabel = this.TLabel, YAxisLocation = "right", Legend = [secondarySensor, "ICU"], Charts = mag.graphics.chart.Plot(YVariables = [secondaryHKSensor, "ICU"] + "Temperature"))}];
                 end
             end
         end

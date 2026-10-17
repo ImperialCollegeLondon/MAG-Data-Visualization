@@ -194,7 +194,7 @@ classdef tPSD < MAGViewTestCase
                 arrangement(1) = arrangement(1) + 1;
 
                 expectedInputs{end + 1} = primaryPSD;
-                expectedInputs{end + 1} = mag.graphics.style.Default(Title = "FIB PSD", XLabel = "frequency [Hz]", YLabel = "PSD [nT Hz^{-0.5}]", XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
+                expectedInputs{end + 1} = mag.graphics.style.Default(Title = "IBS PSD", XLabel = "frequency [Hz]", YLabel = "PSD [nT Hz^{-0.5}]", XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
                     Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]);
             end
 
@@ -206,7 +206,7 @@ classdef tPSD < MAGViewTestCase
                 arrangement(1) = arrangement(1) + 1;
 
                 expectedInputs{end + 1} = secondaryPSD;
-                expectedInputs{end + 1} = mag.graphics.style.Default(Title = "FOB PSD", XLabel = "frequency [Hz]", YLabel = "PSD [nT Hz^{-0.5}]", XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
+                expectedInputs{end + 1} = mag.graphics.style.Default(Title = "OBS PSD", XLabel = "frequency [Hz]", YLabel = "PSD [nT Hz^{-0.5}]", XScale = "log", YScale = "log", Legend = ["x", "y", "z"], ...
                     Charts = [mag.graphics.chart.Plot(XVariable = "Frequency", YVariables = ["X", "Y", "Z"]), yLine]);
             end
 

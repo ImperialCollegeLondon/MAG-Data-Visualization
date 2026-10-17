@@ -119,7 +119,7 @@ classdef tSpectrogram < MAGViewTestCase
                 for a = ["X", "Y", "Z"]
 
                     expectedInputs{end + 1} = instrument.Primary; %#ok<*AGROW>
-                    expectedInputs{end + 1} = mag.graphics.style.Default(Title = compose("FIB %s", lower(a)), YLabel = "[nT]", Charts = mag.graphics.chart.Plot(YVariables = a));
+                    expectedInputs{end + 1} = mag.graphics.style.Default(Title = compose("IBS %s", lower(a)), YLabel = "[nT]", Charts = mag.graphics.chart.Plot(YVariables = a));
 
                     expectedInputs{end + 1} = primarySpectrum;
                     expectedInputs{end + 1} = mag.graphics.style.Colormap(YLabel = "frequency [Hz]", CLabel = "power [dB]", YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = a));
@@ -136,7 +136,7 @@ classdef tSpectrogram < MAGViewTestCase
                 for a = ["X", "Y", "Z"]
 
                     expectedInputs{end + 1} = instrument.Secondary; %#ok<*AGROW>
-                    expectedInputs{end + 1} = mag.graphics.style.Default(Title = compose("FOB %s", lower(a)), YLabel = "[nT]", YAxisLocation = "right", Charts = mag.graphics.chart.Plot(YVariables = a));
+                    expectedInputs{end + 1} = mag.graphics.style.Default(Title = compose("OBS %s", lower(a)), YLabel = "[nT]", YAxisLocation = "right", Charts = mag.graphics.chart.Plot(YVariables = a));
 
                     expectedInputs{end + 1} = secondarySpectrum;
                     expectedInputs{end + 1} = mag.graphics.style.Colormap(YLabel = "frequency [Hz]", CLabel = "power [dB]", YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = a));

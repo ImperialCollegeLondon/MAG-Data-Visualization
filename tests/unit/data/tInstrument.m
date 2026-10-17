@@ -194,11 +194,11 @@ classdef tInstrument < matlab.mock.TestCase
             scienceTT = mag.test.DataTestUtilities.getScienceTimetable();
             hkTT = timetable(datetime("now", TimeZone = "UTC") + minutes(1:10)', (1:10)', (11:20)', (21:30)', VariableNames = ["a", "b", "c"]);
 
-            [primary, primaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Primary = true, Sensor = "FOB", Timestamp = datetime("now", TimeZone = "UTC"))}, Strict = true);
-            [secondary, secondaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Sensor = "FIB", Timestamp = datetime("now", TimeZone = "UTC"))}, Strict = true);
+            [primary, primaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Primary = true, Sensor = "OBS", Timestamp = datetime("now", TimeZone = "UTC"))}, Strict = true);
+            [secondary, secondaryBehavior] = testCase.createMock(?mag.Science, ConstructorInputs = {scienceTT, mag.meta.Science(Sensor = "IBS", Timestamp = datetime("now", TimeZone = "UTC"))}, Strict = true);
 
-            iALiRTPrimaryScience = mag.Science(scienceTT, mag.meta.Science(Primary = true, Sensor = "FOB", Timestamp = datetime("now", TimeZone = "UTC")));
-            iALiRTSecondaryScience = mag.Science(scienceTT, mag.meta.Science(Sensor = "FIB", Timestamp = datetime("now", TimeZone = "UTC")));
+            iALiRTPrimaryScience = mag.Science(scienceTT, mag.meta.Science(Primary = true, Sensor = "OBS", Timestamp = datetime("now", TimeZone = "UTC")));
+            iALiRTSecondaryScience = mag.Science(scienceTT, mag.meta.Science(Sensor = "IBS", Timestamp = datetime("now", TimeZone = "UTC")));
             [iALiRT, iALiRTBehavior] = testCase.createMock(?mag.imap.IALiRT, ConstructorInputs = {"Science", [iALiRTPrimaryScience, iALiRTSecondaryScience]}, Strict = true);
 
             [hk, hkBehavior] = testCase.createMock(?mag.HK, ConstructorInputs = {hkTT, mag.meta.HK(Timestamp = datetime("now", TimeZone = "UTC"))}, Strict = true);
