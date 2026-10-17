@@ -1,4 +1,4 @@
-classdef tCalibration < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tCalibration < MAGAnalysisTestCase
 % TCALIBRATION Unit tests for "mag.process.Calibration" class.
 
     properties (TestParameter)

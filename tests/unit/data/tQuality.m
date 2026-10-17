@@ -1,4 +1,4 @@
-classdef tQuality < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tQuality < matlab.unittest.TestCase
 % TQUALITY Unit tests for "mag.meta.Quality" enumeration.
 
     methods (Test)

@@ -1,4 +1,4 @@
-classdef tIMAPAnalysis < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tIMAPAnalysis < matlab.unittest.TestCase
 % TIMAPANALYSIS Unit tests for "mag.imap.Analysis" class.
 
     properties (TestParameter)
@@ -18,6 +18,8 @@ classdef tIMAPAnalysis < matlab.unittest.TestCase
 
         % Test that aliases are defined.
         function alias(testCase, AliasName)
+
+            testCase.applyFixture(matlab.unittest.fixtures.SuppressedWarningsFixture("MATLAB:alias:AliasDeprecation"));
             testCase.verifyClass(feval(AliasName), "mag.imap.Analysis", sprintf("Alias ""%s"" should exist.", AliasName));
         end
 

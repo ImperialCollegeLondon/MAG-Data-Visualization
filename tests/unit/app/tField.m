@@ -1,4 +1,4 @@
-classdef tField < mag.test.case.ViewControllerTestCase & matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tField < mag.test.case.ViewControllerTestCase & matlab.mock.TestCase
 % TFIELD Unit tests for "mag.app.control.Field" class.
 
     methods (Test)

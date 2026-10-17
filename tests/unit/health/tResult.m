@@ -1,4 +1,4 @@
-classdef tResult < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tResult < matlab.unittest.TestCase
 % TRESULT Unit tests for "mag.health.Result" class.
 
     methods (Test)

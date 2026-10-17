@@ -1,4 +1,4 @@
-classdef tDatetime < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tDatetime < MAGAnalysisTestCase
 % TDATETIME Unit tests for "mag.process.Datetime" class.
 
     methods (Test)

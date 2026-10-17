@@ -1,4 +1,4 @@
-classdef tDefault < PropertiesTestCase & GridSupportTestCase & LegendSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tDefault < PropertiesTestCase & GridSupportTestCase & LegendSupportTestCase
 % TDEFAULT Unit tests for "mag.graphics.style.Default" class.
 
     properties (Constant)

@@ -7,6 +7,15 @@ classdef (Abstract) AppTestCase < mag.test.case.UITestCase & mag.test.case.Graph
         TaskTimeout (1, 1) double = 300
     end
 
+    methods (TestClassSetup)
+
+        % Background tasks may start a process-based pool, if not
+        % supported on threads.
+        function cleanupParallelPool(testCase)
+            testCase.applyFixture(mag.test.fixture.CleanupParallelPool());
+        end
+    end
+
     methods (Access = protected)
 
         function processData(testCase, app)
@@ -25,9 +34,7 @@ classdef (Abstract) AppTestCase < mag.test.case.UITestCase & mag.test.case.Graph
         end
 
         function copyDataToWorkingDirectory(testCase, workingDirectory, testFolder)
-
-            [status, message] = copyfile(fullfile(workingDirectory.StartingFolder, "..", "test_data", testFolder), workingDirectory.Folder);
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
+            mag.test.DataTestUtilities.copySystemTestData(testCase, testFolder, workingDirectory.Folder);
         end
 
         function app = createAppWithCleanup(testCase, varargin)

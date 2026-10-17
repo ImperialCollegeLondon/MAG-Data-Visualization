@@ -1,4 +1,4 @@
-classdef tComposition < matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tComposition < matlab.mock.TestCase
 % TCOMPOSITION Unit tests for "mag.graphics.operation.Composition" class.
 
     methods (Test)

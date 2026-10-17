@@ -29,7 +29,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v3.1.0
         with:
           release: ${{ matrix.release }}
-          products: MATLAB_Test Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox Wavelet_Toolbox
+          products: MATLAB_Test Parallel_Computing_Toolbox Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox Wavelet_Toolbox
           cache: true
       - name: Download CDF support package
         uses: robinraju/release-downloader@v1.13
@@ -53,16 +53,27 @@ jobs:
         uses: matlab-actions/run-command@v3.3.0
         with:
           command: "matlab.addons.install('MATLAB.SPDF.CDF.mltbx'); matlab.addons.install('MATLAB.SPICE.MICE.mltbx');"
-      - name: Run tests
+      - name: Run tests in parallel
         uses: matlab-actions/run-build@v3.4.0
         with:
-          tasks: check test
+          tasks: check test:parallel
+          build-options: -parallel
+      - name: Run tests serially
+        uses: matlab-actions/run-build@v3.4.0
+        if: success() || failure()
+        with:
+          tasks: test:serial
+      - name: Merge coverage
+        uses: matlab-actions/run-build@v3.4.0
+        if: success() || failure()
+        with:
+          tasks: coverage
       - name: Report results
         uses: dorny/test-reporter@v3
         if: success() || failure()
         with:
           name: MATLAB Test Results (${{ matrix.release }})
-          path: 'results.xml'
+          path: 'results-*.xml'
           working-directory: 'artifacts'
           reporter: java-junit
           use-actions-summary: 'false'

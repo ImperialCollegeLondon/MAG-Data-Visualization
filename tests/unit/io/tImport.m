@@ -1,4 +1,4 @@
-classdef tImport < MAGIOTestCase & matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tImport < MAGIOTestCase & matlab.mock.TestCase
 % TIMPORT Unit tests for "mag.io.import" function.
 
     methods (Test)

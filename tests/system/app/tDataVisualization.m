@@ -1,4 +1,4 @@
-classdef tDataVisualization < AppTestCase
+classdef (TestTags = "System") tDataVisualization < AppTestCase
 % TDATAVISUALIZATION System tests for "DataVisualization" app.
 
     properties (TestParameter)
@@ -165,7 +165,7 @@ classdef tDataVisualization < AppTestCase
             testCase.applyFixture(mag.test.fixture.ToolboxSetting("BackgroundProcessing", true));
             workingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
 
-            bartAnalysis = mag.bart.Analysis.start(Location = fullfile(workingDirectory.StartingFolder, "..", "test_data", "bart"));
+            bartAnalysis = mag.bart.Analysis.start(Location = fullfile(mag.test.DataTestUtilities.SystemTestDataLocation, "bart"));
 
             matFile = fullfile(workingDirectory.Folder, "analysis.mat");
             save(matFile, "bartAnalysis");

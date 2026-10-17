@@ -1,4 +1,4 @@
-classdef tIALiRT < matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tIALiRT < matlab.mock.TestCase
 % TIALIRT Unit tests for "mag.imap.IALiRT" class.
 
     properties (TestParameter)

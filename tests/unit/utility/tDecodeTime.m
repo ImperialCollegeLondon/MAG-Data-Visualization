@@ -1,4 +1,4 @@
-classdef tDecodeTime < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tDecodeTime < matlab.unittest.TestCase
 % TDECODETIME Unit tests for "mag.time.decodeTime" function.
 
     properties (TestParameter)

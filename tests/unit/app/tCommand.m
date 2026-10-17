@@ -1,4 +1,4 @@
-classdef tCommand < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tCommand < matlab.unittest.TestCase
 % TCOMMAND Unit tests for "mag.app.Command" class.
 
     methods (Test)

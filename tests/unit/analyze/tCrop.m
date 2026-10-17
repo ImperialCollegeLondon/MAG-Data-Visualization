@@ -1,4 +1,4 @@
-classdef tCrop < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tCrop < MAGAnalysisTestCase
 % TCROP Unit tests for "mag.process.Crop" class.
 
     methods (Test)

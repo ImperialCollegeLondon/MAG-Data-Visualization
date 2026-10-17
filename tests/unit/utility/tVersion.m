@@ -1,4 +1,4 @@
-classdef tVersion < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tVersion < matlab.unittest.TestCase
 % TVERSION Unit tests for "mag.version" function.
 
     methods (TestMethodSetup)

@@ -1,4 +1,4 @@
-classdef tSpectrum < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSpectrum < matlab.unittest.TestCase
 % TSPECTRUM Unit tests for "mag.Spectrum" class.
 
     properties (TestParameter)

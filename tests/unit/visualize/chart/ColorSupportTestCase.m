@@ -1,4 +1,4 @@
-classdef (Abstract) ColorSupportTestCase < MAGChartTestCase
+classdef (Abstract, TestTags = ["Unit", "Parallel"]) ColorSupportTestCase < MAGChartTestCase
 % COLORSUPPORTTESTCASE Base class for all charts that support colors.
 
     properties (TestParameter)

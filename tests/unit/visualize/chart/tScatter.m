@@ -1,4 +1,4 @@
-classdef tScatter < PropertiesTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tScatter < PropertiesTestCase
 % TSCATTER Unit tests for "mag.graphics.chart.Scatter" class.
 
     properties (Constant)

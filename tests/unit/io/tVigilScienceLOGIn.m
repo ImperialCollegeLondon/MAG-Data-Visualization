@@ -1,4 +1,4 @@
-classdef tVigilScienceLOGIn < MAGIOTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tVigilScienceLOGIn < MAGIOTestCase
 % TVIGILSCIENCELOGIN Unit tests for "mag.vigil.in.ScienceLOG" class.
 
     properties (TestParameter)

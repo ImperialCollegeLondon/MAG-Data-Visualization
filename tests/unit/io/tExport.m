@@ -1,4 +1,4 @@
-classdef tExport < MAGIOTestCase & matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tExport < MAGIOTestCase & matlab.mock.TestCase
 % TEXPORT Unit tests for "mag.io.export" function.
 
     methods (Test)

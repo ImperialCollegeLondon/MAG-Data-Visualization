@@ -1,4 +1,4 @@
-classdef tMustBeColor < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tMustBeColor < matlab.unittest.TestCase
 % TMUSTBECOLOR Unit tests for "mag.graphics.chart.Area" class.
 
     properties (TestParameter)

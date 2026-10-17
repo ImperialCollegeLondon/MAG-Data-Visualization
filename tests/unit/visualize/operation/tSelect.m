@@ -1,4 +1,4 @@
-classdef tSelect < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSelect < matlab.unittest.TestCase
 % TSELECT Unit tests for "mag.graphics.operation.Select" class.
 
     methods (Test)

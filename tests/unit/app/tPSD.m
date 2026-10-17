@@ -1,4 +1,4 @@
-classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
+classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
 % TPSD Unit tests for "mag.app.control.PSD" class.
 
     methods (Test)

@@ -1,4 +1,4 @@
-classdef tHelioSwarmApp < AppTestCase
+classdef (TestTags = "System") tHelioSwarmApp < AppTestCase
 % THELIOSWARMAPP System tests for HelioSwarm version of "DataVisualization"
 % app.
 

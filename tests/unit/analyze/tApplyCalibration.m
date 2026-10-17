@@ -1,4 +1,4 @@
-classdef tApplyCalibration < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tApplyCalibration < MAGAnalysisTestCase
 % TAPPLYCALIBRATION Unit tests for "applyCalibration" function.
 
     methods (Test)

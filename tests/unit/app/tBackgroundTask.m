@@ -1,4 +1,4 @@
-classdef tBackgroundTask < matlab.unittest.TestCase
+classdef (TestTags = "Unit") tBackgroundTask < matlab.unittest.TestCase
 % TBACKGROUNDTASK Unit tests for "mag.app.internal.BackgroundTask" class.
 
     properties (Constant, Access = private)
@@ -309,7 +309,7 @@ classdef tBackgroundTask < matlab.unittest.TestCase
             testCase.assumeTrue(canUseParallelPool(), "Parallel Computing Toolbox not available. Test skipped.");
             testCase.assumeEmpty(gcp("nocreate"), "Parallel pool already running. Test skipped.");
 
-            testCase.addTeardown(@() delete(gcp("nocreate")));
+            testCase.applyFixture(mag.test.fixture.CleanupParallelPool());
 
             task = mag.app.internal.BackgroundTask(@() tBackgroundTask.unsupportedOnThread(), 1);
 

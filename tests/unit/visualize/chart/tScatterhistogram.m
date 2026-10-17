@@ -1,4 +1,4 @@
-classdef tScatterhistogram < MAGChartTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tScatterhistogram < MAGChartTestCase
 % TSCATTERHISTOGRAM Unit tests for "mag.graphics.chart.Scatterhistogram"
 % class.
 

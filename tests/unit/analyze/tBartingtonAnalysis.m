@@ -1,4 +1,4 @@
-classdef tBartingtonAnalysis < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tBartingtonAnalysis < matlab.unittest.TestCase
 % TBARTINGTONANALYSIS Unit tests for "mag.bart.Analysis" class.
 
     methods (Test)

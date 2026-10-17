@@ -1,4 +1,4 @@
-classdef tVisualizationManager < mag.test.case.ViewControllerTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tVisualizationManager < mag.test.case.ViewControllerTestCase
 % TVISUALIZATIONMANAGER Unit tests for
 % "mag.app.manage.VisualizationManager" class.
 

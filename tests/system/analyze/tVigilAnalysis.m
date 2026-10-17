@@ -1,12 +1,10 @@
-classdef tVigilAnalysis < AnalysisTestCase
+classdef (TestTags = ["System", "Parallel"]) tVigilAnalysis < AnalysisTestCase
 % TVIGILANALYSIS Tests for Vigil analysis flow.
 
     methods (TestMethodSetup)
 
-        function copyDataToWorkingDirectory(testCase)
-
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "..", "test_data", "vigil"), fullfile(testCase.WorkingDirectory.Folder));
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
+        function copyTestData(testCase)
+            testCase.copyDataToWorkingDirectory("vigil");
         end
     end
 

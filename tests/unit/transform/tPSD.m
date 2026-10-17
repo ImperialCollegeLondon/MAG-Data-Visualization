@@ -1,4 +1,4 @@
-classdef tPSD < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tPSD < matlab.unittest.TestCase
 % TPSD Unit tests for "mag.psd" function.
 
     methods (Test)

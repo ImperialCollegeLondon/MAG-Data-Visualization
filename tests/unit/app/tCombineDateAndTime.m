@@ -1,4 +1,4 @@
-classdef tCombineDateAndTime < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tCombineDateAndTime < matlab.unittest.TestCase
 % TCOMBINEDATEANDTIME Unit tests for "mag.app.internal.combineDateAndTime"
 % function.
 

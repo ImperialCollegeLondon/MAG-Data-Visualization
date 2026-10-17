@@ -1,4 +1,4 @@
-classdef tDuplicates < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tDuplicates < MAGAnalysisTestCase
 % TDUPLICATES Unit tests for "mag.process.Duplicates" class.
 
     methods (Test)

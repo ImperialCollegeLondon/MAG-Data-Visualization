@@ -1,4 +1,4 @@
-classdef tVigilInstrument < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tVigilInstrument < matlab.unittest.TestCase
 % TVIGILINSTRUMENT Unit tests for "mag.vigil.Instrument" class.
 
     properties (TestParameter)

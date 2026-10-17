@@ -1,4 +1,4 @@
-classdef tLine < PropertiesTestCase & ColorSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tLine < PropertiesTestCase & ColorSupportTestCase
 % TLINE Unit tests for "mag.graphics.chart.Line" class.
 
     properties (Constant)
