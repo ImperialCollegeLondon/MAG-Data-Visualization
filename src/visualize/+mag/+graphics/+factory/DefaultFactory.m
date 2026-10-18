@@ -37,7 +37,19 @@ classdef DefaultFactory < mag.graphics.factory.Factory
 
                 % Make sure figure is hidden while being populated, and only
                 % shown, if requested, at the end.
-                f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, WindowStyle = windowStyle, Visible = "off");
+                try
+                    f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, WindowStyle = windowStyle, Visible = "off");
+                catch exception
+
+                    % Figures cannot be docked without a display (e.g., on
+                    % parallel workers).
+                    if isequal(exception.identifier, "MATLAB:Figure:IncorrectWindowStyle")
+                        f = figure(Name = options.Name, NumberTitle = "off", WindowState = options.WindowState, WindowStyle = "normal", Visible = "off");
+                    else
+                        exception.rethrow();
+                    end
+                end
+                
                 resetVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
 
                 if mag.internal.isThemeable(f)
