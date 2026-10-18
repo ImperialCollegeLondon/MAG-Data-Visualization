@@ -20,6 +20,13 @@ function plan = buildfile()
         end
     end
 
+    % Add the "install" task to install support packages (".mltbx" files)
+    % in the root folder. Since R2026b, installations may not persist
+    % across MATLAB sessions, so run this task in the same session as the
+    % tests.
+    plan("install") = matlab.buildtool.Task(Description = "Install support packages in root folder", ...
+        Actions = @installSupportPackages);
+
     % Add the "check" task to identify code issues.
     sourceFolders = ["app", "src"];
 
@@ -29,7 +36,11 @@ function plan = buildfile()
 
     % Add the "test" tasks to run unit and system tests. Tests tagged
     % "Parallel" can run on a parallel pool, using "buildtool test:parallel
-    % -parallel". All other tests must run serially.
+    % -parallel". Tests tagged "Interactive" interact with visible UI
+    % windows, and only run with "buildtool test:ui". All other tests must
+    % run serially.
+    import matlab.unittest.selectors.HasTag;
+
     testFolders = ["tests/system", "tests/unit"];
     testOptions = {"SourceFiles", [sourceFolders, "tests/tool"], "IncludeSubfolders", true};
 
@@ -41,14 +52,21 @@ function plan = buildfile()
 
     plan("test:serial") = matlab.buildtool.tasks.TestTask(testFolders, testOptions{:}, ...
         Description = "Run tests that require serial execution", ...
-        Selector = ~matlab.unittest.selectors.HasTag("Parallel"), ...
+        Selector = ~HasTag("Parallel") & ~HasTag("Interactive"), ...
         TestResults = fullfile("artifacts/results-serial.xml"), ...
         CodeCoverageResults = fullfile("artifacts/coverage-serial.mat"));
+
+    plan("test:ui") = matlab.buildtool.tasks.TestTask(testFolders, testOptions{:}, ...
+        Description = "Run tests that interact with visible UI windows", ...
+        Tag = "Interactive", ...
+        TestResults = fullfile("artifacts/results-ui.xml"), ...
+        CodeCoverageResults = fullfile("artifacts/coverage-ui.mat"));
 
     if ~isMATLABReleaseOlderThan("R2025a")
 
         plan("test:parallel").RunOnlyImpactedTests = true;
         plan("test:serial").RunOnlyImpactedTests = true;
+        plan("test:ui").RunOnlyImpactedTests = true;
     end
 
     % Add the "coverage" task to merge code coverage of all test tasks.
@@ -56,7 +74,7 @@ function plan = buildfile()
     % dependencies, and can run separately.
     plan("coverage") = matlab.buildtool.Task(Description = "Merge code coverage results", ...
         Actions = @mergeCoverage, ...
-        Inputs = fullfile("artifacts", ["coverage-parallel.mat", "coverage-serial.mat"]), ...
+        Inputs = fullfile("artifacts", ["coverage-parallel.mat", "coverage-serial.mat", "coverage-ui.mat"]), ...
         Outputs = fullfile("artifacts/coverage.xml"));
 
     % Add the "perf" task to measure performance. Task always runs, as
@@ -77,8 +95,22 @@ function plan = buildfile()
     % Add the "clean" task to delete output of all tasks.
     plan("clean") = matlab.buildtool.tasks.CleanTask();
 
-    % Make sure tasks run by default.
-    plan.DefaultTasks = ["check", "test", "coverage"];
+    % Make sure tasks run by default. UI tests are excluded, as they open
+    % windows that take focus.
+    plan.DefaultTasks = ["check", "test:parallel", "test:serial", "coverage"];
+end
+
+function installSupportPackages(context)
+% INSTALLSUPPORTPACKAGES Install all support packages (".mltbx" files) in
+% the root folder.
+
+    toolboxes = dir(fullfile(context.Plan.RootFolder, "*.mltbx"));
+
+    for t = toolboxes'
+
+        disp("Installing """ + t.name + """...");
+        matlab.addons.install(fullfile(t.folder, t.name));
+    end
 end
 
 function mergeCoverage(context)

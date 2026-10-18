@@ -1,4 +1,4 @@
-classdef (Abstract) AppTestCase < mag.test.case.UITestCase & mag.test.case.GraphicsTestCase
+classdef (Abstract, TestTags = "Interactive") AppTestCase < mag.test.case.UITestCase & mag.test.case.GraphicsTestCase
 % APPTESTCASE Base class for all MAG app tests.
 
     properties (Constant, Access = protected)

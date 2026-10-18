@@ -86,6 +86,9 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             testCase.verifyEqual(command.NamedArguments.NoiseThreshold, mag.graphics.psd.NoiseThreshold.Default, """NoiseThreshold"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
         end
+    end
+
+    methods (Test, TestTags = "Interactive")
 
         % Test that "getVisualizeCommand" returns expected command, when
         % "StartDate" is modified.
@@ -124,6 +127,9 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             testCase.verifyEqual(command.NamedArguments.NoiseThreshold, mag.graphics.psd.NoiseThreshold.Default, """NoiseThreshold"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
         end
+    end
+
+    methods (Test)
 
         % Test that "getVisualizeCommand" returns expected command, when
         % "Duration" is modified.

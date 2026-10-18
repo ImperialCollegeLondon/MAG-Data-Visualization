@@ -1,4 +1,4 @@
-classdef (Abstract) DatetimeSliderTestCase < mag.test.case.UITestCase
+classdef (Abstract, TestTags = "Interactive") DatetimeSliderTestCase < mag.test.case.UITestCase
 % DATETIMESLIDERTESTCASE Base class for datetime slider UI components.
 
     properties (Constant, Access = protected)

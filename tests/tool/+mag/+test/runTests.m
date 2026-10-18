@@ -10,12 +10,17 @@ function testResults = runTests(options)
 %   RUNTESTS(UseParallel = true) runs tests tagged "Parallel" on a parallel
 %   pool, and all other tests serially.
 %
+%   RUNTESTS(Interactive = true) also runs tests tagged "Interactive",
+%   which interact with visible UI windows that take focus. They are
+%   excluded by default.
+%
 %   RUNTESTS(ReportCoverage = true) generates an HTML code coverage report
 %   for app and source code in "artifacts/coverage".
 
     arguments (Input)
         options.Tag (1, :) string {mustBeMember(options.Tag, ["Unit", "System", "Performance"])} = ["Unit", "System"]
         options.UseParallel (1, 1) logical = false
+        options.Interactive (1, 1) logical = false
         options.ReportCoverage (1, 1) logical = false
     end
 
@@ -35,6 +40,10 @@ function testResults = runTests(options)
 
     suite = testsuite(fullfile(root, "tests"), IncludeSubfolders = true);
     suite = suite.selectIf(selector);
+
+    if ~options.Interactive
+        suite = suite.selectIf(~HasTag("Interactive"));
+    end
 
     if options.UseParallel
 

@@ -3,8 +3,9 @@ classdef CleanupParallelPool < matlab.unittest.fixtures.Fixture
 
     properties (Access = private)
         % PRETESTPOOL Parallel pool running before test. Should not be
-        % deleted by fixture.
-        PreTestPool parallel.Pool {mustBeScalarOrEmpty}
+        % deleted by fixture. Untyped, as Parallel Computing Toolbox is
+        % optional.
+        PreTestPool = []
     end
 
     methods
