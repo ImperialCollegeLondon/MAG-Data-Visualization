@@ -33,11 +33,42 @@ classdef tExport < AppTestCase
                 TestDetails.Setup(testCase, testCase.App);
             end
 
-            testCase.press(testCase.App.ProcessDataButton);
+            testCase.processData(testCase.App);
         end
     end
 
     methods (Test)
+
+        function exportToFormat(testCase)
+
+            % Set up.
+            testCase.assumeNotEmpty(testCase.App.ExportManager.SupportedFormats, "Mission does not support export formats. Test skipped.");
+
+            exportFolder = fullfile(testCase.WorkingDirectory.Folder, compose("Results (v%s)", mag.version()));
+            format = testCase.App.ExportManager.SupportedFormats(1);
+
+            testCase.choose(testCase.App.ExportTab);
+            testCase.choose(testCase.App.ExportFormatDropDown, format);
+
+            % Exercise.
+            testCase.addTeardown(@() rmdir(exportFolder, "s"));
+            testCase.press(testCase.App.ExportButton);
+
+            testCase.verifyEqual(string(testCase.App.ExportStatusLabel.Text), "Exporting...", "Status should show export.");
+
+            testCase.waitForTasks(testCase.App);
+
+            % Verify.
+            testCase.assertEqual(testCase.App.ExportTask.State, mag.app.internal.TaskState.Succeeded, "Export should succeed.");
+
+            testCase.verifyFalse(testCase.App.IsExporting, "App should not be exporting.");
+            testCase.verifyEqual(string(testCase.App.ExportButton.Text), "Export", "Button should allow exporting.");
+            testCase.verifyTrue(startsWith(testCase.App.ExportStatusLabel.Text, "Export completed in"), "Status should show completion.");
+            testCase.verifyAppUIElementStatus(testCase.App, "on");
+
+            testCase.assertTrue(isfolder(exportFolder), "Export folder should exist.");
+            testCase.verifyNotEmpty(dir(fullfile(exportFolder, "*.*")), "Exported files should exist.");
+        end
 
         function exportToWorkspace(testCase)
 

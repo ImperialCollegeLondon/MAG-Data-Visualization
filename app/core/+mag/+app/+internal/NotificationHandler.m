@@ -101,9 +101,10 @@ classdef NotificationHandler < handle
         end
     end
 
-    methods (Static, Access = private)
+    methods (Static)
 
         function beep()
+        % BEEP Play sound, if enabled in toolbox settings.
 
             if mag.internal.ToolboxSettings.getSettingValue("Sound")
                 beep();

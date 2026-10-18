@@ -2,6 +2,9 @@ classdef ToolboxSettings
 % TOOLBOXSETTINGS Class to manage MAG Data Visualization toolbox settings.
 
     properties (Constant)
+        % BACKGROUNDPROCESSING Whether app processing runs in the
+        % background, without blocking MATLAB.
+        BackgroundProcessing (1, 1) struct = struct(Default = true, Type = "logical")
         % FIGURERESOLUTION Resolution for MAG figures.
         FigureResolution (1, 1) struct = struct(Default = 300, Type = "double")
         % SOUND Whether to play sounds when app functions are complete.

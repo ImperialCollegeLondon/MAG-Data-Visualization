@@ -33,7 +33,7 @@ classdef tVisualize < AppTestCase
 
             testCase.choose(testCase.App.AnalyzeTab);
             testCase.type(testCase.App.AnalysisManager.LocationEditField, testCase.WorkingDirectory.Folder);
-            testCase.press(testCase.App.ProcessDataButton);
+            testCase.processData(testCase.App);
 
             testCase.choose(testCase.App.VisualizeTab);
             testCase.press(testCase.App.ShowFiguresButton);
