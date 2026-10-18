@@ -1,4 +1,4 @@
-classdef tTimeShift < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tTimeShift < MAGAnalysisTestCase
 % TTIMESHIFT Unit tests for "mag.process.TimeShift" class.
 
     methods (Test)

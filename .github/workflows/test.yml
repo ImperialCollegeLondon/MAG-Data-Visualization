@@ -19,6 +19,7 @@ jobs:
   test:
     name: Run MATLAB Tests
     strategy:
+      fail-fast: false
       matrix:
         release: ["R2025a", "R2025b", "R2026a", "R2026b"]
     runs-on: windows-latest
@@ -29,7 +30,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v3.1.0
         with:
           release: ${{ matrix.release }}
-          products: MATLAB_Test Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox Wavelet_Toolbox
+          products: MATLAB_Test Parallel_Computing_Toolbox Signal_Processing_Toolbox Statistics_and_Machine_Learning_Toolbox Text_Analytics_Toolbox Wavelet_Toolbox
           cache: true
       - name: Download CDF support package
         uses: robinraju/release-downloader@v1.13
@@ -49,20 +50,34 @@ jobs:
           token: ${{ secrets.MATLAB_SUPPORT_PACKAGES_TOKEN }}
           tarBall: false
           zipBall: false
-      - name: Install support packages
-        uses: matlab-actions/run-command@v3.3.0
-        with:
-          command: "matlab.addons.install('MATLAB.SPDF.CDF.mltbx'); matlab.addons.install('MATLAB.SPICE.MICE.mltbx');"
-      - name: Run tests
+      # Support packages are installed in the same MATLAB session as the
+      # tests, as installations may not persist across sessions.
+      - name: Run tests in parallel
         uses: matlab-actions/run-build@v3.4.0
         with:
-          tasks: check test
+          tasks: install check test:parallel
+          build-options: -parallel
+      - name: Run tests serially
+        uses: matlab-actions/run-build@v3.4.0
+        if: success() || failure()
+        with:
+          tasks: install test:serial
+      - name: Run UI tests
+        uses: matlab-actions/run-build@v3.4.0
+        if: success() || failure()
+        with:
+          tasks: install test:ui
+      - name: Merge coverage
+        uses: matlab-actions/run-build@v3.4.0
+        if: success() || failure()
+        with:
+          tasks: coverage
       - name: Report results
         uses: dorny/test-reporter@v3
         if: success() || failure()
         with:
           name: MATLAB Test Results (${{ matrix.release }})
-          path: 'results.xml'
+          path: 'results-*.xml'
           working-directory: 'artifacts'
           reporter: java-junit
           use-actions-summary: 'false'

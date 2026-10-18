@@ -1,4 +1,4 @@
-classdef tField < MAGViewTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tField < MAGViewTestCase
 % TFIELD Unit tests for "mag.imap.view.Field" class.
 
     properties (TestParameter)

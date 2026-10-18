@@ -1,4 +1,4 @@
-classdef tVigilApp < AppTestCase
+classdef (TestTags = "System") tVigilApp < AppTestCase
 % TVIGILAPP System tests for Vigil version of "DataVisualization" app.
 
     properties (TestParameter)

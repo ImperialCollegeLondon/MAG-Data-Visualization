@@ -1,4 +1,4 @@
-classdef tArea < ColorSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tArea < ColorSupportTestCase
 % TAREA Unit tests for "mag.graphics.chart.Area" class.
 
     properties (Constant)

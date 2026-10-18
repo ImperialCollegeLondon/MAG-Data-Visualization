@@ -1,4 +1,4 @@
-classdef tExport < AppTestCase
+classdef (TestTags = "System") tExport < AppTestCase
 % TEXPORT System tests for exporting "DataVisualization" results.
 %#ok<*EVALIN>
 

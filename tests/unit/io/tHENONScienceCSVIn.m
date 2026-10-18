@@ -1,4 +1,4 @@
-classdef tHENONScienceCSVIn < MAGIOTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tHENONScienceCSVIn < MAGIOTestCase
 % THENONSCIENCECSVIN Unit tests for "mag.henon.in.ScienceCSV" class.
 
     properties (Constant, Access = private)

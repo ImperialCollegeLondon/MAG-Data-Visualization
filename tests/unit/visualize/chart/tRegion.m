@@ -1,4 +1,4 @@
-classdef tRegion < PropertiesTestCase & ColorSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tRegion < PropertiesTestCase & ColorSupportTestCase
 % TREGION Unit tests for "mag.graphics.chart.Region" class.
 
     properties (Constant)

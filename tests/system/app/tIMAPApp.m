@@ -1,4 +1,4 @@
-classdef tIMAPApp < AppTestCase
+classdef (TestTags = "System") tIMAPApp < AppTestCase
 % TIMAPAPP System tests for IMAP version of "DataVisualization" app.
 
     properties (TestParameter)

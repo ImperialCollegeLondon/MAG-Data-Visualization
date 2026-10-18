@@ -1,4 +1,4 @@
-classdef tSaveLoad < matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSaveLoad < matlab.mock.TestCase
 % TSAVELOAD Unit tests for "mag.mixin.SaveLoad" class.
 
     methods (Test)

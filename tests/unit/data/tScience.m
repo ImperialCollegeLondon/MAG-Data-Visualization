@@ -1,4 +1,4 @@
-classdef tScience < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tScience < matlab.unittest.TestCase
 % TSCIENCE Unit tests for "mag.Science" class.
 
     properties (TestParameter)

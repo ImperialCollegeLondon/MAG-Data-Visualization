@@ -1,4 +1,4 @@
-classdef tVisualize < MAGViewTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tVisualize < MAGViewTestCase
 % TVISUALIZE Unit tests for "mag.graphics.visualize" function.
 
     methods (Test)

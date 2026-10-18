@@ -1,4 +1,4 @@
-classdef tDatetimeRangeSlider < DatetimeSliderTestCase
+classdef (TestTags = "Unit") tDatetimeRangeSlider < DatetimeSliderTestCase
 % TDATETIMERANGESLIDER Unit tests for
 % "mag.app.component.DatetimeRangeSlider" class.
 

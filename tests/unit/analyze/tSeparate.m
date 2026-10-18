@@ -1,4 +1,4 @@
-classdef tSeparate < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSeparate < MAGAnalysisTestCase
 % TSEPARATE Unit tests for "mag.process.Separate" class.
 
     methods (Test)

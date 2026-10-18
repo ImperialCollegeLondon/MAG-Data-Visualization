@@ -1,4 +1,4 @@
-classdef tSignedInteger < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSignedInteger < MAGAnalysisTestCase
 % TSIGNEDINTEGER Unit tests for "mag.process.SignedInteger" class.
 
     properties (TestParameter)

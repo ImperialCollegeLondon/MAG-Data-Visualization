@@ -1,4 +1,4 @@
-classdef (Abstract) LegendSupportTestCase < MAGStyleTestCase
+classdef (Abstract, TestTags = ["Unit", "Parallel"]) LegendSupportTestCase < MAGStyleTestCase
 % LEGENDSUPPORTTESTCASE Base class for all styles that support legends.
 
     methods (Test)

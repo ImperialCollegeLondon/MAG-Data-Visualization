@@ -4,9 +4,24 @@ classdef DataTestUtilities
     properties (Constant)
         % TIME Definition of timetable time.
         Time (:, 1) datetime = datetime("today", TimeZone = "UTC") + minutes(1:10)'
+        % SYSTEMTESTDATALOCATION Location of system test data.
+        SystemTestDataLocation (1, 1) string = fullfile(fileparts(mfilename("fullpath")), "..", "..", "..", "system", "test_data")
     end
 
     methods (Static)
+
+        function copySystemTestData(testCase, testFolder, destination)
+        % COPYSYSTEMTESTDATA Copy folder of system test data to destination.
+
+            arguments
+                testCase (1, 1) matlab.unittest.TestCase
+                testFolder (1, 1) string
+                destination (1, 1) string {mustBeFolder}
+            end
+
+            [status, message] = copyfile(fullfile(mag.test.DataTestUtilities.SystemTestDataLocation, testFolder), destination);
+            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
+        end
 
         function scienceTT = getScienceTimetable()
         % GETSCIENCETIMETABLE Get timetable of science data.

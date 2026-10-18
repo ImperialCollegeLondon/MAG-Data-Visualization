@@ -1,4 +1,4 @@
-classdef tVisualize < AppTestCase
+classdef (TestTags = "System") tVisualize < AppTestCase
 % TVISUALIZE System tests for visualizing "DataVisualization" results.
 
     properties (Constant, Access = private)

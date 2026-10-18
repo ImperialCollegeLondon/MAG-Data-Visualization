@@ -1,4 +1,4 @@
-classdef (Abstract) MarkerSupportTestCase < MAGChartTestCase
+classdef (Abstract, TestTags = ["Unit", "Parallel"]) MarkerSupportTestCase < MAGChartTestCase
 % MARKERSUPPORTTESTCASE Base class for all charts that support markers.
 
     properties (TestParameter)

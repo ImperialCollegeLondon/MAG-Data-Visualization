@@ -1,4 +1,4 @@
-classdef tMissing < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tMissing < MAGAnalysisTestCase
 % TMISSIMG Unit tests for "mag.process.Missing" class.
 
     methods (Test)

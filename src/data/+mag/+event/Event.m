@@ -187,9 +187,15 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
                 end
 
                 % If the time of automated event is after the next event,
-                % correct it.
+                % correct it. Make sure it stays strictly after the current
+                % event, as events can be only "eps" apart (e.g., after
+                % cropping).
                 if (i < height(eventtableThis)) && (autoEvent.Time >= eventtableThis(i + 1, :).Time)
-                    autoEvent.Time = eventtableThis(i + 1, :).Time - mag.time.Constant.Eps;
+
+                    currentTime = eventtableThis.Time(i);
+                    nextTime = eventtableThis.Time(i + 1);
+
+                    autoEvent.Time = max(nextTime - mag.time.Constant.Eps, currentTime + ((nextTime - currentTime) / 2));
                 end
 
                 autoEventtable = [autoEventtable; autoEvent]; %#ok<AGROW>

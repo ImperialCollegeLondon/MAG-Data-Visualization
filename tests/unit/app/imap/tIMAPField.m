@@ -1,4 +1,4 @@
-classdef tIMAPField < mag.test.case.ViewControllerTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tIMAPField < mag.test.case.ViewControllerTestCase
 % TIMAPFIELD Unit tests for "mag.app.imap.control.Field" class.
 
     methods (Test)

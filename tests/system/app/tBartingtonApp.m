@@ -1,4 +1,4 @@
-classdef tBartingtonApp < AppTestCase
+classdef (TestTags = "System") tBartingtonApp < AppTestCase
 % TBARTINGTONAPP System tests for Bartington version of "DataVisualization"
 % app.
 

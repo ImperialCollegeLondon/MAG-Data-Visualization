@@ -1,4 +1,4 @@
-classdef tStairs < PropertiesTestCase & ColorSupportTestCase & MarkerSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tStairs < PropertiesTestCase & ColorSupportTestCase & MarkerSupportTestCase
 % TSTAIRS Unit tests for "mag.graphics.chart.Stairs" class.
 
     properties (Constant)

@@ -1,4 +1,4 @@
-classdef tSpectrogram < mag.test.case.ViewControllerTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < mag.test.case.ViewControllerTestCase
 % TSPECTROGRAM Unit tests for "mag.app.control.Spectrogram" class.
 
     methods (Test)

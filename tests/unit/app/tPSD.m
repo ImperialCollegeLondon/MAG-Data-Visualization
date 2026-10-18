@@ -1,4 +1,4 @@
-classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
+classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
 % TPSD Unit tests for "mag.app.control.PSD" class.
 
     methods (Test)
@@ -86,6 +86,9 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             testCase.verifyEqual(command.NamedArguments.NoiseThreshold, mag.graphics.psd.NoiseThreshold.Default, """NoiseThreshold"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
         end
+    end
+
+    methods (Test, TestTags = "Interactive")
 
         % Test that "getVisualizeCommand" returns expected command, when
         % "StartDate" is modified.
@@ -124,6 +127,9 @@ classdef tPSD < mag.test.case.ViewControllerTestCase & matlab.uitest.TestCase
             testCase.verifyEqual(command.NamedArguments.NoiseThreshold, mag.graphics.psd.NoiseThreshold.Default, """NoiseThreshold"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.SyncYAxes, false, """Sync y-axes"" should match expectation.");
         end
+    end
+
+    methods (Test)
 
         % Test that "getVisualizeCommand" returns expected command, when
         % "Duration" is modified.

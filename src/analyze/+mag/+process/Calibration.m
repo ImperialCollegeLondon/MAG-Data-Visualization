@@ -135,7 +135,9 @@ classdef Calibration < mag.process.Step
                 offset (1, 3) double
             end
 
-            data = readmatrix(calibrationFile);
+            % Use "load" instead of "readmatrix", as it is significantly
+            % faster for small numeric files.
+            data = load(calibrationFile, "-ascii");
 
             scale = data(1, :);
             misalignment = data(2:4, :);

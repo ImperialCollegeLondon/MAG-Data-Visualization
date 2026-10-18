@@ -1,4 +1,4 @@
-classdef tCompression < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tCompression < MAGAnalysisTestCase
 % TCOMPRESSION Unit tests for "mag.process.Compression" class.
 
     methods (Test)

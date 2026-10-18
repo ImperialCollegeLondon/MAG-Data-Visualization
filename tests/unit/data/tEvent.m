@@ -1,4 +1,4 @@
-classdef tEvent < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tEvent < matlab.unittest.TestCase
 % TEVENT Unit tests for "mag.event.Event" classes.
 
     properties (TestParameter)

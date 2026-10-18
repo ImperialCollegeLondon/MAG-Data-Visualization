@@ -1,4 +1,4 @@
-classdef tSpectrogram < MAGViewTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < MAGViewTestCase
 % TSPECTROGRAM Unit tests for "mag.imap.view.Spectrogram" class.
 
     methods (Test)

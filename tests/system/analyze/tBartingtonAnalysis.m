@@ -1,12 +1,10 @@
-classdef tBartingtonAnalysis < AnalysisTestCase
+classdef (TestTags = ["System", "Parallel"]) tBartingtonAnalysis < AnalysisTestCase
 % TBARTINGTONANALYSIS Tests for Bartington analysis flow.
 
     methods (TestMethodSetup)
 
-        function copyDataToWorkingDirectory(testCase)
-
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "..", "test_data", "bart"), fullfile(testCase.WorkingDirectory.Folder));
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
+        function copyTestData(testCase)
+            testCase.copyDataToWorkingDirectory("bart");
         end
     end
 

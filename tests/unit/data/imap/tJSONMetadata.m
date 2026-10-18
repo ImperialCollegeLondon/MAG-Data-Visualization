@@ -1,4 +1,4 @@
-classdef tJSONMetadata < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tJSONMetadata < matlab.unittest.TestCase
 % TJSONMETADATA Unit tests for "mag.impa.meta.JSON" class.
 
     properties (Access = private)

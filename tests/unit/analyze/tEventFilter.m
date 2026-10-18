@@ -1,4 +1,4 @@
-classdef tEventFilter < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tEventFilter < matlab.unittest.TestCase
 % TEVENTFILTER Unit tests for "mag.process.EventFilter" class.
 
     methods (Test)

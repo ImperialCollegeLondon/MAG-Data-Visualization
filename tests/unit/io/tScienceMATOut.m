@@ -1,4 +1,4 @@
-classdef tScienceMATOut < MAGIOTestCase & matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tScienceMATOut < MAGIOTestCase & matlab.mock.TestCase
 % TSCIENCEMATOUT Unit tests for "mag.imap.out.ScienceMAT" class.
 
     methods (Test)

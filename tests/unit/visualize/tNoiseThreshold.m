@@ -1,4 +1,4 @@
-classdef tNoiseThreshold < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tNoiseThreshold < matlab.unittest.TestCase
 % TNOISETHRESHOLD Unit tests for "mag.graphics.psd.NoiseThreshold".
 
     methods (Test)

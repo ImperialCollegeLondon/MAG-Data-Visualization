@@ -1,4 +1,4 @@
-classdef (Abstract) GridSupportTestCase < MAGStyleTestCase
+classdef (Abstract, TestTags = ["Unit", "Parallel"]) GridSupportTestCase < MAGStyleTestCase
 % GRIDSUPPORTTESTCASE Base class for all styles that support grids.
 
     properties (TestParameter)

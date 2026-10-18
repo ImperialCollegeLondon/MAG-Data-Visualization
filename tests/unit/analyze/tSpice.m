@@ -1,4 +1,4 @@
-classdef tSpice < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSpice < MAGAnalysisTestCase
 % TSPICE Unit tests for "mag.process.Spice" class.
 
     methods (TestClassSetup)
