@@ -247,7 +247,10 @@ classdef (Abstract) Event < matlab.mixin.Heterogeneous & matlab.mixin.Copyable &
         function tableThis = fillMissingDetails(tableThis)
 
             fillVariables = intersect(["Mode", "PrimaryNormalRate", "SecondaryNormalRate", "PacketNormalFrequency", "PrimaryBurstRate", "SecondaryBurstRate", "PacketBurstFrequency", "Range"], tableThis.Properties.VariableNames);
-            tableThis(:, fillVariables) = fillmissing(tableThis(:, fillVariables), "previous");
+
+            for variable = fillVariables
+                tableThis.(variable) = fillmissing(tableThis.(variable), "previous");
+            end
 
             tableThis{contains(tableThis.Label, "Config"), ["PrimaryNormalRate", "SecondaryNormalRate", "PacketNormalFrequency", "PrimaryBurstRate", "SecondaryBurstRate", "PacketBurstFrequency", "Duration"]} = missing();
             tableThis{contains(tableThis.Label, "Ramp"), "Range"} = mag.meta.Range.NaN;
