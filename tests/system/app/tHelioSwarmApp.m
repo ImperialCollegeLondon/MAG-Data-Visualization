@@ -59,7 +59,7 @@ classdef tHelioSwarmApp < AppTestCase
 
             app = testCase.createAppWithCleanup("HelioSwarm");
             testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             expectedFields = string(app.Model.Analysis.Results.HK(1).Data.Properties.VariableNames);
 
@@ -86,7 +86,7 @@ classdef tHelioSwarmApp < AppTestCase
 
             app = testCase.createAppWithCleanup("HelioSwarm");
             testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             % Exercise.
             testCase.choose(app.VisualizeTab);
@@ -110,7 +110,7 @@ classdef tHelioSwarmApp < AppTestCase
             app.AnalysisManager.DecodeBinaryFilesCheckBox.Value = false;
 
             % Exercise.
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             % Verify.
             testCase.verifyFalse(app.Model.Analysis.DecodeBinaryFiles, ...
@@ -133,7 +133,7 @@ classdef tHelioSwarmApp < AppTestCase
             expectedScaleFactors = str2double(string(app.AnalysisManager.ScaleFactorsTable.Data));
 
             % Exercise.
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             % Verify.
             testCase.verifyEqual(app.Model.Analysis.ScaleFactors, expectedScaleFactors, ...
@@ -151,7 +151,7 @@ classdef tHelioSwarmApp < AppTestCase
             % Analyze with default scale factors.
             appDefault = testCase.createAppWithCleanup("HelioSwarm");
             testCase.type(appDefault.AnalysisManager.LocationEditField, workingDirectory.Folder);
-            testCase.press(appDefault.ProcessDataButton);
+            testCase.processData(appDefault);
 
             defaultScience = appDefault.Model.Analysis.Results.Science;
 
@@ -168,7 +168,7 @@ classdef tHelioSwarmApp < AppTestCase
             appEdited.AnalysisManager.ScaleFactorsTable.Data = compose("%.15g", modifiedScaleFactors);
             expectedScaleFactors = str2double(string(appEdited.AnalysisManager.ScaleFactorsTable.Data));
 
-            testCase.press(appEdited.ProcessDataButton);
+            testCase.processData(appEdited);
 
             editedScience = appEdited.Model.Analysis.Results.Science;
 
@@ -214,7 +214,7 @@ classdef tHelioSwarmApp < AppTestCase
 
             % Exercise and verify processing.
             testCase.type(app.AnalysisManager.LocationEditField, workingDirectory.Folder);
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             testCase.verifyAppUIElementStatus(app, "on");
             testCase.verifyTrue(app.ResultsManager.SciencePreviewPanel.Enable, "Science preview should be enabled.");
@@ -234,7 +234,7 @@ classdef tHelioSwarmApp < AppTestCase
 
             % Exercise.
             testCase.type(app.AnalysisManager.LocationEditField, InvalidLocation);
-            testCase.press(app.ProcessDataButton);
+            testCase.processData(app);
 
             % Verify.
             testCase.dismissDialog("uialert", app.UIFigure);

@@ -8,6 +8,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
     properties (Constant, Access = private)
         AppName (1, 1) string = "MAG Data Visualization App"
+        ProcessDataText (1, 1) string = "Process Data"
+        ExportText (1, 1) string = "Export"
+        CancelText (1, 1) string = "Cancel"
     end
 
     properties (SetAccess = private)
@@ -18,6 +21,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         AnalyzeLayout matlab.ui.container.GridLayout
         AnalyzeSettingsPanel matlab.ui.container.Panel
         VersionLabel matlab.ui.control.Label
+        AnalyzeStatusLabel matlab.ui.control.Label
         ProcessDataButton matlab.ui.control.Button
         ResetButton matlab.ui.control.Button
         ResultsTab matlab.ui.container.Tab
@@ -27,6 +31,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ExportSettingsPanel matlab.ui.container.Panel
         ExportButtonsLayout matlab.ui.container.GridLayout
         ExportNoteLabel matlab.ui.control.Label
+        ExportStatusLabel matlab.ui.control.Label
         ExportButton matlab.ui.control.Button
         ExportFormatDropDown matlab.ui.control.DropDown
         FormatDropDownLabel matlab.ui.control.Label
@@ -51,6 +56,15 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         ExportManager mag.app.manage.ExportManager {mustBeScalarOrEmpty}
         VisualizationManager mag.app.manage.VisualizationManager {mustBeScalarOrEmpty}
         NotificationHandler mag.app.internal.NotificationHandler {mustBeScalarOrEmpty}
+        ProcessingTask mag.app.internal.BackgroundTask {mustBeScalarOrEmpty}
+        ExportTask mag.app.internal.BackgroundTask {mustBeScalarOrEmpty}
+    end
+
+    properties (Dependent, SetAccess = private)
+        % ISPROCESSING Logical denoting whether data is being processed.
+        IsProcessing (1, 1) logical
+        % ISEXPORTING Logical denoting whether data is being exported.
+        IsExporting (1, 1) logical
     end
 
     properties (SetObservable, SetAccess = private)
@@ -60,6 +74,10 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     properties (Dependent, Access = private)
         ResultsLocation (1, 1) string {mustBeFolder}
         Managers (1, :) mag.app.manage.Manager
+    end
+
+    properties (Access = private)
+        ToolbarLock onCleanup {mustBeScalarOrEmpty}
     end
 
     methods
@@ -95,7 +113,67 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         end
 
         function delete(app)
-            delete(app.UIFigure)
+
+            app.cancelTasks();
+            delete(app.UIFigure);
+        end
+
+        function value = get.IsProcessing(app)
+            value = ~isempty(app.ProcessingTask) && isvalid(app.ProcessingTask) && app.ProcessingTask.IsRunning;
+        end
+
+        function value = get.IsExporting(app)
+            value = ~isempty(app.ExportTask) && isvalid(app.ExportTask) && app.ExportTask.IsRunning;
+        end
+
+        function completed = waitForTasks(app, timeout)
+        % WAITFORTASKS Wait for background tasks to complete, or until
+        % timeout (in seconds) is reached.
+
+            arguments (Input)
+                app (1, 1) DataVisualization
+                timeout (1, 1) double {mustBePositive} = Inf
+            end
+
+            arguments (Output)
+                completed (1, 1) logical
+            end
+
+            deadline = tic();
+            completed = true;
+
+            for task = [app.ProcessingTask, app.ExportTask]
+
+                if isvalid(task)
+                    completed = task.wait(max(eps(), timeout - toc(deadline))) && completed;
+                end
+            end
+        end
+
+        function importAnalysis(app, matFile)
+        % IMPORTANALYSIS Import existing analysis from MAT file, in the
+        % background.
+
+            arguments
+                app (1, 1) DataVisualization
+                matFile (1, 1) string
+            end
+
+            if app.IsProcessing
+
+                app.NotificationHandler.displayAlert("Cannot import while processing.", "Busy", "warning");
+                return;
+            end
+
+            try
+                task = app.Model.createLoadTask(matFile);
+            catch exception
+
+                app.NotificationHandler.displayAlert(exception);
+                return;
+            end
+
+            app.startProcessingTask(task, "Import");
         end
 
         function value = get.ResultsLocation(app)
@@ -124,6 +202,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 app
                 mission mag.meta.Mission {mustBeScalarOrEmpty} = string.empty()
             end
+
+            % Cancel tasks first, as their completion unlocks the toolbar.
+            app.cancelTasks();
 
             unlockToolbar = app.ToolbarManager.lock(); %#ok<NASGU>
 
@@ -206,8 +287,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             status = matlab.lang.OnOffSwitchState(hasData);
 
-            [app.ExportFormatDropDown.Enable, app.ExportButton.Enable, app.ExportSettingsPanel.Enable, ...
-                app.ShowFiguresButton.Enable] = deal(status);
+            [app.ExportFormatDropDown.Enable, app.ExportSettingsPanel.Enable] = deal(status && ~app.IsExporting);
+            app.ExportButton.Enable = status || app.IsExporting;
+            app.ShowFiguresButton.Enable = status;
         end
 
         function figuresChanged(app, varargin)
@@ -218,19 +300,84 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
         function processDataButtonPushed(app)
 
-            closeProgressBar = app.NotificationHandler.overlayProgressBar("Processing data..."); %#ok<NASGU>
-            restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
+            % Button cancels processing, while it is running.
+            if app.IsProcessing
+
+                app.ProcessingTask.cancel();
+                return;
+            end
 
             try
-                app.Model.analyze(app.AnalysisManager.getAnalysisOptions());
+                task = app.Model.createAnalysisTask(app.AnalysisManager.getAnalysisOptions());
             catch exception
+
                 app.NotificationHandler.displayAlert(exception);
+                return;
             end
+
+            app.startProcessingTask(task, "Processing");
+        end
+
+        function startProcessingTask(app, task, action)
+        % STARTPROCESSINGTASK Start task that updates analysis, locking UI
+        % while it runs.
+
+            task.BlockingFcn = @app.blockUI;
+            task.addlistener("Completed", @(task, ~) app.processingCompleted(task, action));
+
+            app.ProcessingTask = task;
+            app.setProcessingState(true, task.Description);
+
+            task.start();
+        end
+
+        function processingCompleted(app, task, action)
+
+            if ~isvalid(app)
+                return;
+            end
+
+            app.setProcessingState(false);
+            app.AnalyzeStatusLabel.Text = app.reportTaskCompletion(task, action);
+
+            if (action == "Import") && (task.State == mag.app.internal.TaskState.Succeeded)
+                app.NotificationHandler.displayAlert("Analysis successfully imported.", "Import Complete", "success");
+            end
+        end
+
+        function setProcessingState(app, isProcessing, status)
+
+            arguments
+                app (1, 1) DataVisualization
+                isProcessing (1, 1) logical
+                status (1, 1) string = ""
+            end
+
+            if isProcessing
+
+                app.ProcessDataButton.Text = app.CancelText;
+                app.AnalyzeStatusLabel.Text = status;
+
+                % Release previous lock first, as releasing it unlocks the
+                % toolbar.
+                app.ToolbarLock = onCleanup.empty();
+                app.ToolbarLock = app.ToolbarManager.lock();
+            else
+
+                app.ProcessDataButton.Text = app.ProcessDataText;
+                app.ToolbarLock = onCleanup.empty();
+            end
+
+            [app.AnalyzeSettingsPanel.Enable, app.ResetButton.Enable] = deal(matlab.lang.OnOffSwitchState(~isProcessing));
         end
 
         function resetButtonPushed(app)
 
+            app.cancelTasks();
             app.closeFiguresButtonPushed();
+
+            app.AnalyzeStatusLabel.Text = "";
+            app.ExportStatusLabel.Text = "";
 
             app.Model.reset();
             app.Figures = matlab.ui.Figure.empty();
@@ -241,6 +388,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         end
 
         function exportButtonPushed(app)
+
+            % Button cancels export, while it is running.
+            if app.IsExporting
+
+                app.ExportTask.cancel();
+                return;
+            end
 
             closeProgressBar = app.NotificationHandler.overlayProgressBar("Exporting..."); %#ok<NASGU>
             restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
@@ -288,12 +442,108 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                 case cellstr(app.ExportManager.SupportedFormats)
 
                     try
-                        app.Model.export(app.ExportManager.getExportOptions(format, app.ResultsLocation));
+                        task = app.Model.createExportTask(app.ExportManager.getExportOptions(format, app.ResultsLocation));
                     catch exception
+
                         app.NotificationHandler.displayAlert(exception);
+                        return;
                     end
+
+                    % Close progress bar, as export continues in the
+                    % background.
+                    clear("closeProgressBar", "restoreWarningState");
+
+                    task.BlockingFcn = @app.blockUI;
+                    task.addlistener("Completed", @(task, ~) app.exportCompleted(task));
+
+                    app.ExportTask = task;
+                    app.setExportingState(true);
+
+                    task.start();
                 otherwise
                     app.NotificationHandler.displayAlert(compose("Unrecognized export format option ""%s"".", format));
+            end
+        end
+
+        function exportCompleted(app, task)
+
+            if ~isvalid(app)
+                return;
+            end
+
+            app.setExportingState(false);
+            app.ExportStatusLabel.Text = app.reportTaskCompletion(task, "Export");
+        end
+
+        function setExportingState(app, isExporting)
+
+            arguments
+                app (1, 1) DataVisualization
+                isExporting (1, 1) logical
+            end
+
+            if isExporting
+
+                app.ExportButton.Text = app.CancelText;
+                app.ExportStatusLabel.Text = "Exporting...";
+            else
+                app.ExportButton.Text = app.ExportText;
+            end
+
+            hasData = app.Model.HasAnalysis && (app.Model.Analysis.Results.HasScience || app.Model.Analysis.Results.HasHK);
+            [app.ExportFormatDropDown.Enable, app.ExportSettingsPanel.Enable] = deal(matlab.lang.OnOffSwitchState(hasData && ~isExporting));
+        end
+
+        function cancelTasks(app)
+        % CANCELTASKS Cancel any running background task.
+
+            for task = [app.ProcessingTask, app.ExportTask]
+
+                if isvalid(task)
+                    task.cancel();
+                end
+            end
+        end
+
+        function unblock = blockUI(app, message)
+        % BLOCKUI Block UI while task runs in the foreground.
+
+            unblock = [app.NotificationHandler.overlayProgressBar(message), app.NotificationHandler.disableWarningStackTrace()];
+        end
+
+        function status = reportTaskCompletion(app, task, action)
+        % REPORTTASKCOMPLETION Report outcome of background task and return
+        % status message.
+
+            arguments (Input)
+                app (1, 1) DataVisualization
+                task (1, 1) mag.app.internal.BackgroundTask
+                action (1, 1) string
+            end
+
+            arguments (Output)
+                status (1, 1) string
+            end
+
+            % Show output generated in the background.
+            if strlength(task.Diary) > 0
+                fprintf("%s", task.Diary);
+            end
+
+            switch task.State
+                case mag.app.internal.TaskState.Succeeded
+                    status = compose("%s completed in %s.", action, string(task.Duration, "hh:mm:ss"));
+                case mag.app.internal.TaskState.Cancelled
+                    status = compose("%s cancelled.", action);
+                otherwise
+
+                    status = compose("%s failed.", action);
+                    app.NotificationHandler.displayAlert(task.Error);
+            end
+
+            % Foreground tasks already notify on completion.
+            if task.CurrentEnvironment.isBackground() && (task.State ~= mag.app.internal.TaskState.Cancelled)
+                mag.app.internal.NotificationHandler.beep();
             end
         end
 
@@ -370,7 +620,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ProcessDataButton.ButtonPushedFcn = @(~, ~) app.processDataButtonPushed();
             app.ProcessDataButton.Layout.Row = 2;
             app.ProcessDataButton.Layout.Column = 3;
-            app.ProcessDataButton.Text = "Process Data";
+            app.ProcessDataButton.Text = app.ProcessDataText;
 
             % Create ResetButton.
             app.ResetButton = uibutton(app.AnalyzeLayout, "push");
@@ -385,6 +635,13 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.VersionLabel.Layout.Row = 2;
             app.VersionLabel.Layout.Column = 1;
             app.VersionLabel.Text = compose("v%s", mag.version());
+
+            % Create AnalyzeStatusLabel.
+            app.AnalyzeStatusLabel = uilabel(app.AnalyzeLayout);
+            app.AnalyzeStatusLabel.HorizontalAlignment = "right";
+            app.AnalyzeStatusLabel.Layout.Row = 2;
+            app.AnalyzeStatusLabel.Layout.Column = 2;
+            app.AnalyzeStatusLabel.Text = "";
 
             % Create ResultsTab.
             app.ResultsTab = uitab(app.TabGroup, Title = "Results");
@@ -409,6 +666,12 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ExportButtonsLayout.Layout.Row = 2;
             app.ExportButtonsLayout.Layout.Column = 1;
 
+            % Create ExportStatusLabel.
+            app.ExportStatusLabel = uilabel(app.ExportButtonsLayout);
+            app.ExportStatusLabel.Layout.Row = 1;
+            app.ExportStatusLabel.Layout.Column = [1, 2];
+            app.ExportStatusLabel.Text = "";
+
             % Create FormatDropDownLabel.
             app.FormatDropDownLabel = uilabel(app.ExportButtonsLayout);
             app.FormatDropDownLabel.HorizontalAlignment = "right";
@@ -430,7 +693,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.ExportButton.Enable = "off";
             app.ExportButton.Layout.Row = 1;
             app.ExportButton.Layout.Column = 5;
-            app.ExportButton.Text = "Export";
+            app.ExportButton.Text = app.ExportText;
 
             % Create ExportSettingsPanel.
             app.ExportSettingsPanel = uipanel(app.ExportLayout);

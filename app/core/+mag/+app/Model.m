@@ -27,19 +27,76 @@ classdef (Abstract) Model < mag.mixin.SetGet
         HKTimeRange (1, 2) datetime
     end
 
-    methods (Abstract)
-
-        % ANALYZE Perform analysis.
-        analyze(this, options)
-
-        % EXPORT Export analysis.
-        export(this, options)
-
-        % RESET Reset analysis.
-        reset(this)
-    end
-
     methods
+
+        function analyze(this, options)
+        % ANALYZE Perform analysis.
+
+            arguments
+                this (1, 1) mag.app.Model
+                options cell
+            end
+
+            analysis = feval(this.AnalysisClassName + ".start", options{:});
+            this.setAnalysisAndNotify(analysis);
+        end
+
+        function task = createAnalysisTask(this, options)
+        % CREATEANALYSISTASK Create task to perform analysis in the
+        % background. Analysis is updated when task succeeds.
+
+            arguments (Input)
+                this (1, 1) mag.app.Model
+                options cell
+            end
+
+            arguments (Output)
+                task (1, 1) mag.app.internal.BackgroundTask
+            end
+
+            task = mag.app.internal.BackgroundTask(str2func(this.AnalysisClassName + ".start"), 1, options, ...
+                Name = this.AnalysisClassName + ".start", ...
+                Description = "Processing data...", ...
+                SuccessFcn = @this.setAnalysisAndNotify);
+        end
+
+        function export(this, options)
+        % EXPORT Export analysis.
+
+            arguments
+                this (1, 1) mag.app.Model
+                options cell
+            end
+
+            this.Analysis.export(options{:});
+        end
+
+        function task = createExportTask(this, options)
+        % CREATEEXPORTTASK Create task to export analysis in the
+        % background.
+
+            arguments (Input)
+                this (1, 1) mag.app.Model
+                options cell
+            end
+
+            arguments (Output)
+                task (1, 1) mag.app.internal.BackgroundTask
+            end
+
+            if ~this.HasAnalysis
+                error("mag:app:NoAnalysis", "No analysis to export.");
+            end
+
+            task = mag.app.internal.BackgroundTask(@(analysis, exportOptions) analysis.export(exportOptions{:}), 0, {this.Analysis, options}, ...
+                Name = this.AnalysisClassName + ".export", ...
+                Description = "Exporting...");
+        end
+
+        function reset(this)
+        % RESET Reset analysis.
+            this.setAnalysisAndNotify(feval(this.AnalysisClassName + ".empty"));
+        end
 
         function value = get.HasAnalysis(this)
             value = ~isempty(this.Analysis) && ~isempty(this.Analysis.Results);
@@ -90,28 +147,61 @@ classdef (Abstract) Model < mag.mixin.SetGet
         function load(this, matFile)
         % LOAD Load analysis.
 
+            analysis = this.readAnalysis(matFile, this.AnalysisClassName);
+            this.setLoadedAnalysis(analysis);
+        end
+
+        function task = createLoadTask(this, matFile)
+        % CREATELOADTASK Create task to load analysis in the background.
+        % Analysis is updated when task succeeds.
+
+            arguments (Input)
+                this (1, 1) mag.app.Model
+                matFile (1, 1) string {mustBeFile}
+            end
+
+            arguments (Output)
+                task (1, 1) mag.app.internal.BackgroundTask
+            end
+
+            task = mag.app.internal.BackgroundTask(@mag.app.Model.readAnalysis, 1, {matFile, this.AnalysisClassName}, ...
+                Name = "mag.app.Model.readAnalysis", ...
+                Description = "Importing...", ...
+                SuccessFcn = @this.setLoadedAnalysis);
+        end
+    end
+
+    methods (Static, Hidden)
+
+        function analysis = readAnalysis(matFile, analysisClassName)
+        % READANALYSIS Read first analysis of specified class from MAT
+        % file.
+
             results = load(matFile);
 
             for f = string(fieldnames(results))'
 
-                analysis = results.(f);
+                if isa(results.(f), analysisClassName)
 
-                if isa(analysis, this.AnalysisClassName)
-
-                    if ~isequal(analysis.OriginalVersion, mag.version())
-                        warning("mag:app:OldVersion", "Loaded analysis was generated with version %s and may be incompatible.", analysis.OriginalVersion);
-                    end
-
-                    this.setAnalysisAndNotify(analysis);
+                    analysis = results.(f);
                     return;
                 end
             end
 
-            error("mag:app:InvalidMAT", "No ""%s"" found in MAT file.", this.AnalysisClassName);
+            error("mag:app:InvalidMAT", "No ""%s"" found in MAT file.", analysisClassName);
         end
     end
 
     methods (Access = protected)
+
+        function setLoadedAnalysis(this, analysis)
+
+            if ~isequal(analysis.OriginalVersion, mag.version())
+                warning("mag:app:OldVersion", "Loaded analysis was generated with version %s and may be incompatible.", analysis.OriginalVersion);
+            end
+
+            this.setAnalysisAndNotify(analysis);
+        end
 
         function setAnalysisAndNotify(this, analysis)
 
