@@ -295,6 +295,18 @@ classdef tEvent < matlab.unittest.TestCase
             testCase.verifyEqual(et.Time(3), events(2).AcknowledgeTimestamp + seconds(events(2).Duration), "Auto event timestamps should match expectation.");
         end
 
+        function eventtable_duplicateTimestamps(testCase)
+
+            timestamp = datetime("today", TimeZone = "UTC");
+            events(1) = mag.event.ModeChange(CompleteTimestamp = timestamp, Type = 1, SubType = 1, Mode = "Normal");
+            events(2) = mag.event.ModeChange(CompleteTimestamp = timestamp, Type = 2, SubType = 2, Mode = "Burst");
+
+            eventTable = events.eventtable();
+
+            testCase.verifySize(eventTable, [2, 12], "Both events should be preserved.");
+            testCase.verifyEqual(eventTable.Time, repmat(timestamp, 2, 1), "Duplicate event timestamps should be preserved.");
+        end
+
         % Test that dependent "active" properties of "ModeChange" select
         % correct active value.
         function modeChange_dependentProperties(testCase, ModeChangeEventData)
