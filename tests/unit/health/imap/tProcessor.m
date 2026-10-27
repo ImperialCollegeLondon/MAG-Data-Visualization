@@ -1,4 +1,4 @@
-classdef tProcessor < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tProcessor < matlab.unittest.TestCase
 % TPROCESSOR Unit tests for "mag.imap.health.Processor" class.
 
     properties (TestParameter)

@@ -1,11 +1,13 @@
-classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tTimeSeriesOperatorSupport < matlab.unittest.TestCase
 % TTIMESERIESOPERATORSUPPORT Unit tests for
 % "mag.mixin.TimeSeriesOperatorSupport" class.
 
     properties (TestParameter)
+        % Parameters only hold built-in types, so that they can be sent to
+        % parallel workers without requiring test helper classes.
         Operation = {
-            struct(Function = @plus, Result = tTimeSeriesOperatorSupport.getPlusResult()), ...
-            struct(Function = @minus, Result = tTimeSeriesOperatorSupport.getMinusResult())}
+            struct(Function = @plus, Scale = 2), ...
+            struct(Function = @minus, Scale = 0)}
     end
 
     methods (Test)
@@ -15,12 +17,13 @@ classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
 
             % Set up.
             [a, b] = testCase.createTestData();
+            expectedResult = testCase.createExpectedResult(Operation.Scale);
 
             % Exercise.
             result = Operation.Function(a, b);
 
             % Verify.
-            testCase.verifyEqual(result, Operation.Result, "Operation result should match expectation.");
+            testCase.verifyEqual(result, expectedResult, "Operation result should match expectation.");
         end
 
         % Test that operation with unsupported type falls back to built-in
@@ -91,22 +94,13 @@ classdef tTimeSeriesOperatorSupport < matlab.unittest.TestCase
             b.Data = mag.test.DataTestUtilities.getScienceTimetable();
         end
 
-        function result = getPlusResult()
+        function result = createExpectedResult(scale)
 
             result = TestTimeSeriesWithOperatorSupport();
             result.Data = mag.test.DataTestUtilities.getScienceTimetable();
 
             result.Data = convertvars(result.Data, regexpPattern(".*"), "double");
-            result.Data{:, :} = result.Data{:, :} * 2;
-        end
-
-        function result = getMinusResult()
-
-            result = TestTimeSeriesWithOperatorSupport();
-            result.Data = mag.test.DataTestUtilities.getScienceTimetable();
-
-            result.Data = convertvars(result.Data, regexpPattern(".*"), "double");
-            result.Data{:, :} = 0;
+            result.Data{:, :} = result.Data{:, :} * scale;
         end
     end
 end

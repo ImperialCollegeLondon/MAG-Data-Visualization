@@ -1,4 +1,4 @@
-classdef tCPT < mag.test.case.UITestCase & mag.test.case.ViewControllerTestCase
+classdef (TestTags = "Unit") tCPT < mag.test.case.UITestCase & mag.test.case.ViewControllerTestCase
 % TCPT Unit tests for "mag.app.imap.control.CPT" class.
 
     properties (TestParameter)
@@ -65,6 +65,9 @@ classdef tCPT < mag.test.case.UITestCase & mag.test.case.ViewControllerTestCase
             testCase.verifyEqual(command.NamedArguments.SecondaryModePattern, [2, 8, 2, 1, 64, 1, 4, 128], """SecondaryModePattern"" should match expectation.");
             testCase.verifyEqual(command.NamedArguments.RangePattern, [3, 2, 1, 0], """RangePattern"" should match expectation.");
         end
+    end
+
+    methods (Test, TestTags = "Interactive")
 
         % Test that error is thrown if patterns do not match expected
         % format.

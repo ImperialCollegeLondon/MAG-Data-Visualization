@@ -1,4 +1,4 @@
-classdef tColormap < MAGStyleTestCase & GridSupportTestCase & LegendSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tColormap < MAGStyleTestCase & GridSupportTestCase & LegendSupportTestCase
 % TCOLORMAP Unit tests for "mag.graphics.style.Colormap" class.
 
     properties (Constant)

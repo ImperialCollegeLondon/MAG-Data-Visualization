@@ -1,4 +1,4 @@
-classdef tStackedplot < MarkerSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tStackedplot < MarkerSupportTestCase
 % TSTACKEDPLOT Unit tests for "mag.graphics.chart.Stackedplot" class.
 
     properties (Constant)

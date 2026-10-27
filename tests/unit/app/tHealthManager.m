@@ -1,4 +1,4 @@
-classdef tHealthManager < mag.test.case.ViewControllerTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tHealthManager < mag.test.case.ViewControllerTestCase
 % THEALTHMANAGER Unit tests for "mag.app.manage.HealthManager" class.
 
     methods (Test)

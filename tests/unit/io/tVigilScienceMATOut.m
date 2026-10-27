@@ -1,4 +1,4 @@
-classdef tVigilScienceMATOut < MAGIOTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tVigilScienceMATOut < MAGIOTestCase
 % TVIGILSCIENCEMATOUT Unit tests for "mag.vigil.out.ScienceMAT" class.
 
 %#ok<*DATST>

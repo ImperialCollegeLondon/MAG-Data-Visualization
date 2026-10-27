@@ -1,4 +1,4 @@
-classdef tIMAPAnalysis < AnalysisTestCase
+classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 % TIMAPANALYSIS Tests for IMAP analysis flow.
 
     methods (TestClassSetup)
@@ -21,7 +21,7 @@ classdef tIMAPAnalysis < AnalysisTestCase
         function fullAnalysis(testCase)
 
             % Set up.
-            testCase.copyDataToWorkingDirectory("full_analysis");
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
 
             % Exercise.
             analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "");
@@ -58,7 +58,7 @@ classdef tIMAPAnalysis < AnalysisTestCase
         function fobOnlyAnalysis(testCase)
 
             % Set up.
-            testCase.copyDataToWorkingDirectory("fob_only");
+            testCase.copyDataToWorkingDirectory("imap/fob_only");
 
             % Exercise.
             analysis = mag.imap.Analysis.start(Location = pwd());
@@ -92,7 +92,7 @@ classdef tIMAPAnalysis < AnalysisTestCase
         function scTestAnalysis(testCase)
 
             % Set up.
-            testCase.copyDataToWorkingDirectory("sc_test");
+            testCase.copyDataToWorkingDirectory("imap/sc_test");
 
             % Exercise.
             analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "");
@@ -125,7 +125,7 @@ classdef tIMAPAnalysis < AnalysisTestCase
             testCase.assumeTrue(exist("spdfcdfinfo", "file") == 2, "SPDF CDF Toolbox not installed. Test skipped.");
 
             % Set up.
-            testCase.copyDataToWorkingDirectory("l1b_cdf");
+            testCase.copyDataToWorkingDirectory("imap/l1b_cdf");
 
             options = {"Location", pwd(), ...
                 "Level", mag.imap.meta.Level.L1b, ...
@@ -158,15 +158,6 @@ classdef tIMAPAnalysis < AnalysisTestCase
             else
                 testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
             end
-        end
-    end
-
-    methods (Access = private)
-
-        function copyDataToWorkingDirectory(testCase, testFolder)
-
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "..", "test_data", "imap", testFolder), fullfile(testCase.WorkingDirectory.Folder));
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
         end
     end
 end

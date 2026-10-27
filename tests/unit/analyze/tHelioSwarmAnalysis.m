@@ -1,4 +1,4 @@
-classdef tHelioSwarmAnalysis < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tHelioSwarmAnalysis < matlab.unittest.TestCase
 % THELIOSWARMANALYSIS Unit tests for "mag.hs.Analysis" class.
 
     methods (Test)

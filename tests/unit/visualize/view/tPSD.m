@@ -1,4 +1,4 @@
-classdef tPSD < MAGViewTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tPSD < MAGViewTestCase
 % TPSD Unit tests for "mag.graphics.view.PSD" class.
 
     methods (Test)

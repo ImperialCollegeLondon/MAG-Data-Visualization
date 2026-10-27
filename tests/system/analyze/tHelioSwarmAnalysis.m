@@ -1,4 +1,4 @@
-classdef tHelioSwarmAnalysis < AnalysisTestCase
+classdef (TestTags = ["System", "Parallel"]) tHelioSwarmAnalysis < AnalysisTestCase
 % THELIOSWARMANALYSIS Tests for HelioSwarm analysis flow.
 
     methods (Test)
@@ -8,7 +8,7 @@ classdef tHelioSwarmAnalysis < AnalysisTestCase
         function singleFile(testCase)
 
             % Set up.
-            testCase.copyDataToWorkingDirectory("single_file");
+            testCase.copyDataToWorkingDirectory("hs/single_file");
 
             % Exercise.
             analysis = mag.hs.Analysis.start(Location = pwd(), InputSource = "iDPU");
@@ -26,7 +26,7 @@ classdef tHelioSwarmAnalysis < AnalysisTestCase
         function multipleFile(testCase)
 
             % Set up.
-            testCase.copyDataToWorkingDirectory("multiple_files");
+            testCase.copyDataToWorkingDirectory("hs/multiple_files");
 
             % Exercise.
             analysis = mag.hs.Analysis.start(Location = pwd(), InputSource = "iDPU");
@@ -37,15 +37,6 @@ classdef tHelioSwarmAnalysis < AnalysisTestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
-        end
-    end
-
-    methods (Access = private)
-
-        function copyDataToWorkingDirectory(testCase, folder)
-
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "..", "test_data", "hs", folder), fullfile(testCase.WorkingDirectory.Folder));
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
         end
     end
 end

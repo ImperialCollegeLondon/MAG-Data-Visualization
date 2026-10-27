@@ -1,4 +1,4 @@
-classdef tCrop < matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tCrop < matlab.mock.TestCase
 % TCROP Unit tests for "mag.mixin.Crop" class.
 
     properties (Constant, Access = private)

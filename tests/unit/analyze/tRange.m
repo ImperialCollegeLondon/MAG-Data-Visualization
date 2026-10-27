@@ -1,4 +1,4 @@
-classdef tRange < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tRange < MAGAnalysisTestCase
 % TRANGE Unit tests for "mag.process.Range" class.
 
     properties (TestParameter)

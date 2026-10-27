@@ -1,4 +1,4 @@
-classdef tHK < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tHK < matlab.unittest.TestCase
 % THK Unit tests for "mag.HK" class.
 
     properties (TestParameter)

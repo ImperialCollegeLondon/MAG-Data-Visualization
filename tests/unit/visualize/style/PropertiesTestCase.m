@@ -1,4 +1,4 @@
-classdef (Abstract) PropertiesTestCase < MAGStyleTestCase
+classdef (Abstract, TestTags = ["Unit", "Parallel"]) PropertiesTestCase < MAGStyleTestCase
 % PROPERTIESTESTCASE Base class for all charts that support extra
 % properties.
 

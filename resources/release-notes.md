@@ -8,6 +8,8 @@
 ## Analysis
 
 - (All) Rename sensor "FOB" and "FIB" with "OBS" and "IBS", respectively
+- (All) Faster decoding of dates in science file names, by trying mission-specific formats first
+- (All) Faster loading of calibration files
 
 ## Package
 

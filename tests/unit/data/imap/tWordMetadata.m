@@ -1,4 +1,4 @@
-classdef tWordMetadata < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tWordMetadata < matlab.unittest.TestCase
 % TWORDMETADATA Unit tests for "mag.impa.meta.Word" class.
 
     properties (Access = private)

@@ -1,4 +1,4 @@
-classdef tCast < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tCast < MAGAnalysisTestCase
 % TCAST Unit tests for "mag.process.Cast" class.
 
     methods (Test)

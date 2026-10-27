@@ -1,4 +1,4 @@
-classdef tSID15 < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSID15 < matlab.unittest.TestCase
 % TSID15 Unit tests for "mag.imap.health.SID15" class.
 
     properties (TestParameter)

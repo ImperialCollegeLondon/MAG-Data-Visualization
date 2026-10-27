@@ -1,4 +1,4 @@
-classdef tInstrument < matlab.mock.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tInstrument < matlab.mock.TestCase
 % TINSTRUMENT Unit tests for "mag.imap.Instrument" class.
 
     properties (TestParameter)

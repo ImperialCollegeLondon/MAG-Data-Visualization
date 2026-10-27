@@ -1,4 +1,4 @@
-classdef tScienceCDFOut < MAGIOTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tScienceCDFOut < MAGIOTestCase
 % TSCIENCECDFOUT Unit tests for "mag.imap.out.ScienceCDF" class.
 
     methods (TestClassSetup)

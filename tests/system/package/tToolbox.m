@@ -1,4 +1,4 @@
-classdef tToolbox < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRelease
+classdef (TestTags = "System") tToolbox < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRelease
 % TTOOLBOX Tests for installation of MAG Data Visualization toolbox.
 
     properties (Constant)

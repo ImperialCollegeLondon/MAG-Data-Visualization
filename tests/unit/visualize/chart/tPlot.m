@@ -1,4 +1,4 @@
-classdef tPlot < PropertiesTestCase & ColorSupportTestCase & MarkerSupportTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tPlot < PropertiesTestCase & ColorSupportTestCase & MarkerSupportTestCase
 % TPLOT Unit tests for "mag.graphics.chart.Plot" class.
 
     properties (Constant)

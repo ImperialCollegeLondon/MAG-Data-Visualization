@@ -1,12 +1,10 @@
-classdef tHENONAnalysis < AnalysisTestCase
+classdef (TestTags = ["System", "Parallel"]) tHENONAnalysis < AnalysisTestCase
 % THENONANALYSIS Tests for HENON analysis flow.
 
     methods (TestMethodSetup)
 
-        function copyDataToWorkingDirectory(testCase)
-
-            [status, message] = copyfile(fullfile(testCase.WorkingDirectory.StartingFolder, "..", "test_data", "henon"), fullfile(testCase.WorkingDirectory.Folder));
-            testCase.assertTrue(status, sprintf("Copy of test data failed: %s", message));
+        function copyTestData(testCase)
+            testCase.copyDataToWorkingDirectory("henon");
         end
     end
 

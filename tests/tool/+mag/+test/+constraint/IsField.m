@@ -23,6 +23,12 @@ classdef IsField < matlab.unittest.constraints.BooleanConstraint & ...
 
         function diag = getConstraintDiagnosticFor(constraint, actual, isNegative)
 
+            arguments
+                constraint (1, 1) mag.test.constraint.IsField
+                actual
+                isNegative (1, 1) logical = false
+            end
+
             if isNegative
                 sense = matlab.unittest.internal.diagnostics.DiagnosticSense.Negative;
             else

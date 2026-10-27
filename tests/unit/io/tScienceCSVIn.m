@@ -1,4 +1,4 @@
-classdef tScienceCSVIn < MAGIOTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tScienceCSVIn < MAGIOTestCase
 % TSCIENCECSVIN Unit tests for "mag.imap.in.ScienceCSV" class.
 
     properties (TestParameter)

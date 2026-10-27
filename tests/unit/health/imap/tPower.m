@@ -1,4 +1,4 @@
-classdef tPower < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tPower < matlab.unittest.TestCase
 % TPOWER Unit tests for "mag.imap.health.Power" class.
 
     properties (TestParameter)

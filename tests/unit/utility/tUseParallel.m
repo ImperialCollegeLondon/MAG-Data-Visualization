@@ -1,4 +1,4 @@
-classdef tUseParallel < matlab.unittest.TestCase
+classdef (TestTags = "Unit") tUseParallel < matlab.unittest.TestCase
 % TUSEPARALLEL Unit tests for "mag.internal.useParallel" function.
 
     methods (Test)
@@ -6,7 +6,10 @@ classdef tUseParallel < matlab.unittest.TestCase
         % Test that "mag.internal.useParallel" returns "false" when no
         % parallel pool is set up.
         function noParallelPool(testCase)
-            testCase.verifyFalse(mag.internal.useParallel(), "Parallel Computing Toolbox should not be used if it is not installed.");
+
+            testCase.assumeTrue(~canUseParallelPool() || isempty(gcp("nocreate")), "Parallel pool already running. Test skipped.");
+
+            testCase.verifyFalse(mag.internal.useParallel(), "Parallel Computing Toolbox should not be used if no parallel pool is running.");
         end
 
         % Test that "mag.internal.useParallel" returns "false" when

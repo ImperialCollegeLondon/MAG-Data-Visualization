@@ -17,9 +17,9 @@ function date = decodeDate(date, options)
     formats = horzcat(formats, replace(formats, "-", " "));
     formats = horzcat(formats, replace(formats, "-", ""));
 
-    if ~isempty(options.ExtraFormats)
-        formats = [formats, options.ExtraFormats];
-    end
+    % Try extra formats first, as they are the most likely to match, and
+    % each failed attempt throws an expensive exception.
+    formats = [options.ExtraFormats, formats];
 
     conversion = @(f) datetime(date, InputFormat = f);
 

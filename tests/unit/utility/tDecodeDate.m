@@ -1,4 +1,4 @@
-classdef tDecodeDate < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tDecodeDate < matlab.unittest.TestCase
 % TDECODEDATE Unit tests for "mag.time.decodeDate" function.
 
     properties (Constant, Access = private)

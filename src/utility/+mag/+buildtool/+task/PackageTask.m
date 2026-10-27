@@ -48,6 +48,10 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
                 version (1, 1) string = task.Package.Version
             end
 
+            % Specify both minimum and maximum release, so that release
+            % compatibility is not parsed from package definition. Since
+            % R2026b, it requires a different format (e.g., ">=24.2.*")
+            % than older releases support (e.g., ">=R2024b").
             toolboxOptions = matlab.addons.toolbox.ToolboxOptions( ...
                 task.Package.PackageRoot, ...
                 task.Package.ID, ...

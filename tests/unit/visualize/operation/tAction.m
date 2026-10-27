@@ -1,4 +1,4 @@
-classdef tAction < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tAction < matlab.unittest.TestCase
 % TACTION Unit tests for "mag.graphics.operation.Action" class.
 
     methods (Test)

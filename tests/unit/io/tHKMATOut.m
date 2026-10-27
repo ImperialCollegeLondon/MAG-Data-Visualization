@@ -1,4 +1,4 @@
-classdef tHKMATOut < MAGIOTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tHKMATOut < MAGIOTestCase
 % THKMATOUT Unit tests for "mag.imap.out.HKMAT" class.
 
     methods (Test)

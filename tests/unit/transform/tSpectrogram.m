@@ -1,4 +1,4 @@
-classdef tSpectrogram < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < matlab.unittest.TestCase
 % TSPECTROGRAM Unit tests for "mag.spectrogram" function.
 
     methods (Test)

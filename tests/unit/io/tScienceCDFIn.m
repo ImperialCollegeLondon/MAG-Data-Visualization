@@ -1,4 +1,4 @@
-classdef tScienceCDFIn < MAGIOTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tScienceCDFIn < MAGIOTestCase
 % TSCIENCECDFIN Unit tests for "mag.imap.in.ScienceCDF" class.
 
     properties (TestParameter)

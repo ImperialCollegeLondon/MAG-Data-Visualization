@@ -1,4 +1,4 @@
-classdef tConvert < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tConvert < matlab.unittest.TestCase
 % TCONVERT Unit tests for "mag.graphics.operation.Convert" class.
 
     methods (Test)

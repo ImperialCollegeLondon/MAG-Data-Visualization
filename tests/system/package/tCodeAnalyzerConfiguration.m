@@ -1,4 +1,4 @@
-classdef tCodeAnalyzerConfiguration < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRelease
+classdef (TestTags = ["System", "Parallel"]) tCodeAnalyzerConfiguration < matlab.unittest.TestCase & mag.test.mixin.RequireMinMATLABRelease
 % TCODEANALYZERCONFIGURATION Tests for code analyzer configuration JSON
 % file.
 

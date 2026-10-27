@@ -125,17 +125,40 @@ When developing new features or fixing issues, create a new branch, and write te
 The repository uses the MATLAB build tool. From the repository root, run:
 
 ``` matlab
-buildtool            % run default tasks: "check" and "test"
-buildtool check      % check code issues
-buildtool test       % run tests
-buildtool package    % package code into toolbox
+buildtool                           % run default tasks: "check", "test:parallel", "test:serial" and "coverage"
+buildtool check                     % check code issues
+buildtool test                      % run all unit and system tests serially, including UI tests
+buildtool test:parallel -parallel   % run tests tagged "Parallel" on a parallel pool
+buildtool test:serial               % run tests that must run serially, excluding UI tests
+buildtool test:ui                   % run tests tagged "Interactive", which open UI windows
+buildtool install                   % install support packages (".mltbx" files) in the root folder
+buildtool coverage                  % merge code coverage of test tasks
+buildtool perf                      % measure performance
+buildtool package                   % package code into toolbox
 ```
 
-Alternatively, run all tests with coverage:
+Only use `-parallel` with `test:parallel`, as other tests (e.g., app tests) cannot run on parallel workers.
+
+Tests are tagged by category, so that they can be selected with any MATLAB test tool:
+
+| Tag           | Description                                                                |
+| ------------- | -------------------------------------------------------------------------- |
+| `Unit`        | Unit tests, in `tests/unit`.                                               |
+| `System`      | System tests, in `tests/system`.                                           |
+| `Performance` | Performance tests, in `tests/performance`.                                 |
+| `Parallel`    | Tests that do not depend on shared state, and can run on parallel workers. |
+| `Interactive` | Tests that interact with visible UI windows, which take focus.             |
+
+For example, to run unit tests, or system tests in parallel where possible:
 
 ``` matlab
-runtests("tests", IncludeSubfolders = true, ReportCoverageFor = ["app", "src"])
+runtests("tests", IncludeSubfolders = true, Tag = "Unit")
+mag.test.runTests(Tag = "System", UseParallel = true)
 ```
+
+UI gestures (e.g., pressing a button) require visible windows, which bring MATLAB to the front. To avoid disrupting other work, tests tagged `Interactive` are excluded from the default build tasks and from `mag.test.runTests`, unless `Interactive = true` is specified.
+
+Performance tests can be measured with `runperf("tests/performance", IncludeSubfolders = true)`.
 
 IMAP tests require the SPICE and CDF external libraries; tests of the "Wavelet Analyzer" view require Wavelet Toolbox.
 

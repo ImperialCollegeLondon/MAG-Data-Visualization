@@ -1,4 +1,4 @@
-classdef tHENONApp < AppTestCase
+classdef (TestTags = "System") tHENONApp < AppTestCase
 % THENONAPP System tests for HENON version of "DataVisualization" app.
 
     properties (TestParameter)

@@ -1,4 +1,4 @@
-classdef tGSEOSMetadata < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tGSEOSMetadata < matlab.unittest.TestCase
 % TGSEOSMETADATA Unit tests for "mag.impa.meta.GSEOS" class.
 
     properties (Constant, Access = private)

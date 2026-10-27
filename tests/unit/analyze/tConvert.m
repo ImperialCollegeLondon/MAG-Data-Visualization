@@ -1,4 +1,4 @@
-classdef tConvert < MAGAnalysisTestCase
+classdef (TestTags = ["Unit", "Parallel"]) tConvert < MAGAnalysisTestCase
 % TCONVERT Unit tests for "mag.process.Convert" class.
 
     methods (Test)

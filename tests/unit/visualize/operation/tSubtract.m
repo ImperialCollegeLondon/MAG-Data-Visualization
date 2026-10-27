@@ -1,4 +1,4 @@
-classdef tSubtract < matlab.unittest.TestCase
+classdef (TestTags = ["Unit", "Parallel"]) tSubtract < matlab.unittest.TestCase
 % TSUBTRACT Unit tests for "mag.graphics.operation.Subtract" class.
 
     methods (Test)
