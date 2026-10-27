@@ -302,13 +302,13 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                 name (1, 1) mag.meta.Sensor
             end
 
-            % If no primary sensor is set, assume it's FOB.
+            % If no primary sensor is set, assume it's OBS.
             metadata = [this.Metadata];
             locPrimary = [metadata.Primary];
 
             switch nnz(locPrimary)
                 case 0
-                    primarySensor = mag.meta.Sensor.FOB;
+                    primarySensor = mag.meta.Sensor.OBS;
                 case 1
 
                     sensors = [metadata.Sensor];

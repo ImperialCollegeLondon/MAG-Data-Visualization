@@ -138,11 +138,11 @@ classdef Analysis < mag.Analysis
             end
 
             if isempty(input1Science)
-                input1Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.FOB));
+                input1Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.OBS));
             end
 
             if isempty(input2Science)
-                input2Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.FIB));
+                input2Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.IBS));
             end
 
             this.Results.Science = [input1Science, input2Science];

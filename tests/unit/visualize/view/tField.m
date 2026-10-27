@@ -148,7 +148,7 @@ classdef tField < MAGViewTestCase
             instrument.Science(1).Metadata.Setup = mag.meta.Setup();
             instrument.Science(2).Metadata.Setup = mag.meta.Setup.empty();
 
-            expectedInputs = testCase.generateExpectedInputs(instrument, PrimaryTitle = "FIB", SecondaryTitle = "FOB");
+            expectedInputs = testCase.generateExpectedInputs(instrument, PrimaryTitle = "IBS", SecondaryTitle = "OBS");
             expectedOutput = figure();
 
             [mockFactory, factoryBehavior] = testCase.createMock(?mag.graphics.factory.Factory, Strict = true);
@@ -193,8 +193,8 @@ classdef tField < MAGViewTestCase
 
             arguments
                 instrument (1, 1) mag.imap.Instrument
-                options.PrimaryTitle (1, 1) string = "FIB (FEE4 - LM2 - Some)"
-                options.SecondaryTitle (1, 1) string = "FOB (FEE2 - EM4 - None)"
+                options.PrimaryTitle (1, 1) string = "IBS (FEE4 - LM2 - Some)"
+                options.SecondaryTitle (1, 1) string = "OBS (FEE2 - EM4 - None)"
                 options.Title (1, 1) string = "Burst (64, 8)"
                 options.Name (1, 1) string = "Burst (64, 8) Time Series (NaT)"
                 options.Events (1, 1) string = missing()
@@ -229,7 +229,7 @@ classdef tField < MAGViewTestCase
 
                     expectedInputs{end + 1} = instrument.HK(1);
                     expectedInputs{end + 1} = [ ...
-                        mag.graphics.style.Default(Title = "FIB & ICU Temperatures", YLabel = "T [°C]", Legend = ["FIB", "ICU"], ...
+                        mag.graphics.style.Default(Title = "IBS & ICU Temperatures", YLabel = "T [°C]", Legend = ["IBS", "ICU"], ...
                         Charts = mag.graphics.chart.Plot(YVariables = ["FIB", "ICU"] + "Temperature"))];
                 end
 
@@ -237,7 +237,7 @@ classdef tField < MAGViewTestCase
 
                     expectedInputs{end + 1} = instrument.HK(1);
                     expectedInputs{end + 1} = [ ...
-                        mag.graphics.style.Default(Title = "FOB & ICU Temperatures", YLabel = "T [°C]", YAxisLocation = "right", Legend = ["FOB", "ICU"], ...
+                        mag.graphics.style.Default(Title = "OBS & ICU Temperatures", YLabel = "T [°C]", YAxisLocation = "right", Legend = ["OBS", "ICU"], ...
                         Charts = mag.graphics.chart.Plot(YVariables = ["FOB", "ICU"] + "Temperature"))];
                 end
             end
@@ -246,20 +246,20 @@ classdef tField < MAGViewTestCase
                 case "Compression"
 
                     arrangement(1) = arrangement(1) + 1;
-                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Compression", YLabel = "compressed [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Compression")), ...
-                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Compression", YLabel = "compressed [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Compression"))}];
+                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "IBS Compression", YLabel = "compressed [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Compression")), ...
+                        instrument.Secondary, mag.graphics.style.Default(Title = "OBS Compression", YLabel = "compressed [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Compression"))}];
 
                 case "Mode"
 
                     arrangement(1) = arrangement(1) + 1;
-                    expectedInputs = [expectedInputs, {instrument.Primary.Events, mag.graphics.style.Default(Title = "FIB Modes", YLabel = "mode [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Primary.Time(end))), ...
-                        instrument.Secondary.Events, mag.graphics.style.Default(Title = "FOB Modes", YLabel = "mode [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Secondary.Time(end)))}];
+                    expectedInputs = [expectedInputs, {instrument.Primary.Events, mag.graphics.style.Default(Title = "IBS Modes", YLabel = "mode [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Primary.Time(end))), ...
+                        instrument.Secondary.Events, mag.graphics.style.Default(Title = "OBS Modes", YLabel = "mode [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "DataFrequency", EndTime = instrument.Secondary.Time(end)))}];
 
                 case "Range"
 
                     arrangement(1) = arrangement(1) + 1;
-                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "FIB Ranges", YLabel = "range [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25)), ...
-                        instrument.Secondary, mag.graphics.style.Default(Title = "FOB Ranges", YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))}];
+                    expectedInputs = [expectedInputs, {instrument.Primary, mag.graphics.style.Default(Title = "IBS Ranges", YLabel = "range [-]", YLimits = "manual", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25)), ...
+                        instrument.Secondary, mag.graphics.style.Default(Title = "OBS Ranges", YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))}];
             end
 
             expectedInputs = [expectedInputs, { ...

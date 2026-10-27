@@ -20,6 +20,8 @@ function plan = buildfile()
         end
     end
 
+    plan("install") = matlab.buildtool.Task(Actions = @installSupportPackages);
+
     % Add the "check" task to identify code issues.
     sourceFolders = ["app", "src"];
 
@@ -35,6 +37,8 @@ function plan = buildfile()
         IncludeSubfolders = true, ...
         TestResults = fullfile("artifacts/results.xml"), ...
         CodeCoverageResults = fullfile("artifacts/coverage.xml"));
+
+    plan("test").Actions = [plan("install").Actions, plan("test").Actions];
 
     if ~isMATLABReleaseOlderThan("R2025a")
         plan("test").RunOnlyImpactedTests = true;
@@ -55,4 +59,13 @@ function plan = buildfile()
 
     % Make sure tasks run by default.
     plan.DefaultTasks = ["check", "test"];
+end
+
+function installSupportPackages(context)
+
+    toolboxes = dir(fullfile(context.Plan.RootFolder, "*.mltbx"));
+
+    for toolbox = toolboxes'
+        matlab.addons.install(fullfile(toolbox.folder, toolbox.name));
+    end
 end

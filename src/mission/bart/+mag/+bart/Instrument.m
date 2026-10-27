@@ -20,11 +20,11 @@ classdef Instrument < mag.Instrument
         end
 
         function input1 = get.Input1(this)
-            input1 = this.Science.select(Sensor = "FOB");
+            input1 = this.Science.select(Sensor = "OBS");
         end
 
         function input2 = get.Input2(this)
-            input2 = this.Science.select(Sensor = "FIB");
+            input2 = this.Science.select(Sensor = "IBS");
         end
     end
 end

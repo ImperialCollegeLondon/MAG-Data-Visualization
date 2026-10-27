@@ -82,9 +82,9 @@ classdef ScienceDAT < mag.io.in.DAT
 
             switch this.InputType
                 case 1
-                    sensor = mag.meta.Sensor.FOB;
+                    sensor = mag.meta.Sensor.OBS;
                 case 2
-                    sensor = mag.meta.Sensor.FIB;
+                    sensor = mag.meta.Sensor.IBS;
                 otherwise
                     error("Unrecognized input type ""%d"".", this.InputType);
             end

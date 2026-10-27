@@ -20,11 +20,11 @@ classdef Instrument < mag.Instrument
         end
 
         function outboard = get.Outboard(this)
-            outboard = this.Science.select(Sensor = "FOB");
+            outboard = this.Science.select(Sensor = "OBS");
         end
 
         function inboard = get.Inboard(this)
-            inboard = this.Science.select(Sensor = "FIB");
+            inboard = this.Science.select(Sensor = "IBS");
         end
     end
 end

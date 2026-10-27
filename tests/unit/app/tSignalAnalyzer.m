@@ -41,8 +41,8 @@ classdef tSignalAnalyzer < mag.test.case.ViewControllerTestCase
             signalAnalyzer.SignalDropDown.Value = Axis;
 
             results = mag.imap.Instrument();
-            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FOB"));
-            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FIB"));
+            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "OBS"));
+            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "IBS"));
 
             expectedData = timetable(results.(Sensor).Time - results.(Sensor).Time(1), results.(Sensor).(Axis), VariableNames = compose("%s_%s", Sensor, Axis));
 
@@ -66,8 +66,8 @@ classdef tSignalAnalyzer < mag.test.case.ViewControllerTestCase
             signalAnalyzer.instantiate(panel);
 
             results = mag.imap.Instrument();
-            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FOB"));
-            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "FIB"));
+            results.Science(1) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "OBS"));
+            results.Science(2) = mag.Science(mag.test.DataTestUtilities.getScienceTimetable(), mag.meta.Science(Sensor = "IBS"));
 
             results.Outboard.Data{[2, 5], "x"} = missing();
 
