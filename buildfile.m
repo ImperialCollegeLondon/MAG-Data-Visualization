@@ -62,6 +62,10 @@ function plan = buildfile()
         TestResults = fullfile("artifacts/results-ui.xml"), ...
         CodeCoverageResults = fullfile("artifacts/coverage-ui.mat"));
 
+    for taskName = ["test:parallel", "test:serial", "test:ui"]
+        plan(taskName).Actions = [plan("install").Actions, plan(taskName).Actions];
+    end
+
     if ~isMATLABReleaseOlderThan("R2025a")
 
         plan("test:parallel").RunOnlyImpactedTests = true;

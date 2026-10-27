@@ -49,7 +49,7 @@ classdef DefaultFactory < mag.graphics.factory.Factory
                         exception.rethrow();
                     end
                 end
-                
+
                 resetVisibility = onCleanup(@() set(f, Visible = matlab.lang.OnOffSwitchState(options.Visible)));
 
                 if mag.internal.isThemeable(f)

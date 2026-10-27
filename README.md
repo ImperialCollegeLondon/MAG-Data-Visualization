@@ -78,7 +78,7 @@ Each mission provides an equivalent `Analysis` class (`mag.bart.Analysis`, `mag.
 
 ### Background Processing
 
-The app processes, imports and exports data in the background, so MATLAB and the app remain responsive. While a task runs, its button changes to "Cancel", and the outcome is shown next to it when it completes. Any output from the processing, such as health check results and warnings, is printed to the Command Window when it completes.
+The app processes and imports data, and exports mission-specific formats, in the background, so MATLAB and the app remain responsive. Workspace and full-analysis MAT exports run in the foreground. While a background task runs, its button changes to "Cancel", and the outcome is shown next to it when it completes. Any output from the processing, such as health check results and warnings, is printed to the Command Window when it completes.
 
 Background tasks run on a thread-based worker. Thread-based workers cannot use MEX files, which IMAP relies on (SPICE and CDF). In that case:
 
