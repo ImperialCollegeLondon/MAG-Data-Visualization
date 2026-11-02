@@ -98,6 +98,8 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             app.NotificationHandler = mag.app.internal.NotificationHandler(app.UIFigure);
             app.ToolbarManager.subscribe(app.NotificationHandler);
 
+            app.addlistener("Figures", "PostSet", @app.figuresChanged);
+
             % Initialize app based on mission.
             try
                 app.selectMission(mission);
@@ -258,7 +260,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             app.createComponents();
 
-            app.addlistener("Figures", "PostSet", @app.figuresChanged);
             app.Model.addlistener("ModelChanged", @app.modelChangedCallback);
 
             app.UIFigure.Name = app.getAppName();
