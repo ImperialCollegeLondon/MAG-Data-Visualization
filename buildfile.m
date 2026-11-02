@@ -37,8 +37,9 @@ function plan = buildfile()
     % Add the "test" tasks to run unit and system tests. Tests tagged
     % "Parallel" can run on a parallel pool, using "buildtool test:parallel
     % -parallel". Tests tagged "Interactive" interact with visible UI
-    % windows, and only run with "buildtool test:ui". All other tests must
-    % run serially.
+    % windows, and only run with "buildtool test:ui", which logs each test
+    % as it starts, so that any test that stalls can be identified. All
+    % other tests must run serially.
     import matlab.unittest.selectors.HasTag;
 
     testFolders = ["tests/system", "tests/unit"];
@@ -59,6 +60,7 @@ function plan = buildfile()
     plan("test:ui") = matlab.buildtool.tasks.TestTask(testFolders, testOptions{:}, ...
         Description = "Run tests that interact with visible UI windows", ...
         Tag = "Interactive", ...
+        OutputDetail = "detailed", ...
         TestResults = fullfile("artifacts/results-ui.xml"), ...
         CodeCoverageResults = fullfile("artifacts/coverage-ui.mat"));
 

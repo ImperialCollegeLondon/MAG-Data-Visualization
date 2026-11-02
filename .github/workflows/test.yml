@@ -63,6 +63,7 @@ jobs:
       - name: Run UI tests
         uses: matlab-actions/run-build@v3.4.0
         if: success() || failure()
+        timeout-minutes: 40
         with:
           tasks: test:ui
       - name: Merge coverage
