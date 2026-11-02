@@ -142,7 +142,9 @@ buildtool package                   % package code into toolbox
 
 Only use `-parallel` with `test:parallel`, as other tests (e.g., app tests) cannot run on parallel workers.
 
-To test on an older release, package the toolbox with R2026b, and copy it to the root folder. Test tasks install any toolbox in the root folder, and run on it rather than on the source code. The `coverage` and `package` tasks are not available on older releases.
+To test on an older release, package the toolbox with R2026b, and copy it to the root folder. The build installs any toolbox in the root folder as soon as it starts, and tests run on it rather than on the source code. The `coverage` and `package` tasks are not available on older releases.
+
+A build fails if any test cannot be loaded, rather than running without it.
 
 Tests are tagged by category, so that they can be selected with any MATLAB test tool:
 

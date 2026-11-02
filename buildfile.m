@@ -3,6 +3,10 @@ function plan = buildfile()
 
     plan = buildplan();
 
+    % Fail if any test cannot be loaded. By default, it is only excluded
+    % with a warning, so the build passes with fewer tests.
+    warning("error", "MATLAB:unittest:TestSuite:FileExcluded");
+
     % Only R2026b and above can read the package definition. Older releases
     % test the toolbox built with R2026b, so source code must not be added
     % to the path, or tests would run on it instead of the installed
@@ -18,7 +22,12 @@ function plan = buildfile()
             addpath(join(fullfile(plan.RootFolder, [package.Folders.Path]), pathsep()));
         end
     else
+
         addpath(fullfile(plan.RootFolder, "tests", "tool"));
+
+        % Test tasks find their tests before running any action, so the
+        % toolbox must be installed now, as many tests need it to load.
+        installToolboxes(plan.RootFolder);
     end
 
     % Add the "install" task to install support packages (".mltbx" files)
@@ -119,7 +128,13 @@ function installSupportPackages(context)
 % INSTALLSUPPORTPACKAGES Install all support packages (".mltbx" files) in
 % the root folder.
 
-    toolboxes = dir(fullfile(context.Plan.RootFolder, "*.mltbx"));
+    installToolboxes(context.Plan.RootFolder);
+end
+
+function installToolboxes(folder)
+% INSTALLTOOLBOXES Install all toolboxes (".mltbx" files) in a folder.
+
+    toolboxes = dir(fullfile(folder, "*.mltbx"));
 
     for t = toolboxes'
 

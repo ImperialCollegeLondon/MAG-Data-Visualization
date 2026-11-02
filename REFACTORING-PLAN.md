@@ -83,6 +83,8 @@ This covers Windows only, and did not exercise IMAP processing, which needs the 
 
 **Implemented on 2026-11-02, not yet run on GitHub.** On R2026b, `buildtool check package` passes from a clean copy, and `test:parallel` and `test:serial` pass: 784 passed, 0 failed, and 2 filtered by design. The older-release branch of `buildfile.m` was only exercised by simulating the release check. The new workflow, the UI tests, and the full suite against the installed toolbox on R2025a, R2025b and R2026a still need a CI run, which is the check phase 1 deferred to this phase.
 
+The first CI run passed, but older releases ran 615 parallel tests instead of 750. Test tasks find their tests before running any action, so the `install` action was too late: 30 test classes could not load without the toolbox, and were excluded with only a warning. `buildfile.m` now installs the toolbox on older releases when it loads, and fails the build if any test cannot be loaded.
+
 ### Background
 
 Commit `29610d73` moved the manifest to schema 1.2.0, and `90b9a9f7` rolled it back after R2025a failed with `Schema version '1.2.0' is newer than what is supported by the current version of MATLAB`. The R2025b and R2026a jobs were cancelled, so their behavior is unknown. MathWorks' documentation says any schema works in any release since R2024b, which does not match this result.
