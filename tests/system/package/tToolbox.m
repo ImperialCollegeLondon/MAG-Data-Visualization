@@ -14,18 +14,6 @@ classdef (TestTags = "System") tToolbox < matlab.unittest.TestCase & mag.test.mi
         Version = {"1.0.1", "2.3.1"}
     end
 
-    methods (TestClassSetup)
-
-        function checkMATLABPackage(testCase)
-
-            % MATLAB will still execute this method, even if the release
-            % check fails.
-            if ~isMATLABReleaseOlderThan(testCase.MinimumRelease)
-                testCase.assumeEmpty(mpmlist(testCase.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
-            end
-        end
-    end
-
     methods (Test)
 
         % Test that toolbox can be packaged.
@@ -40,12 +28,36 @@ classdef (TestTags = "System") tToolbox < matlab.unittest.TestCase & mag.test.mi
 
             % Verify.
             testCase.verifyTrue(isfile(task.ToolboxArtifact.Path), "Toolbox should be generated.");
+
+            unpackFolder = testCase.createTemporaryFolder();
+            unzip(task.ToolboxArtifact.Path, unpackFolder);
+
+            readmePath = fullfile(unpackFolder, "fsroot", "README.md");
+            testCase.assertTrue(isfile(readmePath), "Root README should be packaged.");
+            testCase.verifyEqual(fileread(readmePath), fileread(fullfile(testCase.PackageRoot, "README.md")));
+        end
+
+        function packageReadmeMetadata(testCase)
+
+            testCase.assumeFalse(isMATLABReleaseOlderThan("R2026b"));
+
+            task = testCase.createPackageTask();
+            testCase.addTeardown(@() testCase.cleanUpToolbox(task));
+
+            task.packageToolbox([]);
+            unpackFolder = testCase.createTemporaryFolder();
+            unzip(task.ToolboxArtifact.Path, unpackFolder);
+
+            metadata = jsondecode(fileread(fullfile(unpackFolder, "fsroot", "resources", "mpackage.json")));
+            testCase.assertTrue(isfield(metadata, "readme"), "Package manifest should declare a README.");
+            testCase.verifyEqual(string(metadata.readme), "README.md");
         end
 
         % Test that toolbox can be installed.
         function installToolbox(testCase)
 
             % Set up.
+            testCase.assumeEmpty(mpmlist(testCase.ToolboxName), "MAG Data Visualization installed as a MATLAB package.");
             task = testCase.createPackageTask();
 
             % Exercise.
@@ -71,7 +83,7 @@ classdef (TestTags = "System") tToolbox < matlab.unittest.TestCase & mag.test.mi
 
             task = mag.buildtool.task.PackageTask(Description = "Package code into toolbox", ...
                 Package = matlab.mpm.Package(testCase.PackageRoot), ...
-                ToolboxPath = fullfile(testCase.PackageRoot, "artifacts", "MAG Data Visualization.mltbx"));
+                ToolboxPath = fullfile(testCase.createTemporaryFolder(), "MAG Data Visualization.mltbx"));
         end
     end
 
