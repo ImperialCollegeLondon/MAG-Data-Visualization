@@ -56,10 +56,10 @@ If the install fails, fall back to reading the folder list with `jsondecode` ins
 
 - [x] [export.m:54](src/mission/imap/+mag/+imap/@Analysis/export.m#L54): range-cycling and ramp exports ignore the time window.
 - [x] `load()` in [Analysis.m](src/mission/imap/+mag/+imap/@Analysis/Analysis.m) never clears `PrimaryRamp` and `SecondaryRamp`, so a reload can keep stale data.
-- [ ] [Analysis.m:212](src/mission/imap/+mag/+imap/@Analysis/Analysis.m#L212): `getAllModes` assumes both sensors have the same number of periods.
-- [ ] [generateEventTable.m:124](src/mission/imap/+mag/+imap/@Analysis/generateEventTable.m#L124): a ramp as the last logged event would index past the table.
+- [x] [Analysis.m:212](src/mission/imap/+mag/+imap/@Analysis/Analysis.m#L212): `getAllModes` assumes both sensors have the same number of periods. Reproduced: it crashed with fewer secondary modes, and silently mislabeled data with fewer primary modes. It now warns and does not split by mode.
+- [x] [updateRampModeTimestamps.m](src/mission/imap/+mag/+imap/@Analysis/updateRampModeTimestamps.m): a ramp as the last logged event, or ending with the data, would index past the table.
 - [x] [DataVisualization.m:261](app/DataVisualization.m#L261): `selectMission` adds another `Figures` listener on every mission change.
-- [ ] [Spectrogram.m:20](src/mission/imap/+mag/+imap/+view/Spectrogram.m#L20): `Transformation` is a handle default shared by all instances.
+- [x] [Spectrogram.m:20](src/mission/imap/+mag/+imap/+view/Spectrogram.m#L20) and [PSD.m:17](src/visualize/+mag/+graphics/+view/PSD.m#L17): `Transformation` is a handle default shared by all instances. Reproduced in both views.
 
 ## Phase 3: Add the test safety net
 

@@ -15,7 +15,10 @@
 - (IMAP) Fix error message for invalid fields in JSON metadata
 - (IMAP) `Processing` option of `mag.imap.Analysis.start` is no longer ignored
 - (IMAP) Clear ramp mode data when reloading analysis
+- (IMAP) Warn and do not split data by mode when sensors have a different number of modes, instead of crashing or mislabeling data
+- (IMAP) Fix crash when ramp mode is the last event, or ends with the data
 - (HelioSwarm) Remove "CDF" from accepted export formats, as it is not implemented
 - (Bartington) Throw clear error on export, as no formats are implemented
 - (HENON) Fix `export` failing with wrong error when options are specified
 - (All) Fix event filter adding rows when an event is close to the end of the data
+- (All) PSD and spectrogram views no longer share the same transformation
