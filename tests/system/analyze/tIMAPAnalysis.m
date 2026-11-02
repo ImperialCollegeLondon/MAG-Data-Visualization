@@ -5,6 +5,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
         CDFSensor = struct( ...
             Outboard = struct(Pattern = "o", Available = "Primary", Missing = "Secondary"), ...
             Inboard = struct(Pattern = "i", Available = "Secondary", Missing = "Primary"))
+        UnequalSensor = {"Primary", "Secondary"}
     end
 
     methods (TestClassSetup)
@@ -187,6 +188,27 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
             testCase.assertNumElements(results.Science, 2, "Both sensors should exist.");
             testCase.verifyEqual(results.(CDFSensor.Available).HasData, true, "Available sensor should have data.");
             testCase.verifyEqual(results.(CDFSensor.Missing).HasData, false, "Missing sensor should not have data.");
+        end
+
+        % Test that data is not split by mode when sensors have a different
+        % number of modes, as they cannot be paired.
+        function getAllModes_unequalModes(testCase, UnequalSensor)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+
+            sensor = analysis.Results.(UnequalSensor);
+            events = sensor.Data.Properties.Events;
+
+            sensor.Data.Properties.Events = events(setdiff(1:height(events), find(~ismissing(events.Duration), 1, "last")), :);
+
+            % Exercise.
+            modes = testCase.verifyWarning(@() analysis.getAllModes(), "mag:imap:UnequalModes", "Warning should be thrown when modes differ.");
+
+            % Verify.
+            testCase.verifyEmpty(modes, "Data should not be split by mode.");
         end
 
         % Test that export window limits data, with modes outside of the

@@ -32,7 +32,7 @@ function eventTable = generateEventTable(this, data, sensorEvents)
     sensorEvents = removeUninterestingVariables(sensorEvents, primaryOrSecondary);
 
     % Improve ramp mode timestamp estimates.
-    sensorEvents = updateRampModeTimestamps(sensorEvents, data.Data);
+    sensorEvents = this.updateRampModeTimestamps(sensorEvents, data.Data);
 
     % Improve estimates of mode changes.
     sensorEvents = this.findModeChanges(data.Data, sensorEvents, sensorName);
@@ -115,53 +115,6 @@ function sensorEvents = removeUninterestingVariables(sensorEvents, primaryOrSeco
     % Rearrange variables.
     sensorEvents = removevars(sensorEvents, regexpPattern("(Data|Packet)\w+Frequency"));
     sensorEvents = movevars(sensorEvents, ["DataFrequency", "PacketFrequency"], After = "Mode");
-end
-
-function events = updateRampModeTimestamps(events, data)
-
-    % Improve ramp mode estimate.
-    idxRamp = find(contains([events.Label], "Ramp", IgnoreCase = true));
-    idxRamp = vertcat(idxRamp, idxRamp + 1);
-
-    rampEvents = events(idxRamp, :);
-
-    if ~isempty(rampEvents)
-
-        % Correct estimate based on science data.
-        data = data(timerange(rampEvents.Time(1) - minutes(5), rampEvents.Time(end) + minutes(5), "closed"), :);
-
-        matches = double.empty(2, 0);
-        times = mag.time.emptyTime(2, 0);
-
-        for v = ["x", "y", "z"]
-
-            dv = diff(data.(v));
-            m = strfind(dv', mag.process.Ramp.Pattern);
-
-            if ~isempty(m)
-
-                matches(:, end + 1) = [m(1); m(end)]; %#ok<AGROW>
-                times(:, end + 1) = data.(data.Properties.DimensionNames{1})(matches(:, end)); %#ok<AGROW>
-            end
-        end
-
-        if isempty(times)
-            return;
-        elseif numel(unique(times)) > 2
-
-            warning("Inconsistent ramp mode. Selecting earliest and latest timestamps as beginning and end.");
-
-            idxStart = min(matches(1, :));
-            idxEnd = max(matches(end, :));
-        else
-
-            idxStart = matches(1);
-            idxEnd = matches(end);
-        end
-
-        events.Time(idxRamp(1)) = data.t(idxStart);
-        events.Time(idxRamp(end)) = data.t(idxEnd + numel(mag.process.Ramp.Pattern) + 1);
-    end
 end
 
 function [rangeTable, events] = findRangeChanges(ranges, events, sensorName)

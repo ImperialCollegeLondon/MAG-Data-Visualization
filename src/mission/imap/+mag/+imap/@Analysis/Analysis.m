@@ -212,6 +212,15 @@ classdef Analysis < mag.Analysis
             % Split data into separate elements.
             if ~isempty(primaryPeriods) && ~isempty(secondaryPeriods)
 
+                % Modes are paired by position, which is only valid when
+                % both sensors have the same modes.
+                if ~isequal(numel(primaryPeriods), numel(secondaryPeriods))
+
+                    warning("mag:imap:UnequalModes", "Data not split by mode, as primary (%d) and secondary (%d) sensors have different number of modes.", ...
+                        numel(primaryPeriods), numel(secondaryPeriods));
+                    return;
+                end
+
                 for p = 1:numel(primaryPeriods)
 
                     data = this.applyTimeRangeToInstrument(primaryPeriods{p}, secondaryPeriods{p});
@@ -504,5 +513,8 @@ classdef Analysis < mag.Analysis
 
         % FINDMODECHANGES Improve estimate of mode change times.
         eventData = findModeChanges(data, eventData, name)
+
+        % UPDATERAMPMODETIMESTAMPS Improve estimate of ramp mode times.
+        eventData = updateRampModeTimestamps(eventData, data)
     end
 end

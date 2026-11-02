@@ -74,6 +74,57 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPAnalysis < matlab.unittest.TestC
             testCase.verifyClass(feval(AliasName), "mag.imap.Analysis", sprintf("Alias ""%s"" should exist.", AliasName));
         end
 
+        % Test that ramp mode timestamps are found from science data.
+        function updateRampModeTimestamps(testCase)
+
+            % Set up.
+            data = testCase.createRampData(NumPatterns = 5, NumAfter = 20);
+
+            times = data.t([5, 60]);
+            events = testCase.createRampEvents(times + minutes(1), ["OBS Ramp"; "OBS Config"]);
+
+            % Exercise.
+            events = mag.imap.Analysis.updateRampModeTimestamps(events, data);
+
+            % Verify.
+            testCase.verifyEqual(events.Time(1), data.t(11), "Ramp start should be first sample of pattern.");
+            testCase.verifyEqual(events.Time(2), data.t(52), "Ramp end should be first sample after last pattern.");
+        end
+
+        % Test that ramp mode can be the last event, with no event marking
+        % its end.
+        function updateRampModeTimestamps_lastEvent(testCase)
+
+            % Set up.
+            data = testCase.createRampData(NumPatterns = 5, NumAfter = 20);
+
+            times = data.t([1, 5]);
+            events = testCase.createRampEvents(times, ["OBS Config"; "OBS Ramp"]);
+
+            % Exercise.
+            updatedEvents = mag.imap.Analysis.updateRampModeTimestamps(events, data);
+
+            % Verify.
+            testCase.verifyEqual(updatedEvents.Time(1), events.Time(1), "Event before ramp should not change.");
+            testCase.verifyEqual(updatedEvents.Time(2), data.t(11), "Ramp start should be first sample of pattern.");
+        end
+
+        % Test that ramp mode can end with the data.
+        function updateRampModeTimestamps_endOfData(testCase)
+
+            % Set up.
+            data = testCase.createRampData(NumPatterns = 5, NumAfter = 0);
+
+            times = data.t([5, end]);
+            events = testCase.createRampEvents(times, ["OBS Ramp"; "OBS Config"]);
+
+            % Exercise.
+            events = mag.imap.Analysis.updateRampModeTimestamps(events, data);
+
+            % Verify.
+            testCase.verifyEqual(events.Time(2), data.t(end), "Ramp end should be last sample.");
+        end
+
         % Test that analysis can be run with empty patterns.
         function oneEmptyPattern(testCase, EmptyPattern)
 
@@ -120,6 +171,28 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPAnalysis < matlab.unittest.TestC
 
         function data = createModeData(t)
             data = timetable(t, repmat(mag.meta.Quality.Regular, numel(t), 1), VariableNames = "quality");
+        end
+
+        function data = createRampData(options)
+        % CREATERAMPDATA Create data with 10 samples before ramp mode, and
+        % optionally some after.
+
+            arguments
+                options.NumPatterns (1, 1) double
+                options.NumAfter (1, 1) double
+            end
+
+            ramp = cumsum(repmat(mag.process.Ramp.Pattern, 1, options.NumPatterns))';
+            x = [zeros(11, 1); ramp; repmat(ramp(end), options.NumAfter, 1)];
+
+            t = datetime(2025, 1, 1, TimeZone = "UTC") + seconds(0:(numel(x) - 1))';
+            data = timetable(t, x, x, x, VariableNames = ["x", "y", "z"]);
+        end
+
+        function events = createRampEvents(time, labels)
+
+            events = timetable(labels, RowTimes = time, VariableNames = "Label");
+            events.Properties.DimensionNames(1) = "Time";
         end
 
         function events = createModeEvents(time, frequencies)
