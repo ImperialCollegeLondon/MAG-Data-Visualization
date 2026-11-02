@@ -69,7 +69,7 @@ classdef Analysis < mag.Analysis
             this.loadScienceData();
         end
 
-        function export(~, ~, ~)
+        function export(~, varargin)
             error("mag:henon:NoExportFormats", "No HENON-specific export formats are currently supported.");
         end
     end

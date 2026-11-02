@@ -50,5 +50,14 @@ classdef (TestTags = ["System", "Parallel"]) tHENONAnalysis < AnalysisTestCase
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
             testCase.verifyFalse(analysis.Results.HasScience, "Science should be empty.");
         end
+
+        % Test that export is not supported.
+        function export_notSupported(testCase)
+
+            analysis = mag.henon.Analysis.start(Location = pwd());
+
+            testCase.verifyError(@() analysis.export("MAT", Location = pwd()), "mag:henon:NoExportFormats", ...
+                "Error should be thrown as there are no export formats.");
+        end
     end
 end
