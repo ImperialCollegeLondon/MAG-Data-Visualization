@@ -14,7 +14,7 @@ Supported missions and instruments:
 | Bartington   | ✓               | –              |
 | HelioSwarm   | ✓               | MAT            |
 | HENON        | ✓               | –              |
-| IMAP         | ✓               | MAT, CDF       |
+| IMAP         | ✓               | MAT            |
 | Vigil        | ✓               | –              |
 
 ## Requirements

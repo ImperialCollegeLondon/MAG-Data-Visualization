@@ -2,7 +2,7 @@ classdef ExportManager < mag.app.manage.ExportManager & mag.app.mixin.StartEndDa
 % EXPORTMANAGER Manager for export of IMAP analysis.
 
     properties (Constant)
-        SupportedFormats = ["MAT (Science Lead)", "CDF"]
+        SupportedFormats = "MAT (Science Lead)"
     end
 
     properties (SetAccess = private)

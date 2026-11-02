@@ -62,8 +62,10 @@ classdef Analysis < mag.Analysis
             args = namedargs2cell(analysisOptions);
             analysis = mag.imap.Analysis(args{:});
 
-            % Apply processing steps based on the level.
-            analysis.Processing = mag.imap.Processing.getStepsForLevel(startOptions.Level);
+            % Apply processing steps based on the level, unless specified.
+            if ~isfield(analysisOptions, "Processing")
+                analysis.Processing = mag.imap.Processing.getStepsForLevel(startOptions.Level);
+            end
 
             analysis.detect();
             analysis.load();
@@ -142,6 +144,9 @@ classdef Analysis < mag.Analysis
         function load(this)
 
             this.Results = mag.imap.Instrument();
+
+            this.PrimaryRamp = mag.Science.empty();
+            this.SecondaryRamp = mag.Science.empty();
 
             [primarySetup, secondarySetup] = this.loadMetadata();
 
@@ -465,6 +470,33 @@ classdef Analysis < mag.Analysis
             end
 
             importStrategy = feval("mag.imap.in." + type + format, args{:});
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function science = addMissingSensor(science)
+        % ADDMISSINGSENSOR Add empty data for sensor missing from imported
+        % science, so that both primary and secondary sensors exist.
+
+            arguments
+                science (1, :) mag.Science
+            end
+
+            if ~isscalar(science)
+                return;
+            end
+
+            metadata = science.Metadata.copy();
+            metadata.Primary = ~metadata.Primary;
+
+            if metadata.Sensor == mag.meta.Sensor.OBS
+                metadata.Sensor = mag.meta.Sensor.IBS;
+            else
+                metadata.Sensor = mag.meta.Sensor.OBS;
+            end
+
+            science = [science, mag.Science(science.Data([], :), metadata)];
         end
     end
 

@@ -144,5 +144,27 @@ classdef (TestTags = ["Unit", "Parallel"]) tScienceCSVIn < MAGIOTestCase
             [rawData, fileName] = csvFormat.load(fileName);
             testCase.verifyError(@() csvFormat.process(rawData, fileName), ?MException, "Error should be thrown when file is invalid.");
         end
+
+        % Test that folder names do not affect metadata extracted from file
+        % names.
+        function process_folderNameIgnored(testCase)
+
+            % Set up.
+            folder = fullfile(testCase.WorkingDirectory.Folder, "normal-2024-05-07");
+            mkdir(folder);
+
+            copyfile(fullfile(testCase.TestDataLocation, "MAGScience-IALiRT-20240410-15h23.csv"), folder);
+
+            % Exercise.
+            csvFormat = mag.imap.in.ScienceCSV();
+
+            [rawData, fileName] = csvFormat.load(fullfile(folder, "MAGScience-IALiRT-20240410-15h23.csv"));
+            data = csvFormat.process(rawData, fileName);
+
+            % Verify.
+            testCase.verifyEqual(data(1).Metadata.Mode, mag.meta.Mode.IALiRT, "Mode should be as expected.");
+            testCase.verifyEqual(data(1).Metadata.Timestamp, datetime(2024, 04, 10, 15, 23, 00, TimeZone = mag.time.Constant.TimeZone, Format = mag.time.Constant.Format), ...
+                "Timestamp should be as expected.");
+        end
     end
 end

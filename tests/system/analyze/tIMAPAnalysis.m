@@ -1,6 +1,12 @@
 classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 % TIMAPANALYSIS Tests for IMAP analysis flow.
 
+    properties (TestParameter)
+        CDFSensor = struct( ...
+            Outboard = struct(Pattern = "o", Available = "Primary", Missing = "Secondary"), ...
+            Inboard = struct(Pattern = "i", Available = "Secondary", Missing = "Primary"))
+    end
+
     methods (TestClassSetup)
 
         function checkMICEToolbox(testCase)
@@ -158,6 +164,105 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
             else
                 testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"));
             end
+        end
+
+        % Test that analysis of L1b CDF files with data from only one
+        % sensor returns empty data for the other sensor.
+        function l1bCDFOneSensor(testCase, CDFSensor)
+
+            testCase.assumeTrue(exist("spdfcdfinfo", "file") == 2, "SPDF CDF Toolbox not installed. Test skipped.");
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/l1b_cdf");
+
+            % Exercise.
+            analysis = mag.imap.Analysis.start(Location = pwd(), ...
+                Level = mag.imap.meta.Level.L1b, ...
+                SciencePattern = fullfile("data", "science", "mag", "l1b", "*", "*", compose("*-mag%s_*.cdf", CDFSensor.Pattern)), ...
+                HKPattern = fullfile("data", "hk", "mag", "l1", "*", "*", "*", "*.csv"));
+
+            % Verify.
+            results = analysis.Results;
+
+            testCase.assertNumElements(results.Science, 2, "Both sensors should exist.");
+            testCase.verifyEqual(results.(CDFSensor.Available).HasData, true, "Available sensor should have data.");
+            testCase.verifyEqual(results.(CDFSensor.Missing).HasData, false, "Missing sensor should not have data.");
+        end
+
+        % Test that export window limits data, with modes outside of the
+        % window being skipped.
+        function export_timeWindow(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            timeRange = analysis.Results.TimeRange;
+
+            exportFolder = testCase.createTemporaryFolder();
+
+            % Exercise.
+            analysis.export("MAT", Location = exportFolder, ...
+                StartTime = timeRange(1) + (diff(timeRange) / 4), ...
+                EndTime = timeRange(1) + (diff(timeRange) / 2));
+
+            % Verify.
+            exportedFiles = string({dir(fullfile(exportFolder, "*.mat")).name});
+
+            testCase.verifyTrue(any(contains(exportedFiles, "Burst (64, 8)")), "Burst mode inside window should be exported.");
+            testCase.verifyFalse(any(contains(exportedFiles, "Burst (128, 128)")), "Burst mode outside window should not be exported.");
+        end
+
+        % Test that export does not change analysis results.
+        function export_analysisNotModified(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            results = analysis.Results;
+            timeRange = results.TimeRange;
+
+            expectedRows = [height(results.Primary.Data), height(results.IALiRT.Primary.Data), height(results.HK(1).Data)];
+
+            % Exercise.
+            analysis.export("MAT", Location = testCase.createTemporaryFolder(), ...
+                StartTime = timeRange(1) + seconds(30), ...
+                EndTime = timeRange(2) - seconds(5));
+
+            % Verify.
+            actualRows = [height(results.Primary.Data), height(results.IALiRT.Primary.Data), height(results.HK(1).Data)];
+
+            testCase.verifyEqual(actualRows, expectedRows, "Science, I-ALiRT and HK data should not change.");
+        end
+
+        % Test that nothing is exported when window does not contain data.
+        function export_windowOutsideData(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            timeRange = analysis.Results.TimeRange;
+
+            exportFolder = testCase.createTemporaryFolder();
+
+            % Exercise.
+            analysis.export("MAT", Location = exportFolder, ...
+                StartTime = timeRange(2) + days(1), ...
+                EndTime = timeRange(2) + days(2));
+
+            % Verify.
+            testCase.verifyEmpty(dir(fullfile(exportFolder, "*.mat")), "No files should be exported.");
+        end
+
+        % Test that CDF export is rejected, as it is not implemented.
+        function export_cdfNotSupported(testCase)
+
+            analysis = mag.imap.Analysis();
+
+            testCase.verifyError(@() analysis.export("CDF", Location = pwd()), "MATLAB:validators:mustBeMember", ...
+                "Error should be thrown for unsupported export format.");
         end
     end
 end

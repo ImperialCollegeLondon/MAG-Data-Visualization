@@ -12,9 +12,60 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPAnalysis < matlab.unittest.TestC
             struct(Name = "IALiRTPattern", Value = "", Property = "IALiRT"), ...
             struct(Name = "HKPattern", Value = string.empty(), Property = "HK"), ...
             struct(Name = "HKPattern", Value = "", Property = "HK")}
+        ModeChange = struct( ...
+            FastToSlow = struct(Times = [0:0.125:100, 101:200]', Frequencies = [8; 1]), ...
+            SlowToFast = struct(Times = [0:100, 100.125:0.125:200]', Frequencies = [1; 8]))
     end
 
     methods (Test)
+
+        % Test that custom processing steps are not replaced when starting
+        % analysis.
+        function start_customProcessing(testCase)
+
+            % Set up.
+            processing = mag.imap.Processing();
+
+            % Exercise.
+            analysis = mag.imap.Analysis.start(Location = testCase.createTemporaryFolder(), Processing = processing);
+
+            % Verify.
+            testCase.verifySameHandle(analysis.Processing, processing, "Custom processing steps should be used.");
+        end
+
+        % Test that mode changes are found, regardless of whether cadence
+        % increases or decreases.
+        function findModeChanges_direction(testCase, ModeChange)
+
+            % Set up.
+            startTime = datetime(2025, 1, 1, TimeZone = "UTC");
+
+            data = testCase.createModeData(startTime + seconds(ModeChange.Times));
+            events = testCase.createModeEvents(startTime + seconds([0; 112]), ModeChange.Frequencies);
+
+            % Exercise.
+            events = mag.imap.Analysis.findModeChanges(data, events, "OBS");
+
+            % Verify.
+            testCase.verifyEqual(events.Time(2), startTime + seconds(100), "Mode change should be found at change in cadence.");
+        end
+
+        % Test that an unconventional cadence at the start of the search
+        % window is ignored.
+        function findModeChanges_outlierAtStartOfWindow(testCase)
+
+            % Set up.
+            startTime = datetime(2025, 1, 1, TimeZone = "UTC");
+
+            data = testCase.createModeData(startTime + seconds([0:95, 95.7, 96.7:199]'));
+            events = testCase.createModeEvents(startTime + seconds([0; 125]), [1; 8]);
+
+            % Exercise.
+            events = mag.imap.Analysis.findModeChanges(data, events, "OBS");
+
+            % Verify.
+            testCase.verifyLessThan(abs(events.Time(2) - (startTime + seconds(124.7))), milliseconds(1), "Mode change should be at closest sample to event.");
+        end
 
         % Test that aliases are defined.
         function alias(testCase, AliasName)
@@ -62,6 +113,19 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPAnalysis < matlab.unittest.TestC
             testCase.verifyEmpty(analysis.Results.Science, "Science should be empty.");
             testCase.verifyEmpty(analysis.Results.IALiRT, "IALiRT should be empty.");
             testCase.verifyEmpty(analysis.Results.HK, "HK should be empty.");
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function data = createModeData(t)
+            data = timetable(t, repmat(mag.meta.Quality.Regular, numel(t), 1), VariableNames = "quality");
+        end
+
+        function events = createModeEvents(time, frequencies)
+
+            events = timetable(frequencies, zeros(size(frequencies)), RowTimes = time, VariableNames = ["DataFrequency", "Duration"]);
+            events.Properties.DimensionNames(1) = "Time";
         end
     end
 end
