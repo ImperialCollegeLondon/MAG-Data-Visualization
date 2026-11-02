@@ -62,6 +62,10 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
                 MinimumMATLABRelease = task.MinimumRelease, ...
                 MaximumMATLABRelease = "");
 
+            if isprop(toolboxOptions, "Readme")
+                toolboxOptions.Readme = fullfile(task.Package.PackageRoot, "README.md");
+            end
+
             if ~isempty(task.Icon)
                 toolboxOptions.ToolboxImageFile = task.Icon;
             end
@@ -79,7 +83,7 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
 
         function files = getToolboxFiles(task)
 
-            files = fullfile(task.Package.PackageRoot, ["app", "src", ...
+            files = fullfile(task.Package.PackageRoot, ["app", "src", "README.md", ...
                 task.ExtraFiles]);
         end
 
