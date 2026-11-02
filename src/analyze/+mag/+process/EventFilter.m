@@ -133,7 +133,7 @@ classdef EventFilter < mag.process.Step
                     r(r > 0) = r(r > 0) - 1;
 
                     idxRemove = idxTime + r;
-                    idxRemove(idxRemove < 1) = [];
+                    idxRemove((idxRemove < 1) | (idxRemove > height(data))) = [];
 
                     data{idxRemove, "quality"} = mag.meta.Quality.Bad;
                 end
