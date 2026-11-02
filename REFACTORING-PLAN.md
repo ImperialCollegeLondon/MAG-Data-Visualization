@@ -29,12 +29,21 @@ Findings are marked as one of:
 
 ## Phase 1: Test the install on older releases
 
-Nothing has installed an R2026b-built `.mltbx` on an older release, yet v10.0.0 already ships that way. The metadata layout matches an R2025b build, and the only new content seen is an embedded schema 1.2.0 manifest, `resources/mpackage.json`. That is encouraging but not proof.
+**Done, and passed on 2026-11-02.** A throwaway workflow packaged the commit under test with R2026b, then installed that `.mltbx` with `matlab.addons.install` on GitHub's Windows runners, so the result applies to the current code and not to a published release. The toolbox embeds a schema 1.2.0 manifest in both runs below. The second run also bumped `resources/mpackage.json` in the checkout to schema 1.2.0, to match the state after phase 4.
 
-- [ ] Add a throwaway workflow that installs the v10.0.0 release asset on R2025a, R2025b and R2026a.
-- [ ] On each release, check `mag.version()`, object creation for each mission, and that no manifest warnings appear.
+| Release | Installed to | Listed by MPM | Checkout on 1.1.0 ([run](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization/actions/runs/41455765137)) | Checkout on 1.2.0 ([run](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization/actions/runs/41462781733)) |
+| ------- | ------------ | ------------- | ----- | ----- |
+| R2025a | `Toolboxes` add-on folder | No | Passed | Passed |
+| R2025b | `Toolboxes` add-on folder | No | Passed | Passed |
+| R2026a | `Toolboxes` add-on folder | No | Passed | Passed |
+| R2026b (control) | `MAGDataVisualization@<version>` | Yes | Passed | Passed |
 
-If the install fails, fall back to reading the folder list with `jsondecode` instead of `matlab.mpm.Package`. This still allows the schema upgrade, but older releases would test source rather than the released artifact.
+- [x] Add a throwaway workflow that installs a toolbox built with R2026b on R2025a, R2025b and R2026a. It installs the toolbox built from the commit under test, instead of a release asset.
+- [x] On each release, check `mag.version()`, object creation for each mission, and that no manifest warnings appear. The check also processed HENON and Vigil data, plotted a figure and opened the app, with the code resolving to the add-on folder.
+
+Releases before R2026b install the toolbox as a classic add-on and do not read the embedded manifest with MPM, so the schema error from `matlab.mpm.Package` does not apply. This means phase 4 can go ahead as planned, and the `jsondecode` fallback is not needed.
+
+This covers Windows only, and did not exercise IMAP processing, which needs the SPICE and CDF support packages. Phase 4 runs the full test suite against the installed toolbox, which covers those.
 
 ## Phase 2: Fix bugs
 
