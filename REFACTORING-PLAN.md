@@ -81,6 +81,8 @@ This covers Windows only, and did not exercise IMAP processing, which needs the 
 
 ## Phase 4: Single-build pipeline and schema 1.2.0
 
+**Implemented on 2026-11-02, not yet run on GitHub.** On R2026b, `buildtool check package` passes from a clean copy, and `test:parallel` and `test:serial` pass: 784 passed, 0 failed, and 2 filtered by design. The older-release branch of `buildfile.m` was only exercised by simulating the release check. The new workflow, the UI tests, and the full suite against the installed toolbox on R2025a, R2025b and R2026a still need a CI run, which is the check phase 1 deferred to this phase.
+
 ### Background
 
 Commit `29610d73` moved the manifest to schema 1.2.0, and `90b9a9f7` rolled it back after R2025a failed with `Schema version '1.2.0' is newer than what is supported by the current version of MATLAB`. The R2025b and R2026a jobs were cancelled, so their behavior is unknown. MathWorks' documentation says any schema works in any release since R2024b, which does not match this result.
@@ -89,39 +91,41 @@ Commit `29610d73` moved the manifest to schema 1.2.0, and `90b9a9f7` rolled it b
 
 ```text
 build (R2026b):    check, package, upload .mltbx
-test  (matrix):    download .mltbx to repo root, buildtool install, run tests
+test  (matrix):    R2026b tests source with coverage; older releases download .mltbx to repo root, install it, and run tests
 release (on tag):  needs test; publishes that same .mltbx
 ```
 
+R2026b does not install the `.mltbx`. Coverage needs source, and `tToolbox` already packages and installs the toolbox on that release.
+
 ### Changes
 
-- [ ] In `buildfile.m`, only open the manifest on R2026b. Older releases add just `tests/tool`, and must not add `src`, or they test source instead of the install.
-- [ ] Drop coverage and `RunOnlyImpactedTests` on older releases, as there is no source to measure.
-- [ ] Reuse the existing `install` task, which already picks up any `.mltbx` in the repository root.
-- [ ] Raise `tToolbox` to R2026b. It is the only test that needs the source tree for packaging.
-- [ ] Add a test that `which("mag.version")` resolves to the add-on folder on older releases.
-- [ ] Restore the 1.2.0 manifest fields from `29610d73`: `tags`, `readme` and `supportedPlatforms`, without `description`.
-- [ ] Remove the `isprop` guard in `PackageTask` and the `getAddOnVersion` datetime workaround.
-- [ ] Update the README: development will need R2026b, as older releases will reject the manifest.
+- [x] In `buildfile.m`, only open the manifest on R2026b. Older releases add just `tests/tool`, and must not add `src`, or they test source instead of the install.
+- [x] Drop coverage and `RunOnlyImpactedTests` on older releases, as there is no source to measure.
+- [x] Reuse the existing `install` task, which already picks up any `.mltbx` in the repository root.
+- [x] Raise `tToolbox` to R2026b. It is the only test that needs the source tree for packaging.
+- [x] Add a test that `which("mag.version")` resolves to the add-on folder on older releases.
+- [x] Restore the 1.2.0 manifest fields from `29610d73`: `tags`, `readme` and `supportedPlatforms`, without `description`.
+- [x] Remove the `isprop` guard in `PackageTask` and the `getAddOnVersion` datetime workaround.
+- [x] Update the README: development will need R2026b, as older releases will reject the manifest.
 
 ### Other packaging and CI fixes
 
-| Problem | Fix |
-| ------- | --- |
-| Releases are not gated on tests: v10.0.0 was published about 90 s in, while its tests ran for 40 min | The `release` job above |
-| The minimum release differs by file: R2024a (`PackageTask`, Copilot instructions), R2024b (README, manifest), R2025a (CI, `tToolbox`) | Use R2025a everywhere, as that is what is tested, unless R2024b is needed |
-| The v10 add-on description is empty, as R2026b ignores the `description` field | Set `Summary` in the task |
-| [PackageTask.m:94](src/utility/+mag/+buildtool/+task/PackageTask.m#L94) builds the path from `path()` and drops anything containing "test", so a repository under a `test` folder loses all its paths | Use `Package.Folders` |
-| `PackageTask` ships to users, and a local build also packaged stale `.asv` files | Move it out of `src`, and filter the files |
-| `Maci64` is deprecated, and R2026b warns about it | Use `Mac` |
-| `workflow_dispatch` in `package.yml` cannot pass from a branch, as the tag check fails | Remove it or gate the check |
-| Four releases run for 30 to 60 min on every branch push | Run older releases only on PRs, `main` and tags |
-| `RunOnlyImpactedTests` is probably a no-op, as `.buildtool` is not cached | Cache it or remove it |
-| `@master` and `@main` actions, and no `permissions:` blocks | Pin to SHAs, and add least-privilege permissions |
+| Problem | Fix | Outcome |
+| ------- | --- | ------- |
+| Releases are not gated on tests: v10.0.0 was published about 90 s in, while its tests ran for 40 min | The `release` job above | Done, in `test.yml`. `package.yml` is removed, and the tag is checked against the manifest in `build` |
+| The minimum release differs by file: R2024a (`PackageTask`, Copilot instructions), R2024b (README, manifest), R2025a (CI, `tToolbox`) | Use R2025a everywhere, as that is what is tested, unless R2024b is needed | Done, as nothing tests R2024b. Release checks that became unreachable were removed too |
+| The v10 add-on description is empty, as R2026b ignores the `description` field | Set `Summary` in the task | Done, but `Summary` was already set. The empty field comes from `Description`, which is hidden in `ToolboxOptions` since R2026b, so the task sets both |
+| `PackageTask` builds the path from `path()` and drops anything containing "test", so a repository under a `test` folder loses all its paths | Use `Package.Folders` | Done, keeping only folders that are packaged, as `Package.Folders` includes `tests/tool` |
+| `PackageTask` ships to users, and a local build also packaged stale `.asv` files | Move it out of `src`, and filter the files | Done. Moved to `tests/tool`, which is on the development path and is not packaged |
+| `Maci64` is deprecated, and R2026b warns about it | Use `Mac` | Done |
+| `workflow_dispatch` in `package.yml` cannot pass from a branch, as the tag check fails | Remove it or gate the check | Done, removed with `package.yml` |
+| Four releases run for 30 to 60 min on every branch push | Run older releases only on PRs, `main` and tags | Done. Pull requests now also run on `opened`, `reopened` and `synchronize`, or pushes to an open PR would never reach older releases. They skip R2026b, which the branch push covers |
+| `RunOnlyImpactedTests` is probably a no-op, as `.buildtool` is not cached | Cache it or remove it | Removed, as a release gate must run every test. Local runs no longer select impacted tests |
+| `@master` and `@main` actions, and no `permissions:` blocks | Pin to SHAs, and add least-privilege permissions | Done. Both actions are pinned to their latest tag, which only differs from the branch by a GitHub Enterprise fix and a documentation change |
 
 ### To check
 
-- [ ] MathWorks' documentation says `UseLicenseBSD` must be true for File Exchange uploads. The license is MIT and the task does not set it, so check this against PR #287.
+- [x] MathWorks' documentation says `UseLicenseBSD` must be true for File Exchange uploads. The license is MIT and the task does not set it, so check this against PR #287. **Not needed:** v10.0.1 was built without it, and File Exchange picked it up from the GitHub release. PR #287 did not touch it. Setting it would add a BSD license to an MIT project, so it stays unset.
 
 Do not adopt the built-in `matlab.buildtool.tasks.PackageTask` yet, because it requires migrating to `matlab.toml`. Revisit it once only R2026b reads the project.
 
