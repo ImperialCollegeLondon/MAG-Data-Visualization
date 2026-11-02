@@ -17,7 +17,7 @@ classdef Spectrogram < mag.graphics.view.View
 
     properties (Hidden)
         % TRANSFORMATION Transformation for calculating spectrogram.
-        Transformation (1, 1) mag.transform.Spectrogram = mag.transform.Spectrogram()
+        Transformation (1, 1) mag.transform.Spectrogram
     end
 
     methods
@@ -30,6 +30,9 @@ classdef Spectrogram < mag.graphics.view.View
             end
 
             this.Results = results;
+
+            % Create here, as property defaults are shared by all instances.
+            this.Transformation = mag.transform.Spectrogram();
 
             this.assignProperties(options);
         end
