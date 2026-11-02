@@ -5,7 +5,7 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
         % PACKAGE MATLAB package definition.
         Package matlab.mpm.Package {mustBeScalarOrEmpty}
         % MINIMUMRELEASE Minimum MATLAB release.
-        MinimumRelease (1, 1) string = "R2024a"
+        MinimumRelease (1, 1) string = "R2025a"
         % ICON Path to icon.
         Icon string {mustBeScalarOrEmpty, mustBeFile}
         % EXTRAFILES Extra files to package.
@@ -17,6 +17,13 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
     properties (Dependent, Hidden, TaskOutput, SetAccess = private)
         % TOOLBOXARTIFACT Toolbox packaged by task.
         ToolboxArtifact matlab.buildtool.io.File {mustBeScalarOrEmpty}
+    end
+
+    properties (Constant, Access = private)
+        % SOURCEFOLDERS Folders of code to package.
+        SourceFolders (1, :) string = ["app", "src"]
+        % EXCLUDEDFILES File name endings not to package.
+        ExcludedFiles (1, :) string = [".asv", ".DS_Store"]
     end
 
     methods
@@ -49,29 +56,28 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
             end
 
             % Specify both minimum and maximum release, so that release
-            % compatibility is not parsed from package definition. Since
-            % R2026b, it requires a different format (e.g., ">=24.2.*")
-            % than older releases support (e.g., ">=R2024b").
+            % compatibility is not parsed from package definition. Also
+            % specify description, even if hidden since R2026b, as the
+            % add-on description is otherwise empty.
             toolboxOptions = matlab.addons.toolbox.ToolboxOptions( ...
                 task.Package.PackageRoot, ...
                 task.Package.ID, ...
                 ToolboxVersion = version, ...
+                Summary = task.Package.Summary, ...
+                Description = task.Package.Summary, ...
+                Readme = fullfile(task.Package.PackageRoot, "README.md"), ...
                 ToolboxFiles = task.getToolboxFiles(), ...
                 ToolboxMatlabPath = task.getMATLABPath(), ...
                 OutputFile = task.ToolboxPath, ...
                 MinimumMATLABRelease = task.MinimumRelease, ...
                 MaximumMATLABRelease = "");
 
-            if isprop(toolboxOptions, "Readme")
-                toolboxOptions.Readme = fullfile(task.Package.PackageRoot, "README.md");
-            end
-
             if ~isempty(task.Icon)
                 toolboxOptions.ToolboxImageFile = task.Icon;
             end
 
             toolboxOptions.SupportedPlatforms.Win64 = true;
-            toolboxOptions.SupportedPlatforms.Maci64 = true;
+            toolboxOptions.SupportedPlatforms.Mac = true;
             toolboxOptions.SupportedPlatforms.Glnxa64 = true;
             toolboxOptions.SupportedPlatforms.MatlabOnline = false;
 
@@ -83,16 +89,24 @@ classdef (Sealed) PackageTask < matlab.buildtool.Task
 
         function files = getToolboxFiles(task)
 
-            files = fullfile(task.Package.PackageRoot, ["app", "src", "README.md", ...
-                task.ExtraFiles]);
+            root = task.Package.PackageRoot;
+
+            sourceFiles = arrayfun(@(f) dir(fullfile(root, f, "**", "*")), task.SourceFolders, UniformOutput = false);
+            sourceFiles = vertcat(sourceFiles{:});
+            sourceFiles = sourceFiles(~[sourceFiles.isdir] & ~endsWith({sourceFiles.name}, task.ExcludedFiles));
+
+            files = [fullfile(string({sourceFiles.folder}), string({sourceFiles.name})), ...
+                fullfile(root, ["README.md", task.ExtraFiles])];
         end
 
         function matlabPath = getMATLABPath(task)
 
-            matlabPath = string(split(path(), pathsep()));
+            % Only keep package folders that are packaged, as others (e.g.,
+            % test tools) do not exist in the toolbox.
+            folders = [task.Package.Folders.Path];
+            folders = folders(ismember(extractBefore(folders + "/", "/"), task.SourceFolders));
 
-            locMAG = contains(matlabPath, task.Package.PackageRoot) & ~contains(matlabPath, "test" | "tests");
-            matlabPath = matlabPath(locMAG);
+            matlabPath = fullfile(task.Package.PackageRoot, folders);
         end
     end
 end

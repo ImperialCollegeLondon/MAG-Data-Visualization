@@ -2,7 +2,7 @@ classdef (Abstract) AnalysisTestCase < matlab.unittest.TestCase & mag.test.mixin
 % ANALYSISTESTCASE Base class for all MAG analysis tests.
 
     properties (Constant)
-        MinimumRelease = "R2024b"
+        MinimumRelease = "R2025a"
     end
 
     properties (Access = protected)

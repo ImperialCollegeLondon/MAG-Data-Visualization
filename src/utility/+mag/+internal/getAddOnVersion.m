@@ -14,9 +14,4 @@ function ver = getAddOnVersion(root)
     else
         error("mag:version:NotAnAddOn", "Could not determine version from AddOns.");
     end
-
-    % Sometimes, the version gets loaded as a datetime!
-    if isdatetime(ver)
-        ver = compose("%d.%d.%d", ver.Day, ver.Month, ver.Year);
-    end
 end

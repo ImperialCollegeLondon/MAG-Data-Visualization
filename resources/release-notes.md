@@ -22,3 +22,10 @@
 - (HENON) Fix `export` failing with wrong error when options are specified
 - (All) Fix event filter adding rows when an event is close to the end of the data
 - (All) PSD and spectrogram views no longer share the same transformation
+
+## Package
+
+- MATLAB R2025a or later is now required
+- Development now requires MATLAB R2026b or later, as package definition uses schema 1.2.0
+- Restore add-on description
+- Remove build tools and editor backup files from toolbox

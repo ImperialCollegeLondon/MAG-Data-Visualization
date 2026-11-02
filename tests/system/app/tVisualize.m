@@ -22,10 +22,6 @@ classdef (TestTags = "System") tVisualize < AppTestCase
 
         function initializeApp(testCase, TestDetails)
 
-            if isMATLABReleaseOlderThan("R2024b")
-                return;
-            end
-
             testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
             testCase.copyDataToWorkingDirectory(testCase.WorkingDirectory, TestDetails.Folder);
 

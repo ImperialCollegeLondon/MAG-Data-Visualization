@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
-      - uses: browniebroke/pre-commit-autoupdate-action@main
+      - uses: browniebroke/pre-commit-autoupdate-action@f5c3ec85103b9f8f9be60b9c006cec763d2bdd02 # v1.0.1
       - uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}

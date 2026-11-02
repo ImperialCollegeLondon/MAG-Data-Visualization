@@ -1,7 +1,7 @@
 # Copilot instructions for MAG Data Visualization
 
 Purpose
-- Help AI coding agents be productive in this MATLAB toolbox repository (R2024a+).
+- Help AI coding agents be productive in this MATLAB toolbox repository (R2025a+ to use, R2026b to develop).
 
 Big picture (quick):
 - UI/entrypoint: [app/DataVisualization.m](app/DataVisualization.m) — orchestrates Mission `Provider`s and `Manager`s.

@@ -2,7 +2,7 @@ classdef (Abstract) UITestCase < matlab.uitest.TestCase & mag.test.mixin.Require
 % UITESTCASE Base class for all MAG UI tests.
 
     properties (Constant)
-        MinimumRelease = "R2024b"
+        MinimumRelease = "R2025a"
     end
 
     methods (TestClassSetup)
