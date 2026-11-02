@@ -81,9 +81,26 @@ This covers Windows only, and did not exercise IMAP processing, which needs the 
 
 ## Phase 4: Single-build pipeline and schema 1.2.0
 
-**Implemented on 2026-11-02, not yet run on GitHub.** On R2026b, `buildtool check package` passes from a clean copy, and `test:parallel` and `test:serial` pass: 784 passed, 0 failed, and 2 filtered by design. The older-release branch of `buildfile.m` was only exercised by simulating the release check. The new workflow, the UI tests, and the full suite against the installed toolbox on R2025a, R2025b and R2026a still need a CI run, which is the check phase 1 deferred to this phase.
+**Done, and passed on 2026-11-02.** The toolbox was built once on R2026b, and the full test suite passed against the installed toolbox on all older releases ([push run](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization/actions/runs/41502633433), [pull request run](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization/actions/runs/41502646289)).
 
-The first CI run passed, but older releases ran 615 parallel tests instead of 750. Test tasks find their tests before running any action, so the `install` action was too late: 30 test classes could not load without the toolbox, and were excluded with only a warning. `buildfile.m` now installs the toolbox on older releases when it loads, and fails the build if any test cannot be loaded.
+| Release | Tests run on | Parallel | Serial | UI |
+| ------- | ------------ | -------- | ------ | -- |
+| R2025a | Installed toolbox | 751 passed | 28 passed, 7 filtered | 109 passed, 2 filtered |
+| R2025b | Installed toolbox | 751 passed | 28 passed, 7 filtered | 109 passed, 2 filtered |
+| R2026a | Installed toolbox | 751 passed | 28 passed, 7 filtered | 109 passed, 2 filtered |
+| R2026b | Source | 750 passed, 1 filtered | 35 passed | 109 passed, 2 filtered |
+
+All filtered tests are by design: `tToolbox` needs R2026b, `tInstalledToolbox` needs an older release, and `tExport` skips missions with no export formats.
+
+The first CI run passed too, but older releases ran 615 parallel tests instead of 750. Test tasks find their tests before running any action, so the `install` action was too late: 30 test classes could not load without the toolbox, and were excluded with only a warning. `buildfile.m` now installs the toolbox on older releases when it loads, and fails the build if any test cannot be loaded.
+
+Not yet exercised:
+
+- The `release` job and the tag check, until the next tag is pushed.
+- The failure path of the excluded test check on older releases. It was only seen failing on R2026b.
+- macOS and Linux installs. Test runs are Windows only.
+
+A UI test stall now blocks a release, as `release` needs every test job. Re-run the failed job, which reuses the same toolbox.
 
 ### Background
 
