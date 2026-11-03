@@ -156,31 +156,42 @@ Do not adopt the built-in `matlab.buildtool.tasks.PackageTask` yet, because it r
 
 ## Phase 5: Remove mission and app duplication
 
+**Done on 2026-11-03.** Code in `src` and `app` went from 20,595 to 19,690 lines (−905). Duplication was not measured again. All unit and system tests pass on R2026b, including the app tests for every mission and the baselines, and Code Analyzer still reports 23 info-level notes. Older releases were not tested locally.
+
+Found along the way:
+
+- **Shared processing steps (bug):** all analyses shared one `Processing` object, as a handle default is created once. Vigil wrote its science steps to it, so a new `mag.imap.Analysis()` or `mag.henon.Analysis()` used them too. Each analysis now creates its own, and `tAnalysis` covers it.
+- **File names before detection (bug):** all missions except IMAP failed to read their file names before `detect`, as the structs have no fields.
+- **Bartington options (bug):** `mag.bart.Instrument` validated its options against `mag.imap.Instrument`.
+- **HENON spectrogram (not fixed):** it fails on the HENON test data, with the same error before and after this phase. The data has only 6 samples at 1 Hz, so its spectrum is empty and `linkaxes` fails. Any mission with data this short fails in the same way.
+
 ### Analysis and data
 
-- [ ] Move the export-window block (4 copies), the science and HK file-name getters, and the empty-sensor fallback into `mag.Analysis`.
-- [ ] Make Bartington, HENON and HelioSwarm use the inherited `Processing`, keeping forwarding properties for the public API.
+- [x] Move the export-window block (4 copies), the science and HK file-name getters, and the empty-sensor fallback into `mag.Analysis`. The window is now `mag.time.closedTimerange`, which the app also uses, and IMAP's `cropAndExport` is shared. Vigil and HelioSwarm no longer export data that is empty after cropping, as IMAP already did.
+- [x] Make Bartington, HENON and HelioSwarm use the inherited `Processing`, keeping forwarding properties for the public API. Bartington, HENON and Vigil now import through `importScience`, which applies per-file, whole data and science steps. HelioSwarm defined whole data steps but never applied them. It now does, and its baselines still match.
 
 ### Views
 
-- [ ] Create shared dual-sensor `Field`, `Spectrogram` and `Instrument` classes. The HENON and Vigil versions differ only by names and comments, and Bartington is close.
-- [ ] Move the chart block repeated in all 5 spectrogram views into `mag.graphics.view.View`.
+- [x] Create shared dual-sensor `Field`, `Spectrogram` and `Instrument` classes. They are `mag.graphics.view.DualSensorField`, `DualSensorSpectrogram` and `mag.DualSensorInstrument`. The mission classes remain as thin subclasses, and `mag.bart.Instrument` keeps `Input1` and `Input2`. Figures match the old ones, compared by name, title, axes and labels. The exception is Bartington titles: they now list only sensors with data, and no longer add "Hz" for a single sensor, as no other mission does. Before, a sensor without data showed a frequency of NaN.
+- [x] Move the chart block repeated in all 5 spectrogram views into `mag.graphics.view.View`.
 
 ### App
 
-- [ ] Replace the 5 `Provider` and 5 `Model` classes, which differ only by name, with one class driven by `mag.meta.Mission`. This also removes the `switch` in `selectMission`.
-- [ ] Move location, browse and validation into the base `AnalysisManager`, so that HENON and Vigil no longer need their own.
-- [ ] Merge the Bartington, HENON and Vigil `ExportManager` classes.
-- [ ] Share the three-branch preview in the `ResultsManager` classes.
-- [ ] Remove the IMAP `visualize` override, which only changes one argument.
-- [ ] In `DataVisualization.m`, replace `evalin`, `eval` and `assignin("caller")`, which the repository's analyzer rules forbid, with `save -struct`.
-- [ ] Add `try/catch` to the Workspace and MAT exports, and stop the `ResultsLocation` getter creating folders.
+- [x] Replace the 5 `Provider` and 5 `Model` classes, which differ only by name, with one class driven by `mag.meta.Mission`. This also removes the `switch` in `selectMission`. `Mission` has a new `PackageName`. A mission customizes a manager by defining a class with the same name in its namespace, such as `mag.app.imap.AnalysisManager`, and uses the shared manager otherwise.
+- [x] Move location, browse and validation into the base `AnalysisManager`, so that HENON and Vigil no longer need their own. Subclasses override `instantiateSettings`, `resetSettings` and `getSettingsOptions`.
+- [x] Merge the Bartington, HENON and Vigil `ExportManager` classes. The base class shows start and end times when the mission has export formats, so IMAP and HelioSwarm only set their format.
+- [x] Share the three-branch preview in the `ResultsManager` classes. HENON and Vigil use the base class, and Bartington only sets its sensor names.
+- [x] Remove the IMAP `visualize` override, which only changes one argument. Controls now choose their data with `getVisualizeData`, which AT and CPT override.
+- [x] In `DataVisualization.m`, replace `evalin`, `eval` and `assignin("caller")`, which the repository's analyzer rules forbid, with `save -struct`. **Partly:** one `evalin` remains, as only it can check whether the variable already exists in the base workspace. `eval` and `assignin("caller")` are gone.
+- [x] Add `try/catch` to the Workspace and MAT exports, and stop the `ResultsLocation` getter creating folders. The folder is now created only when saving to it.
 
 ### Remove core dependencies on IMAP
 
-- [ ] [import.m:118](src/io/+mag/+io/import.m#L118) hard-codes the IMAP HK dispatch. HelioSwarm only avoids it because its type is empty.
-- [ ] `mag.app.Model`, `mag.app.Control` and `DataVisualization` default to IMAP classes.
-- [ ] The HelioSwarm `Field` view uses `mag.imap.chart.Event`.
+- [x] [import.m:118](src/io/+mag/+io/import.m#L118) hard-codes the IMAP HK dispatch. HelioSwarm only avoids it because its type is empty. Combined HK data now keeps the class of the imported data.
+- [x] `mag.app.Model`, `mag.app.Control` and `DataVisualization` default to IMAP classes. The model now starts with an empty analysis of its mission, as `mag.Analysis` is abstract and has no empty array.
+- [x] The HelioSwarm `Field` view uses `mag.imap.chart.Event`. The chart moved to `mag.graphics.chart.Event`, and `mag.imap.chart.Event` is now a subclass that labels missing values as ramp mode. HelioSwarm uses the shared chart.
+
+`MAG-Sensor-Performance` only uses `mag.app.manage.Manager`, `NotificationHandler` and `DatetimeSlider` from this toolbox, which did not change.
 
 ## Phase 6: Simplify IMAP
 
