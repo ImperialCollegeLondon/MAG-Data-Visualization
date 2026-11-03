@@ -72,7 +72,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
     end
 
     properties (Dependent, Access = private)
-        ResultsLocation (1, 1) string {mustBeFolder}
+        ResultsLocation (1, 1) string
         Managers (1, :) mag.app.manage.Manager
     end
 
@@ -187,10 +187,6 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             end
 
             value = fullfile(location, compose("Results (v%s)", mag.version()));
-
-            if ~isfolder(value)
-                mkdir(value);
-            end
         end
 
         function value = get.Managers(app)
@@ -392,45 +388,22 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             switch format
                 case app.ExportWorkspace
 
-                    variableName = app.createMissionSpecificVariable();
-
-                    if evalin("base", compose("exist(""%s"", ""var"")", variableName)) %#ok<EVALIN>
-
-                        selectedOption = uiconfirm(app.UIFigure, compose("Variable <code>%s</code> already exists in the MATLAB Workspace.", variableName) + ...
-                            " Would you like to overwrite it?", "Variable Already Exists", Interpreter = "html");
-
-                        if ~isequal(selectedOption, "OK")
-                            return;
-                        end
+                    try
+                        app.exportToWorkspace();
+                    catch exception
+                        app.NotificationHandler.displayAlert(exception);
                     end
-
-                    assignin("base", variableName, eval(variableName));
                 case app.ExportMAT
 
-                    if isempty(app.Model.TimeRange)
-                        extra = "";
-                    else
-
-                        timestamp = app.Model.TimeRange(1);
-                        timestamp.Format = "dd-MMM-yyyy HHmmss";
-
-                        extra = compose(" (%s)", timestamp);
+                    try
+                        app.exportToMAT();
+                    catch exception
+                        app.NotificationHandler.displayAlert(exception);
                     end
-
-                    fileName = fullfile(app.ResultsLocation, compose("Analysis%s.mat", extra));
-                    variableName = app.createMissionSpecificVariable();
-
-                    if isfile(fileName)
-                        options = {"-append"};
-                    else
-                        options = {};
-                    end
-
-                    save(fileName, variableName, options{:});
                 case cellstr(app.ExportManager.SupportedFormats)
 
                     try
-                        task = app.Model.createExportTask(app.ExportManager.getExportOptions(format, app.ResultsLocation));
+                        task = app.Model.createExportTask(app.ExportManager.getExportOptions(format, app.createResultsLocation()));
                     catch exception
 
                         app.NotificationHandler.displayAlert(exception);
@@ -450,6 +423,63 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
                     task.start();
                 otherwise
                     app.NotificationHandler.displayAlert(compose("Unrecognized export format option ""%s"".", format));
+            end
+        end
+
+        function exportToWorkspace(app)
+        % EXPORTTOWORKSPACE Export analysis to the MATLAB Workspace, after
+        % confirming that an existing variable can be overwritten.
+
+            variableName = app.getAnalysisVariableName();
+
+            % Only "evalin" can check variables in the base workspace.
+            if evalin("base", compose("exist(""%s"", ""var"")", variableName)) %#ok<EVALIN>
+
+                selectedOption = uiconfirm(app.UIFigure, compose("Variable <code>%s</code> already exists in the MATLAB Workspace.", variableName) + ...
+                    " Would you like to overwrite it?", "Variable Already Exists", Interpreter = "html");
+
+                if ~isequal(selectedOption, "OK")
+                    return;
+                end
+            end
+
+            assignin("base", variableName, app.Model.Analysis.copy());
+        end
+
+        function exportToMAT(app)
+        % EXPORTTOMAT Export analysis to a MAT file in the results
+        % location, adding it to the file if it exists.
+
+            if isempty(app.Model.TimeRange)
+                extra = "";
+            else
+
+                timestamp = app.Model.TimeRange(1);
+                timestamp.Format = "dd-MMM-yyyy HHmmss";
+
+                extra = compose(" (%s)", timestamp);
+            end
+
+            fileName = fullfile(app.createResultsLocation(), compose("Analysis%s.mat", extra));
+
+            if isfile(fileName)
+                options = {"-append"};
+            else
+                options = {};
+            end
+
+            analyses.(app.getAnalysisVariableName()) = app.Model.Analysis.copy();
+            save(fileName, "-struct", "analyses", options{:});
+        end
+
+        function location = createResultsLocation(app)
+        % CREATERESULTSLOCATION Create results location, if it does not
+        % exist, and return it.
+
+            location = app.ResultsLocation;
+
+            if ~isfolder(location)
+                mkdir(location);
             end
         end
 
@@ -553,7 +583,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
             restoreWarningState = app.NotificationHandler.disableWarningStackTrace(); %#ok<NASGU>
 
             try
-                mag.graphics.savePlots(app.Figures, app.ResultsLocation);
+                mag.graphics.savePlots(app.Figures, app.createResultsLocation());
             catch exception
                 app.NotificationHandler.displayAlert(exception);
             end
@@ -745,10 +775,9 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
     methods (Hidden, Access = private)
 
-        function variableName = createMissionSpecificVariable(app)
-
+        function variableName = getAnalysisVariableName(app)
+        % GETANALYSISVARIABLENAME Name of variable to export analysis to.
             variableName = lower(app.Mission.ShortName) + "Analysis";
-            assignin("caller", variableName, app.Model.Analysis.copy());
         end
     end
 end
