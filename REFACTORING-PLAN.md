@@ -72,12 +72,18 @@ This covers Windows only, and did not exercise IMAP processing, which needs the 
 
 ## Phase 3: Add the test safety net
 
-- [ ] Find out why baseline comparisons were disabled on GitHub in March 2025. They are skipped in 6 places, in `tIMAPAnalysis` and `tExport`. Locally, all 132 analysis and I/O tests pass with baselines on R2026b.
-- [ ] Re-enable baselines on at least one runner.
-- [ ] Add tests for `mag.imap.Analysis/export` (issue #40). It had 0% coverage in the 14 October report.
-- [ ] Add tests for `loadEventsData` based on log excerpts, before splitting it.
-- [ ] Re-run coverage, as the report predates the split test tasks. It showed 82% overall, HENON source at 36.8% and `+view/HK` at 22.9%.
-- [ ] Parameterize the Bartington, HENON and Vigil app system tests, which are near-copies.
+- [x] Find out why baseline comparisons were disabled on GitHub in March 2025. They are skipped in 6 places, in `tIMAPAnalysis` and `tExport`. Locally, all 132 analysis and I/O tests pass with baselines on R2026b. **Cause not found:** the skips came from PR #142, which also moved CI to Windows and ran R2024a and R2024b. Baselines were re-enabled in `f2e4ab96` and disabled again for IMAP only 26 minutes later, in `9589926c`. Neither commit has a message body, and the run logs and check runs have expired. Nothing in the IMAP code depends on the time zone, locale or Excel, and `fob_only`, which has no metadata, was skipped too.
+- [x] Re-enable baselines on at least one runner. All 6 skips are removed, on every runner. They pass locally, and CI decides whether they still fail on GitHub.
+- [x] Add tests for `mag.imap.Analysis/export` (issue #40). It had 0% coverage in the 14 October report. Tests cover export without a window, file contents, HK cropping, range cycling and a single sensor. Ramp mode export is not covered, as no test data has a ramp. They found a crash, now fixed: range and mode cycling, and so export, failed when the pattern occurred more than once, as in `fob_only`, or ended with the last event.
+- [x] Add tests for `loadEventsData` based on log excerpts, before splitting it. `tIMAPEvents` covers normal, burst and config modes, range changes, default and unchanged rates, response matching and multiple files. Ramp commands are not covered, as no log has one. Two oddities were kept as they are: `ModeChangeTimestamp` stays in ground time while the other times are corrected to spacecraft time, and `CompleteTimestamp` stays `NaT` when no completion follows the command, whereas acknowledgment falls back to the command time. `Timestamp` hides the second one.
+- [x] Re-run coverage, as the report predates the split test tasks. It showed 82% overall, HENON source at 36.8% and `+view/HK` at 22.9%. **Now 84.5% overall**, merged from all three test tasks on R2026b: `src` at 83.1%, `app` at 90.7%, `export` at 97.2%, `loadEventsData` at 94.7% and IMAP `+view/HK` at 72.7%. HENON source stays at 37.3%, as `tVisualize` has no HENON leg, so its `Field` and `Spectrogram` views are at 0%. Phase 5 merges them with the Vigil views, which are covered.
+- [x] Parameterize the Bartington, HENON and Vigil app system tests, which are near-copies. They are now `tMissionApp`, and `tVigilApp` keeps its two single-sensor tests.
+
+### UI test stall
+
+The UI tests stalled locally, in the same place as on GitHub. `tVisualize/showFigures` calls `signalAnalyzer(data)` from the "Show Figures" button. Signal Analyzer opened but never imported the data, and MATLAB waited idle with no dialog open. Closing Signal Analyzer did not unblock it. The pool shut down at the same time, but on GitHub run 39108660614 the stall began 26 min before that, so the pool is not the cause. Signal Analyzer is p-coded, so the cause inside it is unknown.
+
+It stalled in 1 of 2 full UI runs, and never in 6 runs of `tVisualize` alone, which opened Signal Analyzer 24 times. `tVisualize` now excludes Signal Analyzer, as it already did for Wavelet Analyzer, and `tSignalAnalyzer` still tests the command. Users could hit the same stall from the app, which is not addressed.
 
 ## Phase 4: Single-build pipeline and schema 1.2.0
 
@@ -100,7 +106,7 @@ Not yet exercised:
 - The failure path of the excluded test check on older releases. It was only seen failing on R2026b.
 - macOS and Linux installs. Test runs are Windows only.
 
-A UI test stall now blocks a release, as `release` needs every test job. Re-run the failed job, which reuses the same toolbox.
+A UI test stall now blocks a release, as `release` needs every test job. Re-run the failed job, which reuses the same toolbox. Phase 3 found the most common stall, and `tVisualize` no longer opens Signal Analyzer.
 
 ### Background
 
