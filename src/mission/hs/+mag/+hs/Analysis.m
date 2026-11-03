@@ -10,19 +10,6 @@ classdef Analysis < mag.Analysis
         SciencePattern (1, 1) string = fullfile("science*.csv")
         % HKPATTERN Pattern of housekeeping files.
         HKPattern (1, 1) string = fullfile("hk*.csv")
-        % PERFILEPROCESSING Steps needed to process single files of data.
-        PerFileProcessing (1, :) mag.process.Step = [ ...
-            mag.process.AllZero(Variables = ["x", "y", "z"])]
-        % WHOLEDATAPROCESSING Steps needed to process all of imported data.
-        WholeDataProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Sort(), ...
-            mag.process.Duplicates()]
-        % SCIENCEPROCESSING Steps needed to process only strictly science
-        % data.
-        ScienceProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"])]
-        % HKPROCESSING Steps needed to process imported HK data.
-        HKProcessing (1, :) mag.process.Step = mag.process.Step.empty()
         % DECODEBINARYFILES Decode supported binary files before CSV detection.
         DecodeBinaryFiles (1, 1) logical = true
         % SCALEFACTORS Scale factors used to convert raw science data to nT.
@@ -30,6 +17,18 @@ classdef Analysis < mag.Analysis
     end
 
     properties (Dependent)
+        % PERFILEPROCESSING Steps needed to process single files of data.
+        % Same as "Processing.PerFileSteps".
+        PerFileProcessing (1, :) mag.process.Step
+        % WHOLEDATAPROCESSING Steps needed to process all of imported data.
+        % Same as "Processing.WholeDataSteps".
+        WholeDataProcessing (1, :) mag.process.Step
+        % SCIENCEPROCESSING Steps needed to process only strictly science
+        % data. Same as "Processing.ScienceSteps".
+        ScienceProcessing (1, :) mag.process.Step
+        % HKPROCESSING Steps needed to process imported HK data. Same as
+        % "Processing.HKSteps".
+        HKProcessing (1, :) mag.process.Step
         % METADATAFILENAMES Files containing metadata.
         MetadataFileNames (1, :) string
         % SCIENCEFILENAMES Files containing science data.
@@ -93,19 +92,59 @@ classdef Analysis < mag.Analysis
                 options.?mag.hs.Analysis
             end
 
+            this.Processing.PerFileSteps = mag.process.AllZero(Variables = ["x", "y", "z"]);
+
+            this.Processing.WholeDataSteps = [ ...
+                mag.process.Sort(), ...
+                mag.process.Duplicates()];
+
+            this.Processing.ScienceSteps = mag.process.Range(RangeVariable = "range", Variables = ["x", "y", "z"]);
+
             this.assignProperties(options);
         end
 
+        function value = get.PerFileProcessing(this)
+            value = this.Processing.PerFileSteps;
+        end
+
+        function set.PerFileProcessing(this, value)
+            this.Processing.PerFileSteps = value;
+        end
+
+        function value = get.WholeDataProcessing(this)
+            value = this.Processing.WholeDataSteps;
+        end
+
+        function set.WholeDataProcessing(this, value)
+            this.Processing.WholeDataSteps = value;
+        end
+
+        function value = get.ScienceProcessing(this)
+            value = this.Processing.ScienceSteps;
+        end
+
+        function set.ScienceProcessing(this, value)
+            this.Processing.ScienceSteps = value;
+        end
+
+        function value = get.HKProcessing(this)
+            value = this.Processing.HKSteps;
+        end
+
+        function set.HKProcessing(this, value)
+            this.Processing.HKSteps = value;
+        end
+
         function value = get.MetadataFileNames(this)
-            value = string(fullfile({this.MetadataFiles.folder}, {this.MetadataFiles.name}));
+            value = this.getFileNames(this.MetadataFiles);
         end
 
         function value = get.ScienceFileNames(this)
-            value = string(fullfile({this.ScienceFiles.folder}, {this.ScienceFiles.name}));
+            value = this.getFileNames(this.ScienceFiles);
         end
 
         function value = get.HKFileNames(this)
-            value = string(fullfile({this.HKFiles.folder}, {this.HKFiles.name}));
+            value = this.getFileNames(this.HKFiles);
         end
 
         function detect(this)
@@ -142,32 +181,16 @@ classdef Analysis < mag.Analysis
             hkFormat = mag.hs.out.("HK" + exportType);
 
             % Determine export window.
-            if ismissing(options.StartTime)
-                options.StartTime = datetime("-Inf", TimeZone = "UTC");
-            end
-
-            if ismissing(options.EndTime)
-                options.EndTime = datetime("Inf", TimeZone = "UTC");
-            end
-
-            period = timerange(options.StartTime, options.EndTime, "closed");
+            period = mag.time.closedTimerange(options.StartTime, options.EndTime);
 
             % Export full science.
             if this.Results.HasScience
-
-                results = this.Results.copy();
-                results.crop(period);
-
-                mag.io.export(results, Location = options.Location, Format = scienceFormat);
+                this.cropAndExport(this.Results.copy(), period, options.Location, scienceFormat);
             end
 
             % Export HK data.
             if this.Results.HasHK
-
-                hk = this.Results.HK.copy();
-                hk.crop(period);
-
-                mag.io.export(hk, Location = options.Location, Format = hkFormat);
+                this.cropAndExport(this.Results.HK.copy(), period, options.Location, hkFormat);
             end
         end
     end
@@ -184,33 +207,21 @@ classdef Analysis < mag.Analysis
                 return;
             end
 
-            science = mag.io.import( ...
-                FileNames = this.ScienceFileNames, ...
-                Format = mag.hs.in.ScienceCSV(), ...
-                ProcessingSteps = this.PerFileProcessing);
-
-            % Customize range scale factors based on input source.
-            scienceProcessing = this.ScienceProcessing.copy();
-            rangeLoc = arrayfun(@(x) isa(x, "mag.process.Range"), scienceProcessing);
+            % Customize range scale factors.
+            scienceSteps = this.Processing.ScienceSteps.copy();
+            rangeLoc = arrayfun(@(x) isa(x, "mag.process.Range"), scienceSteps);
 
             if any(rangeLoc)
 
-                rangeStep = scienceProcessing(rangeLoc);
+                rangeStep = scienceSteps(rangeLoc);
 
                 rangeStep.ScaleFactors = this.ScaleFactors;
                 rangeStep.ExtraScaling = 1;
 
-                this.ScienceProcessing = scienceProcessing;
+                this.Processing.ScienceSteps = scienceSteps;
             end
 
-            for sp = this.ScienceProcessing
-
-                for s = science
-                    s.Data = sp.apply(s.Data, s.Metadata);
-                end
-            end
-
-            this.Results.Science = science;
+            this.Results.Science = this.importScience(this.ScienceFileNames, mag.hs.in.ScienceCSV());
         end
 
         function loadHKData(this)
@@ -222,7 +233,7 @@ classdef Analysis < mag.Analysis
             this.Results.HK = mag.io.import( ...
                 FileNames = this.HKFileNames, ...
                 Format = mag.hs.in.HKCSV(), ...
-                ProcessingSteps = this.HKProcessing);
+                ProcessingSteps = this.Processing.HKSteps);
         end
 
         function decodeBinaryFiles(this)

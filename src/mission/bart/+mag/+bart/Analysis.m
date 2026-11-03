@@ -8,13 +8,12 @@ classdef Analysis < mag.Analysis
         Input1Pattern (1, 1) string = fullfile("*Input 1*.Dat")
         % INPUT2PATTERN Pattern of input 2 data files.
         Input2Pattern (1, 1) string = fullfile("*Input 2*.Dat")
-        % SCIENCEPROCESSING Steps needed to process science data.
-        ScienceProcessing (1, :) mag.process.Step = [ ...
-            mag.process.AllZero(Variables = ["x", "y", "z"]), ...
-            mag.process.Sort()]
     end
 
     properties (Dependent)
+        % SCIENCEPROCESSING Steps needed to process science data. Same as
+        % "Processing.ScienceSteps".
+        ScienceProcessing (1, :) mag.process.Step
         % INPUT1FILENAMES Files containing input 1 data.
         Input1FileNames (1, :) string
         % INPUT2FILENAMES Files containing input 2 data.
@@ -54,15 +53,27 @@ classdef Analysis < mag.Analysis
                 options.?mag.bart.Analysis
             end
 
+            this.Processing.ScienceSteps = [ ...
+                mag.process.AllZero(Variables = ["x", "y", "z"]), ...
+                mag.process.Sort()];
+
             this.assignProperties(options);
         end
 
+        function value = get.ScienceProcessing(this)
+            value = this.Processing.ScienceSteps;
+        end
+
+        function set.ScienceProcessing(this, value)
+            this.Processing.ScienceSteps = value;
+        end
+
         function value = get.Input1FileNames(this)
-            value = string(fullfile({this.Input1Files.folder}, {this.Input1Files.name}));
+            value = this.getFileNames(this.Input1Files);
         end
 
         function value = get.Input2FileNames(this)
-            value = string(fullfile({this.Input2Files.folder}, {this.Input2Files.name}));
+            value = this.getFileNames(this.Input2Files);
         end
 
         function detect(this)
@@ -92,28 +103,11 @@ classdef Analysis < mag.Analysis
                 return;
             end
 
-            input1Science = mag.io.import( ...
-                FileNames = this.Input1FileNames, ...
-                Format = mag.bart.in.ScienceDAT(InputType = 1));
+            input1Science = this.importScience(this.Input1FileNames, mag.bart.in.ScienceDAT(InputType = 1), ...
+                mag.meta.Science(Sensor = mag.meta.Sensor.OBS));
 
-            input2Science = mag.io.import( ...
-                FileNames = this.Input2FileNames, ...
-                Format = mag.bart.in.ScienceDAT(InputType = 2));
-
-            for sp = this.ScienceProcessing
-
-                for d = [input1Science, input2Science]
-                    d.Data = sp.apply(d.Data, d.Metadata);
-                end
-            end
-
-            if isempty(input1Science)
-                input1Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.OBS));
-            end
-
-            if isempty(input2Science)
-                input2Science = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.IBS));
-            end
+            input2Science = this.importScience(this.Input2FileNames, mag.bart.in.ScienceDAT(InputType = 2), ...
+                mag.meta.Science(Sensor = mag.meta.Sensor.IBS));
 
             this.Results.Science = [input1Science, input2Science];
         end

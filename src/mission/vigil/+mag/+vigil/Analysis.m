@@ -52,7 +52,7 @@ classdef Analysis < mag.Analysis
         end
 
         function value = get.ScienceFileNames(this)
-            value = string(fullfile({this.ScienceFiles.folder}, {this.ScienceFiles.name}));
+            value = this.getFileNames(this.ScienceFiles);
         end
 
         function detect(this)
@@ -81,23 +81,11 @@ classdef Analysis < mag.Analysis
             format = mag.vigil.out.("Science" + exportType);
 
             % Determine export window.
-            if ismissing(options.StartTime)
-                options.StartTime = datetime("-Inf", TimeZone = "UTC");
-            end
-
-            if ismissing(options.EndTime)
-                options.EndTime = datetime("Inf", TimeZone = "UTC");
-            end
-
-            period = timerange(options.StartTime, options.EndTime, "closed");
+            period = mag.time.closedTimerange(options.StartTime, options.EndTime);
 
             % Export full science.
             if this.Results.HasScience
-
-                results = this.Results.copy();
-                results.crop(period);
-
-                mag.io.export(results, Location = options.Location, Format = format);
+                this.cropAndExport(this.Results.copy(), period, options.Location, format);
             end
         end
     end
@@ -114,28 +102,11 @@ classdef Analysis < mag.Analysis
             fobFiles = this.ScienceFileNames(contains(this.ScienceFileNames, "fob_", IgnoreCase = true));
             fibFiles = this.ScienceFileNames(contains(this.ScienceFileNames, "fib_", IgnoreCase = true));
 
-            fobScience = mag.io.import( ...
-                FileNames = fobFiles, ...
-                Format = mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.OBS));
+            fobScience = this.importScience(fobFiles, mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.OBS), ...
+                mag.meta.Science(Sensor = mag.meta.Sensor.OBS));
 
-            fibScience = mag.io.import( ...
-                FileNames = fibFiles, ...
-                Format = mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.IBS));
-
-            for sp = this.Processing.ScienceSteps
-
-                for d = [fobScience, fibScience]
-                    d.Data = sp.apply(d.Data, d.Metadata);
-                end
-            end
-
-            if isempty(fobScience)
-                fobScience = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.OBS));
-            end
-
-            if isempty(fibScience)
-                fibScience = mag.Science(timetable(), mag.meta.Science(Sensor = mag.meta.Sensor.IBS));
-            end
+            fibScience = this.importScience(fibFiles, mag.vigil.in.ScienceLOG(Sensor = mag.meta.Sensor.IBS), ...
+                mag.meta.Science(Sensor = mag.meta.Sensor.IBS));
 
             this.Results.Science = [fobScience, fibScience];
         end

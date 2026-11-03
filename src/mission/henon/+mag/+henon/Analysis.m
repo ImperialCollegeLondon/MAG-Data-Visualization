@@ -4,17 +4,15 @@ classdef Analysis < mag.Analysis
     properties
         % SCIENCEPATTERN Pattern of science data files.
         SciencePattern (1, 1) string = fullfile("*.*b")
-        % PERFILEPROCESSING Steps needed to process single files of data.
-        PerFileProcessing (1, :) mag.process.Step = [ ...
-            mag.process.AllZero(Variables = ["x", "y", "z"]), ...
-            mag.process.Separate(DiscriminationVariable = "timestamps", LargeDiscriminateThreshold = minutes(1), Variables = ["x", "y", "z"])]
-        % WHOLEDATAPROCESSING Steps needed to process all imported data.
-        WholeDataProcessing (1, :) mag.process.Step = [ ...
-            mag.process.Sort(), ...
-            mag.process.Duplicates()]
     end
 
     properties (Dependent)
+        % PERFILEPROCESSING Steps needed to process single files of data.
+        % Same as "Processing.PerFileSteps".
+        PerFileProcessing (1, :) mag.process.Step
+        % WHOLEDATAPROCESSING Steps needed to process all imported data.
+        % Same as "Processing.WholeDataSteps".
+        WholeDataProcessing (1, :) mag.process.Step
         % SCIENCEFILENAMES Files containing science data.
         ScienceFileNames (1, :) string
     end
@@ -50,11 +48,35 @@ classdef Analysis < mag.Analysis
                 options.?mag.henon.Analysis
             end
 
+            this.Processing.PerFileSteps = [ ...
+                mag.process.AllZero(Variables = ["x", "y", "z"]), ...
+                mag.process.Separate(DiscriminationVariable = "timestamps", LargeDiscriminateThreshold = minutes(1), Variables = ["x", "y", "z"])];
+
+            this.Processing.WholeDataSteps = [ ...
+                mag.process.Sort(), ...
+                mag.process.Duplicates()];
+
             this.assignProperties(options);
         end
 
+        function value = get.PerFileProcessing(this)
+            value = this.Processing.PerFileSteps;
+        end
+
+        function set.PerFileProcessing(this, value)
+            this.Processing.PerFileSteps = value;
+        end
+
+        function value = get.WholeDataProcessing(this)
+            value = this.Processing.WholeDataSteps;
+        end
+
+        function set.WholeDataProcessing(this, value)
+            this.Processing.WholeDataSteps = value;
+        end
+
         function value = get.ScienceFileNames(this)
-            value = string(fullfile({this.ScienceFiles.folder}, {this.ScienceFiles.name}));
+            value = this.getFileNames(this.ScienceFiles);
         end
 
         function detect(this)
@@ -87,45 +109,13 @@ classdef Analysis < mag.Analysis
             obsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ib", IgnoreCase = true));
             ibsFiles = this.ScienceFileNames(endsWith(this.ScienceFileNames, ".ob", IgnoreCase = true));
 
-            obsScience = this.importAndProcess(obsFiles, mag.meta.Sensor.OBS);
-            ibsScience = this.importAndProcess(ibsFiles, mag.meta.Sensor.IBS);
+            obsScience = this.importScience(obsFiles, mag.henon.in.ScienceCSV(Sensor = mag.meta.Sensor.OBS), ...
+                mag.meta.Science(Primary = true, Sensor = mag.meta.Sensor.OBS));
 
-            if isempty(obsScience)
-                obsScience = mag.Science(timetable(), mag.meta.Science(Primary = true, Sensor = mag.meta.Sensor.OBS));
-            end
-
-            if isempty(ibsScience)
-                ibsScience = mag.Science(timetable(), mag.meta.Science(Primary = false, Sensor = mag.meta.Sensor.IBS));
-            end
+            ibsScience = this.importScience(ibsFiles, mag.henon.in.ScienceCSV(Sensor = mag.meta.Sensor.IBS), ...
+                mag.meta.Science(Primary = false, Sensor = mag.meta.Sensor.IBS));
 
             this.Results.Science = [obsScience, ibsScience];
-        end
-
-        function science = importAndProcess(this, fileNames, sensor)
-
-            arguments
-                this (1, 1) mag.henon.Analysis
-                fileNames (1, :) string
-                sensor (1, 1) mag.meta.Sensor
-            end
-
-            if isempty(fileNames)
-
-                science = mag.Science.empty();
-                return;
-            end
-
-            science = mag.io.import( ...
-                FileNames = fileNames, ...
-                Format = mag.henon.in.ScienceCSV(Sensor = sensor), ...
-                ProcessingSteps = this.PerFileProcessing);
-
-            for sp = this.WholeDataProcessing
-
-                for s = science
-                    s.Data = sp.apply(s.Data, s.Metadata);
-                end
-            end
         end
     end
 end

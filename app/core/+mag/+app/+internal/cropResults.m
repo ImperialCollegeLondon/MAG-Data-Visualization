@@ -12,16 +12,6 @@ function results = cropResults(results, startTime, endTime)
         results (1, 1) mag.Instrument
     end
 
-    if ismissing(startTime)
-        startTime = datetime("-Inf", TimeZone = "UTC");
-    end
-
-    if ismissing(endTime)
-        endTime = datetime("Inf", TimeZone = "UTC");
-    end
-
-    period = timerange(startTime, endTime, "closed");
-
     results = results.copy();
-    results.crop(period);
+    results.crop(mag.time.closedTimerange(startTime, endTime));
 end

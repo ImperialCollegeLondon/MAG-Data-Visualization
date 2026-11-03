@@ -85,19 +85,19 @@ classdef Analysis < mag.Analysis
         end
 
         function value = get.EventFileNames(this)
-            value = string(fullfile({this.EventFiles.folder}, {this.EventFiles.name}));
+            value = this.getFileNames(this.EventFiles);
         end
 
         function value = get.MetadataFileNames(this)
-            value = string(fullfile({this.MetadataFiles.folder}, {this.MetadataFiles.name}));
+            value = this.getFileNames(this.MetadataFiles);
         end
 
         function value = get.ScienceFileNames(this)
-            value = string(fullfile({this.ScienceFiles.folder}, {this.ScienceFiles.name}));
+            value = this.getFileNames(this.ScienceFiles);
         end
 
         function value = get.IALiRTFileNames(this)
-            value = string(fullfile({this.IALiRTFiles.folder}, {this.IALiRTFiles.name}));
+            value = this.getFileNames(this.IALiRTFiles);
         end
 
         function value = get.HKFileNames(this)
@@ -105,7 +105,7 @@ classdef Analysis < mag.Analysis
             value = {};
 
             for hkp = 1:numel(this.HKFiles)
-                value{hkp} = string(fullfile({this.HKFiles{hkp}.folder}, {this.HKFiles{hkp}.name})); %#ok<AGROW>
+                value{hkp} = this.getFileNames(this.HKFiles{hkp}); %#ok<AGROW>
             end
         end
 
