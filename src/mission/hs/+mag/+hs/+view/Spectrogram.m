@@ -38,7 +38,7 @@ classdef Spectrogram < mag.graphics.view.View
                 Normalize = this.Normalize, Window = this.Window, Overlap = this.Overlap);
 
             % Field and spectrogram.
-            charts = this.getFrequencyCharts(science, spectrum, science.Metadata.getDisplay("Sensor"), "left");
+            charts = this.getSpectrogramCharts(science, spectrum, science.Metadata.getDisplay("Sensor"), "left");
 
             this.Figures = this.Factory.assemble( ...
                 charts{:}, ...
@@ -52,17 +52,6 @@ classdef Spectrogram < mag.graphics.view.View
     end
 
     methods (Access = private)
-
-        function charts = getFrequencyCharts(this, science, spectrum, name, axisLocation)
-
-            charts = { ...
-                science, mag.graphics.style.Default(Title = compose("%s x", name), YLabel = "[nT]", YAxisLocation = axisLocation, Charts = mag.graphics.chart.Plot(YVariables = "X")), ...
-                spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "X")), ...
-                science, mag.graphics.style.Default(Title = compose("%s y", name), YLabel = "[nT]", YAxisLocation = axisLocation, Charts = mag.graphics.chart.Plot(YVariables = "Y")), ...
-                spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "Y")), ...
-                science, mag.graphics.style.Default(Title = compose("%s z", name), YLabel = "[nT]", YAxisLocation = axisLocation, Charts = mag.graphics.chart.Plot(YVariables = "Z")), ...
-                spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = "Z"))};
-        end
 
         function value = getFrequencyFigureTitle(this, science)
             value = compose("%s (%s)", science.Metadata.getDisplay("Mode"), this.getDataFrequency(science.Metadata));

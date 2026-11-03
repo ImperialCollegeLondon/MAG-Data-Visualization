@@ -83,6 +83,32 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
                 secondarySensor = "IBS";
             end
         end
+
+        function charts = getSpectrogramCharts(this, science, spectrum, name, axisLocation)
+        % GETSPECTROGRAMCHARTS Get charts of each axis of science data,
+        % each followed by its spectrogram.
+
+            arguments (Input)
+                this (1, 1) mag.graphics.view.View
+                science mag.Science
+                spectrum mag.Spectrum
+                name (1, 1) string
+                axisLocation (1, 1) string
+            end
+
+            arguments (Output)
+                charts (1, :) cell
+            end
+
+            charts = {};
+
+            for axis = ["x", "y", "z"]
+
+                charts = [charts, { ...
+                    science, mag.graphics.style.Default(Title = compose("%s %s", name, axis), YLabel = "[nT]", YAxisLocation = axisLocation, Charts = mag.graphics.chart.Plot(YVariables = upper(axis))), ...
+                    spectrum, mag.graphics.style.Colormap(YLabel = this.FLabel, CLabel = this.PLabel, YLimits = "tight", Layout = [2, 1], Charts = mag.graphics.chart.Spectrogram(YVariables = upper(axis)))}]; %#ok<AGROW>
+            end
+        end
     end
 
     methods (Static, Access = protected)
