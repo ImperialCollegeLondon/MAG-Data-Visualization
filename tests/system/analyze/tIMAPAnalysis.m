@@ -213,6 +213,135 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 
             testCase.verifyTrue(any(contains(exportedFiles, "Burst (64, 8)")), "Burst mode inside window should be exported.");
             testCase.verifyFalse(any(contains(exportedFiles, "Burst (128, 128)")), "Burst mode outside window should not be exported.");
+
+            hkFile = exportedFiles(endsWith(exportedFiles, "HK.mat"));
+            testCase.assertNumElements(hkFile, 1, "HK should be exported.");
+
+            hk = load(fullfile(exportFolder, hkFile), "HK").HK;
+            testCase.verifyTrue(all(isbetween(hk.PWR.Time, timeRange(1) + (diff(timeRange) / 4), timeRange(1) + (diff(timeRange) / 2))), ...
+                "HK should be cropped to export window.");
+        end
+
+        % Test that export without window includes full science, each mode,
+        % I-ALiRT and HK.
+        function export_allData(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            exportFolder = testCase.createTemporaryFolder();
+
+            % Exercise.
+            analysis.export("MAT", Location = exportFolder);
+
+            % Verify.
+            exportedFiles = sort(string({dir(fullfile(exportFolder, "*.mat")).name}));
+
+            testCase.verifyEqual(exportedFiles, ["070524-1014 HK.mat", "070524-1032 Hybrid (NaN, NaN).mat", "070524-1032 IALiRT (0.25, 0.25).mat", ...
+                "070524-1032 Normal (2, 2).mat", "070524-1033 Burst (64, 8).mat", "070524-1034 Normal (2, 2).mat", ...
+                "070524-1035 Burst (128, 128).mat", "070524-1036 Normal (2, 2).mat"], "Exported files do not match.");
+
+            science = load(fullfile(exportFolder, "070524-1032 Hybrid (NaN, NaN).mat"), "B").B;
+
+            testCase.verifyEqual(science.P.Time, analysis.Results.Primary.Time, "Full primary science should be exported.");
+            testCase.verifyEqual(science.S.Time, analysis.Results.Secondary.Time, "Full secondary science should be exported.");
+            testCase.verifyEqual(science.P.Data, analysis.Results.Primary.XYZ, "Full primary science should be exported.");
+
+            hk = load(fullfile(exportFolder, "070524-1014 HK.mat"), "HK").HK;
+            testCase.verifyEqual(sort(string(fieldnames(hk)))', ["PROCSTAT", "PWR", "SID15", "STATUS"], "All HK types should be exported.");
+        end
+
+        % Test that range cycling is exported when found.
+        function export_rangeCycling(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            testCase.addRangeCycling(analysis, 7:10, 6:9);
+
+            exportFolder = testCase.createTemporaryFolder();
+
+            % Exercise.
+            analysis.export("MAT", Location = exportFolder);
+
+            % Verify.
+            exportedFiles = string({dir(fullfile(exportFolder, "*.mat")).name});
+            testCase.verifyTrue(any(endsWith(exportedFiles, "Range Cycling.mat")), "Range cycling should be exported.");
+        end
+
+        % Test that export works with only one sensor.
+        function export_oneSensor(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/fob_only");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            exportFolder = testCase.createTemporaryFolder();
+
+            % Exercise.
+            analysis.export("MAT", Location = exportFolder);
+
+            % Verify.
+            exportedFiles = string({dir(fullfile(exportFolder, "*.mat")).name});
+            testCase.verifyTrue(any(contains(exportedFiles, "Burst (128, 8)")), "Science should be exported.");
+        end
+
+        % Test that only first range cycling is returned, when there are
+        % many.
+        function getRangeCycling_manyOccurrences(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            testCase.addRangeCycling(analysis, [1:4, 7:10], [1:4, 6:9]);
+
+            % Exercise.
+            rangeCycling = analysis.getRangeCycling();
+
+            % Verify.
+            testCase.assertNotEmpty(rangeCycling, "Range cycling should be found.");
+
+            testCase.verifyLessThan(rangeCycling.Primary.Time(end), analysis.Results.Primary.Events.Time(5), "Only first primary range cycling should be returned.");
+            testCase.verifyLessThan(rangeCycling.Secondary.Time(end), analysis.Results.Secondary.Events.Time(5), "Only first secondary range cycling should be returned.");
+        end
+
+        % Test that range cycling can end with the last event.
+        function getRangeCycling_lastEvent(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+            testCase.addRangeCycling(analysis, 8:11, 7:10);
+
+            % Exercise.
+            rangeCycling = analysis.getRangeCycling();
+
+            % Verify.
+            testCase.assertNotEmpty(rangeCycling, "Range cycling should be found.");
+            testCase.verifyEqual(rangeCycling.Primary.Time(end), analysis.Results.Primary.Time(end), "Range cycling should include data until the end.");
+        end
+
+        % Test that mode cycling can end with the last event.
+        function getModeCycling_lastEvent(testCase)
+
+            % Set up.
+            testCase.copyDataToWorkingDirectory("imap/full_analysis");
+
+            analysis = mag.imap.Analysis.start(Location = pwd());
+
+            analysis.Results.Primary.Data.Properties.Events.DataFrequency(4:11) = [2; 64; 2; 4; 64; 4; 4; 128];
+            analysis.Results.Secondary.Data.Properties.Events.DataFrequency(3:10) = [2; 8; 2; 1; 64; 1; 4; 128];
+
+            % Exercise.
+            modeCycling = analysis.getModeCycling();
+
+            % Verify.
+            testCase.assertNotEmpty(modeCycling, "Mode cycling should be found.");
+            testCase.verifyEqual(modeCycling.Primary.Time(end), analysis.Results.Primary.Time(end), "Mode cycling should include data until the end.");
         end
 
         % Test that export does not change analysis results.
@@ -265,6 +394,19 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 
             testCase.verifyError(@() analysis.export("CDF", Location = pwd()), "MATLAB:validators:mustBeMember", ...
                 "Error should be thrown for unsupported export format.");
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function addRangeCycling(analysis, primaryEvents, secondaryEvents)
+        % ADDRANGECYCLING Set ranges of events to one or more range cycling
+        % patterns (3, 2, 1, 0).
+
+            pattern = mag.meta.Range([3; 2; 1; 0]);
+
+            analysis.Results.Primary.Data.Properties.Events.Range(primaryEvents) = repmat(pattern, numel(primaryEvents) / 4, 1);
+            analysis.Results.Secondary.Data.Properties.Events.Range(secondaryEvents) = repmat(pattern, numel(secondaryEvents) / 4, 1);
         end
     end
 end

@@ -257,12 +257,16 @@ classdef Analysis < mag.Analysis
 
             function period = findModeCyclingPeriod(events, pattern)
 
+                % Use first occurrence of pattern only. If pattern ends
+                % with last event, include data until the end.
                 idxMode = strfind(events.DataFrequency', pattern);
 
                 if isempty(idxMode)
                     period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
+                elseif (idxMode(1) + numel(pattern)) > height(events)
+                    period = timerange(events.Time(idxMode(1)), datetime("Inf", TimeZone = "UTC"), "closed");
                 else
-                    period = timerange(events.Time(idxMode), events.Time(idxMode + numel(pattern)), "closedleft");
+                    period = timerange(events.Time(idxMode(1)), events.Time(idxMode(1) + numel(pattern)), "closedleft");
                 end
             end
 
@@ -291,12 +295,16 @@ classdef Analysis < mag.Analysis
 
             function period = findRangeCyclingPeriod(events, pattern)
 
+                % Use first occurrence of pattern only. If pattern ends
+                % with last event, include data until the end.
                 idxRange = strfind(events.Range', pattern);
 
                 if isempty(idxRange)
                     period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
+                elseif (idxRange(1) + numel(pattern)) > height(events)
+                    period = timerange(events.Time(idxRange(1)), datetime("Inf", TimeZone = "UTC"), "closed");
                 else
-                    period = timerange(events.Time(idxRange), events.Time(idxRange + numel(pattern)), "closedleft");
+                    period = timerange(events.Time(idxRange(1)), events.Time(idxRange(1) + numel(pattern)), "closedleft");
                 end
             end
 
