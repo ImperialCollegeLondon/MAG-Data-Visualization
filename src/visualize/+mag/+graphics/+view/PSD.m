@@ -14,7 +14,7 @@ classdef PSD < mag.graphics.view.View
 
     properties (Hidden)
         % TRANSFORMATION Transformation for calculating PSD.
-        Transformation (1, 1) mag.transform.PSD = mag.transform.PSD()
+        Transformation (1, 1) mag.transform.PSD
     end
 
     methods
@@ -27,6 +27,9 @@ classdef PSD < mag.graphics.view.View
             end
 
             this.Results = results;
+
+            % Create here, as property defaults are shared by all instances.
+            this.Transformation = mag.transform.PSD();
 
             this.assignProperties(options);
         end

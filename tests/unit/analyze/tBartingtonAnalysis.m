@@ -23,5 +23,14 @@ classdef (TestTags = ["Unit", "Parallel"]) tBartingtonAnalysis < matlab.unittest
 
             testCase.verifyEqual(analysis.Results.Metadata.Mission, mag.meta.Mission.Bartington, "Mission metadata should be set to ""Bartington"".");
         end
+
+        % Test that export is not supported.
+        function export_notSupported(testCase)
+
+            analysis = mag.bart.Analysis();
+
+            testCase.verifyError(@() analysis.export("MAT", Location = pwd()), "mag:bart:NoExportFormats", ...
+                "Error should be thrown as there are no export formats.");
+        end
     end
 end

@@ -62,8 +62,10 @@ classdef Analysis < mag.Analysis
             args = namedargs2cell(analysisOptions);
             analysis = mag.imap.Analysis(args{:});
 
-            % Apply processing steps based on the level.
-            analysis.Processing = mag.imap.Processing.getStepsForLevel(startOptions.Level);
+            % Apply processing steps based on the level, unless specified.
+            if ~isfield(analysisOptions, "Processing")
+                analysis.Processing = mag.imap.Processing.getStepsForLevel(startOptions.Level);
+            end
 
             analysis.detect();
             analysis.load();
@@ -143,6 +145,9 @@ classdef Analysis < mag.Analysis
 
             this.Results = mag.imap.Instrument();
 
+            this.PrimaryRamp = mag.Science.empty();
+            this.SecondaryRamp = mag.Science.empty();
+
             [primarySetup, secondarySetup] = this.loadMetadata();
 
             this.loadEventsData();
@@ -207,6 +212,15 @@ classdef Analysis < mag.Analysis
             % Split data into separate elements.
             if ~isempty(primaryPeriods) && ~isempty(secondaryPeriods)
 
+                % Modes are paired by position, which is only valid when
+                % both sensors have the same modes.
+                if ~isequal(numel(primaryPeriods), numel(secondaryPeriods))
+
+                    warning("mag:imap:UnequalModes", "Data not split by mode, as primary (%d) and secondary (%d) sensors have different number of modes.", ...
+                        numel(primaryPeriods), numel(secondaryPeriods));
+                    return;
+                end
+
                 for p = 1:numel(primaryPeriods)
 
                     data = this.applyTimeRangeToInstrument(primaryPeriods{p}, secondaryPeriods{p});
@@ -243,12 +257,16 @@ classdef Analysis < mag.Analysis
 
             function period = findModeCyclingPeriod(events, pattern)
 
+                % Use first occurrence of pattern only. If pattern ends
+                % with last event, include data until the end.
                 idxMode = strfind(events.DataFrequency', pattern);
 
                 if isempty(idxMode)
                     period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
+                elseif (idxMode(1) + numel(pattern)) > height(events)
+                    period = timerange(events.Time(idxMode(1)), datetime("Inf", TimeZone = "UTC"), "closed");
                 else
-                    period = timerange(events.Time(idxMode), events.Time(idxMode + numel(pattern)), "closedleft");
+                    period = timerange(events.Time(idxMode(1)), events.Time(idxMode(1) + numel(pattern)), "closedleft");
                 end
             end
 
@@ -277,12 +295,16 @@ classdef Analysis < mag.Analysis
 
             function period = findRangeCyclingPeriod(events, pattern)
 
+                % Use first occurrence of pattern only. If pattern ends
+                % with last event, include data until the end.
                 idxRange = strfind(events.Range', pattern);
 
                 if isempty(idxRange)
                     period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
+                elseif (idxRange(1) + numel(pattern)) > height(events)
+                    period = timerange(events.Time(idxRange(1)), datetime("Inf", TimeZone = "UTC"), "closed");
                 else
-                    period = timerange(events.Time(idxRange), events.Time(idxRange + numel(pattern)), "closedleft");
+                    period = timerange(events.Time(idxRange(1)), events.Time(idxRange(1) + numel(pattern)), "closedleft");
                 end
             end
 
@@ -468,9 +490,39 @@ classdef Analysis < mag.Analysis
         end
     end
 
+    methods (Static, Access = private)
+
+        function science = addMissingSensor(science)
+        % ADDMISSINGSENSOR Add empty data for sensor missing from imported
+        % science, so that both primary and secondary sensors exist.
+
+            arguments
+                science (1, :) mag.Science
+            end
+
+            if ~isscalar(science)
+                return;
+            end
+
+            metadata = science.Metadata.copy();
+            metadata.Primary = ~metadata.Primary;
+
+            if metadata.Sensor == mag.meta.Sensor.OBS
+                metadata.Sensor = mag.meta.Sensor.IBS;
+            else
+                metadata.Sensor = mag.meta.Sensor.OBS;
+            end
+
+            science = [science, mag.Science(science.Data([], :), metadata)];
+        end
+    end
+
     methods (Hidden, Static)
 
         % FINDMODECHANGES Improve estimate of mode change times.
         eventData = findModeChanges(data, eventData, name)
+
+        % UPDATERAMPMODETIMESTAMPS Improve estimate of ramp mode times.
+        eventData = updateRampModeTimestamps(eventData, data)
     end
 end

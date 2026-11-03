@@ -50,15 +50,15 @@ classdef JSON < mag.imap.meta.Provider
 
             data = readstruct(fileName, FileType = "json", AllowComments = true, AllowTrailingCommas = true);
 
-            this.applyMetadata(instrumentMetadata, data, "Instrument");
-            this.applyMetadata(primarySetup, data, "Primary");
-            this.applyMetadata(secondarySetup, data, "Secondary");
+            this.applyMetadata(instrumentMetadata, data, "Instrument", fileName);
+            this.applyMetadata(primarySetup, data, "Primary", fileName);
+            this.applyMetadata(secondarySetup, data, "Secondary", fileName);
         end
     end
 
     methods (Access = private)
 
-        function applyMetadata(this, metadata, topLevelData, topLevelField)
+        function applyMetadata(this, metadata, topLevelData, topLevelField, fileName)
 
             if isfield(topLevelData, topLevelField)
                 data = topLevelData.(topLevelField);
@@ -71,11 +71,11 @@ classdef JSON < mag.imap.meta.Provider
             for field = fields
 
                 if ~isprop(metadata, field)
-                    error("Invalid field ""%s"" in JSON file ""%s"".", field, fileName);
+                    error("mag:imap:InvalidMetadataField", "Invalid field ""%s"" in JSON file ""%s"".", field, fileName);
                 end
 
                 if isstruct(data.(field))
-                    this.applyMetadata(metadata.(field), data, field);
+                    this.applyMetadata(metadata.(field), data, field, fileName);
                 else
                     metadata.(field) = data.(field);
                 end

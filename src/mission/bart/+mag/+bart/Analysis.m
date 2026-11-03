@@ -79,38 +79,8 @@ classdef Analysis < mag.Analysis
             this.loadScienceData();
         end
 
-        function export(this, exportType, options)
-
-            arguments
-                this (1, 1) mag.bart.Analysis
-                exportType (1, 1) string {mustBeMember(exportType, "MAT")}
-                options.Location (1, 1) string {mustBeFolder} = "results"
-                options.StartTime (1, 1) datetime = NaT(TimeZone = "UTC")
-                options.EndTime (1, 1) datetime = NaT(TimeZone = "UTC")
-            end
-
-            % Determine export classes.
-            format = mag.bart.out.("Science" + exportType);
-
-            % Determine export window.
-            if ismissing(options.StartTime)
-                options.StartTime = datetime("-Inf", TimeZone = "UTC");
-            end
-
-            if ismissing(options.EndTime)
-                options.EndTime = datetime("Inf", TimeZone = "UTC");
-            end
-
-            period = timerange(options.StartTime, options.EndTime, "closed");
-
-            % Export full science.
-            if this.Results.HasScience
-
-                results = this.Results.copy();
-                results.crop(period);
-
-                mag.io.export(results, Location = options.Location, Format = format);
-            end
+        function export(~, varargin)
+            error("mag:bart:NoExportFormats", "No Bartington-specific export formats are currently supported.");
         end
     end
 

@@ -24,13 +24,8 @@ classdef DefaultFactory < mag.graphics.factory.Factory
             % Force MATLAB to finish opening any previous figure.
             drawnow();
 
-            % In MATLAB R2025a and above, force figures in the figures
-            % container.
-            if isMATLABReleaseOlderThan("R2025a")
-                windowStyle = "normal";
-            else
-                windowStyle = "docked";
-            end
+            % Force figures in the figures container.
+            windowStyle = "docked";
 
             % Create figure, or use provided parent.
             if isempty(options.Parent) || ~isvalid(options.Parent)

@@ -37,5 +37,14 @@ classdef (TestTags = ["Unit", "Parallel"]) tHelioSwarmAnalysis < matlab.unittest
             testCase.verifyEqual(mag.hs.Analysis.getCompleteScaleFactors(), expectedCompleteScaleFactors, ...
                 "Complete scale factor matrix should match expectation for iDPU.", RelTol = 1e-6);
         end
+
+        % Test that CDF export is rejected, as it is not implemented.
+        function export_cdfNotSupported(testCase)
+
+            analysis = mag.hs.Analysis();
+
+            testCase.verifyError(@() analysis.export("CDF", Location = pwd()), "MATLAB:validators:mustBeMember", ...
+                "Error should be thrown for unsupported export format.");
+        end
     end
 end

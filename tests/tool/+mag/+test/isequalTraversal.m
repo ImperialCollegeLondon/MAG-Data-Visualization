@@ -36,18 +36,8 @@ function [equality, difference] = isequalTraversal(a, b, propertyName)
         return;
     elseif istabular(a)
 
-        for i = 1:height(a)
-
-            for j = 1:width(a)
-
-                if ~isequaln(a{i, j}, b{i, j})
-
-                    equality = false;
-                    difference = compose("%s(%d, %d)", propertyName, i, j);
-                    return;
-                end
-            end
-        end
+        [equality, difference] = tabularTraversal(a, b, propertyName);
+        return;
     else
 
         for i = 1:numel(a)
@@ -58,6 +48,40 @@ function [equality, difference] = isequalTraversal(a, b, propertyName)
                 difference = compose("%s(%d)", propertyName, i);
                 return;
             end
+        end
+    end
+
+    equality = true;
+    difference = string.empty();
+end
+
+function [equality, difference] = tabularTraversal(a, b, propertyName)
+
+    % Check row times, then each variable, then other properties.
+    if istimetable(a) && ~isequaln(a.Properties.RowTimes, b.Properties.RowTimes)
+
+        [equality, difference] = mag.test.isequalTraversal(a.Properties.RowTimes, b.Properties.RowTimes, propertyName + ".Properties.RowTimes");
+        return;
+    end
+
+    for j = 1:width(a)
+
+        if ~isequaln(a{:, j}, b{:, j})
+
+            [equality, difference] = mag.test.isequalTraversal(a{:, j}, b{:, j}, compose("%s{:, %d}", propertyName, j));
+            return;
+        end
+    end
+
+    propertiesA = a.Properties;
+    propertiesB = b.Properties;
+
+    for n = string(fieldnames(propertiesA))'
+
+        if ~isequaln(propertiesA.(n), propertiesB.(n))
+
+            [equality, difference] = mag.test.isequalTraversal(propertiesA.(n), propertiesB.(n), propertyName + ".Properties." + n);
+            return;
         end
     end
 

@@ -131,7 +131,7 @@ classdef Analysis < mag.Analysis
 
             arguments
                 this (1, 1) mag.hs.Analysis
-                exportType (1, 1) string {mustBeMember(exportType, ["MAT", "CDF"])}
+                exportType (1, 1) string {mustBeMember(exportType, "MAT")}
                 options.Location (1, 1) string {mustBeFolder} = "results"
                 options.StartTime (1, 1) datetime = NaT(TimeZone = "UTC")
                 options.EndTime (1, 1) datetime = NaT(TimeZone = "UTC")

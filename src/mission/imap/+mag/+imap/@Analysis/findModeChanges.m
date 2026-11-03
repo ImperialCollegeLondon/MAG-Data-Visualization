@@ -104,14 +104,14 @@ function events = findModeChanges(data, events, name)
             % conventional.
             dt = seconds(diff(eventWindow.(timeColumn)));
 
-            idxOutlier = find(~ismembertol(dt, [0, 1 ./ 2.^(0:7)], 1e-3));
-            dt(idxOutlier) = dt(idxOutlier - 1);
+            dt(~ismembertol(dt, [0, 1 ./ 2.^(0:7)], 1e-3)) = NaN;
+            dt = fillmissing(dt, "previous", EndValues = "nearest");
 
             ddt = diff(dt);
 
             if all(ddt == 0)
                 events.Time(e) = eventWindow.t(1);
-            elseif all(ddt < 1e-3)
+            elseif all(abs(ddt) < 1e-3)
 
                 if seconds(t - eventWindow.t(1)) < 1.5
                     events.Time(e) = eventWindow.t(1);

@@ -2,7 +2,10 @@ classdef (TestTags = "System") tVisualize < AppTestCase
 % TVISUALIZE System tests for visualizing "DataVisualization" results.
 
     properties (Constant, Access = private)
-        ExcludedViews (1, :) string = mag.app.control.WaveletAnalyzer.Name
+        % EXCLUDEDVIEWS Views that open apps instead of figures. Opening
+        % Signal Analyzer with data can stall, as its import may never
+        % complete.
+        ExcludedViews (1, :) string = [mag.app.control.SignalAnalyzer.Name, mag.app.control.WaveletAnalyzer.Name]
     end
 
     properties (Access = private)
@@ -22,10 +25,6 @@ classdef (TestTags = "System") tVisualize < AppTestCase
 
         function initializeApp(testCase, TestDetails)
 
-            if isMATLABReleaseOlderThan("R2024b")
-                return;
-            end
-
             testCase.WorkingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
             testCase.copyDataToWorkingDirectory(testCase.WorkingDirectory, TestDetails.Folder);
 
@@ -38,19 +37,6 @@ classdef (TestTags = "System") tVisualize < AppTestCase
             testCase.choose(testCase.App.VisualizeTab);
             testCase.press(testCase.App.ShowFiguresButton);
             testCase.dismissDialog("uialert", testCase.App.UIFigure);
-        end
-    end
-
-    methods (TestClassTeardown)
-
-        % Close any apps that are not considered figures.
-        function closeAnalyzers(~)
-
-            try
-                signal.analyzer.Instance.close();
-            catch exception
-                warning(exception.identifier, "Could not close Signal Analyzer: %s", exception.message);
-            end
         end
     end
 

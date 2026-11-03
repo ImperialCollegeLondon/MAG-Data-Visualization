@@ -46,6 +46,10 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
         function [mode, primaryFrequency, secondaryFrequency, packetFrequency, timestamp] = extractFileMetadata(this, fileName)
         % EXTRACTMETADATA Extract metadata information from file name.
 
+            % Ignore folders, as their names can also match.
+            [~, name, extension] = fileparts(fileName);
+            fileName = name + extension;
+
             rawData = regexp(fileName, this.FileNamePattern, "names");
 
             % If no metadata was found, assume default values.

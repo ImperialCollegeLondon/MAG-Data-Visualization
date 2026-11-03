@@ -29,6 +29,31 @@ classdef (TestTags = ["Unit", "Parallel"]) tScienceMATOut < MAGIOTestCase & matl
             testCase.verifyEqual(actualFileName, expectedFileName, "Export file name should match expectation.");
         end
 
+        % Test that export file name uses secondary timestamp when primary
+        % sensor has none.
+        function getExportFileName_noPrimaryTimestamp(testCase)
+
+            % Set up.
+            primaryMetadata = mag.meta.Science(Mode = "Burst", ...
+                Primary = true, ...
+                DataFrequency = 128, ...
+                Timestamp = NaT());
+
+            secondaryMetadata = mag.meta.Science(Mode = "Burst", ...
+                DataFrequency = 64, ...
+                Timestamp = datetime(2025, 1, 2, 3, 4, 5));
+
+            data = mag.imap.Instrument(Science = [mag.Science(timetable.empty(), primaryMetadata), ...
+                mag.Science(timetable.empty(), secondaryMetadata)]);
+
+            % Exercise.
+            format = mag.imap.out.ScienceMAT();
+            actualFileName = format.getExportFileName(data);
+
+            % Verify.
+            testCase.verifyEqual(actualFileName, "020125-0304 Burst (128, 64).mat", "Export file name should match expectation.");
+        end
+
         % Test that export file name is generated correctly for I-ALiRT.
         function getExportFileName_IALiRT(testCase)
 

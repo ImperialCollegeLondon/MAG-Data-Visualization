@@ -3,6 +3,20 @@ classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < MAGViewTestCase
 
     methods (Test)
 
+        % Test that views do not share the same transformation.
+        function transformationNotShared(testCase)
+
+            % Set up.
+            instrument = testCase.createTestInstrument();
+
+            % Exercise.
+            view1 = mag.imap.view.Spectrogram(instrument);
+            view2 = mag.imap.view.Spectrogram(instrument);
+
+            % Verify.
+            testCase.verifyNotSameHandle(view1.Transformation, view2.Transformation, "Views should have separate transformations.");
+        end
+
         % Test that spectrogram is generated correctly when start and
         % duration are provided.
         function spectrogramStartDuration(testCase)

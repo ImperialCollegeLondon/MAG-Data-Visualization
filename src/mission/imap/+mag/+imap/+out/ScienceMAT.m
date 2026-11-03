@@ -20,7 +20,14 @@ classdef ScienceMAT < mag.io.out.MAT
                 format = "%s %s (%d, %d)";
             end
 
-            fileName = compose(format, datestr(data.Primary.Metadata.Timestamp, "ddmmyy-hhMM"), ...
+            % Primary sensor may have no data left after cropping.
+            timestamp = data.Primary.Metadata.Timestamp;
+
+            if ismissing(timestamp)
+                timestamp = data.Secondary.Metadata.Timestamp;
+            end
+
+            fileName = compose(format, datestr(timestamp, "ddmmyy-hhMM"), ...
                 data.Primary.Metadata.Mode, data.Primary.Metadata.DataFrequency, data.Secondary.Metadata.DataFrequency) + this.Extension; %#ok<DATST>
         end
 

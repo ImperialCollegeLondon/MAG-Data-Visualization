@@ -2,7 +2,6 @@
 
 [![Imperial College Space Magnetometer Laboratory](https://img.shields.io/badge/Author-Space%20Magnetometer%20Laboratory-ff69b4.svg)][sml]
 [![MATLAB Tests](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/test.yml/badge.svg)](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/test.yml)
-[![MATLAB Toolbox](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml/badge.svg)](https://github.com/ImperialCollegeLondon/MAG-Data-Visualization-Toolbox/actions/workflows/package.yml)
 [![View MAG Data Visualization Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/169568)
 
 MATLAB toolbox for processing, exporting and visualizing magnetometer (MAG) science and housekeeping (HK) data. It includes an app for interactive analysis, as well as functions and classes for scripting.
@@ -14,12 +13,12 @@ Supported missions and instruments:
 | Bartington   | ✓               | –              |
 | HelioSwarm   | ✓               | MAT            |
 | HENON        | ✓               | –              |
-| IMAP         | ✓               | MAT, CDF       |
+| IMAP         | ✓               | MAT            |
 | Vigil        | ✓               | –              |
 
 ## Requirements
 
-MATLAB R2024b or later, with:
+MATLAB R2025a or later, with:
 
 * Signal Processing Toolbox
 * Statistics and Machine Learning Toolbox
@@ -112,11 +111,15 @@ See [internal documentation](https://imperialcollege.atlassian.net/wiki/spaces/P
 
 ### Install
 
+Development requires MATLAB R2026b or later, as older releases cannot read the package definition. The toolbox itself still runs on the releases listed in [Requirements](#requirements).
+
 Clone this repository and install the package for development:
 
 ``` matlab
 mpminstall(pwd(), Authoring = true);
 ```
+
+Install the package again after changing `resources/mpackage.json`, as MATLAB keeps its own copy of the definition of installed packages.
 
 When developing new features or fixing issues, create a new branch, and write tests to cover any new changes.
 
@@ -138,6 +141,10 @@ buildtool package                   % package code into toolbox
 ```
 
 Only use `-parallel` with `test:parallel`, as other tests (e.g., app tests) cannot run on parallel workers.
+
+To test on an older release, package the toolbox with R2026b, and copy it to the root folder. The build installs any toolbox in the root folder as soon as it starts, and tests run on it rather than on the source code. The `coverage` and `package` tasks are not available on older releases.
+
+A build fails if any test cannot be loaded, rather than running without it.
 
 Tests are tagged by category, so that they can be selected with any MATLAB test tool:
 
@@ -166,6 +173,9 @@ IMAP tests require the SPICE and CDF external libraries; tests of the "Wavelet A
 
 1. Update the version in the package definition file, `resources/mpackage.json`. The toolbox version is derived from it.
 2. Describe the changes in `resources/release-notes.md`.
+3. Push a tag with the same version (e.g., `v1.2.3`).
+
+The toolbox is built once, with MATLAB R2026b. Pushing a tag publishes that same toolbox as a GitHub release, only if tests pass on all supported releases.
 
 ### Uninstall
 

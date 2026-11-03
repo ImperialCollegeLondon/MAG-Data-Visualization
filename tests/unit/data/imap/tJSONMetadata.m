@@ -110,7 +110,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tJSONMetadata < matlab.unittest.TestC
             jsonProvider = mag.imap.meta.JSON();
             testCase.assertTrue(jsonProvider.isSupported(jsonFile), "Metadata file should be supported.");
 
-            testCase.verifyError(@() jsonProvider.load(jsonFile, instrumentMetadata, primarySetup, secondarySetup), ?MException, ...
+            testCase.verifyError(@() jsonProvider.load(jsonFile, instrumentMetadata, primarySetup, secondarySetup), "mag:imap:InvalidMetadataField", ...
                 "Error should be thrown when invalid property name is used.");
         end
     end

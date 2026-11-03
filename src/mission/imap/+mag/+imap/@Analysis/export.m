@@ -2,7 +2,7 @@ function export(this, exportType, options)
 
     arguments
         this (1, 1) mag.imap.Analysis
-        exportType (1, 1) string {mustBeMember(exportType, ["MAT", "CDF"])}
+        exportType (1, 1) string {mustBeMember(exportType, "MAT")}
         options.Location (1, 1) string {mustBeFolder} = "results"
         options.StartTime (1, 1) datetime = NaT(TimeZone = "UTC")
         options.EndTime (1, 1) datetime = NaT(TimeZone = "UTC")
@@ -25,47 +25,31 @@ function export(this, exportType, options)
 
     % Export full science.
     if this.Results.HasScience
-
-        results = this.Results.copy();
-        results.crop(period);
-
-        mag.io.export(results, Location = options.Location, Format = scienceFormat);
+        cropAndExport(this.Results.copy(), period, options.Location, scienceFormat);
     end
 
     % Export each mode.
-    modes = this.getAllModes();
-
-    for m = modes
-
-        m.crop(period);
-        mag.io.export(m, Location = options.Location, Format = scienceFormat);
+    for m = this.getAllModes()
+        cropAndExport(m, period, options.Location, scienceFormat);
     end
 
     % Export I-ALiRT.
-    iALiRT = this.Results.IALiRT;
-
-    if ~isempty(iALiRT)
-
-        iALiRT.crop(period);
-        mag.io.export(iALiRT, Location = options.Location, Format = scienceFormat);
+    if this.Results.HasIALiRT
+        cropAndExport(this.Results.IALiRT.copy(), period, options.Location, scienceFormat);
     end
 
     % Export range cycling.
     rangeCycling = this.getRangeCycling();
 
     if ~isempty(rangeCycling)
-
-        mag.io.export(rangeCycling, Location = options.Location, Format = scienceFormat, ...
-            FileName = compose("%s Range Cycling", datestr(rangeCycling.Metadata.Timestamp, "ddmmyy-hhMM")) + scienceFormat.Extension); %#ok<DATST>
+        cropAndExport(rangeCycling, period, options.Location, scienceFormat, "Range Cycling");
     end
 
     % Export ramp mode.
     rampMode = this.getRampMode();
 
     if ~isempty(rampMode)
-
-        mag.io.export(rampMode, Location = options.Location, Format = scienceFormat, ...
-            FileName = compose("%s Ramp Mode", datestr(rampMode.Metadata.Timestamp, "ddmmyy-hhMM")) + scienceFormat.Extension); %#ok<DATST>
+        cropAndExport(rampMode, period, options.Location, scienceFormat, "Ramp Mode");
     end
 
     % Export HK data.
@@ -74,6 +58,35 @@ function export(this, exportType, options)
         hk = this.Results.HK.copy();
         hk.crop(period);
 
-        mag.io.export(hk, Location = options.Location, Format = hkFormat);
+        if any([hk.HasData])
+            mag.io.export(hk, Location = options.Location, Format = hkFormat);
+        end
+    end
+end
+
+function cropAndExport(data, period, location, format, name)
+% CROPANDEXPORT Crop data to export window, and export any data that is
+% left. Cropping modifies data, so it must not be shared with the analysis.
+
+    arguments
+        data (1, 1)
+        period (1, 1) timerange
+        location (1, 1) string
+        format (1, 1) mag.io.out.Format
+        name string {mustBeScalarOrEmpty} = string.empty()
+    end
+
+    data.crop(period);
+
+    if ~data.HasScience
+        return;
+    end
+
+    if isempty(name)
+        mag.io.export(data, Location = location, Format = format);
+    else
+
+        mag.io.export(data, Location = location, Format = format, ...
+            FileName = compose("%s %s", datestr(data.Metadata.Timestamp, "ddmmyy-hhMM"), name) + format.Extension); %#ok<DATST>
     end
 end
