@@ -115,6 +115,7 @@ function combinedData = combineHK(data)
         md = selectedData(1).Metadata.copy();
         md.set(Timestamp = min([metadata(locSelection).Timestamp]));
 
-        combinedData(end + 1) = mag.imap.hk.dispatchHKType(td, md); %#ok<AGROW>
+        % Keep the class of the imported data, which depends on its type.
+        combinedData(end + 1) = feval(class(selectedData(1)), td, md); %#ok<AGROW>
     end
 end

@@ -1,5 +1,6 @@
 classdef Event < mag.graphics.chart.Chart
-% EVENT Custom chart for plotting IMAP events.
+% EVENT Custom chart for plotting events, as a line for each value until
+% the next event.
 
     properties
         % EVENTOFINTEREST Event name to plot.
@@ -12,6 +13,9 @@ classdef Event < mag.graphics.chart.Chart
         IgnoreMissing (1, 1) logical = true
         % COMBINEEVENETS Combine events with equal values.
         CombineEvents (1, 1) logical = true
+        % MISSINGLABEL Label of events with missing values. If empty, they
+        % are not labeled.
+        MissingLabel string {mustBeScalarOrEmpty} = string.empty()
     end
 
     methods
@@ -19,7 +23,7 @@ classdef Event < mag.graphics.chart.Chart
         function this = Event(options)
 
             arguments
-                options.?mag.imap.chart.Event
+                options.?mag.graphics.chart.Event
             end
 
             this.assignProperties(options);
@@ -28,7 +32,7 @@ classdef Event < mag.graphics.chart.Chart
         function graph = plot(this, data, axes, ~)
 
             arguments (Input)
-                this (1, 1) mag.imap.chart.Event
+                this (1, 1) mag.graphics.chart.Event
                 data {mustBeA(data, ["mag.Science", "timetable"])}
                 axes (1, 1) matlab.graphics.axis.Axes
                 ~
@@ -106,16 +110,13 @@ classdef Event < mag.graphics.chart.Chart
                 end
             end
 
-            % Plot ramp mode.
+            % Plot label of missing values.
             locMissing = ismissing(variable);
 
-            if any(locMissing)
-
-                v = 0.5;
-                t = "Ramp";
+            if any(locMissing) && ~isempty(this.MissingLabel)
 
                 for i = find(locMissing')
-                    text(axes, mean(graph(i).XData), v, t, HorizontalAlignment = "center", VerticalAlignment = "middle", Rotation = 90);
+                    text(axes, mean(graph(i).XData), 0.5, this.MissingLabel, HorizontalAlignment = "center", VerticalAlignment = "middle", Rotation = 90);
                 end
             end
 
