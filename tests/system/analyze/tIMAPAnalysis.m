@@ -54,7 +54,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"), ...
-                @() mag.test.baselineDifference(analysis.Results, "results.mat", "results"));
+                @() disp(mag.test.baselineDifference(analysis.Results, "results.mat", "results")));
         end
 
         % Test that analysis with FOB only returns expected results.
@@ -84,7 +84,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"), ...
-                @() mag.test.baselineDifference(analysis.Results, "results.mat", "results"));
+                @() disp(mag.test.baselineDifference(analysis.Results, "results.mat", "results")));
         end
 
         % Test that analysis of S/C test returns expected results.
@@ -111,7 +111,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"), ...
-                @() mag.test.baselineDifference(analysis.Results, "results.mat", "results"));
+                @() disp(mag.test.baselineDifference(analysis.Results, "results.mat", "results")));
         end
 
         % Test that analysis of L1b CDF files returns expected results.
@@ -148,7 +148,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
 
             testCase.assertNotEmpty(analysis.Results, "Results should not be empty.");
             testCase.verifyEqualsBaseline(analysis.Results, matlabtest.baselines.MATFileBaseline("results.mat", VariableName = "results"), ...
-                @() mag.test.baselineDifference(analysis.Results, "results.mat", "results"));
+                @() disp(mag.test.baselineDifference(analysis.Results, "results.mat", "results")));
         end
 
         % Test that analysis of L1b CDF files with data from only one
