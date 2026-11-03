@@ -9,7 +9,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tField < mag.test.case.ViewController
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             field = mag.app.control.Field(@mag.bart.view.Field);
@@ -28,7 +28,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tField < mag.test.case.ViewController
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             field = mag.app.control.Field(@mag.bart.view.Field);

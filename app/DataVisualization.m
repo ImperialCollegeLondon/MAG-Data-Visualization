@@ -48,7 +48,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
         SelectMissionDialog mag.app.internal.SelectMissionDialog {mustBeScalarOrEmpty}
         Mission mag.meta.Mission {mustBeScalarOrEmpty}
         Provider mag.app.Provider {mustBeScalarOrEmpty}
-        Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
+        Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.Model.empty()
         ToolbarManager mag.app.manage.ToolbarManager {mustBeScalarOrEmpty}
         AnalysisManager mag.app.manage.AnalysisManager {mustBeScalarOrEmpty}
         ResultsManager mag.app.manage.Manager {mustBeScalarOrEmpty}
@@ -227,20 +227,7 @@ classdef (Sealed) DataVisualization < matlab.mixin.SetGet
 
             app.Mission = mission;
 
-            switch app.Mission
-                case mag.meta.Mission.Bartington
-                    app.Provider = mag.app.bart.Provider();
-                case mag.meta.Mission.HENON
-                    app.Provider = mag.app.henon.Provider();
-                case mag.meta.Mission.HelioSwarm
-                    app.Provider = mag.app.hs.Provider();
-                case mag.meta.Mission.IMAP
-                    app.Provider = mag.app.imap.Provider();
-                case mag.meta.Mission.Vigil
-                    app.Provider = mag.app.vigil.Provider();
-                otherwise
-                    error("mag:app:UnsupportedMission", "%s mission not supported.", app.Mission.DisplayName);
-            end
+            app.Provider = mag.app.Provider(app.Mission);
 
             % Set managers.
             app.Model = app.Provider.getModel();

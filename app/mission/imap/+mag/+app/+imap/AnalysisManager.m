@@ -2,17 +2,11 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
 % ANALYSISMANAGER Manager for analysis of IMAP data.
 
     properties (SetAccess = private)
-        AnalyzeSettingsLayout matlab.ui.container.GridLayout
-        LocationEditField matlab.ui.control.EditField
-        LocationEditFieldLabel matlab.ui.control.Label
-        BrowseButton matlab.ui.control.Button
         LevelDropDown matlab.ui.control.DropDown
         MetadataPatternEditField matlab.ui.control.EditField
         MetadataPatternEditFieldLabel matlab.ui.control.Label
         EventPatternEditField matlab.ui.control.EditField
         EventPatternEditFieldLabel matlab.ui.control.Label
-        SciencePatternEditField matlab.ui.control.EditField
-        SciencePatternEditFieldLabel matlab.ui.control.Label
         IALiRTPatternEditField matlab.ui.control.EditField
         IALiRTPatternEditFieldLabel matlab.ui.control.Label
         HKPatternEditField matlab.ui.control.EditField
@@ -21,180 +15,109 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
 
     methods
 
-        function instantiate(this, parent)
+        function this = AnalysisManager()
 
-            % Create AnalyzeSettingsLayout.
-            this.AnalyzeSettingsLayout = uigridlayout(parent);
-            this.AnalyzeSettingsLayout.ColumnWidth = ["fit", "1x", "fit"];
-            this.AnalyzeSettingsLayout.RowHeight = ["1x", "1x", "1x", "1x", "1x", "1x", "1x"];
+            this@mag.app.manage.AnalysisManager(mag.meta.Mission.IMAP);
+            this.RowHeight = ["1x", "1x", "1x", "1x", "1x", "1x", "1x"];
+        end
+    end
 
-            % Create LocationEditFieldLabel.
-            this.LocationEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
-            this.LocationEditFieldLabel.HorizontalAlignment = "right";
-            this.LocationEditFieldLabel.Layout.Row = 1;
-            this.LocationEditFieldLabel.Layout.Column = 1;
-            this.LocationEditFieldLabel.Text = "Location:";
+    methods (Access = protected)
 
-            % Create LocationEditField.
-            this.LocationEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
-            this.LocationEditField.Layout.Row = 1;
-            this.LocationEditField.Layout.Column = 2;
-
-            % Create BrowseButton.
-            this.BrowseButton = uibutton(this.AnalyzeSettingsLayout, "push");
-            this.BrowseButton.ButtonPushedFcn = @(~, ~) this.browseButtonPushed();
-            this.BrowseButton.Layout.Row = 1;
-            this.BrowseButton.Layout.Column = 3;
-            this.BrowseButton.Text = "Browse";
+        function instantiateSettings(this, layout)
 
             % Create LevelDropDown.
             supportedLevels = [mag.imap.meta.Level.L1a, mag.imap.meta.Level.L1b];
 
-            levelLabel = uilabel(this.AnalyzeSettingsLayout, Text = "Level:", HorizontalAlignment = "right");
+            levelLabel = uilabel(layout, Text = "Level:", HorizontalAlignment = "right");
             levelLabel.Layout.Row = 2;
             levelLabel.Layout.Column = 1;
 
-            this.LevelDropDown = uidropdown(this.AnalyzeSettingsLayout, Tooltip = "Level L1b might require a change in the ""Science pattern"" setting (e.g., ""data/imap/mag/l1b/*/*/*.cdf"").");
+            this.LevelDropDown = uidropdown(layout, Tooltip = "Level L1b might require a change in the ""Science pattern"" setting (e.g., ""data/imap/mag/l1b/*/*/*.cdf"").");
             this.LevelDropDown.Items = string(supportedLevels);
             this.LevelDropDown.ItemsData = supportedLevels;
             this.LevelDropDown.Layout.Row = 2;
             this.LevelDropDown.Layout.Column = [2, 3];
 
             % Create EventPatternEditFieldLabel.
-            this.EventPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
+            this.EventPatternEditFieldLabel = uilabel(layout);
             this.EventPatternEditFieldLabel.HorizontalAlignment = "right";
             this.EventPatternEditFieldLabel.Layout.Row = 3;
             this.EventPatternEditFieldLabel.Layout.Column = 1;
             this.EventPatternEditFieldLabel.Text = "Event pattern:";
 
             % Create EventPatternEditField.
-            this.EventPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
+            this.EventPatternEditField = uieditfield(layout, "text");
             this.EventPatternEditField.Layout.Row = 3;
             this.EventPatternEditField.Layout.Column = [2, 3];
 
             % Create MetadataPatternEditFieldLabel.
-            this.MetadataPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
+            this.MetadataPatternEditFieldLabel = uilabel(layout);
             this.MetadataPatternEditFieldLabel.HorizontalAlignment = "right";
             this.MetadataPatternEditFieldLabel.Layout.Row = 4;
             this.MetadataPatternEditFieldLabel.Layout.Column = 1;
             this.MetadataPatternEditFieldLabel.Text = "Metadata pattern:";
 
             % Create MetadataPatternEditField.
-            this.MetadataPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
+            this.MetadataPatternEditField = uieditfield(layout, "text");
             this.MetadataPatternEditField.Layout.Row = 4;
             this.MetadataPatternEditField.Layout.Column = [2, 3];
 
             % Create SciencePatternEditFieldLabel.
-            this.SciencePatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
+            this.SciencePatternEditFieldLabel = uilabel(layout);
             this.SciencePatternEditFieldLabel.HorizontalAlignment = "right";
             this.SciencePatternEditFieldLabel.Layout.Row = 5;
             this.SciencePatternEditFieldLabel.Layout.Column = 1;
             this.SciencePatternEditFieldLabel.Text = "Science pattern:";
 
             % Create SciencePatternEditField.
-            this.SciencePatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
+            this.SciencePatternEditField = uieditfield(layout, "text");
             this.SciencePatternEditField.Layout.Row = 5;
             this.SciencePatternEditField.Layout.Column = [2, 3];
 
             % Create IALiRTPatternEditFieldLabel.
-            this.IALiRTPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
+            this.IALiRTPatternEditFieldLabel = uilabel(layout);
             this.IALiRTPatternEditFieldLabel.HorizontalAlignment = "right";
             this.IALiRTPatternEditFieldLabel.Layout.Row = 6;
             this.IALiRTPatternEditFieldLabel.Layout.Column = 1;
             this.IALiRTPatternEditFieldLabel.Text = "I-ALiRT pattern:";
 
             % Create IALiRTPatternEditField.
-            this.IALiRTPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
+            this.IALiRTPatternEditField = uieditfield(layout, "text");
             this.IALiRTPatternEditField.Layout.Row = 6;
             this.IALiRTPatternEditField.Layout.Column = [2, 3];
 
             % Create HKPatternEditFieldLabel.
-            this.HKPatternEditFieldLabel = uilabel(this.AnalyzeSettingsLayout);
+            this.HKPatternEditFieldLabel = uilabel(layout);
             this.HKPatternEditFieldLabel.HorizontalAlignment = "right";
             this.HKPatternEditFieldLabel.Layout.Row = 7;
             this.HKPatternEditFieldLabel.Layout.Column = 1;
             this.HKPatternEditFieldLabel.Text = "HK pattern:";
 
             % Create HKPatternEditField.
-            this.HKPatternEditField = uieditfield(this.AnalyzeSettingsLayout, "text");
+            this.HKPatternEditField = uieditfield(layout, "text");
             this.HKPatternEditField.Layout.Row = 7;
             this.HKPatternEditField.Layout.Column = [2, 3];
-
-            % Reset.
-            this.reset();
         end
 
-        function reset(this)
+        function resetSettings(this, defaultAnalysis)
 
-            dummyAnalysis = mag.imap.Analysis();
-
-            this.LocationEditField.Value = string.empty();
             this.LevelDropDown.ValueIndex = 1;
-            this.EventPatternEditField.Value = join(dummyAnalysis.EventPattern, pathsep());
-            this.MetadataPatternEditField.Value = join(dummyAnalysis.MetadataPattern, pathsep());
-            this.SciencePatternEditField.Value = dummyAnalysis.SciencePattern;
-            this.IALiRTPatternEditField.Value = dummyAnalysis.IALiRTPattern;
-            this.HKPatternEditField.Value = join(dummyAnalysis.HKPattern, pathsep());
+            this.EventPatternEditField.Value = join(defaultAnalysis.EventPattern, pathsep());
+            this.MetadataPatternEditField.Value = join(defaultAnalysis.MetadataPattern, pathsep());
+            this.SciencePatternEditField.Value = defaultAnalysis.SciencePattern;
+            this.IALiRTPatternEditField.Value = defaultAnalysis.IALiRTPattern;
+            this.HKPatternEditField.Value = join(defaultAnalysis.HKPattern, pathsep());
         end
 
-        function options = getAnalysisOptions(this)
+        function options = getSettingsOptions(this)
 
-            % Validate location.
-            location = this.LocationEditField.Value;
-
-            if isempty(location)
-                error("mag:app:EmptyLocation", "Location is empty.");
-            elseif ~isfolder(location)
-                error("mag:app:NonexistentLocation", "Location ""%s"" does not exist.", location);
-            end
-
-            % Retrieve data file patterns.
-            if isempty(this.EventPatternEditField.Value)
-                eventPattern = string.empty();
-            else
-                eventPattern = split(this.EventPatternEditField.Value, pathsep())';
-            end
-
-            if isempty(this.MetadataPatternEditField.Value)
-                metadataPattern = string.empty();
-            else
-                metadataPattern = split(this.MetadataPatternEditField.Value, pathsep())';
-            end
-
-            if isempty(this.HKPatternEditField.Value)
-                hkPattern = string.empty();
-            else
-                hkPattern = split(this.HKPatternEditField.Value, pathsep())';
-            end
-
-            options = {"Location", this.LocationEditField.Value, ...
-                "Level", this.LevelDropDown.Value, ...
-                "EventPattern", eventPattern, ...
-                "MetadataPattern", metadataPattern, ...
+            options = {"Level", this.LevelDropDown.Value, ...
+                "EventPattern", this.splitPatterns(this.EventPatternEditField.Value), ...
+                "MetadataPattern", this.splitPatterns(this.MetadataPatternEditField.Value), ...
                 "SciencePattern", this.SciencePatternEditField.Value, ...
                 "IALiRTPattern", this.IALiRTPatternEditField.Value, ...
-                "HKPattern", hkPattern};
-        end
-    end
-
-    methods (Access = protected)
-
-        function modelChangedCallback(~, ~, ~)
-            % do nothing
-        end
-    end
-
-    methods (Access = private)
-
-        function browseButtonPushed(this)
-
-            location = uigetdir(this.LocationEditField.Value, "Select Data Root");
-
-            if ~isequal(location, 0)
-                this.LocationEditField.Value = location;
-            end
-
-            this.LocationEditField.focus();
+                "HKPattern", this.splitPatterns(this.HKPatternEditField.Value)};
         end
     end
 end

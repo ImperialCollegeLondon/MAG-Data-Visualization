@@ -1,22 +1,25 @@
-classdef (Abstract) Model < mag.mixin.SetGet
-% MODEL Abstract base class for mission analysis models.
+classdef Model < mag.mixin.SetGet
+% MODEL Mission analysis model.
 
     events
         % MODELCHANGED Model changed.
         ModelChanged
     end
 
-    properties (Abstract, Constant, Access = protected)
-        % ANALYSISCLASSNAME Name of analysis class.
-        AnalysisClassName (1, 1) string
+    properties (SetAccess = immutable)
+        % MISSION Mission to analyze.
+        Mission (1, 1) mag.meta.Mission
     end
 
     properties (SetAccess = private)
-        % ANALYSIS Analysis results.
-        Analysis mag.Analysis {mustBeScalarOrEmpty} = mag.imap.Analysis.empty()
+        % ANALYSIS Analysis results. It is an empty analysis of the mission
+        % until one is loaded, as "mag.Analysis" is abstract.
+        Analysis {mustBeScalarOrEmpty}
     end
 
     properties (Dependent, SetAccess = private)
+        % ANALYSISCLASSNAME Name of analysis class.
+        AnalysisClassName (1, 1) string
         % HASANALYSIS Logical denoting whether analysis is available.
         HasAnalysis (1, 1) logical
         % TIMERANGE Time range for analysis.
@@ -28,6 +31,20 @@ classdef (Abstract) Model < mag.mixin.SetGet
     end
 
     methods
+
+        function this = Model(mission)
+
+            arguments
+                mission (1, 1) mag.meta.Mission
+            end
+
+            this.Mission = mission;
+            this.Analysis = feval(this.AnalysisClassName + ".empty");
+        end
+
+        function value = get.AnalysisClassName(this)
+            value = "mag." + this.Mission.PackageName + ".Analysis";
+        end
 
         function analyze(this, options)
         % ANALYZE Perform analysis.

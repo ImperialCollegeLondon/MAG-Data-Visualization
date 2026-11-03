@@ -1,5 +1,5 @@
 classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewControllerTestCase
-% TMODEL Unit tests for "mag.app.Model" classes.
+% TMODEL Unit tests for "mag.app.Model" class.
 
     properties (Access = private)
         EventTriggered (1, 1) logical = false
@@ -11,16 +11,16 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
 
     properties (TestParameter)
         ModelDetails = { ...
-            struct(Model = "mag.app.bart.Model", Analysis = "mag.bart.Analysis"), ...
-            struct(Model = "mag.app.henon.Model", Analysis = "mag.henon.Analysis"), ...
-            struct(Model = "mag.app.hs.Model", Analysis = "mag.hs.Analysis"), ...
-            struct(Model = "mag.app.imap.Model", Analysis = "mag.imap.Analysis"), ...
-            struct(Model = "mag.app.vigil.Model", Analysis = "mag.vigil.Analysis")}
+            struct(Mission = mag.meta.Mission.Bartington, Analysis = "mag.bart.Analysis"), ...
+            struct(Mission = mag.meta.Mission.HENON, Analysis = "mag.henon.Analysis"), ...
+            struct(Mission = mag.meta.Mission.HelioSwarm, Analysis = "mag.hs.Analysis"), ...
+            struct(Mission = mag.meta.Mission.IMAP, Analysis = "mag.imap.Analysis"), ...
+            struct(Mission = mag.meta.Mission.Vigil, Analysis = "mag.vigil.Analysis")}
         AnalysisDetails = { ...
-            struct(Model = "mag.app.bart.Model", Analysis = "mag.bart.Analysis", Folder = "bart"), ...
-            struct(Model = "mag.app.henon.Model", Analysis = "mag.henon.Analysis", Folder = "henon"), ...
-            struct(Model = "mag.app.hs.Model", Analysis = "mag.hs.Analysis", Folder = fullfile("hs", "single_file")), ...
-            struct(Model = "mag.app.vigil.Model", Analysis = "mag.vigil.Analysis", Folder = "vigil")}
+            struct(Mission = mag.meta.Mission.Bartington, Analysis = "mag.bart.Analysis", Folder = "bart"), ...
+            struct(Mission = mag.meta.Mission.HENON, Analysis = "mag.henon.Analysis", Folder = "henon"), ...
+            struct(Mission = mag.meta.Mission.HelioSwarm, Analysis = "mag.hs.Analysis", Folder = fullfile("hs", "single_file")), ...
+            struct(Mission = mag.meta.Mission.Vigil, Analysis = "mag.vigil.Analysis", Folder = "vigil")}
     end
 
     methods (Test)
@@ -39,7 +39,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
             % Exercise.
             testCase.EventTriggered = false;
 
-            model = feval(ModelDetails.Model);
+            model = mag.app.Model(ModelDetails.Mission);
             model.addlistener("ModelChanged", @testCase.trigger);
 
             model.load(workingDirectory.Folder);
@@ -62,7 +62,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
             % Exercise and verify.
             testCase.EventTriggered = false;
 
-            model = feval(ModelDetails.Model);
+            model = mag.app.Model(ModelDetails.Mission);
             model.addlistener("ModelChanged", @testCase.trigger);
 
             testCase.verifyError(@() model.load(workingDirectory.Folder), ?MException, ...
@@ -87,7 +87,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
 
             testCase.EventTriggered = false;
 
-            model = feval(ModelDetails.Model);
+            model = mag.app.Model(ModelDetails.Mission);
             model.addlistener("ModelChanged", @testCase.trigger);
 
             % Exercise.
@@ -118,7 +118,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
 
             testCase.EventTriggered = false;
 
-            model = feval(ModelDetails.Model);
+            model = mag.app.Model(ModelDetails.Mission);
             model.addlistener("ModelChanged", @testCase.trigger);
 
             % Exercise.
@@ -138,7 +138,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
         function createLoadTask_nonexistentFile(testCase)
 
             % Set up.
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
 
             % Exercise and verify.
             testCase.verifyError(@() model.createLoadTask("this/file/does-not/exist.mat"), "MATLAB:validators:mustBeFile", ...
@@ -154,7 +154,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
 
             testCase.EventTriggered = false;
 
-            model = feval(AnalysisDetails.Model);
+            model = mag.app.Model(AnalysisDetails.Mission);
             model.addlistener("ModelChanged", @testCase.trigger);
 
             % Exercise.
@@ -182,11 +182,11 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
             % Set up.
             location = testCase.getTestDataLocation(AnalysisDetails.Folder);
 
-            expectedModel = feval(AnalysisDetails.Model);
+            expectedModel = mag.app.Model(AnalysisDetails.Mission);
             expectedModel.analyze({"Location", location});
 
             % Exercise.
-            model = feval(AnalysisDetails.Model);
+            model = mag.app.Model(AnalysisDetails.Mission);
 
             task = model.createAnalysisTask({"Location", location});
             task.start();
@@ -204,7 +204,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
             % Set up.
             testCase.EventTriggered = false;
 
-            model = feval(AnalysisDetails.Model);
+            model = mag.app.Model(AnalysisDetails.Mission);
             model.addlistener("ModelChanged", @testCase.trigger);
 
             % Exercise.
@@ -226,7 +226,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
             % Set up.
             workingDirectory = testCase.applyFixture(matlab.unittest.fixtures.WorkingFolderFixture());
 
-            model = mag.app.hs.Model();
+            model = mag.app.Model(mag.meta.Mission.HelioSwarm);
             model.analyze({"Location", testCase.getTestDataLocation(fullfile("hs", "single_file"))});
 
             % Exercise.
@@ -246,7 +246,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
         function createExportTask_noAnalysis(testCase, ModelDetails)
 
             % Set up.
-            model = feval(ModelDetails.Model);
+            model = mag.app.Model(ModelDetails.Mission);
 
             % Exercise and verify.
             testCase.verifyError(@() model.createExportTask({"MAT"}), "mag:app:NoAnalysis", ...
@@ -259,7 +259,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tModel < mag.test.case.ViewController
             % Set up.
             testCase.EventTriggered = false;
 
-            model = feval(ModelDetails.Model);
+            model = mag.app.Model(ModelDetails.Mission);
             model.addlistener("ModelChanged", @testCase.trigger);
 
             % Exercise.

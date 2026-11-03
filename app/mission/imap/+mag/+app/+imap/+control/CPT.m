@@ -68,6 +68,11 @@ classdef CPT < mag.app.Control & mag.app.mixin.Filter
             supported = results.HasScience;
         end
 
+        function data = getVisualizeData(~, analysis)
+        % GETVISUALIZEDATA Visualize whole analysis, not only its results.
+            data = analysis;
+        end
+
         function command = getVisualizeCommand(this, results)
 
             arguments (Input)

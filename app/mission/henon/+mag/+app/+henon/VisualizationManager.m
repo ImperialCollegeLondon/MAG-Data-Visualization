@@ -1,10 +1,6 @@
 classdef VisualizationManager < mag.app.manage.VisualizationManager
 % VISUALIZATIONMANAGER Manager for visualization of HENON analysis.
 
-    properties (Constant, Access = protected)
-        EmptyModel = mag.app.henon.Model.empty()
-    end
-
     methods
 
         function supportedVisualizations = getSupportedVisualizations(~, ~)

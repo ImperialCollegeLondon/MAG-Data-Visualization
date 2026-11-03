@@ -1,10 +1,6 @@
 classdef VisualizationManager < mag.app.manage.VisualizationManager
 % VISUALIZATIONMANAGER Manager for visualization of Vigil analysis.
 
-    properties (Constant, Access = protected)
-        EmptyModel = mag.app.vigil.Model.empty()
-    end
-
     methods
 
         function supportedVisualizations = getSupportedVisualizations(~, ~)

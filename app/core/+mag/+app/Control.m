@@ -20,7 +20,7 @@ classdef (Abstract) Control < mag.app.manage.Manager
 
     properties (WeakHandle)
         % MODEL Sensor calibration model.
-        Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.imap.Model.empty()
+        Model mag.app.Model {mustBeScalarOrEmpty} = mag.app.Model.empty()
     end
 
     properties (Dependent)
@@ -45,6 +45,13 @@ classdef (Abstract) Control < mag.app.manage.Manager
 
         function reset(~)
             error("Reset method not supported.");
+        end
+
+        function data = getVisualizeData(~, analysis)
+        % GETVISUALIZEDATA Retrieve data from analysis to pass to
+        % "getVisualizeCommand". By default, these are the analysis
+        % results.
+            data = analysis.Results;
         end
     end
 

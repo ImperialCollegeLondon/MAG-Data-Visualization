@@ -9,7 +9,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < mag.test.case.ViewCont
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
@@ -57,7 +57,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < mag.test.case.ViewCont
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
@@ -88,7 +88,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < mag.test.case.ViewCont
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);
@@ -121,7 +121,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tSpectrogram < mag.test.case.ViewCont
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             spectrogram = mag.app.control.Spectrogram(@mag.bart.view.Spectrogram);

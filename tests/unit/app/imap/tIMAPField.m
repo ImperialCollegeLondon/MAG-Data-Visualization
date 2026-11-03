@@ -9,7 +9,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPField < mag.test.case.ViewContro
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.imap.Model();
+            model = mag.app.Model(mag.meta.Mission.IMAP);
             model.analyze({});
 
             field = mag.app.imap.control.Field();
@@ -44,7 +44,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPField < mag.test.case.ViewContro
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.imap.Model();
+            model = mag.app.Model(mag.meta.Mission.IMAP);
             model.analyze({});
 
             field = mag.app.imap.control.Field();
@@ -73,7 +73,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPField < mag.test.case.ViewContro
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.imap.Model();
+            model = mag.app.Model(mag.meta.Mission.IMAP);
             model.analyze({});
 
             field = mag.app.imap.control.Field();
@@ -104,7 +104,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPField < mag.test.case.ViewContro
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.imap.Model();
+            model = mag.app.Model(mag.meta.Mission.IMAP);
             model.analyze({});
 
             field = mag.app.imap.control.Field();
@@ -135,7 +135,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPField < mag.test.case.ViewContro
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.imap.Model();
+            model = mag.app.Model(mag.meta.Mission.IMAP);
             model.analyze({});
 
             field = mag.app.imap.control.Field();

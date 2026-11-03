@@ -3,28 +3,34 @@ classdef Mission < matlab.mixin.CustomCompactDisplayProvider
 
     enumeration
         % BARTINGTON Bartington reference.
-        Bartington ("Bartington", "Bart")
+        Bartington ("Bartington", "Bart", "bart")
         % HENON HENON mission.
-        HENON ("HENON", "HENON")
+        HENON ("HENON", "HENON", "henon")
         % HELIOSWARM HelioSwarm mission.
-        HelioSwarm ("HelioSwarm", "HS")
+        HelioSwarm ("HelioSwarm", "HS", "hs")
         % IMAP IMAP mission.
-        IMAP ("IMAP", "IMAP")
+        IMAP ("IMAP", "IMAP", "imap")
         % VIGIL Vigil mission.
-        Vigil ("Vigil", "Vigil")
+        Vigil ("Vigil", "Vigil", "vigil")
     end
 
     properties (SetAccess = immutable)
+        % DISPLAYNAME Name to display.
         DisplayName (1, 1) string
+        % SHORTNAME Short name.
         ShortName (1, 1) string
+        % PACKAGENAME Name of mission namespace, such as "imap" for
+        % "mag.imap" and "mag.app.imap".
+        PackageName (1, 1) string
     end
 
     methods
 
-        function enum = Mission(displayName, shortName)
+        function enum = Mission(displayName, shortName, packageName)
 
             enum.DisplayName = displayName;
             enum.ShortName = shortName;
+            enum.PackageName = packageName;
         end
     end
 

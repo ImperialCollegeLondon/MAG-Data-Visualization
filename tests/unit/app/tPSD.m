@@ -9,7 +9,7 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             psd = mag.app.control.PSD(@mag.graphics.view.PSD);
@@ -42,7 +42,7 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.hs.Model();
+            model = mag.app.Model(mag.meta.Mission.HelioSwarm);
             model.analyze({});
 
             psd = mag.app.control.PSD(@mag.graphics.view.PSD);
@@ -62,7 +62,7 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             psd = mag.app.control.PSD(@mag.graphics.view.PSD);
@@ -97,7 +97,7 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             % Set up.
             panel = testCase.createTestPanel(VisibleOverride = "on");
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             psd = mag.app.control.PSD(@mag.graphics.view.PSD);
@@ -138,7 +138,7 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             psd = mag.app.control.PSD(@mag.graphics.view.PSD);
@@ -172,7 +172,7 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             psd = mag.app.control.PSD(@mag.graphics.view.PSD);
@@ -206,7 +206,7 @@ classdef (TestTags = "Unit") tPSD < mag.test.case.ViewControllerTestCase & matla
             % Set up.
             panel = testCase.createTestPanel();
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             model.analyze({});
 
             psd = mag.app.control.PSD(@mag.graphics.view.PSD);

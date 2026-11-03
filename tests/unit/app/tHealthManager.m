@@ -39,7 +39,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tHealthManager < mag.test.case.ViewCo
             manager = mag.app.manage.HealthManager();
             manager.instantiate(panel);
 
-            model = mag.app.imap.Model();
+            model = mag.app.Model(mag.meta.Mission.IMAP);
             manager.subscribe(model);
 
             location = fullfile(fileparts(mfilename("fullpath")), "..", "..", "system", "test_data", "imap", "fob_only");
@@ -73,7 +73,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tHealthManager < mag.test.case.ViewCo
             manager = mag.app.manage.HealthManager();
             manager.instantiate(panel);
 
-            model = mag.app.bart.Model();
+            model = mag.app.Model(mag.meta.Mission.Bartington);
             manager.subscribe(model);
 
             location = fullfile(fileparts(mfilename("fullpath")), "..", "..", "system", "test_data", "bart");

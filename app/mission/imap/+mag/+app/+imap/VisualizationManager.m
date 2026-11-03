@@ -1,10 +1,6 @@
 classdef VisualizationManager < mag.app.manage.VisualizationManager
 % VISUALIZATIONMANAGER Manager for visualization of IMAP analysis.
 
-    properties (Constant, Access = protected)
-        EmptyModel = mag.app.imap.Model.empty()
-    end
-
     methods
 
         function supportedVisualizations = getSupportedVisualizations(~, ~)
@@ -19,29 +15,6 @@ classdef VisualizationManager < mag.app.manage.VisualizationManager
                 mag.app.control.Spectrogram(@mag.imap.view.Spectrogram), ...
                 mag.app.control.SignalAnalyzer(["Outboard", "Inboard"]), ...
                 mag.app.control.WaveletAnalyzer(["Outboard", "Inboard"])];
-        end
-
-        function figures = visualize(this, analysis)
-
-            if isempty(this.SelectedControl)
-                error("mag:app:NoViewSelected", "No view selected.");
-            end
-
-            if isa(this.SelectedControl, "mag.app.imap.control.AT") || isa(this.SelectedControl, "mag.app.imap.control.CPT")
-                args = {analysis};
-            else
-                args = {analysis.Results};
-            end
-
-            command = this.SelectedControl.getVisualizeCommand(args{:});
-
-            if command.NArgOut == 0
-
-                command.call();
-                figures = matlab.ui.Figure.empty();
-            else
-                figures = command.call();
-            end
         end
     end
 end

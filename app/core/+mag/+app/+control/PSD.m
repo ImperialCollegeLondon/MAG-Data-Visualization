@@ -67,7 +67,7 @@ classdef PSD < mag.app.Control
             this.NoiseThresholdDropDown.Layout.Row = 3;
             this.NoiseThresholdDropDown.Layout.Column = [2, 3];
 
-            if this.HasModel && isa(this.Model, "mag.app.hs.Model")
+            if this.HasModel && (this.Model.Mission == mag.meta.Mission.HelioSwarm)
                 this.NoiseThresholdDropDown.Value = mag.graphics.psd.NoiseThreshold.HelioSwarm;
             end
 

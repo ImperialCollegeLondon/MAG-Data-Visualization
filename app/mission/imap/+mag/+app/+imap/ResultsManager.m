@@ -2,7 +2,6 @@ classdef ResultsManager < mag.app.manage.ResultsManager
 % RESULTSMANAGER Manager for results of IMAP analysis.
 
     properties (SetAccess = private)
-        ResultsLayout matlab.ui.container.GridLayout
         MetadataPanel matlab.ui.container.Panel
         MetadataLayout matlab.ui.container.GridLayout
         InstrumentTextArea matlab.ui.control.TextArea
@@ -100,13 +99,7 @@ classdef ResultsManager < mag.app.manage.ResultsManager
                 this.MetadataPanel.Enable = "on";
 
                 % Science preview.
-                if results.Primary.HasData && results.Secondary.HasData
-                    this.plotSensorPreview(results.Primary.Data, results.Secondary.Data, LegendLabels = ["Primary", "Secondary"]);
-                elseif results.Primary.HasData
-                    this.plotSensorPreview(results.Primary.Data, LegendLabels = "Primary");
-                elseif results.Secondary.HasData
-                    this.plotSensorPreview(results.Secondary.Data, LegendLabels = "Secondary");
-                end
+                this.plotDualSensorPreview({results.Primary, results.Secondary}, ["Primary", "Secondary"]);
             else
                 this.reset();
             end

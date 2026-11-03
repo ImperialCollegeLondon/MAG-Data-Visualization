@@ -1,10 +1,6 @@
 classdef VisualizationManager < mag.app.manage.VisualizationManager
 % VISUALIZATIONMANAGER Manager for visualization of Bartington analysis.
 
-    properties (Constant, Access = protected)
-        EmptyModel = mag.app.bart.Model.empty()
-    end
-
     methods
 
         function supportedVisualizations = getSupportedVisualizations(~, ~)
