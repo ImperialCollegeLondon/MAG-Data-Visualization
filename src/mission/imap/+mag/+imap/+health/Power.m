@@ -1,9 +1,12 @@
-classdef Power < mag.health.Check
+classdef Power < mag.imap.health.HKCheck
 % POWER Check IMAP power HK.
 
 %#ok<*AGROW>
 
     properties (Constant)
+        % HKTYPE Type of HK checked.
+        HKType = "Power"
+        % PROPERTYTOHUMANREADABLECONVERSION Human-readable names of HK properties.
         PropertyToHumanReadableConversion (1, 1) dictionary = dictionary( ...
             P1V5V = "+1.5 V Voltage", ...
             P1V8V = "+1.8 V Voltage", ...
@@ -58,23 +61,6 @@ classdef Power < mag.health.Check
 
     methods
 
-        function supported = isSupported(~, results)
-
-            arguments
-                ~
-                results (1, 1) mag.imap.Instrument
-            end
-
-            if ~results.HasHK
-
-                supported = false;
-                return;
-            end
-
-            pwr = results.HK.getHKType("Power");
-            supported = ~isempty(pwr) && pwr.HasData;
-        end
-
         function run(this, results)
 
             arguments
@@ -82,7 +68,7 @@ classdef Power < mag.health.Check
                 results (1, 1) mag.imap.Instrument
             end
 
-            pwr = results.HK.getHKType("Power");
+            pwr = this.getHK(results);
 
             % Only check secondary voltages and currents on FM,
             % as the limits are defined for FM only.
@@ -92,10 +78,20 @@ classdef Power < mag.health.Check
                 skipSecondaryChecks = false;
             end
 
-            this.checkSecondaryVoltages(pwr, skipSecondaryChecks);
-            this.checkSecondaryCurrents(pwr, skipSecondaryChecks);
+            if skipSecondaryChecks
 
-            this.checkTemperatures(pwr);
+                this.Results(end + 1) = mag.health.Result(Name = "Secondary Voltages", Status = "Incomplete", Description = "Secondary voltage limits are only defined for IMAP FM.");
+                this.Results(end + 1) = mag.health.Result(Name = "Secondary Currents", Status = "Incomplete", Description = "Secondary current limits are only defined for IMAP FM.");
+            else
+
+                this.checkLimits(pwr, "Secondary Voltages", "Secondary voltages within limits.", ...
+                    DangerLimits = this.SecondaryVoltagesDangerLimits, WarningLimits = this.SecondaryVoltagesWarningLimits);
+                this.checkLimits(pwr, "Secondary Currents", "Secondary currents within limits.", ...
+                    WarningLimits = this.SecondaryCurrentsWarningLimits, WarningType = "nominal");
+            end
+
+            this.checkLimits(pwr, "Temperatures", "Sensor and ICU temperatures within limits.", ...
+                DangerLimits = this.TemperatureDangerLimits, WarningLimits = this.TemperatureWarningLimits);
             this.checkSaturation(pwr);
             this.checkMissedITFFrames(pwr);
         end
@@ -103,88 +99,41 @@ classdef Power < mag.health.Check
 
     methods (Access = private)
 
-        function checkSecondaryVoltages(this, pwr, skipCheck)
+        function checkLimits(this, pwr, name, passDescription, options)
+        % CHECKLIMITS Check values against danger limits, if any, and
+        % warning limits. Values that exceed a danger limit are not
+        % checked against warning limits.
 
-            if skipCheck
-
-                this.Results(end + 1) = mag.health.Result(Name = "Secondary Voltages", Status = "Incomplete", Description = "Secondary voltage limits are only defined for IMAP FM.");
-                return;
+            arguments
+                this (1, 1) mag.imap.health.Power
+                pwr (1, 1) mag.imap.hk.Power
+                name (1, 1) string
+                passDescription (1, 1) string
+                options.DangerLimits (1, 1) dictionary = dictionary()
+                options.WarningLimits (1, 1) dictionary
+                options.WarningType (1, 1) string = "warning"
             end
 
-            results = mag.health.Result.empty();
+            if numEntries(options.DangerLimits) == 0
+                results = mag.health.Result.empty();
+                warningValues = keys(options.WarningLimits);
+            else
 
-            % Check danger limits.
+                results = this.checkValueAgainstLimits(pwr, keys(options.DangerLimits), options.DangerLimits, "danger", "Fail");
+                warningValues = setdiff(keys(options.WarningLimits), string([results.Name]));
+            end
+
             results = [results, ...
-                this.checkValueAgainstLimits(pwr, keys(this.SecondaryVoltagesDangerLimits), this.SecondaryVoltagesDangerLimits, "danger", "Fail")];
+                this.checkValueAgainstLimits(pwr, warningValues, options.WarningLimits, options.WarningType, "Borderline")];
 
-            % Check warning limits.
-            warningValues = setdiff(keys(this.SecondaryVoltagesWarningLimits), string([results.Name])); % do not check voltages that failed danger check
-
-            results = [results, ...
-                this.checkValueAgainstLimits(pwr, warningValues, this.SecondaryVoltagesWarningLimits, "warning", "Borderline")];
-
-            % Convert voltage names to human-readable format.
+            % Convert names to human-readable format.
             for r = results
                 r.Name = this.PropertyToHumanReadableConversion(r.Name);
             end
 
             % If no failures so far, it's a pass.
             if isempty(results)
-                results = mag.health.Result(Name = "Secondary Voltages", Status = "Pass", Description = "Secondary voltages within limits.");
-            end
-
-            this.Results = [this.Results, results];
-        end
-
-        function checkSecondaryCurrents(this, pwr, skipCheck)
-
-            if skipCheck
-
-                this.Results(end + 1) = mag.health.Result(Name = "Secondary Currents", Status = "Incomplete", Description = "Secondary current limits are only defined for IMAP FM.");
-                return;
-            end
-
-            results = mag.health.Result.empty();
-
-            % Check warning limits.
-            results = [results, ...
-                this.checkValueAgainstLimits(pwr, keys(this.SecondaryCurrentsWarningLimits), this.SecondaryCurrentsWarningLimits, "nominal", "Borderline")];
-
-            % Convert current names to human-readable format.
-            for r = results
-                r.Name = this.PropertyToHumanReadableConversion(r.Name);
-            end
-
-            % If no failures so far, it's a pass.
-            if isempty(results)
-                results = mag.health.Result(Name = "Secondary Currents", Status = "Pass", Description = "Secondary currents within limits.");
-            end
-
-            this.Results = [this.Results, results];
-        end
-
-        function checkTemperatures(this, pwr)
-
-            results = mag.health.Result.empty();
-
-            % Check danger limits.
-            results = [results, ...
-                this.checkValueAgainstLimits(pwr, keys(this.TemperatureDangerLimits), this.TemperatureDangerLimits, "danger", "Fail")];
-
-            % Check warning limits.
-            warningValues = setdiff(keys(this.TemperatureWarningLimits), string([results.Name])); % do not check temperatures that failed danger check
-
-            results = [results, ...
-                this.checkValueAgainstLimits(pwr, warningValues, this.TemperatureWarningLimits, "warning", "Borderline")];
-
-            % Convert temperature names to human-readable format.
-            for r = results
-                r.Name = this.PropertyToHumanReadableConversion(r.Name);
-            end
-
-            % If no failures so far, it's a pass.
-            if isempty(results)
-                results = mag.health.Result(Name = "Temperatures", Status = "Pass", Description = "Sensor and ICU temperatures within limits.");
+                results = mag.health.Result(Name = name, Status = "Pass", Description = passDescription);
             end
 
             this.Results = [this.Results, results];

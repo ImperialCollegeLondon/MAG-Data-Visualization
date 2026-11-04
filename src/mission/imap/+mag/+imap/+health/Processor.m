@@ -1,26 +1,14 @@
-classdef Processor < mag.health.Check
+classdef Processor < mag.imap.health.HKCheck
 % PROCESSOR Check IMAP processor HK.
 
 %#ok<*AGROW>
 
+    properties (Constant)
+        % HKTYPE Type of HK checked.
+        HKType = "Processor"
+    end
+
     methods
-
-        function supported = isSupported(~, results)
-
-            arguments
-                ~
-                results (1, 1) mag.imap.Instrument
-            end
-
-            if ~results.HasHK
-
-                supported = false;
-                return;
-            end
-
-            procStat = results.HK.getHKType("Processor");
-            supported = ~isempty(procStat) && procStat.HasData;
-        end
 
         function run(this, results)
 
@@ -29,7 +17,7 @@ classdef Processor < mag.health.Check
                 results (1, 1) mag.imap.Instrument
             end
 
-            procStat = results.HK.getHKType("Processor");
+            procStat = this.getHK(results);
 
             this.checkSingleBitErrors(procStat);
 
