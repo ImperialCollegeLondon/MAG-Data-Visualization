@@ -14,7 +14,7 @@ classdef Instrument < mag.meta.Data
         GSE string {mustBeScalarOrEmpty}
         % OPERATOR Operator running experiment.
         Operator string {mustBeScalarOrEmpty}
-        % ATTEMPTS Number of attempts to start OBS and IBS.
+        % ATTEMPTS Number of attempts to start FOB and FIB.
         Attempts (1, 2) double = NaN(1, 2)
     end
 

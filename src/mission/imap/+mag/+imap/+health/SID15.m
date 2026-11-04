@@ -33,11 +33,10 @@ classdef SID15 < mag.imap.health.HKCheck
 
             results = mag.health.Result.empty();
 
-            % HK properties use the names of the FEEs, FOB and FIB.
-            for check = struct(Property = {"FOBAttempts", "FIBAttempts"}, Sensor = {"OBS", "IBS"})
+            for attempts = ["FOBAttempts", "FIBAttempts"]
 
-                value = sid15.(check.Property);
-                sensor = check.Sensor;
+                value = sid15.(attempts);
+                sensor = extract(attempts, regexpPattern("F(O|I)B"));
 
                 if any(value >= this.FailedActivationLimit)
                     results(end + 1) = mag.health.Result(Name = compose("%s Activation", sensor), Status = "Fail", Description = compose("%s failed to activate 14 or more times.", sensor));

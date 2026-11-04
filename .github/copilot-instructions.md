@@ -56,8 +56,9 @@ Adding a new mission (checklist)
    - Set metadata via `mag.meta.Science(Sensor, Mode, DataFrequency, Timestamp)` in I/O `process()` method
    - View figure titles should include Mode and frequency from metadata (e.g. `"Normal (Outboard 1 Hz, Inboard 1 Hz)"`)
    - Use descriptive property names like `Outboard`/`Inboard` rather than acronyms like `OBS`/`IBS` for public Instrument API
-   - The underlying `mag.meta.Sensor` enum values (`OBS`, `IBS`) are used internally for sensor identification. `FOB` and `FIB` are hidden aliases kept for loading old data; do not use them in new code or messages
-   - Names that come from external data keep their original form, e.g. IMAP HK columns (`FOB_TEMP`) and the HK properties that mirror them (`FOBTemperature`), and export format struct field names (e.g. `B.FOB`, `B.FIB` in MAT files)
+   - The underlying `mag.meta.Sensor` enum values (`OBS`, `IBS`) are used internally for sensor identification. The `FOB` and `FIB` enum values are hidden aliases kept for loading old data
+   - `OBS`/`IBS` name the outboard and inboard sensors, while `FOB`/`FIB` name the front-end electronics (FEE) that process each sensor's data. They are not interchangeable: quantities measured on the electronics keep `FOB`/`FIB`, e.g. IMAP HK properties such as `FOBTemperature` and `FOBAttempts`, and their human-readable names such as "FOB Temperature"
+   - Names that come from external data keep their original form, e.g. IMAP HK columns (`FOB_TEMP`) and export format struct field names (e.g. `B.FOB`, `B.FIB` in MAT files)
    - Give every `error` and `warning` an identifier of the form `mag:<area>:<Name>`, e.g. `mag:imap:UnequalModes`
 
 I/O format implementation notes
@@ -89,7 +90,7 @@ Examples to reference
 
 Notes for AI code edits
 - Avoid changing public API signatures for `Provider`, `Model`, `Analysis`, `Instrument` and `Data` unless absolutely necessary; breakage is easily introduced across missions.
-- IMAP mode slicing (`getAllModes`, `getModeCycling`, `getRangeCycling`, `getFinalNormalMode`, `splitByTimeGap`) lives in `mag.imap.Instrument`; `mag.imap.Analysis` only forwards to it.
+- IMAP mode slicing (`getAllModes`, `getModeCycling`, `getRangeCycling`, `getFinalNormalMode`) lives in `mag.imap.Instrument`; `mag.imap.Analysis` only forwards to it.
 - Prefer small, focused edits with accompanying tests. Update `resources/release-notes.md` and `resources/mpackage.json` when changing public behavior or bumping versions.
 
 If anything here is unclear or you want more detail (examples of tests to add, or typical CI commands), tell me which area to expand.

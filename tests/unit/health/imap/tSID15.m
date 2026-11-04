@@ -3,8 +3,8 @@ classdef (TestTags = ["Unit", "Parallel"]) tSID15 < matlab.unittest.TestCase
 
     properties (TestParameter)
         ActivationTries = { ...
-            struct(Property = "FOBAttempts", Column = "ISV_FOB_ACTTRIES", Name = "OBS Activation"), ...
-            struct(Property = "FIBAttempts", Column = "ISV_FIB_ACTTRIES", Name = "IBS Activation")}
+            struct(Property = "FOBAttempts", Column = "ISV_FOB_ACTTRIES", Name = "FOB Activation"), ...
+            struct(Property = "FIBAttempts", Column = "ISV_FIB_ACTTRIES", Name = "FIB Activation")}
     end
 
     methods (Test)
