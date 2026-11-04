@@ -2,10 +2,6 @@ classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of HelioSwarm data.
 
     properties
-        % INPUTSOURCE Data input source.
-        InputSource (1, 1) mag.hs.meta.InputSource = mag.hs.meta.InputSource.iDPU
-        % METADATAPATTERN Pattern of metadata files.
-        MetadataPattern string {mustBeScalarOrEmpty} = string.empty()
         % SCIENCEPATTERN Pattern of science data files.
         SciencePattern (1, 1) string = fullfile("science*.csv")
         % HKPATTERN Pattern of housekeeping files.
@@ -29,8 +25,6 @@ classdef Analysis < mag.Analysis
         % HKPROCESSING Steps needed to process imported HK data. Same as
         % "Processing.HKSteps".
         HKProcessing (1, :) mag.process.Step
-        % METADATAFILENAMES Files containing metadata.
-        MetadataFileNames (1, :) string
         % SCIENCEFILENAMES Files containing science data.
         ScienceFileNames (1, :) string
         % HKFILENAMES Files containing HK data.
@@ -38,8 +32,6 @@ classdef Analysis < mag.Analysis
     end
 
     properties (Access = private)
-        % METADATAFILES Information about files containing metadata.
-        MetadataFiles (:, 1) struct
         % SCIENCEFILES Information about files containing science data.
         ScienceFiles (:, 1) struct
         % HKFILES Information about files containing HK data.
@@ -133,10 +125,6 @@ classdef Analysis < mag.Analysis
 
         function set.HKProcessing(this, value)
             this.Processing.HKSteps = value;
-        end
-
-        function value = get.MetadataFileNames(this)
-            value = this.getFileNames(this.MetadataFiles);
         end
 
         function value = get.ScienceFileNames(this)

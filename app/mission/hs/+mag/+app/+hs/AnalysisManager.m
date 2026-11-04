@@ -2,8 +2,6 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
 % ANALYSISMANAGER Manager for analysis of HelioSwarm data.
 
     properties (SetAccess = private)
-        MetadataPatternEditField matlab.ui.control.EditField
-        MetadataPatternEditFieldLabel matlab.ui.control.Label
         HKPatternEditField matlab.ui.control.EditField
         HKPatternEditFieldLabel matlab.ui.control.Label
         DecodeBinaryFilesCheckBox matlab.ui.control.CheckBox
@@ -16,7 +14,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
         function this = AnalysisManager()
 
             this@mag.app.manage.AnalysisManager(mag.meta.Mission.HelioSwarm);
-            this.RowHeight = ["1x", "fit", "1x", "1x", "1x", "fit", "4x"];
+            this.RowHeight = ["1x", "fit", "1x", "1x", "fit", "4x"];
         end
     end
 
@@ -29,46 +27,33 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.DecodeBinaryFilesCheckBox.Layout.Row = 2;
             this.DecodeBinaryFilesCheckBox.Layout.Column = [2, 3];
 
-            % Create MetadataPatternEditFieldLabel.
-            this.MetadataPatternEditFieldLabel = uilabel(layout);
-            this.MetadataPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.MetadataPatternEditFieldLabel.Layout.Row = 3;
-            this.MetadataPatternEditFieldLabel.Layout.Column = 1;
-            this.MetadataPatternEditFieldLabel.Text = "Metadata pattern:";
-
-            % Create MetadataPatternEditField.
-            this.MetadataPatternEditField = uieditfield(layout, "text", Enable = "off");
-            this.MetadataPatternEditField.Layout.Row = 3;
-            this.MetadataPatternEditField.Layout.Column = [2, 3];
-            this.MetadataPatternEditField.Placeholder = "Not supported for HelioSwarm yet";
-
             % Create SciencePatternEditFieldLabel.
             this.SciencePatternEditFieldLabel = uilabel(layout);
             this.SciencePatternEditFieldLabel.HorizontalAlignment = "right";
-            this.SciencePatternEditFieldLabel.Layout.Row = 4;
+            this.SciencePatternEditFieldLabel.Layout.Row = 3;
             this.SciencePatternEditFieldLabel.Layout.Column = 1;
             this.SciencePatternEditFieldLabel.Text = "Science pattern:";
 
             % Create SciencePatternEditField.
             this.SciencePatternEditField = uieditfield(layout, "text");
-            this.SciencePatternEditField.Layout.Row = 4;
+            this.SciencePatternEditField.Layout.Row = 3;
             this.SciencePatternEditField.Layout.Column = [2, 3];
 
             % Create HKPatternEditFieldLabel.
             this.HKPatternEditFieldLabel = uilabel(layout);
             this.HKPatternEditFieldLabel.HorizontalAlignment = "right";
-            this.HKPatternEditFieldLabel.Layout.Row = 5;
+            this.HKPatternEditFieldLabel.Layout.Row = 4;
             this.HKPatternEditFieldLabel.Layout.Column = 1;
             this.HKPatternEditFieldLabel.Text = "HK pattern:";
 
             % Create HKPatternEditField.
             this.HKPatternEditField = uieditfield(layout, "text");
-            this.HKPatternEditField.Layout.Row = 5;
+            this.HKPatternEditField.Layout.Row = 4;
             this.HKPatternEditField.Layout.Column = [2, 3];
 
             % Create ScaleFactorsTableLabel.
             this.ScaleFactorsTableLabel = uilabel(layout);
-            this.ScaleFactorsTableLabel.Layout.Row = 6;
+            this.ScaleFactorsTableLabel.Layout.Row = 5;
             this.ScaleFactorsTableLabel.Layout.Column = [1, 3];
             this.ScaleFactorsTableLabel.Text = "Scale factors which will be used to convert raw science data to nT:";
 
@@ -78,13 +63,12 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             this.ScaleFactorsTable.RowName = ["X", "Y", "Z"];
             this.ScaleFactorsTable.ColumnFormat = repmat({'char'}, 1, 4);
             this.ScaleFactorsTable.ColumnEditable = true(1, 4);
-            this.ScaleFactorsTable.Layout.Row = 7;
+            this.ScaleFactorsTable.Layout.Row = 6;
             this.ScaleFactorsTable.Layout.Column = [1, 3];
         end
 
         function resetSettings(this, defaultAnalysis)
 
-            this.MetadataPatternEditField.Value = join(defaultAnalysis.MetadataPattern, pathsep());
             this.SciencePatternEditField.Value = defaultAnalysis.SciencePattern;
             this.HKPatternEditField.Value = join(defaultAnalysis.HKPattern, pathsep());
             this.DecodeBinaryFilesCheckBox.Value = true;
@@ -95,9 +79,7 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
 
             scaleFactors = this.parseScaleFactorsData(this.ScaleFactorsTable.Data);
 
-            options = {"InputSource", mag.hs.meta.InputSource.iDPU, ...
-                "MetadataPattern", this.splitPatterns(this.MetadataPatternEditField.Value), ...
-                "SciencePattern", this.SciencePatternEditField.Value, ...
+            options = {"SciencePattern", this.SciencePatternEditField.Value, ...
                 "HKPattern", this.HKPatternEditField.Value, ...
                 "DecodeBinaryFiles", this.DecodeBinaryFilesCheckBox.Value, ...
                 "ScaleFactors", scaleFactors};

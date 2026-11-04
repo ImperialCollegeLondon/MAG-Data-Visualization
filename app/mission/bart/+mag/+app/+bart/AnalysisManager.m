@@ -6,7 +6,6 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
         Input1PatternEditFieldLabel matlab.ui.control.Label
         Input2PatternEditField matlab.ui.control.EditField
         Input2PatternEditFieldLabel matlab.ui.control.Label
-        GradiometerCheckBox matlab.ui.control.CheckBox
     end
 
     methods
@@ -42,27 +41,19 @@ classdef AnalysisManager < mag.app.manage.AnalysisManager
             % Create Input2PatternEditField.
             this.Input2PatternEditField = uieditfield(layout, "text");
             this.Input2PatternEditField.Layout.Row = 3;
-            this.Input2PatternEditField.Layout.Column = 2;
-
-            % Create GradiometerCheckBox.
-            this.GradiometerCheckBox = uicheckbox(layout);
-            this.GradiometerCheckBox.Layout.Row = 3;
-            this.GradiometerCheckBox.Layout.Column = 3;
-            this.GradiometerCheckBox.Text = "Gradiometer";
+            this.Input2PatternEditField.Layout.Column = [2, 3];
         end
 
         function resetSettings(this, defaultAnalysis)
 
             this.Input1PatternEditField.Value = defaultAnalysis.Input1Pattern;
             this.Input2PatternEditField.Value = defaultAnalysis.Input2Pattern;
-            this.GradiometerCheckBox.Value = defaultAnalysis.Gradiometer;
         end
 
         function options = getSettingsOptions(this)
 
             options = {"Input1Pattern", this.Input1PatternEditField.Value, ...
-                "Input2Pattern", this.Input2PatternEditField.Value, ...
-                "Gradiometer", this.GradiometerCheckBox.Value};
+                "Input2Pattern", this.Input2PatternEditField.Value};
         end
     end
 end

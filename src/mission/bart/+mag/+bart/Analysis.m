@@ -2,8 +2,6 @@ classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of Bartington data.
 
     properties
-        % GRADIOMETER Gradiometer mode.
-        Gradiometer (1, 1) logical = false
         % INPUT1PATTERN Pattern of input 1 data files.
         Input1Pattern (1, 1) string = fullfile("*Input 1*.Dat")
         % INPUT2PATTERN Pattern of input 2 data files.

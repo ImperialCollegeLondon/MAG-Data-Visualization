@@ -10,7 +10,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tHelioSwarmAnalysis < matlab.unittest
             location = fullfile(fileparts(mfilename("fullpath")), "test_data");
 
             % Exercise.
-            idpuAnalysis = mag.hs.Analysis.start(Location = location, InputSource = "iDPU");
+            idpuAnalysis = mag.hs.Analysis.start(Location = location);
 
             % Verify.
             testCase.verifyEqual(idpuAnalysis.ScienceProcessing.ExtraScaling, 1, ...
