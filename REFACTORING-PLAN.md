@@ -195,7 +195,7 @@ Found along the way:
 
 ## Phase 6: Simplify IMAP
 
-**Done on 2026-11-04.** Functions in `src` and `app` with a cyclomatic complexity above 10 went from 12 to 9, and IMAP ones from 9 to 5. The highest is now 17, in `mag.graphics.chart.Event/plot`, against 44 before. Results are identical on all IMAP test data, compared with every public output of `mag.imap.Analysis` and with the health check results. The only difference is the error message of `splitByTimeGap`, which now names `mag.imap.Instrument`.
+**Done on 2026-11-04.** Functions in `src` and `app` with a cyclomatic complexity above 10 went from 12 to 9, and IMAP ones from 9 to 5. The highest is now 17, in `mag.graphics.chart.Event/plot`, against 44 before. Results are identical on all IMAP test data, compared with every public output of `mag.imap.Analysis` and with the health check results.
 
 - [x] Split [loadEventsData.m](src/mission/imap/+mag/+imap/@Analysis/loadEventsData.m) (331 lines, complexity 44) into reading, parsing commands and matching responses. Its largest function is now at complexity 7.
   - The Config, Normal and Burst loops are one table-driven builder.
@@ -212,7 +212,7 @@ Found along the way:
   - Mode slicing moved to `mag.imap.Instrument`, and `mag.imap.Analysis` forwards to it. `getRampMode` stays in the analysis, which holds ramp mode data.
 - [x] In [health/Power.m](src/mission/imap/+mag/+imap/+health/Power.m), merge the voltage, current and temperature checks into one method. Warnings keep their order, which is sorted when danger limits are checked first, and declared otherwise. The `isSupported` methods are now inherited from `mag.imap.health.HKCheck`.
 
-**Found, not fixed:** `splitByTimeGap` crashes when the data has no gap larger than the threshold, and drops the data after the last gap and the samples at each boundary. Nothing in the toolbox calls it, and fixing it would change results.
+**Found, and removed:** `splitByTimeGap` crashed when the data had no gap larger than the threshold, and dropped the data after the last gap and the samples at each boundary. Nothing used it, here or in `MAG-Sensor-Performance`, so it was removed.
 
 ## Phase 7: Performance and cleanup
 
@@ -249,7 +249,7 @@ Measured on synthetic data, before and after. Outputs are identical, including 1
 - [x] Fix the drifted `Format.load` and `getExportOptions` signatures. `getExportOptions` was already fixed in phase 5, which merged the export managers.
 - [x] Add identifiers to the errors and warnings that have none: 26 errors and 12 warnings, as `mag:<area>:<Name>`. Tests that matched an empty identifier now name the one they expect, which showed that `downsampleMethod_errorInitialFrequency` was matching a different error than its message said. The CDF export error was also missing the value for its `%s`.
 - [x] Replace the 8 lines using `datestr`, which is deprecated. Export file names are unchanged.
-- [x] Rename the FOB and FIB names left after #260, and update the Copilot instructions. **Partly:** health check names and messages now say "OBS" and "IBS". Names that come from external data keep their form: HK columns such as `FOB_TEMP`, metadata document labels, Vigil file name prefixes and MAT export fields. The public IMAP HK properties that mirror HK columns, such as `FOBTemperature` and `FOBAttempts`, are unchanged, as renaming them would break scripts. The Copilot instructions now describe the shared app provider from phase 5.
+- [x] Rename the FOB and FIB names left after #260, and update the Copilot instructions. **Mostly not needed:** OBS and IBS name the sensors, while FOB and FIB name the front-end electronics (FEE) that process each sensor's data, so they are not interchangeable. #260 renamed the sensors only. Quantities measured on the electronics, such as the FOB and FIB temperatures from thermistors on the FEE and activation attempts, correctly keep FOB and FIB, in HK properties and in health check names. Only a warning about I-ALiRT sensor data and two comments about sensors were renamed. Names from external data also keep their form: HK columns, metadata document labels, Vigil file name prefixes and MAT export fields. The Copilot instructions now explain the distinction, and describe the shared app provider from phase 5.
 - [x] Move the WSL decoding out of HelioSwarm `detect`, which writes files as a side effect. It is now `mag.hs.decodeBinaryFiles`, which `start` calls before `detect`.
 
 ## Limits of this review
