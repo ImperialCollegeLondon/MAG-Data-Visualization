@@ -214,6 +214,8 @@ Found along the way:
 
 **Found, and removed:** `splitByTimeGap` crashed when the data had no gap larger than the threshold, and dropped the data after the last gap and the samples at each boundary. Nothing used it, here or in `MAG-Sensor-Performance`, so it was removed.
 
+**Found, not fixed:** whether a command without a matching response gets a fallback time depends on unrelated responses. If any acknowledgment or completion is logged after the command, a missing acknowledgment falls back to the command time, and a missing completion to the acknowledgment time. If none is, the timestamp stays `NaT`, which mostly affects the last commands in a log. The refactor kept this, as it comes from the original code, and Copilot flagged it in PR #290. Always using the fallback would be more consistent, but changes event times and tables, so it should be its own fix, with a test and a release note.
+
 ## Phase 7: Performance and cleanup
 
 **Done on 2026-11-04.** All 889 non-UI tests and 111 UI tests pass on R2026b, except those filtered by design: `tInstalledToolbox` needs an older release, `tToolbox` is skipped when the toolbox is installed as a package, and `tExport` skips missions with no export formats. Code Analyzer reports 21 info-level notes, down from 23. Older releases were not tested locally.
