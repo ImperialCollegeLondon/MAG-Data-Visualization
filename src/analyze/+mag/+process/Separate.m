@@ -38,10 +38,8 @@ classdef Separate < mag.process.Step
                 return;
             end
 
-            rows = {};
-
             % Add missing after final row.
-            rows{end + 1} = data(end, :);
+            idxRows = height(data);
 
             % Add missing after long pauses.
             if ~isempty(this.LargeDiscriminateThreshold)
@@ -49,15 +47,11 @@ classdef Separate < mag.process.Step
                 discriminationVar = data.(this.DiscriminationVariable);
 
                 locGap = diff(discriminationVar) > this.LargeDiscriminateThreshold;
-                idxGap = find([locGap; false]);
-
-                for g = idxGap(:)'
-                    rows{end + 1} = data(g, :); %#ok<AGROW>
-                end
+                idxRows = [idxRows; find([locGap; false])];
             end
 
             % Process.
-            data = this.addMissingRows(data, rows);
+            data = this.addMissingRows(data, idxRows);
         end
     end
 
@@ -78,7 +72,10 @@ classdef Separate < mag.process.Step
             end
         end
 
-        function data = addMissingRows(this, data, rows)
+        function data = addMissingRows(this, data, idxRows)
+        % ADDMISSINGROWS Add a missing row just after each selected row, at
+        % the end of the data. Rows are added at once, as adding them one
+        % by one copies the data each time.
 
             if isdatetime(data.(this.DiscriminationVariable)) || isduration(data.(this.DiscriminationVariable))
                 smallValue = mag.time.Constant.Eps;
@@ -86,20 +83,17 @@ classdef Separate < mag.process.Step
                 smallValue = eps();
             end
 
-            for r = 1:numel(rows)
+            missingRows = data(idxRows, :);
 
-                missingRow = rows{r};
+            missingRows.(this.DiscriminationVariable) = missingRows.(this.DiscriminationVariable) + smallValue;
+            missingRows{:, this.getMissingVariables(data)} = missing();
+            missingRows{:, varfun(@(x) isenum(x) & isa(x, "double"), data, OutputFormat = "uniform")} = NaN();
 
-                missingRow.(this.DiscriminationVariable) = missingRow.(this.DiscriminationVariable) + smallValue;
-                missingRow{:, this.getMissingVariables(data)} = missing();
-                missingRow{:, varfun(@(x) isenum(x) & isa(x, "double"), data, OutputFormat = "uniform")} = NaN();
-
-                if ~isempty(this.QualityVariable)
-                    missingRow.(this.QualityVariable) = mag.meta.Quality.Artificial;
-                end
-
-                data = [data; missingRow]; %#ok<AGROW>
+            if ~isempty(this.QualityVariable)
+                missingRows.(this.QualityVariable) = repmat(mag.meta.Quality.Artificial, height(missingRows), 1);
             end
+
+            data = [data; missingRows];
         end
     end
 end

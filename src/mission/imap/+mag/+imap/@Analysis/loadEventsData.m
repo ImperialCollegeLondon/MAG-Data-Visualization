@@ -112,6 +112,9 @@ function addModeTransitions(events, commands)
         return;
     end
 
+    modes = double([events.Mode]);
+    commandTimes = [events.CommandTimestamp];
+
     for t = commands([commands.command] == "MAG_PROG_MTRAN")
 
         details = regexp(t.details, getResponsePattern(t.details), "names", "once");
@@ -120,8 +123,7 @@ function addModeTransitions(events, commands)
             continue;
         end
 
-        matchingEvents = events((double([events.Mode]) == str2double(details.curr)) & ...
-            ([events.CommandTimestamp] <= t.timestamp));
+        matchingEvents = events((modes == str2double(details.curr)) & (commandTimes <= t.timestamp));
 
         if ~isempty(matchingEvents)
 
@@ -172,15 +174,23 @@ function addResponseTimes(events, commands)
     acknowledgments = parseResponses(commands([commands.command] == "MAG_TCA_SUCC"));
     completions = parseResponses(commands([commands.command] == "MAG_TCC_SUCC"));
 
-    for e = events
+    % Gather properties once, as gathering them for each event is slow.
+    % Command times are kept up to date as they are corrected.
+    types = [events.Type];
+    subTypes = [events.SubType];
+    commandTimes = [events.CommandTimestamp];
+
+    for i = 1:numel(events)
+
+        e = events(i);
 
         % Ignore responses to subsequent commands of the same type.
-        similarSubsequentEvents = events(([events.Type] == e.Type) & ([events.SubType] == e.SubType) & ([events.CommandTimestamp] > e.CommandTimestamp));
+        idxNext = find((types == types(i)) & (subTypes == subTypes(i)) & (commandTimes > commandTimes(i)), 1);
 
-        if isempty(similarSubsequentEvents)
+        if isempty(idxNext)
             nextCommandTime = datetime("Inf", TimeZone = "UTC");
         else
-            nextCommandTime = similarSubsequentEvents(1).CommandTimestamp;
+            nextCommandTime = commandTimes(idxNext);
         end
 
         [acknowledgeTime, acknowledgeCorrection] = matchResponse(acknowledgments, e, nextCommandTime, e.CommandTimestamp);
@@ -198,7 +208,9 @@ function addResponseTimes(events, commands)
         correction = [acknowledgeCorrection, completeCorrection];
 
         if ~isempty(correction) && any(isfinite(correction))
+
             e.CommandTimestamp = e.CommandTimestamp + mean(correction, "omitmissing");
+            commandTimes(i) = e.CommandTimestamp;
         end
     end
 end
@@ -208,8 +220,8 @@ function responses = parseResponses(rawResponses)
 % command responded to. Responses that do not identify their command
 % are dropped.
 
-    responses = table(NaT(0, 1, TimeZone = "UTC"), NaT(0, 1, TimeZone = "UTC"), double.empty(0, 1), double.empty(0, 1), ...
-        VariableNames = ["timestamp", "coarse", "type", "subtype"]);
+    responses = struct(timestamp = NaT(0, 1, TimeZone = "UTC"), coarse = NaT(0, 1, TimeZone = "UTC"), ...
+        type = double.empty(0, 1), subtype = double.empty(0, 1));
 
     if isempty(rawResponses)
         return;
@@ -232,10 +244,9 @@ function responses = parseResponses(rawResponses)
 
     timestamps = [rawResponses.timestamp]';
 
-    responses = table(timestamps(locMatched), ...
-        datetime(mag.time.Constant.Epoch + str2double([details.coarse]'), ConvertFrom = "posixtime", Format = getEventTimeFormat(), TimeZone = mag.time.Constant.TimeZone), ...
-        str2double([details.type]'), str2double([details.subtype]'), ...
-        VariableNames = ["timestamp", "coarse", "type", "subtype"]);
+    responses = struct(timestamp = timestamps(locMatched), ...
+        coarse = datetime(mag.time.Constant.Epoch + str2double([details.coarse]'), ConvertFrom = "posixtime", Format = getEventTimeFormat(), TimeZone = mag.time.Constant.TimeZone), ...
+        type = str2double([details.type]'), subtype = str2double([details.subtype]'));
 end
 
 function [responseTime, correction] = matchResponse(responses, event, nextCommandTime, fallbackTime)
@@ -244,22 +255,22 @@ function [responseTime, correction] = matchResponse(responses, event, nextComman
 % the fallback time if none of them match.
 
     correction = duration.empty();
-    responses = responses(responses.timestamp >= event.CommandTimestamp, :);
+    locAfter = responses.timestamp >= event.CommandTimestamp;
 
-    if isempty(responses)
+    if ~any(locAfter)
 
         responseTime = datetime.empty();
         return;
     end
 
-    responses = responses((responses.timestamp < nextCommandTime) & (responses.type == event.Type) & (responses.subtype == event.SubType), :);
+    idxMatch = find(locAfter & (responses.timestamp < nextCommandTime) & (responses.type == event.Type) & (responses.subtype == event.SubType), 1);
 
-    if isempty(responses)
+    if isempty(idxMatch)
         responseTime = fallbackTime;
     else
 
-        responseTime = responses.coarse(1);
-        correction = responses.coarse(1) - responses.timestamp(1);
+        responseTime = responses.coarse(idxMatch);
+        correction = responses.coarse(idxMatch) - responses.timestamp(idxMatch);
     end
 end
 

@@ -13,12 +13,14 @@ classdef (Abstract) Step < matlab.mixin.Copyable & matlab.mixin.Heterogeneous & 
         % CORRECTSEQUENCE Find where sequence number restarts, and remove
         % discontinuity.
 
-            deltaSequence = diff(sequence);
-            idxSequenceReset = find(deltaSequence < 0);
+            % Each reset shifts all later values, so that the sequence
+            % continues by one. Shifts add up over resets.
+            idxSequenceReset = find(diff(sequence) < 0);
 
-            for i = idxSequenceReset'
-                sequence(i+1:end) = 1 + (sequence(i) - sequence(i + 1)) + sequence(i+1:end);
-            end
+            shift = zeros(size(sequence));
+            shift(idxSequenceReset + 1) = 1 + sequence(idxSequenceReset) - sequence(idxSequenceReset + 1);
+
+            sequence = sequence + cumsum(shift);
         end
     end
 end
