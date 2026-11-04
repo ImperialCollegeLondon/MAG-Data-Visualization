@@ -1,8 +1,14 @@
 name: MATLAB Tests
+# Branches are tested through pull requests, so that a push to a pull request
+# does not run the tests twice. Use "workflow_dispatch" to test a branch with
+# no pull request.
 on:
-  push: {}
+  push:
+    branches: [main]
+    tags: ['v*.*.*']
   pull_request:
     types: [opened, reopened, synchronize, ready_for_review]
+  workflow_dispatch: {}
   workflow_call: {}
 
 concurrency:
@@ -21,7 +27,6 @@ jobs:
 
   build:
     name: Build MATLAB Toolbox
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -62,10 +67,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # R2026b tests source code on any push, as it is the only release that
-        # can read the package definition. Older releases test the toolbox
-        # built above, and only run on pull requests, "main" and tags.
-        release: ${{ fromJSON(github.event_name == 'pull_request' && '["R2025a", "R2025b", "R2026a"]' || (github.ref == 'refs/heads/main' || github.ref_type == 'tag') && '["R2025a", "R2025b", "R2026a", "R2026b"]' || '["R2026b"]') }}
+        # R2026b tests source code, as it is the only release that can read the
+        # package definition. Older releases test the toolbox built above.
+        # Draft pull requests only run R2026b, for quicker feedback.
+        release: ${{ fromJSON((github.event_name == 'pull_request' && github.event.pull_request.draft) && '["R2026b"]' || '["R2025a", "R2025b", "R2026a", "R2026b"]') }}
     runs-on: windows-latest
     permissions:
       actions: read
