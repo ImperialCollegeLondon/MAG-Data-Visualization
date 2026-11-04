@@ -53,7 +53,7 @@ classdef (Abstract) View < matlab.mixin.Heterogeneous & mag.mixin.SetGet
                             setBreakpointHyperlink = compose("\n\nClick <a href=""matlab:mag.internal.stopIfException('%s')"">here</a> to set a breakpoint at the error source.", exception.identifier);
                         end
 
-                        warning("Failed to visualize ""%s"" because of error ""%s"":\n%s%s", class(v), exception.identifier, exception.message, setBreakpointHyperlink);
+                        warning("mag:graphics:VisualizeFailed", "Failed to visualize ""%s"" because of error ""%s"":\n%s%s", class(v), exception.identifier, exception.message, setBreakpointHyperlink);
                     end
                 end
 

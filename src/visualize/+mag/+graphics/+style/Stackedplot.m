@@ -67,7 +67,7 @@ classdef Stackedplot < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport 
             if height(this.YLimits) == 1
                 yLimits = repmat(this.YLimits, Ny, 1);
             elseif isempty(this.YLimits) || (Ny ~= height(this.YLimits))
-                error("Mismatch in number of y-limits for number of plots.");
+                error("mag:graphics:YLimitsMismatch", "Mismatch in number of y-limits for number of plots.");
             else
                 yLimits = this.YLimits;
             end

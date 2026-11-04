@@ -8,11 +8,11 @@ classdef (Abstract) Format < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
     methods (Abstract)
 
-        % LOAD Load raw data from file.
-        rawData = load(this, fileName)
+        % LOAD Load raw data from file, and details about the file, such
+        % as its name, which are passed to "process".
+        [rawData, details] = load(this, fileName)
 
-        % PROCESS Process raw data and convert to common data
-        % format.
+        % PROCESS Process raw data and convert to common data format.
         data = process(this, rawData, details)
     end
 end

@@ -22,7 +22,7 @@ classdef Duplicates < mag.process.Step
             if any(locDuplicates)
 
                 this.DuplicateTimeStamps = this.DuplicateTimeStamps + nnz(locDuplicates);
-                warning("%d duplicate timestamps.", nnz(locDuplicates));
+                warning("mag:process:DuplicateTimestamps", "%d duplicate timestamps.", nnz(locDuplicates));
 
                 data(locDuplicates, :) = [];
             end

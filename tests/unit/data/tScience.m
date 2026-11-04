@@ -289,7 +289,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tScience < matlab.unittest.TestCase
             science = testCase.createTestData();
 
             % Exercise and verify.
-            testCase.verifyError(@() science.resample(0.12345), "", "Resampling should error when frequencies do not match.");
+            testCase.verifyError(@() science.resample(0.12345), "mag:science:NonIntegerResampleRatio", "Resampling should error when frequencies do not match.");
         end
 
         % Test that "downsample" method does nothing if no data.
@@ -338,7 +338,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tScience < matlab.unittest.TestCase
             science.Data.Time(end) = datetime("tomorrow", TimeZone = "UTC");
 
             % Exercise and verify.
-            testCase.verifyError(@() science.downsample(0.12345), "", "Resampling should error when frequencies do not match.");
+            testCase.verifyError(@() science.downsample(0.12345), "mag:signal:NonConstantRate", "Downsampling should error when initial frequency is not uniform.");
         end
 
         % Test that "downsample" method throws when target frequency is not
@@ -349,7 +349,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tScience < matlab.unittest.TestCase
             science = testCase.createTestData();
 
             % Exercise and verify.
-            testCase.verifyError(@() science.downsample(0.12345), "", "Resampling should error when frequencies do not match.");
+            testCase.verifyError(@() science.downsample(0.12345), "mag:science:NonIntegerDecimationFactor", "Resampling should error when frequencies do not match.");
         end
 
         % Test that "filter" method does nothing if no data.

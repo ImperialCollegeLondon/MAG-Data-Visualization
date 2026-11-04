@@ -26,6 +26,6 @@ end
 function mustBeVersion(value)
 
     if ~isstring(value) || ~matches(value, regexpPattern("\d+\.\d+\.\d+"))
-        error("Version must be compliant with Semantic Versioning 2.0.0.");
+        error("mag:version:InvalidVersion", "Version must be compliant with Semantic Versioning 2.0.0.");
     end
 end

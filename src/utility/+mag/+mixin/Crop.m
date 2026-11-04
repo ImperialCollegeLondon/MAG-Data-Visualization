@@ -18,17 +18,17 @@ classdef (Abstract, HandleCompatible) Crop
             if isdatetime(value)
 
                 if ~(isvector(value) && isequal(numel(value), 2))
-                    throwAsCaller(MException("", "Time filter of type ""datetime"" must have two elements."));
+                    throwAsCaller(MException("mag:crop:InvalidTimeFilter", "Time filter of type ""datetime"" must have two elements."));
                 end
             elseif isduration(value)
 
                 if ~(isscalar(value) || (isvector(value) && isequal(numel(value), 2)))
-                    throwAsCaller(MException("", "Time filter of type ""duration"" must have one or two elements."));
+                    throwAsCaller(MException("mag:crop:InvalidTimeFilter", "Time filter of type ""duration"" must have one or two elements."));
                 end
             else
 
                 if ~isscalar(value)
-                    throwAsCaller(MException("", "Time filter of type ""%s"" must have one or two elements.", class(value)));
+                    throwAsCaller(MException("mag:crop:InvalidTimeFilter", "Time filter of type ""%s"" must have one or two elements.", class(value)));
                 end
             end
         end
@@ -93,7 +93,7 @@ classdef (Abstract, HandleCompatible) Crop
             actualNumber = numel(filters);
 
             if ~isequal(actualNumber, 1) && ~isequal(actualNumber, expectedNumber)
-                throwAsCaller(MException("", "Number of time filters (%d) does not match expected number (%d).", actualNumber, expectedNumber));
+                throwAsCaller(MException("mag:crop:FilterNumberMismatch", "Number of time filters (%d) does not match expected number (%d).", actualNumber, expectedNumber));
             end
 
             if isscalar(filters)

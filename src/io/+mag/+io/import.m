@@ -37,7 +37,7 @@ function data = import(options)
     elseif isa(data, "mag.HK")
         data = combineHK(data);
     else
-        error("Unsupported class ""%s"".", class(data));
+        error("mag:io:UnsupportedClass", "Unsupported class ""%s"".", class(data));
     end
 end
 

@@ -104,7 +104,7 @@ classdef WaveletAnalyzer < mag.app.Control
                     command = mag.app.Command(Functional = @waveletTimeFrequencyAnalyzer, ...
                         PositionalArguments = {selectedData});
                 otherwise
-                    error("Unknown Wavelet Toolbox app ""%s"".", this.AppDropDown.Value);
+                    error("mag:app:UnknownWaveletApp", "Unknown Wavelet Toolbox app ""%s"".", this.AppDropDown.Value);
             end
         end
     end

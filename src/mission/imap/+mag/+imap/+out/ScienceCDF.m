@@ -120,7 +120,7 @@ classdef ScienceCDF < mag.io.out.CDF
                     time.TimeZone = "UTCLeapSeconds";
                     cdfTime = convertTo(time, "tt2000");
                 otherwise
-                    error("Time type ""%s"" not supported.");
+                    error("mag:imap:UnsupportedTimeType", "Time type ""%s"" not supported.", timeType);
             end
         end
     end

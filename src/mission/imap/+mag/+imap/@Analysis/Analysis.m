@@ -306,7 +306,7 @@ classdef Analysis < mag.Analysis
                     format = "CDF";
                     args = {"CDFSettings", mag.io.CDFSettings(Field = "vectors", Range = "vectors")};
                 otherwise
-                    error("Unsupported extension ""%s"" for science data import.", extension);
+                    error("mag:imap:UnsupportedExtension", "Unsupported extension ""%s"" for science data import.", extension);
             end
 
             importStrategy = feval("mag.imap.in." + type + format, args{:});

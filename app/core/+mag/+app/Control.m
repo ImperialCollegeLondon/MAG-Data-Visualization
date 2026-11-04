@@ -44,7 +44,7 @@ classdef (Abstract) Control < mag.app.manage.Manager
         end
 
         function reset(~)
-            error("Reset method not supported.");
+            error("mag:app:ResetNotSupported", "Reset method not supported.");
         end
 
         function data = getVisualizeData(~, analysis)

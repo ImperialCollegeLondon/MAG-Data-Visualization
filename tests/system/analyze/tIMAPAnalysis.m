@@ -31,7 +31,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
             testCase.copyDataToWorkingDirectory("imap/full_analysis");
 
             % Exercise.
-            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "");
+            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "mag:process:DuplicateTimestamps");
 
             % Verify.
             testCase.verifySubstring(analysis.EventFileNames, "20240507_111204.html", "Event file names do not match.");
@@ -92,7 +92,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
             testCase.copyDataToWorkingDirectory("imap/sc_test");
 
             % Exercise.
-            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "");
+            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(Location = pwd()), "mag:process:DuplicateTimestamps");
 
             % Verify.
             testCase.verifySubstring(analysis.EventFileNames, "20250324_140003.html", "Event file names do not match.");
@@ -125,7 +125,7 @@ classdef (TestTags = ["System", "Parallel"]) tIMAPAnalysis < AnalysisTestCase
                 "HKPattern", fullfile("data", "hk", "mag", "l1", "*", "*", "*", "*.csv")};
 
             % Exercise.
-            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(options{:}), "");
+            analysis = testCase.verifyWarning(@() mag.imap.Analysis.start(options{:}), "mag:process:DuplicateTimestamps");
 
             % Verify.
             testCase.verifyEmpty(analysis.EventFileNames, "Event file names do not match.");

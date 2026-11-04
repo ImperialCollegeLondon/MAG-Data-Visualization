@@ -28,7 +28,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tDuplicates < MAGAnalysisTestCase
 
             % Exercise.
             duplicatesStep = mag.process.Duplicates();
-            processedData = testCase.verifyWarning(@() duplicatesStep.apply(modifiedData), "", ...
+            processedData = testCase.verifyWarning(@() duplicatesStep.apply(modifiedData), "mag:process:DuplicateTimestamps", ...
                 "Warning should be issued when duplicates are present.");
 
             % Verify.
