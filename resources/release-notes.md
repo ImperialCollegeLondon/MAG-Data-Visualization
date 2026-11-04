@@ -2,6 +2,8 @@
 
 - (IMAP) Remove "CDF" export format, as it could not work
 - Fix figure buttons being updated more than once after changing mission
+- (HelioSwarm) Remove "Metadata pattern" setting, as metadata files were never loaded
+- (Bartington) Remove "Gradiometer" setting, as it had no effect
 
 ## Analysis
 
@@ -23,6 +25,17 @@
 - (HENON) Fix `export` failing with wrong error when options are specified
 - (All) Fix event filter adding rows when an event is close to the end of the data
 - (All) PSD and spectrogram views no longer share the same transformation
+- (IMAP) Load event logs with many commands faster (2,000 commands in 9.6 s instead of 26.7 s)
+- (IMAP) Fix finding mode change times in data whose time variable is not named "t"
+- (IMAP) Add mode slicing methods (`getAllModes`, `getModeCycling`, `getRangeCycling`, `getFinalNormalMode`, `splitByTimeGap`) to `mag.imap.Instrument`
+- (IMAP) Health checks call sensors "OBS" and "IBS" instead of "FOB" and "FIB"
+- (HelioSwarm) Remove `InputSource` and `MetadataPattern` options, which had no effect. Loading HelioSwarm analyses saved by earlier versions warns that `mag.hs.meta.InputSource` cannot be found
+- (HelioSwarm) `detect` no longer decodes binary files, as `start` decodes them before detecting files
+- (Bartington) Remove `Gradiometer` option, which had no effect
+- (All) Import large CSV files faster, by no longer reading whole files to check they contain data
+- (All) Separate data at many time gaps, and correct long packet sequences, much faster
+- (All) A CSV file with a header followed only by a blank line is treated as empty, for both line ending styles
+- (All) Add identifiers to all errors and warnings
 
 ## Package
 
