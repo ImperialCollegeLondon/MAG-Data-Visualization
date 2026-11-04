@@ -59,7 +59,7 @@ classdef Word < mag.imap.meta.Provider
 
             % Otherwise, error.
             else
-                error("Unrecognized table format.");
+                error("mag:imap:UnrecognizedTableFormat", "Unrecognized table format.");
             end
 
             % Assign instrument metadata.

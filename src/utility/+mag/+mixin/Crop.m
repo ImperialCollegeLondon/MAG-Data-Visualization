@@ -18,17 +18,17 @@ classdef (Abstract, HandleCompatible) Crop
             if isdatetime(value)
 
                 if ~(isvector(value) && isequal(numel(value), 2))
-                    throwAsCaller(MException("", "Time filter of type ""datetime"" must have two elements."));
+                    throwAsCaller(MException("mag:crop:InvalidTimeFilter", "Time filter of type ""datetime"" must have two elements."));
                 end
             elseif isduration(value)
 
                 if ~(isscalar(value) || (isvector(value) && isequal(numel(value), 2)))
-                    throwAsCaller(MException("", "Time filter of type ""duration"" must have one or two elements."));
+                    throwAsCaller(MException("mag:crop:InvalidTimeFilter", "Time filter of type ""duration"" must have one or two elements."));
                 end
             else
 
                 if ~isscalar(value)
-                    throwAsCaller(MException("", "Time filter of type ""%s"" must have one or two elements.", class(value)));
+                    throwAsCaller(MException("mag:crop:InvalidTimeFilter", "Time filter of type ""%s"" must have one or two elements.", class(value)));
                 end
             end
         end
@@ -46,33 +46,17 @@ classdef (Abstract, HandleCompatible) Crop
                 timePeriod (1, 1) {mustBeA(timePeriod, ["timerange", "withtol"])}
             end
 
-            if isdatetime(timeFilter)
-                timePeriod = timerange(timeFilter(1), timeFilter(2), "closed");
-            elseif isduration(timeFilter)
-
-                if isscalar(timeFilter)
-
-                    if timeFilter >= 0
-                        timePeriod = timerange(min(time) + timeFilter, max(time), "closed");
-                    else
-                        timePeriod = timerange(min(time), max(time) + timeFilter, "closed");
-                    end
-                else
-
-                    if timeFilter(2) >= 0
-                        timePeriod = timerange(min(time) + timeFilter(1), min(time) + timeFilter(2), "closed");
-                    else
-                        timePeriod = timerange(min(time) + timeFilter(1), max(time) + timeFilter(2), "closed");
-                    end
-                end
-            elseif isa(timeFilter, "timerange") || isa(timeFilter, "withtol")
+            if isa(timeFilter, "timerange") || isa(timeFilter, "withtol")
                 timePeriod = timeFilter;
+            else
+
+                [startTime, endTime] = mag.mixin.Crop.computeStartEndTime(timeFilter, time);
+                timePeriod = timerange(startTime, endTime, "closed");
             end
         end
 
         function [startTime, endTime] = convertToStartEndTime(timeFilter, time)
-        % CONVERTTOTIMESUBSCRIPT Convert to subscript that can be used for
-        % timetable cropping.
+        % CONVERTTOSTARTENDTIME Convert to start and end times of filter.
 
             arguments (Input)
                 timeFilter {mag.mixin.Crop.mustBeTimeFilter}
@@ -84,48 +68,17 @@ classdef (Abstract, HandleCompatible) Crop
                 endTime (1, 1) datetime
             end
 
-            warningStatus = warning("off", "MATLAB:structOnObject");
-            restoreWarning = onCleanup(@() warning(warningStatus));
+            if isa(timeFilter, "timerange")
 
-            if isdatetime(timeFilter)
-                [startTime, endTime] = deal(timeFilter(1), timeFilter(2));
-            elseif isduration(timeFilter)
-
-                if isscalar(timeFilter)
-
-                    if timeFilter >= 0
-
-                        startTime = min(time) + timeFilter;
-                        endTime = max(time);
-                    else
-
-                        startTime = min(time);
-                        endTime = max(time) + timeFilter;
-                    end
-                else
-
-                    if timeFilter(2) >= 0
-
-                        startTime = min(time) + timeFilter(1);
-                        endTime = min(time) + timeFilter(2);
-                    else
-
-                        startTime = min(time) + timeFilter(1);
-                        endTime = max(time) + timeFilter(2);
-                    end
-                end
-            elseif isa(timeFilter, "timerange")
-
-                structTimeRange = struct(timeFilter);
-
-                startTime = structTimeRange.first;
-                endTime = structTimeRange.last;
+                [startTime, endTime] = mag.mixin.Crop.getInternalTimes(timeFilter, ["first", "last"]);
             elseif isa(timeFilter, "withtol")
 
-                structWithTol = struct(timeFilter);
+                [subscriptTimes, tolerance] = mag.mixin.Crop.getInternalTimes(timeFilter, ["subscriptTimes", "tol"]);
 
-                startTime = structWithTol.subscriptTimes - structWithTol.tol;
-                endTime = structWithTol.subscriptTimes + structWithTol.tol;
+                startTime = subscriptTimes - tolerance;
+                endTime = subscriptTimes + tolerance;
+            else
+                [startTime, endTime] = mag.mixin.Crop.computeStartEndTime(timeFilter, time);
             end
         end
 
@@ -140,7 +93,7 @@ classdef (Abstract, HandleCompatible) Crop
             actualNumber = numel(filters);
 
             if ~isequal(actualNumber, 1) && ~isequal(actualNumber, expectedNumber)
-                throwAsCaller(MException("", "Number of time filters (%d) does not match expected number (%d).", actualNumber, expectedNumber));
+                throwAsCaller(MException("mag:crop:FilterNumberMismatch", "Number of time filters (%d) does not match expected number (%d).", actualNumber, expectedNumber));
             end
 
             if isscalar(filters)
@@ -154,6 +107,44 @@ classdef (Abstract, HandleCompatible) Crop
                     varargout{i} = filters{i}; %#ok<AGROW>
                 end
             end
+        end
+    end
+
+    methods (Static, Access = private)
+
+        function [startTime, endTime] = computeStartEndTime(timeFilter, time)
+        % COMPUTESTARTENDTIME Compute start and end times of datetime or
+        % duration filter. A positive duration is from the start of the
+        % data, and a negative one from its end.
+
+            if isdatetime(timeFilter)
+                [startTime, endTime] = deal(timeFilter(1), timeFilter(2));
+            elseif isscalar(timeFilter) && (timeFilter >= 0)
+                [startTime, endTime] = deal(min(time) + timeFilter, max(time));
+            elseif isscalar(timeFilter)
+                [startTime, endTime] = deal(min(time), max(time) + timeFilter);
+            elseif timeFilter(2) >= 0
+                [startTime, endTime] = deal(min(time) + timeFilter(1), min(time) + timeFilter(2));
+            else
+                [startTime, endTime] = deal(min(time) + timeFilter(1), max(time) + timeFilter(2));
+            end
+        end
+
+        function varargout = getInternalTimes(timeFilter, fields)
+        % GETINTERNALTIMES Get times from "timerange" or "withtol". They
+        % have no public properties, so this reads their internal fields,
+        % which may change between MATLAB releases.
+
+            warningStatus = warning("off", "MATLAB:structOnObject");
+            restoreWarning = onCleanup(@() warning(warningStatus));
+
+            internals = struct(timeFilter);
+
+            if ~all(isfield(internals, fields))
+                error("mag:crop:UnsupportedFilter", "Cannot read times of ""%s"" in this MATLAB release. Use ""datetime"" or ""duration"" time filters instead.", class(timeFilter));
+            end
+
+            varargout = cellfun(@(f) internals.(f), cellstr(fields), UniformOutput = false);
         end
     end
 end

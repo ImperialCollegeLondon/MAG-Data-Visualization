@@ -32,7 +32,7 @@ classdef Timestamp < mag.process.Step
             if any(diff(idxSequence) ~= vectorsPerPacket)
 
                 corruptPackets = uniqueSequence(diff(idxSequence) ~= vectorsPerPacket);
-                error("The following packets do not contain %d elements:\n    %s", vectorsPerPacket, join(compose("%d, ", corruptPackets)));
+                error("mag:process:CorruptPackets", "The following packets do not contain %d elements:\n    %s", vectorsPerPacket, join(compose("%d, ", corruptPackets)));
             end
 
             % Determine time offset to add.

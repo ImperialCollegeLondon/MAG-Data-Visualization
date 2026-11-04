@@ -10,7 +10,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tHelioSwarmAnalysis < matlab.unittest
             location = fullfile(fileparts(mfilename("fullpath")), "test_data");
 
             % Exercise.
-            idpuAnalysis = mag.hs.Analysis.start(Location = location, InputSource = "iDPU");
+            idpuAnalysis = mag.hs.Analysis.start(Location = location);
 
             % Verify.
             testCase.verifyEqual(idpuAnalysis.ScienceProcessing.ExtraScaling, 1, ...
@@ -36,6 +36,21 @@ classdef (TestTags = ["Unit", "Parallel"]) tHelioSwarmAnalysis < matlab.unittest
 
             testCase.verifyEqual(mag.hs.Analysis.getCompleteScaleFactors(), expectedCompleteScaleFactors, ...
                 "Complete scale factor matrix should match expectation for iDPU.", RelTol = 1e-6);
+        end
+
+        % Test that detecting files does not decode binary files, which
+        % would write new files.
+        function detect_doesNotDecode(testCase)
+
+            % Set up.
+            location = testCase.createTemporaryFolder();
+            writelines("", fullfile(location, "hs_20250101_000000.361_m128"));
+
+            analysis = mag.hs.Analysis(Location = location, DecodeBinaryFiles = true);
+
+            % Exercise and verify.
+            testCase.verifyWarningFree(@() analysis.detect(), "Detection should not try to decode binary files.");
+            testCase.verifyNumElements(dir(fullfile(location, "*.*")), 3, "Detection should not write files.");
         end
 
         % Test that CDF export is rejected, as it is not implemented.

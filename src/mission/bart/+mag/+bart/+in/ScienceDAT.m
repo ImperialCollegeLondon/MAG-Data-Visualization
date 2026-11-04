@@ -26,7 +26,7 @@ classdef ScienceDAT < mag.io.in.DAT
             if width(rawData) > 4
                 rawData = rawData(:, ["Time (s)", "x (nT)", "y (nT)", "z (nT)"]);
             elseif width(rawData) < 4
-                error("Bartington data should have 4 columns.");
+                error("mag:bart:InvalidColumns", "Bartington data should have 4 columns.");
             end
         end
 
@@ -67,7 +67,7 @@ classdef ScienceDAT < mag.io.in.DAT
                 case "n"
                     % nothing to do
                 otherwise
-                    error("Unrecognized unit ""%s"".", units);
+                    error("mag:bart:UnrecognizedUnit", "Unrecognized unit ""%s"".", units);
             end
 
             % Convert to science.
@@ -86,7 +86,7 @@ classdef ScienceDAT < mag.io.in.DAT
                 case 2
                     sensor = mag.meta.Sensor.IBS;
                 otherwise
-                    error("Unrecognized input type ""%d"".", this.InputType);
+                    error("mag:bart:UnrecognizedInputType", "Unrecognized input type ""%d"".", this.InputType);
             end
 
             dt = diff(time);

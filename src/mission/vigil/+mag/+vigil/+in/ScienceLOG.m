@@ -6,7 +6,7 @@ classdef ScienceLOG < mag.io.in.Format
     end
 
     properties
-        % SENSOR Sensor type (FOB or FIB).
+        % SENSOR Sensor type (OBS or IBS).
         Sensor (1, 1) mag.meta.Sensor = mag.meta.Sensor.OBS
     end
 

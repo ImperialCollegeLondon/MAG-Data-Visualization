@@ -89,7 +89,7 @@ classdef ScienceCDF < mag.io.in.CDF
                 case "i"
                     sensor = mag.meta.Sensor.IBS;
                 otherwise
-                    error("Unsupported sensor ""%s"".", details.sensor);
+                    error("mag:imap:UnsupportedSensor", "Unsupported sensor ""%s"".", details.sensor);
             end
 
             switch details.mode
@@ -100,7 +100,7 @@ classdef ScienceCDF < mag.io.in.CDF
                 case "ialirt"
                     mode = mag.meta.Mode.IALiRT;
                 otherwise
-                    error("Unsupported mode ""%s"".", details.mode);
+                    error("mag:imap:UnsupportedMode", "Unsupported mode ""%s"".", details.mode);
             end
         end
 

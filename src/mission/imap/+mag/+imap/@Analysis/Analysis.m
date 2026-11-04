@@ -154,8 +154,6 @@ classdef Analysis < mag.Analysis
 
             this.loadScienceData(primarySetup, secondarySetup);
 
-            this.loadIALiRTData(primarySetup, secondarySetup);
-
             this.loadHKData();
         end
 
@@ -170,76 +168,7 @@ classdef Analysis < mag.Analysis
                 modes (1, :) mag.imap.Instrument
             end
 
-            function [periods, modeEvents] = findModePeriods(data)
-
-                if isempty(data)
-
-                    periods = {};
-                    modeEvents = [];
-                    return;
-                end
-
-                events = data.Events;
-
-                modeEvents = events(~ismissing(events.Duration), :);
-                periods = repmat({timerange()}, 1, height(modeEvents));
-
-                for e = 1:height(modeEvents)
-
-                    if e == height(modeEvents)
-
-                        idxTime = find(modeEvents.Time == modeEvents.Time(e), 1) + 1;
-
-                        if idxTime > height(modeEvents)
-                            endTime = data.Time(end);
-                        else
-                            endTime = modeEvents.Time(idxTime);
-                        end
-                    else
-                        endTime = modeEvents.Time(e + 1);
-                    end
-
-                    periods{e} = timerange(modeEvents.Time(e), endTime, "closedleft");
-                end
-            end
-
-            modes = mag.imap.Instrument.empty();
-
-            % Find duration for each mode.
-            [primaryPeriods, primaryEvents] = findModePeriods(this.Results.Primary);
-            [secondaryPeriods, secondaryEvents] = findModePeriods(this.Results.Secondary);
-
-            % Split data into separate elements.
-            if ~isempty(primaryPeriods) && ~isempty(secondaryPeriods)
-
-                % Modes are paired by position, which is only valid when
-                % both sensors have the same modes.
-                if ~isequal(numel(primaryPeriods), numel(secondaryPeriods))
-
-                    warning("mag:imap:UnequalModes", "Data not split by mode, as primary (%d) and secondary (%d) sensors have different number of modes.", ...
-                        numel(primaryPeriods), numel(secondaryPeriods));
-                    return;
-                end
-
-                for p = 1:numel(primaryPeriods)
-
-                    data = this.applyTimeRangeToInstrument(primaryPeriods{p}, secondaryPeriods{p});
-
-                    if isempty(data)
-                        continue;
-                    end
-
-                    data.Primary.Metadata.Mode = string(primaryEvents{p, "Mode"});
-                    data.Primary.Metadata.DataFrequency = primaryEvents{p, "DataFrequency"};
-                    data.Primary.Metadata.PacketFrequency = primaryEvents{p, "PacketFrequency"};
-
-                    data.Secondary.Metadata.Mode = string(secondaryEvents{p, "Mode"});
-                    data.Secondary.Metadata.DataFrequency = secondaryEvents{p, "DataFrequency"};
-                    data.Secondary.Metadata.PacketFrequency = secondaryEvents{p, "PacketFrequency"};
-
-                    modes(end + 1) = data; %#ok<AGROW>
-                end
-            end
+            modes = this.Results.getAllModes();
         end
 
         function modeCycling = getModeCycling(this, options)
@@ -247,32 +176,16 @@ classdef Analysis < mag.Analysis
 
             arguments (Input)
                 this (1, 1) mag.imap.Analysis
-                options.PrimaryPattern (1, :) double = [2, 64, 2, 4, 64, 4, 4, 128]
-                options.SecondaryPattern (1, :) double = [2, 8, 2, 1, 64, 1, 4, 128]
+                options.PrimaryPattern (1, :) double
+                options.SecondaryPattern (1, :) double
             end
 
             arguments (Output)
                 modeCycling mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
-            function period = findModeCyclingPeriod(events, pattern)
-
-                % Use first occurrence of pattern only. If pattern ends
-                % with last event, include data until the end.
-                idxMode = strfind(events.DataFrequency', pattern);
-
-                if isempty(idxMode)
-                    period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
-                elseif (idxMode(1) + numel(pattern)) > height(events)
-                    period = timerange(events.Time(idxMode(1)), datetime("Inf", TimeZone = "UTC"), "closed");
-                else
-                    period = timerange(events.Time(idxMode(1)), events.Time(idxMode(1) + numel(pattern)), "closedleft");
-                end
-            end
-
-            modeCycling = this.applyTimeRangeToInstrument( ...
-                findModeCyclingPeriod(this.Results.Primary.Events, options.PrimaryPattern), ...
-                findModeCyclingPeriod(this.Results.Secondary.Events, options.SecondaryPattern));
+            args = namedargs2cell(options);
+            modeCycling = this.Results.getModeCycling(args{:});
         end
 
         function rangeCycling = getRangeCycling(this, options)
@@ -280,38 +193,15 @@ classdef Analysis < mag.Analysis
 
             arguments (Input)
                 this (1, 1) mag.imap.Analysis
-                options.Pattern (1, :) double = [3, 2, 1, 0]
+                options.Pattern (1, :) double
             end
 
             arguments (Output)
                 rangeCycling mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
-            if ~this.Results.HasScience
-
-                rangeCycling = mag.imap.Instrument.empty();
-                return;
-            end
-
-            function period = findRangeCyclingPeriod(events, pattern)
-
-                % Use first occurrence of pattern only. If pattern ends
-                % with last event, include data until the end.
-                idxRange = strfind(events.Range', pattern);
-
-                if isempty(idxRange)
-                    period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
-                elseif (idxRange(1) + numel(pattern)) > height(events)
-                    period = timerange(events.Time(idxRange(1)), datetime("Inf", TimeZone = "UTC"), "closed");
-                else
-                    period = timerange(events.Time(idxRange(1)), events.Time(idxRange(1) + numel(pattern)), "closedleft");
-                end
-            end
-
-            rangeCycling = this.applyTimeRangeToInstrument( ...
-                findRangeCyclingPeriod(this.Results.Primary.Events, options.Pattern), ...
-                findRangeCyclingPeriod(this.Results.Secondary.Events, options.Pattern), ...
-                EnforceSizeMatch = true);
+            args = namedargs2cell(options);
+            rangeCycling = this.Results.getRangeCycling(args{:});
         end
 
         function rampMode = getRampMode(this)
@@ -346,52 +236,7 @@ classdef Analysis < mag.Analysis
                 finalNormal mag.imap.Instrument {mustBeScalarOrEmpty}
             end
 
-            function period = findFinalNormalMode(events, endTime)
-
-                if any(events{end-2:end, "Mode"} == "Normal")
-
-                    events = events((events.Mode == "Normal") & (events.DataFrequency == 2) & ~contains(events.Label, "Shutdown"), :);
-                    period = timerange(events.Time(end), endTime, "closed");
-                else
-                    period = timerange(NaT(TimeZone = "UTC"), NaT(TimeZone = "UTC"));
-                end
-            end
-
-            finalNormal = this.applyTimeRangeToInstrument( ...
-                findFinalNormalMode(this.Results.Primary.Events, this.Results.Primary.Time(end)), ...
-                findFinalNormalMode(this.Results.Secondary.Events, this.Results.Secondary.Time(end)));
-        end
-
-        function periods = splitByTimeGap(this, gap)
-        % SPLITBYTIMEGAP Split data based on gap in the data of specified
-        % magnitude.
-
-            arguments (Input)
-                this (1, 1) mag.imap.Analysis
-                gap (1, 1) duration
-            end
-
-            arguments (Output)
-                periods (1, :) mag.imap.Instrument
-            end
-
-            tPrimary = this.Results.Primary.Time;
-            dtPrimary = diff(tPrimary);
-            tSplitPrimary = [tPrimary(1); tPrimary(dtPrimary > gap)];
-
-            tSecondary = this.Results.Secondary.Time;
-            dtSecondary = diff(tSecondary);
-            tSplitSecondary = [tSecondary(1); tSecondary(dtSecondary > gap)];
-
-            if ~isequal(numel(tSplitPrimary), numel(tSplitSecondary))
-                error("Unequal time splits in primary (%d) and secondary(%d) data. Try a different time gap.", numel(tSplitPrimary), numel(tSplitSecondary));
-            end
-
-            for i = 1:(numel(tSplitPrimary) - 1)
-
-                periods(i) = this.applyTimeRangeToInstrument(timerange(tSplitPrimary(i), tSplitPrimary(i + 1), "open"), ...
-                    timerange(tSplitSecondary(i), tSplitSecondary(i + 1), "open")); %#ok<AGROW>
-            end
+            finalNormal = this.Results.getFinalNormalMode();
         end
     end
 
@@ -412,53 +257,15 @@ classdef Analysis < mag.Analysis
         % LOADMETADATA Load metadata.
         [primarySetup, secondarySetup] = loadMetadata(this)
 
-        % LOADSCIENCEDATA Load science data.
+        % LOADSCIENCEDATA Load science and I-ALiRT data.
         loadScienceData(this, primarySetup, secondarySetup)
-
-        % LOADIALIRTDATA Load I-ALiRT data.
-        loadIALiRTData(this, primarySetup, secondarySetup)
 
         % LOADHKDATA Load HK data.
         loadHKData(this)
 
         % GENERATEEVENTTABLE Create an event table for a sensor, based on
         % detected events and science data.
-        eventTable = generateEventTable(this, primaryOrSecondary, sensorEvents, data)
-
-        function result = applyTimeRangeToInstrument(this, primaryPeriod, secondaryPeriod, options)
-        % APPLYTIMERANGETOTABLE Apply timerange to timetable and its
-        % events.
-
-            arguments (Input)
-                this
-                primaryPeriod (1, 1) timerange
-                secondaryPeriod (1, 1) timerange
-                options.EnforceSizeMatch (1, 1) logical = false
-            end
-
-            arguments (Output)
-                result mag.imap.Instrument {mustBeScalarOrEmpty}
-            end
-
-            result = this.Results.copy();
-
-            if isempty(result)
-                return;
-            end
-
-            result.crop(primaryPeriod, secondaryPeriod);
-
-            if ~result.Primary.HasData || ~result.Secondary.HasData
-                result = mag.imap.Instrument.empty();
-            elseif options.EnforceSizeMatch
-
-                if numel(result.Primary.Time) > numel(result.Secondary.Time)
-                    result.Primary.Data = result.Primary.Data(1:numel(result.Secondary.Time), :);
-                elseif numel(result.Primary.Time) < numel(result.Secondary.Time)
-                    result.Secondary.Data = result.Secondary.Data(1:numel(result.Primary.Time), :);
-                end
-            end
-        end
+        eventTable = generateEventTable(this, data, sensorEvents)
 
         function importStrategy = dispatchExtension(this, extension, type)
         % DISPATCHEXTENSION Dispatch extension to correct I/O strategy.
@@ -483,7 +290,7 @@ classdef Analysis < mag.Analysis
                     format = "CDF";
                     args = {"CDFSettings", mag.io.CDFSettings(Field = "vectors", Range = "vectors")};
                 otherwise
-                    error("Unsupported extension ""%s"" for science data import.", extension);
+                    error("mag:imap:UnsupportedExtension", "Unsupported extension ""%s"" for science data import.", extension);
             end
 
             importStrategy = feval("mag.imap.in." + type + format, args{:});
@@ -514,6 +321,25 @@ classdef Analysis < mag.Analysis
             end
 
             science = [science, mag.Science(science.Data([], :), metadata)];
+        end
+
+        function idxRamp = findRampEvents(events)
+        % FINDRAMPEVENTS Find indices of ramp mode events, followed by
+        % indices of the events after them, which end ramp mode. Ramp
+        % mode can be the last event, with nothing marking its end.
+
+            arguments (Input)
+                events timetable
+            end
+
+            arguments (Output)
+                idxRamp (:, 1) double
+            end
+
+            idxRamp = find(contains([events.Label], "Ramp", IgnoreCase = true));
+            idxRamp = vertcat(idxRamp, idxRamp + 1);
+
+            idxRamp(idxRamp > height(events)) = [];
         end
     end
 

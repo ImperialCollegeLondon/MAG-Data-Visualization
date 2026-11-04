@@ -26,7 +26,7 @@ classdef Timestamp < mag.graphics.view.View
 
             if ~primaryScience.HasData || ~secondaryScience.HasData
 
-                warning("No data in primary or secondary sensor. Skipping timestamp analysis.");
+                warning("mag:imap:NoTimestampData", "No data in primary or secondary sensor. Skipping timestamp analysis.");
                 return;
             end
 
@@ -88,7 +88,7 @@ classdef Timestamp < mag.graphics.view.View
                         LinkXAxes = true, ...
                         WindowState = "maximized");
                 else
-                    warning("FOB and FIB I-ALiRT do not have the same size.");
+                    warning("mag:imap:IALiRTSizeMismatch", "OBS and IBS I-ALiRT do not have the same size.");
                 end
             end
         end

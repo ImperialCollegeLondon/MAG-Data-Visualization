@@ -109,7 +109,7 @@ classdef (Abstract) Chart < matlab.mixin.Heterogeneous & mag.mixin.SetGet
 
             % Otherwise, throw an error.
             else
-                error("Mismatch between filter and x- or y-axis variables.");
+                error("mag:graphics:FilterMismatch", "Mismatch between filter and x- or y-axis variables.");
             end
         end
     end

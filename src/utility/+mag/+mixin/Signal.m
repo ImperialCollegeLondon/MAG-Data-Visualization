@@ -18,7 +18,7 @@ classdef (Abstract, HandleCompatible) Signal
             value(ismissing(value)) = [];
 
             if ~all(ismembertol(value, mode(value)))
-                throwAsCaller(MException("", "Data rate must be constant."));
+                throwAsCaller(MException("mag:signal:NonConstantRate", "Data rate must be constant."));
             end
         end
     end

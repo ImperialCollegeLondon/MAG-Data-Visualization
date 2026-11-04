@@ -182,7 +182,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             end
 
             if (round(numerator) ~= numerator) || (round(denominator) ~= denominator)
-                error("Calculated numerator (%.3f) and denominator (%.3f) must be integers.", numerator, denominator);
+                error("mag:science:NonIntegerResampleRatio", "Calculated numerator (%.3f) and denominator (%.3f) must be integers.", numerator, denominator);
             end
 
             xyz = resample(this.Data(:, [this.Settings.X, this.Settings.Y, this.Settings.Z]), numerator, denominator);
@@ -215,7 +215,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
             if actualFrequency == targetFrequency
                 return;
             elseif round(decimationFactor) ~= decimationFactor
-                error("Calculated decimation factor (%.3f) must be an integer.", decimationFactor);
+                error("mag:science:NonIntegerDecimationFactor", "Calculated decimation factor (%.3f) must be an integer.", decimationFactor);
             end
 
             a = ones(1, decimationFactor) / decimationFactor;
@@ -314,7 +314,7 @@ classdef Science < mag.TimeSeries & matlab.mixin.CustomDisplay
                     sensors = [metadata.Sensor];
                     primarySensor = sensors(locPrimary);
                 otherwise
-                    error("One and only one sensor can be primary.");
+                    error("mag:science:MultiplePrimary", "One and only one sensor can be primary.");
             end
 
             % Retrieve selected sensor.

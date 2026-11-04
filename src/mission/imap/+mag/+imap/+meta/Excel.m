@@ -63,7 +63,7 @@ classdef Excel < mag.imap.meta.Provider
 
                 if ~contains(attempts.repeat, "n", IgnoreCase = true)
 
-                    warning("Manual intervention required. Cannot determine number of activation attemps. Detected values are: FOB ""%s"", FIB ""%s"", Repeat ""%s"".", attempts.fob, attempts.fib, attempts.repeat);
+                    warning("mag:imap:UnknownActivationAttempts", "Manual intervention required. Cannot determine number of activation attempts. Detected values are: FOB ""%s"", FIB ""%s"", Repeat ""%s"".", attempts.fob, attempts.fib, attempts.repeat);
                     attempts.fob = NaN;
                     attempts.fib = NaN;
                 end

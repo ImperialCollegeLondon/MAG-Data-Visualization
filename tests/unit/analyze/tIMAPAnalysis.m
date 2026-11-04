@@ -67,6 +67,26 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPAnalysis < matlab.unittest.TestC
             testCase.verifyLessThan(abs(events.Time(2) - (startTime + seconds(124.7))), milliseconds(1), "Mode change should be at closest sample to event.");
         end
 
+        % Test that mode changes are found when the time variable is not
+        % named "t", as in L1b data.
+        function findModeChanges_timeVariableName(testCase)
+
+            % Set up.
+            startTime = datetime(2025, 1, 1, TimeZone = "UTC");
+
+            data = testCase.createModeData(startTime + seconds([0:100, 100.125:0.125:200]'));
+            data.Properties.DimensionNames(1) = "timestamps";
+
+            events = testCase.createModeEvents(startTime + seconds([0; 112]), [1; 8]);
+
+            % Exercise.
+            events = mag.imap.Analysis.findModeChanges(data, events, "OBS");
+
+            % Verify.
+            testCase.verifyEqual(events.Time(1), startTime, "First mode should start with data.");
+            testCase.verifyEqual(events.Time(2), startTime + seconds(100), "Mode change should be found at change in cadence.");
+        end
+
         % Test that aliases are defined.
         function alias(testCase, AliasName)
 

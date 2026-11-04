@@ -77,7 +77,7 @@ classdef ScienceCSV < mag.imap.in.IMAPCSV
                     secondaryFrequency = "128";
                     packetFrequency = "2";
                 else
-                    error("Unrecognized file name format for ""%s"".", fileName);
+                    error("mag:imap:UnrecognizedFileName", "Unrecognized file name format for ""%s"".", fileName);
                 end
 
             % Otherwise, extract from file name.

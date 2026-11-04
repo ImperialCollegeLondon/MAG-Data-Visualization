@@ -23,7 +23,7 @@ classdef LeftRight < mag.graphics.style.Axes & mag.graphics.mixin.GridSupport & 
             end
 
             if isfield(options, "YLimits")
-                warning("""YLimits"" option is ignored. Use ""LLimits"" and/or ""RLimits"" to specify left and right axis limits, respectively.");
+                warning("mag:graphics:IgnoredYLimits", """YLimits"" option is ignored. Use ""LLimits"" and/or ""RLimits"" to specify left and right axis limits, respectively.");
             end
 
             this.set(options);

@@ -23,8 +23,8 @@ classdef ScienceCDF < mag.io.out.CDF
                 lower(this.Level), ...
                 lower(string(data.Metadata.Mode)), ...
                 lower(extract(string(data.Metadata.Sensor), regexpPattern("[O|I]"))), ...
-                datestr(data.Metadata.Timestamp, "yyyymmdd"), ...
-                lower(this.Version)); %#ok<DATST>
+                string(data.Metadata.Timestamp, "yyyyMMdd"), ...
+                lower(this.Version));
         end
     end
 
@@ -120,7 +120,7 @@ classdef ScienceCDF < mag.io.out.CDF
                     time.TimeZone = "UTCLeapSeconds";
                     cdfTime = convertTo(time, "tt2000");
                 otherwise
-                    error("Time type ""%s"" not supported.");
+                    error("mag:imap:UnsupportedTimeType", "Time type ""%s"" not supported.", timeType);
             end
         end
     end

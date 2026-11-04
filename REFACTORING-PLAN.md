@@ -195,44 +195,64 @@ Found along the way:
 
 ## Phase 6: Simplify IMAP
 
-- [ ] Split [loadEventsData.m](src/mission/imap/+mag/+imap/@Analysis/loadEventsData.m) (331 lines, complexity 44) into reading, parsing commands and matching responses:
-  - The Config, Normal and Burst loops can become one table-driven builder.
-  - The acknowledge and complete blocks are the same logic written two ways, twice.
-  - Timestamps can be parsed once rather than in 7 places.
-- [ ] Merge `loadScienceData` and `loadIALiRTData` into shared helpers for setup, timestamps, events and steps. Check first whether their different step order is intentional.
-- [ ] Split `findModeChanges`, which holds two unrelated algorithms and mixes `data.t` with `timeColumn`.
-- [ ] Slim down [Analysis.m](src/mission/imap/+mag/+imap/@Analysis/Analysis.m) (476 lines):
-  - Merge `findModeCyclingPeriod` and `findRangeCyclingPeriod`, which differ by one column.
-  - Add a helper for the 4 `timerange(NaT...)` copies.
-  - Share the ramp detection that exists twice.
-  - Fix the stale signature at [line 404](src/mission/imap/+mag/+imap/@Analysis/Analysis.m#L404).
-  - Move mode slicing to `mag.imap.Instrument`, keeping forwarding methods.
-- [ ] In [health/Power.m](src/mission/imap/+mag/+imap/+health/Power.m), merge the voltage, current and temperature checks into one method. The `isSupported` methods of the health checks are near-identical too.
+**Done on 2026-11-04.** Functions in `src` and `app` with a cyclomatic complexity above 10 went from 12 to 9, and IMAP ones from 9 to 5. The highest is now 17, in `mag.graphics.chart.Event/plot`, against 44 before. Results are identical on all IMAP test data, compared with every public output of `mag.imap.Analysis` and with the health check results.
+
+- [x] Split [loadEventsData.m](src/mission/imap/+mag/+imap/@Analysis/loadEventsData.m) (331 lines, complexity 44) into reading, parsing commands and matching responses. Its largest function is now at complexity 7.
+  - The Config, Normal and Burst loops are one table-driven builder.
+  - Acknowledgment and completion share one parser and one matcher. Responses that do not identify their command are dropped, instead of misaligning the other responses.
+  - Timestamps are parsed once, when reading the logs.
+  - A test covers ramp mode commands, with a made-up log excerpt, as no log has one.
+- [x] Merge `loadScienceData` and `loadIALiRTData` into shared helpers for setup, timestamps, events and steps. **The step order differs, and was kept:** science adds events before sorting and removing duplicates, and I-ALiRT after. No commit explains it, as it comes from a work-in-progress refactor in April 2024 (`81a8072f`). Swapping it gives the same results on all test data, which may only mean the test data has no unsorted or duplicate samples near events. I-ALiRT's order looks safer, so moving science to it is worth considering, with a test that has such samples.
+- [x] Split `findModeChanges`, which holds two unrelated algorithms and mixes `data.t` with `timeColumn`. **Found:** refining logged mode changes failed for data whose time variable is not named "t", such as L1b. It is now fixed and tested. `updateRampModeTimestamps` had the same problem.
+- [x] Slim down [Analysis.m](src/mission/imap/+mag/+imap/@Analysis/Analysis.m), from 528 to 372 lines:
+  - `findModeCyclingPeriod` and `findRangeCyclingPeriod` are one pattern finder.
+  - `mag.time.emptyTimerange` replaces the 4 `timerange(NaT...)` copies.
+  - The ramp detection is shared, as `findRampEvents`.
+  - The stale `generateEventTable` signature is fixed.
+  - Mode slicing moved to `mag.imap.Instrument`, and `mag.imap.Analysis` forwards to it. `getRampMode` stays in the analysis, which holds ramp mode data.
+- [x] In [health/Power.m](src/mission/imap/+mag/+imap/+health/Power.m), merge the voltage, current and temperature checks into one method. Warnings keep their order, which is sorted when danger limits are checked first, and declared otherwise. The `isSupported` methods are now inherited from `mag.imap.health.HKCheck`.
+
+**Found, and removed:** `splitByTimeGap` crashed when the data had no gap larger than the threshold, and dropped the data after the last gap and the samples at each boundary. Nothing used it, here or in `MAG-Sensor-Performance`, so it was removed.
+
+**Found, not fixed:** whether a command without a matching response gets a fallback time depends on unrelated responses. If any acknowledgment or completion is logged after the command, a missing acknowledgment falls back to the command time, and a missing completion to the acknowledgment time. If none is, the timestamp stays `NaT`, which mostly affects the last commands in a log. The refactor kept this, as it comes from the original code, and Copilot flagged it in PR #290. Always using the fallback would be more consistent, but changes event times and tables, so it should be its own fix, with a test and a release note.
 
 ## Phase 7: Performance and cleanup
 
-`mag.imap.Analysis.start` takes about 10 s on `full_analysis`, with no single hotspot, so measure at scale before optimizing beyond the first item below.
+**Done on 2026-11-04.** All 889 non-UI tests and 111 UI tests pass on R2026b, except those filtered by design: `tInstalledToolbox` needs an older release, `tToolbox` is skipped when the toolbox is installed as a package, and `tExport` skips missions with no export formats. Code Analyzer reports 21 info-level notes, down from 23. Older releases were not tested locally.
 
 ### Performance
 
-- [ ] [CSV.m:13](src/io/+mag/+io/+in/CSV.m#L13) reads and splits the whole file just to count lines. On an 89 MB file this cost 3.4 s, against 1.7 to 3.2 s for the real read. Reading the first lines takes 0.003 s.
-- [ ] Measure these likely wins at scale:
-  - `data = [data; missingRow]` in a loop ([Separate.m:101](src/analyze/+mag/+process/Separate.m#L101)).
-  - The sequence loop in [Step.m:20](src/analyze/+mag/+process/Step.m#L20).
-  - O(n²) matching in `loadEventsData`.
-  - A new `Spice` object per sensor per file.
-  - A deep copy per mode in `applyTimeRangeToInstrument`.
+Measured on synthetic data, before and after. Outputs are identical, including 1,000 events with corrected command times.
+
+| Candidate | Size | Before | After |
+| --------- | ---- | ------ | ----- |
+| CSV data check | 90 MB file | 5.3 s | 0.001 s |
+| `Separate`, one copy per gap | 1 million rows, 1,000 gaps | 24.5 s | 0.07 s |
+| `correctSequence` in `Step`, one shift per reset | 10 million samples, 610 resets | 12.8 s | 0.11 s |
+| Event matching | 2,000 commands | 26.7 s | 9.6 s |
+| New `Spice` object per sensor per file | 100 objects | 0.1 s | Not changed |
+| Deep copy per mode in `getAllModes` | 5 modes | 6 ms of 1.1 s | Not changed |
+
+- [x] [CSV.m](src/io/+mag/+io/+in/CSV.m) reads only the first lines to check a file has data. A header followed only by a blank CRLF line now counts as empty, like a blank LF line, instead of being read as an empty table.
+- [x] Measure these likely wins at scale. The first three were worth fixing:
+  - `data = [data; missingRow]` in a loop ([Separate.m](src/analyze/+mag/+process/Separate.m)). Fixed: rows are added at once.
+  - The sequence loop in [Step.m](src/analyze/+mag/+process/Step.m). Fixed: shifts add up with `cumsum`, which gives the same result.
+  - O(n²) matching in `loadEventsData`. Fixed: event properties are gathered once. Most of the remaining time is building events, which is linear: each `ModeChange` takes 4 ms to construct, mostly in `options.?Class` argument validation, which every event and step class uses.
+  - A new `Spice` object per sensor per file. Not changed: SPICE kernels are loaded once, so each object costs about 1 ms.
+  - A deep copy per mode in `applyTimeRangeToInstrument`. Not changed: copies take 6 ms of the 1.1 s that `getAllModes` takes on `full_analysis`.
+
+`mag.imap.Analysis.start` takes 2.2 s on `full_analysis` on this machine, against the 10 s measured in the review.
 
 ### Cleanup
 
-- [ ] Replace `struct(timerange)`, which reads MATLAB internals ([Crop.m:119](src/utility/+mag/+mixin/Crop.m#L119)).
-- [ ] Merge the two `Crop` converters, which repeat each other.
-- [ ] Remove dead code: HelioSwarm `InputSource` and `MetadataPattern`, and Bartington `Gradiometer`.
-- [ ] Fix the drifted `Format.load` and `getExportOptions` signatures.
-- [ ] Add identifiers to the 27 of 74 `error` calls and the 12 warnings that have none.
-- [ ] Replace the 8 lines using `datestr`, which is deprecated.
-- [ ] Rename the FOB and FIB names left after #260, and update the Copilot instructions.
-- [ ] Move the WSL decoding out of HelioSwarm `detect`, which writes files as a side effect.
+- [x] Replace `struct(timerange)`, which reads MATLAB internals ([Crop.m](src/utility/+mag/+mixin/Crop.m)). **Partly:** `timerange` and `withtol` have no public properties in R2026b, and their only methods are `isequal`, `isequaln`, `keyHash` and `keyMatch`. `Event.crop` needs the start and end times of the filter, so the internals are still read for those two classes, in one place that fails with a clear error if the fields change. Removing it means no longer accepting `timerange` and `withtol` for cropping events.
+- [x] Merge the two `Crop` converters, which repeat each other.
+- [x] Remove dead code: HelioSwarm `InputSource` and `MetadataPattern`, and Bartington `Gradiometer`. Their app settings are removed too. This breaks scripts that pass these options. Saved HelioSwarm analyses still load, with a warning that `mag.hs.meta.InputSource` cannot be found.
+- [x] Fix the drifted `Format.load` and `getExportOptions` signatures. `getExportOptions` was already fixed in phase 5, which merged the export managers.
+- [x] Add identifiers to the errors and warnings that have none: 26 errors and 12 warnings, as `mag:<area>:<Name>`. Tests that matched an empty identifier now name the one they expect, which showed that `downsampleMethod_errorInitialFrequency` was matching a different error than its message said. The CDF export error was also missing the value for its `%s`.
+- [x] Replace the 8 lines using `datestr`, which is deprecated. Export file names are unchanged.
+- [x] Rename the FOB and FIB names left after #260, and update the Copilot instructions. **Mostly not needed:** OBS and IBS name the sensors, while FOB and FIB name the front-end electronics (FEE) that process each sensor's data, so they are not interchangeable. #260 renamed the sensors only. Quantities measured on the electronics, such as the FOB and FIB temperatures from thermistors on the FEE and activation attempts, correctly keep FOB and FIB, in HK properties and in health check names. Only a warning about I-ALiRT sensor data and two comments about sensors were renamed. Names from external data also keep their form: HK columns, metadata document labels, Vigil file name prefixes and MAT export fields. The Copilot instructions now explain the distinction, and describe the shared app provider from phase 5.
+- [x] Move the WSL decoding out of HelioSwarm `detect`, which writes files as a side effect. It is now `mag.hs.decodeBinaryFiles`, which `start` calls before `detect`.
 
 ## Limits of this review
 

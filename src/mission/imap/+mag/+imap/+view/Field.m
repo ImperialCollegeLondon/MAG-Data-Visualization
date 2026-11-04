@@ -122,7 +122,7 @@ classdef Field < mag.imap.view.Science
                             secondary, mag.graphics.style.Default(Title = compose("%s Ranges", secondarySensor), YLabel = "range [-]", YLimits = "manual", YAxisLocation = "right", Charts = mag.imap.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))};
 
                     otherwise
-                        error("Unrecognized event ""%s"".", e);
+                        error("mag:imap:UnrecognizedEvent", "Unrecognized event ""%s"".", e);
                 end
 
                 if ~primary.HasData

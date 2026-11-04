@@ -73,7 +73,7 @@ classdef Field < mag.graphics.view.View
                         numEvents = numEvents + 1;
                         ed = {science, mag.graphics.style.Default(Title = "Ranges", YLabel = "range [-]", YLimits = "manual", Charts = mag.graphics.chart.Event(EventOfInterest = "Range", IgnoreMissing = false, YOffset = 0.25))};
                     otherwise
-                        error("Unrecognized event ""%s"".", e);
+                        error("mag:hs:UnrecognizedEvent", "Unrecognized event ""%s"".", e);
                 end
 
                 eventData = [eventData, ed]; %#ok<AGROW>

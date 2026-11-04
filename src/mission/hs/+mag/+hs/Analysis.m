@@ -2,15 +2,12 @@ classdef Analysis < mag.Analysis
 % ANALYSIS Automate analysis of HelioSwarm data.
 
     properties
-        % INPUTSOURCE Data input source.
-        InputSource (1, 1) mag.hs.meta.InputSource = mag.hs.meta.InputSource.iDPU
-        % METADATAPATTERN Pattern of metadata files.
-        MetadataPattern string {mustBeScalarOrEmpty} = string.empty()
         % SCIENCEPATTERN Pattern of science data files.
         SciencePattern (1, 1) string = fullfile("science*.csv")
         % HKPATTERN Pattern of housekeeping files.
         HKPattern (1, 1) string = fullfile("hk*.csv")
-        % DECODEBINARYFILES Decode supported binary files before CSV detection.
+        % DECODEBINARYFILES Decode supported binary files when starting
+        % analysis, before detecting CSV files.
         DecodeBinaryFiles (1, 1) logical = true
         % SCALEFACTORS Scale factors used to convert raw science data to nT.
         ScaleFactors (3, 4) double {mustBePositive} = mag.hs.Analysis.getCompleteScaleFactors()
@@ -29,8 +26,6 @@ classdef Analysis < mag.Analysis
         % HKPROCESSING Steps needed to process imported HK data. Same as
         % "Processing.HKSteps".
         HKProcessing (1, :) mag.process.Step
-        % METADATAFILENAMES Files containing metadata.
-        MetadataFileNames (1, :) string
         % SCIENCEFILENAMES Files containing science data.
         ScienceFileNames (1, :) string
         % HKFILENAMES Files containing HK data.
@@ -38,8 +33,6 @@ classdef Analysis < mag.Analysis
     end
 
     properties (Access = private)
-        % METADATAFILES Information about files containing metadata.
-        MetadataFiles (:, 1) struct
         % SCIENCEFILES Information about files containing science data.
         ScienceFiles (:, 1) struct
         % HKFILES Information about files containing HK data.
@@ -57,6 +50,11 @@ classdef Analysis < mag.Analysis
 
             args = namedargs2cell(options);
             analysis = mag.hs.Analysis(args{:});
+
+            % Decode binary files into CSV files, before detecting them.
+            if analysis.DecodeBinaryFiles
+                mag.hs.decodeBinaryFiles(analysis.Location);
+            end
 
             analysis.detect();
             analysis.load();
@@ -135,10 +133,6 @@ classdef Analysis < mag.Analysis
             this.Processing.HKSteps = value;
         end
 
-        function value = get.MetadataFileNames(this)
-            value = this.getFileNames(this.MetadataFiles);
-        end
-
         function value = get.ScienceFileNames(this)
             value = this.getFileNames(this.ScienceFiles);
         end
@@ -148,10 +142,6 @@ classdef Analysis < mag.Analysis
         end
 
         function detect(this)
-
-            if this.DecodeBinaryFiles
-                this.decodeBinaryFiles();
-            end
 
             this.ScienceFiles = dir(fullfile(this.Location, this.SciencePattern));
             this.HKFiles = dir(fullfile(this.Location, this.HKPattern));
@@ -234,85 +224,6 @@ classdef Analysis < mag.Analysis
                 FileNames = this.HKFileNames, ...
                 Format = mag.hs.in.HKCSV(), ...
                 ProcessingSteps = this.Processing.HKSteps);
-        end
-
-        function decodeBinaryFiles(this)
-
-            files = dir(fullfile(this.Location, "*"));
-            files = files(~[files.isdir]);
-
-            srcWSL = this.win2wslPath(this.Location);
-            destWSL = srcWSL;
-
-            for fileIdx = 1:numel(files)
-
-                fileName = string(files(fileIdx).name);
-                [isSupported, type, extension] = this.getBinaryFileType(fileName);
-
-                if ~isSupported
-                    continue;
-                end
-
-                tokens = regexp(fileName, "hs_(\d{8}_\d{6})", "tokens", "once");
-
-                if isempty(tokens)
-                    timestamp = "unknown";
-                else
-                    timestamp = string(tokens{1});
-                end
-
-                inputWSL = replace(fullfile(srcWSL, fileName), "\", "/");
-                outputName = compose("%s_%s%s", type, timestamp, extension);
-                outputWSL = replace(fullfile(destWSL, outputName), "\", "/");
-
-                linuxCommand = compose("hs-mag decode '%s' --export-file-name '%s'", inputWSL, outputWSL);
-                command = sprintf('wsl bash -lc "%s"', linuxCommand);
-
-                [status,~] = system(command);
-
-                if status ~= 0
-                    warning("mag:hs:DecodeFailed", "Failed to decode binary file ""%s"".", fileName);
-                end
-            end
-        end
-
-        function [isSupported, type, extension] = getBinaryFileType(~, fileName)
-
-            if contains(fileName, ".361_m128")
-                isSupported = true;
-                type = "science";
-                extension = ".csv";
-            elseif contains(fileName, ".360_mhk")
-                isSupported = true;
-                type = "hk";
-                extension = ".csv";
-            elseif contains(fileName, ".36e_mid")
-                isSupported = true;
-                type = "errors";
-                extension = ".txt";
-            elseif contains(fileName, ".36c_mhkhr")
-                isSupported = true;
-                type = "full_hk";
-                extension = ".csv";
-            else
-                isSupported = false;
-                type = "";
-                extension = "";
-            end
-        end
-
-        function wslPath = win2wslPath(~, winPath)
-
-            winPath = string(winPath);
-
-            if contains(winPath, ":\")
-
-                driveLetter = lower(extractBefore(winPath, 2));
-                pathPart = replace(extractAfter(winPath, 2), "\", "/");
-                wslPath = "/mnt/" + driveLetter + pathPart;
-            else
-                wslPath = winPath;
-            end
         end
     end
 end

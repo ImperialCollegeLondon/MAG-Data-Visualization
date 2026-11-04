@@ -36,7 +36,7 @@ function savePlots(figures, location, options)
             try
                 savefig(f, name);
             catch exception
-                warning("Could not save figure ""%s"":\n%s", f.Name, exception.message);
+                warning("mag:graphics:SaveFailed", "Could not save figure ""%s"":\n%s", f.Name, exception.message);
             end
         end
     end

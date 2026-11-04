@@ -11,7 +11,7 @@ classdef (TestTags = ["System", "Parallel"]) tHelioSwarmAnalysis < AnalysisTestC
             testCase.copyDataToWorkingDirectory("hs/single_file");
 
             % Exercise.
-            analysis = mag.hs.Analysis.start(Location = pwd(), InputSource = "iDPU");
+            analysis = mag.hs.Analysis.start(Location = pwd());
 
             % Verify.
             testCase.verifySubstring(analysis.ScienceFileNames, "science_packets.csv", "Science file names do not match.");
@@ -29,7 +29,7 @@ classdef (TestTags = ["System", "Parallel"]) tHelioSwarmAnalysis < AnalysisTestC
             testCase.copyDataToWorkingDirectory("hs/multiple_files");
 
             % Exercise.
-            analysis = mag.hs.Analysis.start(Location = pwd(), InputSource = "iDPU");
+            analysis = mag.hs.Analysis.start(Location = pwd());
 
             % Verify.
             testCase.verifyThat(matlab.unittest.constraints.EveryElementOf(analysis.ScienceFileNames), matlab.unittest.constraints.Matches(".*science_packets\d\.csv"), "Science file names do not match.");

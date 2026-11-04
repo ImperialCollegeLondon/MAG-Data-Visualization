@@ -90,7 +90,7 @@ classdef L0EngineeringUnits < mag.process.Step
                 case {mag.meta.HKType.Processor, mag.meta.HKType.Status}
                     % nothing to do
                 otherwise
-                    error("Unrecognized HK type ""%s"".", metadata.Type);
+                    error("mag:imap:UnrecognizedHKType", "Unrecognized HK type ""%s"".", metadata.Type);
             end
         end
     end
