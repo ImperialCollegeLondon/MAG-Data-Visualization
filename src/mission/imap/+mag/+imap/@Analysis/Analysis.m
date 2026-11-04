@@ -238,22 +238,6 @@ classdef Analysis < mag.Analysis
 
             finalNormal = this.Results.getFinalNormalMode();
         end
-
-        function periods = splitByTimeGap(this, gap)
-        % SPLITBYTIMEGAP Split data based on gap in the data of specified
-        % magnitude.
-
-            arguments (Input)
-                this (1, 1) mag.imap.Analysis
-                gap (1, 1) duration
-            end
-
-            arguments (Output)
-                periods (1, :) mag.imap.Instrument
-            end
-
-            periods = this.Results.splitByTimeGap(gap);
-        end
     end
 
     methods (Access = protected)

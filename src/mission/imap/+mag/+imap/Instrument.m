@@ -174,38 +174,6 @@ classdef Instrument < mag.Instrument
                 findFinalNormalMode(this.Primary.Events, this.Primary.Time(end)), ...
                 findFinalNormalMode(this.Secondary.Events, this.Secondary.Time(end)));
         end
-
-        function periods = splitByTimeGap(this, gap)
-        % SPLITBYTIMEGAP Split data based on gap in the data of specified
-        % magnitude.
-
-            arguments (Input)
-                this (1, 1) mag.imap.Instrument
-                gap (1, 1) duration
-            end
-
-            arguments (Output)
-                periods (1, :) mag.imap.Instrument
-            end
-
-            tPrimary = this.Primary.Time;
-            dtPrimary = diff(tPrimary);
-            tSplitPrimary = [tPrimary(1); tPrimary(dtPrimary > gap)];
-
-            tSecondary = this.Secondary.Time;
-            dtSecondary = diff(tSecondary);
-            tSplitSecondary = [tSecondary(1); tSecondary(dtSecondary > gap)];
-
-            if ~isequal(numel(tSplitPrimary), numel(tSplitSecondary))
-                error("mag:imap:UnequalTimeSplits", "Unequal time splits in primary (%d) and secondary (%d) data. Try a different time gap.", numel(tSplitPrimary), numel(tSplitSecondary));
-            end
-
-            for i = 1:(numel(tSplitPrimary) - 1)
-
-                periods(i) = this.applyTimeRange(timerange(tSplitPrimary(i), tSplitPrimary(i + 1), "open"), ...
-                    timerange(tSplitSecondary(i), tSplitSecondary(i + 1), "open")); %#ok<AGROW>
-            end
-        end
     end
 
     methods (Access = private)
