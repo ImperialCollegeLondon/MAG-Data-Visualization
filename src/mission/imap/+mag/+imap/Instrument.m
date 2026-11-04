@@ -70,6 +70,175 @@ classdef Instrument < mag.Instrument
                 this.IALiRT.crop(filters{:});
             end
         end
+
+        function modes = getAllModes(this)
+        % GETALLMODES Get all modes as separate data.
+
+            arguments (Input)
+                this (1, 1) mag.imap.Instrument
+            end
+
+            arguments (Output)
+                modes (1, :) mag.imap.Instrument
+            end
+
+            modes = mag.imap.Instrument.empty();
+
+            % Find duration for each mode.
+            [primaryPeriods, primaryEvents] = findModePeriods(this.Primary);
+            [secondaryPeriods, secondaryEvents] = findModePeriods(this.Secondary);
+
+            if isempty(primaryPeriods) || isempty(secondaryPeriods)
+                return;
+            end
+
+            % Modes are paired by position, which is only valid when both
+            % sensors have the same modes.
+            if ~isequal(numel(primaryPeriods), numel(secondaryPeriods))
+
+                warning("mag:imap:UnequalModes", "Data not split by mode, as primary (%d) and secondary (%d) sensors have different number of modes.", ...
+                    numel(primaryPeriods), numel(secondaryPeriods));
+                return;
+            end
+
+            % Split data into separate elements.
+            for p = 1:numel(primaryPeriods)
+
+                data = this.applyTimeRange(primaryPeriods{p}, secondaryPeriods{p});
+
+                if isempty(data)
+                    continue;
+                end
+
+                setModeMetadata(data.Primary.Metadata, primaryEvents(p, :));
+                setModeMetadata(data.Secondary.Metadata, secondaryEvents(p, :));
+
+                modes(end + 1) = data; %#ok<AGROW>
+            end
+        end
+
+        function modeCycling = getModeCycling(this, options)
+        % GETMODECYCLING Get mode cycling data.
+
+            arguments (Input)
+                this (1, 1) mag.imap.Instrument
+                options.PrimaryPattern (1, :) double = [2, 64, 2, 4, 64, 4, 4, 128]
+                options.SecondaryPattern (1, :) double = [2, 8, 2, 1, 64, 1, 4, 128]
+            end
+
+            arguments (Output)
+                modeCycling mag.imap.Instrument {mustBeScalarOrEmpty}
+            end
+
+            modeCycling = this.applyTimeRange( ...
+                findPatternPeriod(this.Primary.Events, "DataFrequency", options.PrimaryPattern), ...
+                findPatternPeriod(this.Secondary.Events, "DataFrequency", options.SecondaryPattern));
+        end
+
+        function rangeCycling = getRangeCycling(this, options)
+        % GETRANGECYCLING Get range cycling data.
+
+            arguments (Input)
+                this (1, 1) mag.imap.Instrument
+                options.Pattern (1, :) double = [3, 2, 1, 0]
+            end
+
+            arguments (Output)
+                rangeCycling mag.imap.Instrument {mustBeScalarOrEmpty}
+            end
+
+            if ~this.HasScience
+
+                rangeCycling = mag.imap.Instrument.empty();
+                return;
+            end
+
+            rangeCycling = this.applyTimeRange( ...
+                findPatternPeriod(this.Primary.Events, "Range", options.Pattern), ...
+                findPatternPeriod(this.Secondary.Events, "Range", options.Pattern), ...
+                EnforceSizeMatch = true);
+        end
+
+        function finalNormal = getFinalNormalMode(this)
+        % GETFINALNORMALMODE Get normal mode at the end of analysis.
+
+            arguments (Input)
+                this (1, 1) mag.imap.Instrument
+            end
+
+            arguments (Output)
+                finalNormal mag.imap.Instrument {mustBeScalarOrEmpty}
+            end
+
+            finalNormal = this.applyTimeRange( ...
+                findFinalNormalMode(this.Primary.Events, this.Primary.Time(end)), ...
+                findFinalNormalMode(this.Secondary.Events, this.Secondary.Time(end)));
+        end
+
+        function periods = splitByTimeGap(this, gap)
+        % SPLITBYTIMEGAP Split data based on gap in the data of specified
+        % magnitude.
+
+            arguments (Input)
+                this (1, 1) mag.imap.Instrument
+                gap (1, 1) duration
+            end
+
+            arguments (Output)
+                periods (1, :) mag.imap.Instrument
+            end
+
+            tPrimary = this.Primary.Time;
+            dtPrimary = diff(tPrimary);
+            tSplitPrimary = [tPrimary(1); tPrimary(dtPrimary > gap)];
+
+            tSecondary = this.Secondary.Time;
+            dtSecondary = diff(tSecondary);
+            tSplitSecondary = [tSecondary(1); tSecondary(dtSecondary > gap)];
+
+            if ~isequal(numel(tSplitPrimary), numel(tSplitSecondary))
+                error("mag:imap:UnequalTimeSplits", "Unequal time splits in primary (%d) and secondary (%d) data. Try a different time gap.", numel(tSplitPrimary), numel(tSplitSecondary));
+            end
+
+            for i = 1:(numel(tSplitPrimary) - 1)
+
+                periods(i) = this.applyTimeRange(timerange(tSplitPrimary(i), tSplitPrimary(i + 1), "open"), ...
+                    timerange(tSplitSecondary(i), tSplitSecondary(i + 1), "open")); %#ok<AGROW>
+            end
+        end
+    end
+
+    methods (Access = private)
+
+        function result = applyTimeRange(this, primaryPeriod, secondaryPeriod, options)
+        % APPLYTIMERANGE Apply time range to a copy of science data and its
+        % events. Return empty if either sensor has no data left.
+
+            arguments (Input)
+                this (1, 1) mag.imap.Instrument
+                primaryPeriod (1, 1) timerange
+                secondaryPeriod (1, 1) timerange
+                options.EnforceSizeMatch (1, 1) logical = false
+            end
+
+            arguments (Output)
+                result mag.imap.Instrument {mustBeScalarOrEmpty}
+            end
+
+            result = this.copy();
+            result.crop(primaryPeriod, secondaryPeriod);
+
+            if ~result.Primary.HasData || ~result.Secondary.HasData
+                result = mag.imap.Instrument.empty();
+            elseif options.EnforceSizeMatch
+
+                if numel(result.Primary.Time) > numel(result.Secondary.Time)
+                    result.Primary.Data = result.Primary.Data(1:numel(result.Secondary.Time), :);
+                elseif numel(result.Primary.Time) < numel(result.Secondary.Time)
+                    result.Secondary.Data = result.Secondary.Data(1:numel(result.Primary.Time), :);
+                end
+            end
+        end
     end
 
     methods (Access = protected)
@@ -93,5 +262,77 @@ classdef Instrument < mag.Instrument
                 header = getHeader@matlab.mixin.CustomDisplay(this);
             end
         end
+    end
+end
+
+function [periods, modeEvents] = findModePeriods(data)
+% FINDMODEPERIODS Find period of each mode, from its start until the start
+% of the next mode, or the end of the data.
+
+    if isempty(data)
+
+        periods = {};
+        modeEvents = [];
+        return;
+    end
+
+    events = data.Events;
+
+    modeEvents = events(~ismissing(events.Duration), :);
+    periods = repmat({timerange()}, 1, height(modeEvents));
+
+    for e = 1:height(modeEvents)
+
+        if e == height(modeEvents)
+
+            idxTime = find(modeEvents.Time == modeEvents.Time(e), 1) + 1;
+
+            if idxTime > height(modeEvents)
+                endTime = data.Time(end);
+            else
+                endTime = modeEvents.Time(idxTime);
+            end
+        else
+            endTime = modeEvents.Time(e + 1);
+        end
+
+        periods{e} = timerange(modeEvents.Time(e), endTime, "closedleft");
+    end
+end
+
+function setModeMetadata(metadata, modeEvent)
+% SETMODEMETADATA Set mode and frequencies from mode event.
+
+    metadata.Mode = string(modeEvent{1, "Mode"});
+    metadata.DataFrequency = modeEvent{1, "DataFrequency"};
+    metadata.PacketFrequency = modeEvent{1, "PacketFrequency"};
+end
+
+function period = findPatternPeriod(events, variable, pattern)
+% FINDPATTERNPERIOD Find period where values of an event variable follow
+% the pattern. Use first occurrence of pattern only. If pattern ends with
+% last event, include data until the end.
+
+    idxPattern = strfind(events.(variable)', pattern);
+
+    if isempty(idxPattern)
+        period = mag.time.emptyTimerange();
+    elseif (idxPattern(1) + numel(pattern)) > height(events)
+        period = timerange(events.Time(idxPattern(1)), datetime("Inf", TimeZone = "UTC"), "closed");
+    else
+        period = timerange(events.Time(idxPattern(1)), events.Time(idxPattern(1) + numel(pattern)), "closedleft");
+    end
+end
+
+function period = findFinalNormalMode(events, endTime)
+% FINDFINALNORMALMODE Find last normal mode at 2 Hz, if one of the last
+% three events is normal mode.
+
+    if any(events{end-2:end, "Mode"} == "Normal")
+
+        events = events((events.Mode == "Normal") & (events.DataFrequency == 2) & ~contains(events.Label, "Shutdown"), :);
+        period = timerange(events.Time(end), endTime, "closed");
+    else
+        period = mag.time.emptyTimerange();
     end
 end
