@@ -88,7 +88,7 @@ classdef Timestamp < mag.graphics.view.View
                         LinkXAxes = true, ...
                         WindowState = "maximized");
                 else
-                    warning("mag:imap:IALiRTSizeMismatch", "FOB and FIB I-ALiRT do not have the same size.");
+                    warning("mag:imap:IALiRTSizeMismatch", "OBS and IBS I-ALiRT do not have the same size.");
                 end
             end
         end
