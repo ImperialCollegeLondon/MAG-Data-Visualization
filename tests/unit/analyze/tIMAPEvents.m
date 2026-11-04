@@ -45,6 +45,12 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPEvents < matlab.unittest.TestCas
             "2024/05/07 10:34:27:TLM  ::   7164, 49173, 23, 227, 2])</font><br>"
             "<font color=""darkcyan"">2024/05/07 10:34:28:TLM  :: MAG_TCC_SUCC [1059, 1, 7] (All data =[0, 0, 1, 1059, 3, 16, 13, 452774053, 0, 1, 0, 1, 7,"
             "2024/05/07 10:34:28:TLM  ::   7164, 49173, 23, 227, 2])</font><br>"]
+        % RAMPMODE Ramp mode command for FOB, with acknowledgment. No log
+        % has one, so this one is made up from the common command format.
+        RampMode (:, 1) string = [ ...
+            "<font color=""darkcyan"">2024/05/07 10:36:10:CMD  :: MAG_FEE_FOBRAMP_EN(OPCODE=30, PUS_SECHDRFLAG=0, PUS_VERSION=0, PUS_ACK=9, PUS_STYPE=227, PUS_SSUBTYPE=7)</font><br>"
+            "<font color=""darkcyan"">2024/05/07 10:36:11:TLM  :: MAG_TCA_SUCC [1058, 1, 1] (All data =[0, 0, 1, 1058, 3, 40, 13, 452774156, 0, 1, 0, 1, 1,"
+            "2024/05/07 10:36:11:TLM  ::   7164, 49190, 30, 227, 7])</font><br>"]
         % OTHERCOMMAND Command that is not converted to an event.
         OtherCommand (:, 1) string = [ ...
             "<font color=""darkcyan"">2024/05/07 10:34:22:CMD  :: MAG_AR_ICU_DS(OPCODE=6, PUS_SECHDRFLAG=0, PUS_VERSION=0, PUS_ACK=9, PUS_STYPE=227, PUS_SSUBTYPE=4, SENSOR_ID=IBSENSOR)</font><br>"
@@ -143,6 +149,22 @@ classdef (TestTags = ["Unit", "Parallel"]) tIMAPEvents < matlab.unittest.TestCas
             testCase.verifyEqual([events.Type, events.SubType], [227, 2], "Type and sub-type do not match.");
             testCase.verifyEqual(events.AcknowledgeTimestamp, testCase.utc(2024, 5, 7, 10, 34, 12), "Acknowledgment time should be spacecraft time.");
             testCase.verifyEqual(events.CompleteTimestamp, testCase.utc(2024, 5, 7, 10, 34, 13), "Completion time should be spacecraft time.");
+        end
+
+        % Test that ramp mode command is converted to event.
+        function rampMode(testCase)
+
+            % Exercise.
+            events = testCase.loadEvents(testCase.RampMode);
+
+            % Verify.
+            testCase.assertClass(events, "mag.event.RampMode", "Ramp mode should be converted to ramp mode.");
+            testCase.assertNumElements(events, 1, "Only one event should be loaded.");
+
+            testCase.verifyEqual(events.Sensor, mag.meta.Sensor.OBS, "Sensor does not match.");
+            testCase.verifyEqual([events.Type, events.SubType], [227, 7], "Type and sub-type do not match.");
+            testCase.verifyEqual(events.CommandTimestamp, testCase.utc(2024, 5, 7, 10, 35, 55), "Command time should be corrected to spacecraft time.");
+            testCase.verifyEqual(events.AcknowledgeTimestamp, testCase.utc(2024, 5, 7, 10, 35, 56), "Acknowledgment time should be spacecraft time.");
         end
 
         % Test that responses to other commands are ignored.

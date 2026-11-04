@@ -1,270 +1,271 @@
 function loadEventsData(this)
-    %% Load Event Files
+% LOADEVENTSDATA Load events from event logs, and match them to their
+% responses to find when they were acknowledged and completed.
+
+    commands = readCommands(this.EventFileNames);
+
+    if isempty(commands)
+        return;
+    end
+
+    % Convert commands to events. Mode transitions only apply to mode
+    % changes, so they are added before other events.
+    events = convertModeChanges(commands);
+    addModeTransitions(events, commands);
+
+    events = [events, convertSensorCommands(commands)];
+
+    % Correct command times based on responses, and sort.
+    addResponseTimes(events, commands);
+    events = sort(events);
+
+    setDefaultRates(events);
+
+    % Concentrate on recorded timerange.
+    if ~isempty(events) && ~isempty(this.Results.Metadata) && ~ismissing(this.Results.Metadata.Timestamp)
+        events = events([events.Timestamp] > this.Results.Metadata.Timestamp);
+    end
+
+    this.Results.Events = events;
+end
+
+function commands = readCommands(fileNames)
+% READCOMMANDS Read commands and telemetry from event logs, with their
+% timestamps.
 
     rawEvents = string.empty();
 
-    for ef = this.EventFileNames
+    for ef = fileNames
 
         contents = extractFileText(ef);
         rawEvents = join([rawEvents, contents], newline);
     end
 
     rawEvents = regexp(rawEvents, "(?<timestamp>\d+/\d+/\d+ \d+:\d+:\d+):(?<category>\w+) :: (?<command>\w+)(?: \[\d+, \d+, \d+\] )?\((?<details>.*?)\)", "names", "dotexceptnewline", "lineanchors");
-    eventTimeFormat = "yyyy/MM/dd HH:mm:ss";
 
     if isempty(rawEvents)
+
+        commands = struct.empty();
         return;
     end
 
-    %% Define Event Constants
+    timestamps = num2cell(datetime([rawEvents.timestamp], InputFormat = getEventTimeFormat(), Format = getEventTimeFormat(), TimeZone = "UTC"));
+    [rawEvents.timestamp] = timestamps{:};
 
-    commonFormat = "(?:OPCODE=)?(?<opcode>\d+), (?:PUS_SECHDRFLAG=)?(?<header>\d+), (?:PUS_VERSION=)?(?<version>\d+), (?:PUS_ACK=)?(?<ack>\d+), (?:PUS_STYPE=)?(?<type>\d+), (?:PUS_SSUBTYPE=)?(?<subtype>\d+)";
+    commands = rawEvents;
+end
+
+function events = convertModeChanges(commands)
+% CONVERTMODECHANGES Convert config, normal and burst mode commands to
+% mode change events.
+
     modeChangeFormat = ", NORMPRI_RATE=(?<primaryNormal>HZ_\d+|\w+), NORMSEC_RATE=(?<secondaryNormal>HZ_\d+|\w+), NORM_PKTSECS=(?<packetsNormal>SECS_\d+|\w+), BRSTPRI_RATE=(?<primaryBurst>HZ_\d+|\w+), BRSTSEC_RATE=(?<secondaryBurst>HZ_\d+|\w+), BRST_PKTSECS=(?<packetsBurst>SECS_\d+|\w+)";
-    rangeChangeFormat = ", RANGE_ID=RANGE(?<range>\d+), RANGE_GAINX=GAIN(?<x>\d+), RANGE_GAINY=GAIN(?<y>\d+), RANGE_GAINZ=GAIN(?<z>\d+)";
-    rampModeFormat = "";
 
-    %% Convert Mode Events
+    % Each mode is converted in turn. Config mode has no rates or
+    % duration, so they are missing. Otherwise, properties not in the
+    % command keep their default value.
+    modes = struct(Command = {"MAG_M_CONF", "MAG_M_NORM", "MAG_M_BURST"}, ...
+        Mode = {"Config", "Normal", "Burst"}, ...
+        Format = {"", modeChangeFormat, modeChangeFormat + ", BRST_DURATION=(?<duration>\d+)"});
+
+    % Map from command details to event properties.
+    detailProperties = dictionary( ...
+        primaryNormal = "PrimaryNormalRate", ...
+        secondaryNormal = "SecondaryNormalRate", ...
+        packetsNormal = "PacketNormalFrequency", ...
+        primaryBurst = "PrimaryBurstRate", ...
+        secondaryBurst = "SecondaryBurstRate", ...
+        packetsBurst = "PacketBurstFrequency", ...
+        duration = "Duration");
 
     events = mag.event.Event.empty();
 
-    % Identify Config mode events.
-    locConfig = [rawEvents.command] == "MAG_M_CONF";
+    for m = modes
 
-    for ce = rawEvents(locConfig)
+        for c = commands([commands.command] == m.Command)
 
-        eventDetails = regexp(ce.details, commonFormat, "once", "names");
-        events(end + 1) = mag.event.ModeChange( ...
-            CommandTimestamp = datetime(ce.timestamp, Format = eventTimeFormat, TimeZone = "UTC"), ...
-            Type = eventDetails.type, ...
-            SubType = eventDetails.subtype, ...
-            Mode = "Config", ...
-            PrimaryNormalRate = missing(), ...
-            SecondaryNormalRate = missing(), ...
-            PacketNormalFrequency = missing(), ...
-            PrimaryBurstRate = missing(), ...
-            SecondaryBurstRate = missing(), ...
-            PacketBurstFrequency = missing(), ...
-            Duration = missing()); %#ok<AGROW>
-    end
+            details = regexp(c.details, getCommonFormat() + m.Format, "once", "names");
+            details = structfun(@(x) replace(x, ["SECS_", "HZ_", "UNCHANGED"], ["", "", "NaN"]), details, UniformOutput = false);
 
-    % Identify normal mode events.
-    locNormal = [rawEvents.command] == "MAG_M_NORM";
+            args = struct(CommandTimestamp = c.timestamp, Type = details.type, SubType = details.subtype, Mode = m.Mode);
 
-    for ne = rawEvents(locNormal)
+            for k = detailProperties.keys()'
 
-        eventDetails = regexp(ne.details, commonFormat + modeChangeFormat, "once", "names");
-        eventDetails = processModeChangeDetails(eventDetails);
-
-        events(end + 1) = mag.event.ModeChange( ...
-            CommandTimestamp = datetime(ne.timestamp, Format = eventTimeFormat, TimeZone = "UTC"), ...
-            Type = eventDetails.type, ...
-            SubType = eventDetails.subtype, ...
-            Mode = "Normal", ...
-            PrimaryNormalRate = eventDetails.primaryNormal, ...
-            SecondaryNormalRate = eventDetails.secondaryNormal, ...
-            PacketNormalFrequency = eventDetails.packetsNormal, ...
-            PrimaryBurstRate = eventDetails.primaryBurst, ...
-            SecondaryBurstRate = eventDetails.secondaryBurst, ...
-            PacketBurstFrequency = eventDetails.packetsBurst); %#ok<AGROW>
-    end
-
-    % Identify burst mode events.
-    locBurst = [rawEvents.command] == "MAG_M_BURST";
-
-    for be = rawEvents(locBurst)
-
-        eventDetails = regexp(be.details, commonFormat + modeChangeFormat + ", BRST_DURATION=(?<duration>\d+)", "once", "names");
-        eventDetails = processModeChangeDetails(eventDetails);
-
-        events(end + 1) = mag.event.ModeChange( ...
-            CommandTimestamp = datetime(be.timestamp, Format = eventTimeFormat, TimeZone = "UTC"), ...
-            Type = eventDetails.type, ...
-            SubType = eventDetails.subtype, ...
-            Mode = "Burst", ...
-            PrimaryNormalRate = eventDetails.primaryNormal, ...
-            SecondaryNormalRate = eventDetails.secondaryNormal, ...
-            PacketNormalFrequency = eventDetails.packetsNormal, ...
-            PrimaryBurstRate = eventDetails.primaryBurst, ...
-            SecondaryBurstRate = eventDetails.secondaryBurst, ...
-            PacketBurstFrequency = eventDetails.packetsBurst, ...
-            Duration = eventDetails.duration); %#ok<AGROW>
-    end
-
-    %% Mode Transition Events
-
-    if ~isempty(events)
-
-        locTransition = [rawEvents.command] == "MAG_PROG_MTRAN";
-
-        for te = rawEvents(locTransition)
-
-            responsePattern = getResponsePattern(te.details);
-            eventDetails = regexp(te.details, responsePattern, "names", "all");
-
-            modeChangeTimestamp = datetime(te.timestamp, Format = eventTimeFormat, TimeZone = "UTC");
-            matchingEvents = events((double([events.Mode]) == str2double(eventDetails.curr)) & ...
-                ([events.CommandTimestamp] <= modeChangeTimestamp));
-
-            if ~isempty(matchingEvents)
-
-                matchingEvents = sort(matchingEvents);
-
-                if ismissing(matchingEvents(end).ModeChangeTimestamp)
-                    matchingEvents(end).ModeChangeTimestamp = modeChangeTimestamp;
-                else
-                    % TODO: could be an automated transition
+                if m.Mode == "Config"
+                    args.(detailProperties(k)) = missing();
+                elseif isfield(details, k)
+                    args.(detailProperties(k)) = details.(k);
                 end
+            end
+
+            args = namedargs2cell(args);
+            events(end + 1) = mag.event.ModeChange(args{:}); %#ok<AGROW>
+        end
+    end
+end
+
+function addModeTransitions(events, commands)
+% ADDMODETRANSITIONS Assign mode transition times to the latest mode
+% change commanded before them.
+
+    if isempty(events)
+        return;
+    end
+
+    for t = commands([commands.command] == "MAG_PROG_MTRAN")
+
+        details = regexp(t.details, getResponsePattern(t.details), "names", "once");
+
+        if isempty(details)
+            continue;
+        end
+
+        matchingEvents = events((double([events.Mode]) == str2double(details.curr)) & ...
+            ([events.CommandTimestamp] <= t.timestamp));
+
+        if ~isempty(matchingEvents)
+
+            matchingEvents = sort(matchingEvents);
+
+            % Otherwise, it could be an automated transition.
+            if ismissing(matchingEvents(end).ModeChangeTimestamp)
+                matchingEvents(end).ModeChangeTimestamp = t.timestamp;
             end
         end
     end
+end
 
-    %% Convert Other Events
+function events = convertSensorCommands(commands)
+% CONVERTSENSORCOMMANDS Convert range change and ramp mode commands to
+% events.
 
-    % Identify range changes.
-    locRange = matches([rawEvents.command], regexpPattern("MAG_FEE_F(O|I)BRNG"));
+    rangeChangeFormat = ", RANGE_ID=RANGE(?<range>\d+), RANGE_GAINX=GAIN(?<x>\d+), RANGE_GAINY=GAIN(?<y>\d+), RANGE_GAINZ=GAIN(?<z>\d+)";
 
-    for re = rawEvents(locRange)
+    events = mag.event.Event.empty();
 
-        eventDetails = regexp(re.details, commonFormat + rangeChangeFormat, "once", "names");
+    for c = commands(matches([commands.command], regexpPattern("MAG_FEE_F(O|I)BRNG")))
+
+        details = regexp(c.details, getCommonFormat() + rangeChangeFormat, "once", "names");
         events(end + 1) = mag.event.RangeChange( ...
-            CommandTimestamp = datetime(re.timestamp, Format = eventTimeFormat, TimeZone = "UTC"), ...
-            Type = eventDetails.type, ...
-            SubType = eventDetails.subtype, ...
-            Range = str2double(eventDetails.range), ...
-            Sensor = regexp(re.command, "F(O|I)B", "once", "match")); %#ok<AGROW>
+            CommandTimestamp = c.timestamp, ...
+            Type = details.type, ...
+            SubType = details.subtype, ...
+            Range = str2double(details.range), ...
+            Sensor = getSensor(c.command)); %#ok<AGROW>
     end
 
-    % Identify ramp changes.
-    locRamp = matches([rawEvents.command], regexpPattern("MAG_FEE_F(O|I)BRAMP_EN"));
+    for c = commands(matches([commands.command], regexpPattern("MAG_FEE_F(O|I)BRAMP_EN")))
 
-    for re = rawEvents(locRamp)
-
-        eventDetails = regexp(re.details, commonFormat + rampModeFormat, "once", "names");
+        details = regexp(c.details, getCommonFormat(), "once", "names");
         events(end + 1) = mag.event.RampMode( ...
-            CommandTimestamp = datetime(re.timestamp, Format = eventTimeFormat, TimeZone = "UTC"), ...
-            Type = eventDetails.type, ...
-            SubType = eventDetails.subtype, ...
-            Sensor = regexp(re.command, "F(O|I)B", "once", "match")); %#ok<AGROW>
+            CommandTimestamp = c.timestamp, ...
+            Type = details.type, ...
+            SubType = details.subtype, ...
+            Sensor = getSensor(c.command)); %#ok<AGROW>
     end
+end
 
-    %% Add Response Times
+function addResponseTimes(events, commands)
+% ADDRESPONSETIMES Assign acknowledgment and completion times, from
+% spacecraft time, and correct command times to spacecraft time.
 
-    % Identify acknowledge response events.
-    locAccepted = matches([rawEvents.command], regexpPattern("MAG_TCA_SUCC"));
-    acknowledgeEvents = rawEvents(locAccepted);
+    acknowledgments = parseResponses(commands([commands.command] == "MAG_TCA_SUCC"));
+    completions = parseResponses(commands([commands.command] == "MAG_TCC_SUCC"));
 
-    if ~isempty(acknowledgeEvents)
-
-        responsePattern = getResponsePattern(acknowledgeEvents(1).details);
-        acknowledgedId = regexp([acknowledgeEvents.details], responsePattern, "names", "all");
-
-        if iscell(acknowledgedId)
-            acknowledgedId = [acknowledgedId{:}];
-        end
-
-        for i = string(fieldnames(acknowledgedId))'
-            [acknowledgeEvents.(i)] = acknowledgedId.(i);
-        end
-
-        for i = 1:numel(acknowledgeEvents)
-
-            acknowledgeEvents(i).timestamp = datetime(acknowledgeEvents(i).timestamp, Format = eventTimeFormat, TimeZone = "UTC");
-            acknowledgeEvents(i).coarse = datetime(mag.time.Constant.Epoch + str2double(acknowledgeEvents(i).coarse), ConvertFrom = "posixtime", ...
-                Format = eventTimeFormat, TimeZone = mag.time.Constant.TimeZone);
-        end
-    end
-
-    % Identify complete response events.
-    locCompleted = matches([rawEvents.command], regexpPattern("MAG_TCC_SUCC"));
-    completedEvents = rawEvents(locCompleted);
-
-    if ~isempty(completedEvents)
-
-        responsePattern = getResponsePattern(completedEvents(1).details);
-
-        for i = 1:numel(completedEvents)
-
-            completedId = regexp(completedEvents(i).details, responsePattern, "names", "once");
-
-            for fn = string(fieldnames(completedId))'
-                if ~isempty(completedId)
-                    completedEvents(i).(fn) = completedId.(fn);
-                end
-            end
-        end
-
-        for i = 1:numel(completedEvents)
-
-            completedEvents(i).timestamp = datetime(completedEvents(i).timestamp, Format = eventTimeFormat, TimeZone = "UTC");
-            completedEvents(i).coarse = datetime(mag.time.Constant.Epoch + str2double(completedEvents(i).coarse), ConvertFrom = "posixtime", ...
-                Format = eventTimeFormat, TimeZone = mag.time.Constant.TimeZone);
-        end
-    end
-
-    % Assign acknowledgment and completion times.
     for e = events
 
-        correction = duration.empty();
-
-        % Remove responses to subsequent commands of the same type.
+        % Ignore responses to subsequent commands of the same type.
         similarSubsequentEvents = events(([events.Type] == e.Type) & ([events.SubType] == e.SubType) & ([events.CommandTimestamp] > e.CommandTimestamp));
 
-        % Find acknowledgment time.
-        if ~isempty(acknowledgeEvents)
-
-            ae = acknowledgeEvents([acknowledgeEvents.timestamp] >= e.CommandTimestamp);
-
-            if ~isempty(ae) && isfield(ae, "type") && isfield(ae, "subtype")
-
-                if ~isempty(similarSubsequentEvents)
-                    ae = ae([ae.timestamp] < similarSubsequentEvents(1).CommandTimestamp);
-                end
-
-                ae = ae((str2double([ae.type]) == e.Type) & (str2double([ae.subtype]) == e.SubType));
-
-                if isempty(ae)
-                    e.AcknowledgeTimestamp = e.CommandTimestamp;
-                else
-
-                    e.AcknowledgeTimestamp = ae(1).coarse;
-                    correction(end + 1) = ae(1).coarse - ae(1).timestamp; %#ok<AGROW>
-                end
-            end
+        if isempty(similarSubsequentEvents)
+            nextCommandTime = datetime("Inf", TimeZone = "UTC");
+        else
+            nextCommandTime = similarSubsequentEvents(1).CommandTimestamp;
         end
 
-        % Find completion time.
-        if ~isempty(completedEvents)
+        [acknowledgeTime, acknowledgeCorrection] = matchResponse(acknowledgments, e, nextCommandTime, e.CommandTimestamp);
 
-            ce = completedEvents([completedEvents.timestamp] >= e.CommandTimestamp);
-
-            if ~isempty(ce) && isfield(ce, "type") && isfield(ce, "subtype")
-
-                if ~isempty(similarSubsequentEvents)
-                    ce = ce([ce.timestamp] < similarSubsequentEvents(1).CommandTimestamp);
-                end
-
-                ce = ce((str2double([ce.type]) == e.Type) & (str2double([ce.subtype]) == e.SubType));
-
-                if isempty(ce)
-                    e.CompleteTimestamp = e.AcknowledgeTimestamp;
-                else
-
-                    e.CompleteTimestamp = ce(1).coarse;
-                    correction(end + 1) = ce(1).coarse - ce(1).timestamp; %#ok<AGROW>
-                end
-            end
+        if ~isempty(acknowledgeTime)
+            e.AcknowledgeTimestamp = acknowledgeTime;
         end
+
+        [completeTime, completeCorrection] = matchResponse(completions, e, nextCommandTime, e.AcknowledgeTimestamp);
+
+        if ~isempty(completeTime)
+            e.CompleteTimestamp = completeTime;
+        end
+
+        correction = [acknowledgeCorrection, completeCorrection];
 
         if ~isempty(correction) && any(isfinite(correction))
             e.CommandTimestamp = e.CommandTimestamp + mean(correction, "omitmissing");
         end
     end
+end
 
-    %% Sort
+function responses = parseResponses(rawResponses)
+% PARSERESPONSES Extract spacecraft time, and type and sub-type of the
+% command responded to. Responses that do not identify their command
+% are dropped.
 
-    events = sort(events);
+    responses = table(NaT(0, 1, TimeZone = "UTC"), NaT(0, 1, TimeZone = "UTC"), double.empty(0, 1), double.empty(0, 1), ...
+        VariableNames = ["timestamp", "coarse", "type", "subtype"]);
 
-    %% Set Default Modes
+    if isempty(rawResponses)
+        return;
+    end
+
+    % Pattern is selected based on first response only.
+    details = regexp([rawResponses.details], getResponsePattern(rawResponses(1).details), "names", "once");
+
+    if ~iscell(details)
+        details = {details};
+    end
+
+    locMatched = ~cellfun(@isempty, details);
+
+    if ~any(locMatched) || ~all(isfield(details{find(locMatched, 1)}, ["type", "subtype"]))
+        return;
+    end
+
+    details = [details{locMatched}];
+
+    timestamps = [rawResponses.timestamp]';
+
+    responses = table(timestamps(locMatched), ...
+        datetime(mag.time.Constant.Epoch + str2double([details.coarse]'), ConvertFrom = "posixtime", Format = getEventTimeFormat(), TimeZone = mag.time.Constant.TimeZone), ...
+        str2double([details.type]'), str2double([details.subtype]'), ...
+        VariableNames = ["timestamp", "coarse", "type", "subtype"]);
+end
+
+function [responseTime, correction] = matchResponse(responses, event, nextCommandTime, fallbackTime)
+% MATCHRESPONSE Find first response to event, before the next similar
+% command. Return empty if there are no responses after the command, and
+% the fallback time if none of them match.
+
+    correction = duration.empty();
+    responses = responses(responses.timestamp >= event.CommandTimestamp, :);
+
+    if isempty(responses)
+
+        responseTime = datetime.empty();
+        return;
+    end
+
+    responses = responses((responses.timestamp < nextCommandTime) & (responses.type == event.Type) & (responses.subtype == event.SubType), :);
+
+    if isempty(responses)
+        responseTime = fallbackTime;
+    else
+
+        responseTime = responses.coarse(1);
+        correction = responses.coarse(1) - responses.timestamp(1);
+    end
+end
+
+function setDefaultRates(events)
+% SETDEFAULTRATES Use default rates for unchanged rates of the first
+% normal or burst mode, as previous rates are unknown.
 
     defaults = dictionary( ...
         PrimaryNormalRate = 2, ...
@@ -285,47 +286,33 @@ function loadEventsData(this)
                 end
             end
 
-            break; % only correct first one
+            return;
         end
     end
-
-    %% Amend Time Range
-
-    % Concentrate on recorded timerange.
-    if ~isempty(events) && ~isempty(this.Results.Metadata) && ~ismissing(this.Results.Metadata.Timestamp)
-        events = events([events.Timestamp] > this.Results.Metadata.Timestamp);
-    end
-
-    %% Assign Value
-
-    this.Results.Events = events;
 end
 
-function eventDetails = processModeChangeDetails(eventDetails)
-    eventDetails = structfun(@(x) replace(x, ["SECS_", "HZ_", "UNCHANGED"], ["", "", "NaN"]), eventDetails, UniformOutput = false);
+function sensor = getSensor(command)
+    sensor = regexp(command, "F(O|I)B", "once", "match");
+end
+
+function format = getCommonFormat()
+    format = "(?:OPCODE=)?(?<opcode>\d+), (?:PUS_SECHDRFLAG=)?(?<header>\d+), (?:PUS_VERSION=)?(?<version>\d+), (?:PUS_ACK=)?(?<ack>\d+), (?:PUS_STYPE=)?(?<type>\d+), (?:PUS_SSUBTYPE=)?(?<subtype>\d+)";
+end
+
+function format = getEventTimeFormat()
+    format = "yyyy/MM/dd HH:mm:ss";
 end
 
 function responsePattern = getResponsePattern(response)
 
-    persistent responsePattern14 responsePattern16 responsePattern17
-
-    if isempty(responsePattern14) || isempty(responsePattern16) || isempty(responsePattern17)
-
-        responsePattern14 = "All data =\[\d+, \d+, \d+, \d+, \d+, \d+, \d+, (?<coarse>\d+), \d+, \d+, \d+, \d+, \d+, (?:\d+/\d+/\d+ \d+:\d+:\d+:\w+ :: )?\d+, \d+\]";
-        responsePattern16 = "All data =\[\d+, \d+, \d+, \d+, \d+, \d+, \d+, (?<coarse>\d+), \d+, \d+, \d+, \d+, (?:[\w\/: ]+ :: )?\d+, (?:[\w\/: ]+ :: )?(?<event>\d+), (?<prev>\d+), (?<curr>\d+), (?<trans>\d+)\]";
-        responsePattern17 = "All data =\[\d+, \d+, \d+, \d+, \d+, \d+, \d+, (?<coarse>\d+), \d+, \d+, \d+, \d+, \d+, (?:\d+/\d+/\d+ \d+:\d+:\d+:\w+ :: )?\d+, \d+, \d+, (?<type>\d+), (?<subtype>\d+)\]";
-    end
-
-    commaCount = count(response, ",");
-
-    switch commaCount
+    switch count(response, ",")
         case 14
-            responsePattern = responsePattern14;
+            responsePattern = "All data =\[\d+, \d+, \d+, \d+, \d+, \d+, \d+, (?<coarse>\d+), \d+, \d+, \d+, \d+, \d+, (?:\d+/\d+/\d+ \d+:\d+:\d+:\w+ :: )?\d+, \d+\]";
         case 16
-            responsePattern = responsePattern16;
+            responsePattern = "All data =\[\d+, \d+, \d+, \d+, \d+, \d+, \d+, (?<coarse>\d+), \d+, \d+, \d+, \d+, (?:[\w\/: ]+ :: )?\d+, (?:[\w\/: ]+ :: )?(?<event>\d+), (?<prev>\d+), (?<curr>\d+), (?<trans>\d+)\]";
         case 17
-            responsePattern = responsePattern17;
+            responsePattern = "All data =\[\d+, \d+, \d+, \d+, \d+, \d+, \d+, (?<coarse>\d+), \d+, \d+, \d+, \d+, \d+, (?:\d+/\d+/\d+ \d+:\d+:\d+:\w+ :: )?\d+, \d+, \d+, (?<type>\d+), (?<subtype>\d+)\]";
         otherwise
-            error("Unrecognized number of commas in response message.");
+            error("mag:imap:UnrecognizedResponse", "Unrecognized number of commas in response message.");
     end
 end
