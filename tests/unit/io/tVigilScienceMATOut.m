@@ -47,7 +47,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tVigilScienceMATOut < MAGIOTestCase
             data = mag.vigil.Instrument();
             data.Science = mag.Science(timetable(datetime("now", TimeZone = "UTC"), 1, 2, 3, 0, VariableNames = ["x", "y", "z", "range"]), outboardMetadata);
 
-            expectedFileName = compose("%s Normal (2, 0).mat", datestr(outboardMetadata.Timestamp, "ddmmyy-HHMM"));
+            expectedFileName = compose("%s Normal (2, 0).mat", string(outboardMetadata.Timestamp, "ddMMyy-HHmm"));
 
             % Exercise.
             format = mag.vigil.out.ScienceMAT();
@@ -70,7 +70,7 @@ classdef (TestTags = ["Unit", "Parallel"]) tVigilScienceMATOut < MAGIOTestCase
             data = mag.vigil.Instrument();
             data.Science = mag.Science(timetable(datetime("now", TimeZone = "UTC"), 1, 2, 3, 0, VariableNames = ["x", "y", "z", "range"]), inboardMetadata);
 
-            expectedFileName = compose("%s Normal (0, 4).mat", datestr(inboardMetadata.Timestamp, "ddmmyy-HHMM"));
+            expectedFileName = compose("%s Normal (0, 4).mat", string(inboardMetadata.Timestamp, "ddMMyy-HHmm"));
 
             % Exercise.
             format = mag.vigil.out.ScienceMAT();

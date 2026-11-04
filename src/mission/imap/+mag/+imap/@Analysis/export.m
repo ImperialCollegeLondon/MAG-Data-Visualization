@@ -60,6 +60,6 @@ function cropAndExportNamed(data, period, location, format, name)
     if data.HasScience
 
         mag.io.export(data, Location = location, Format = format, ...
-            FileName = compose("%s %s", datestr(data.Metadata.Timestamp, "ddmmyy-hhMM"), name) + format.Extension); %#ok<DATST>
+            FileName = compose("%s %s", string(data.Metadata.Timestamp, "ddMMyy-HHmm"), name) + format.Extension);
     end
 end

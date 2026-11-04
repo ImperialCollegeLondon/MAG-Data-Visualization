@@ -38,8 +38,8 @@ classdef ScienceMAT < mag.io.out.MAT
                 mode = data.Inboard.Metadata.Mode;
             end
 
-            fileName = compose("%s %s (%d, %d)", datestr(timestamp, "ddmmyy-hhMM"), ...
-                mode, outboardFreq, inboardFreq) + this.Extension; %#ok<DATST>
+            fileName = compose("%s %s (%d, %d)", string(timestamp, "ddMMyy-HHmm"), ...
+                mode, outboardFreq, inboardFreq) + this.Extension;
         end
 
         function exportData = convertToExportFormat(this, data)
